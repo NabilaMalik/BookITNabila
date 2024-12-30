@@ -1,0 +1,2 @@
+String globalselectedbrand="";
+String userBrand="";

@@ -41,6 +41,11 @@ dependencies:
   path_provider: ^2.0.11
   get: ^4.6.6
   image_picker: ^1.1.2
+  provider: ^6.1.2
+  permission_handler: ^11.3.1
+  responsive_framework: ^1.5.1
+  flutter_searchable_dropdown: ^2.0.0
+  rive: ^0.13.14
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -71,6 +76,17 @@ flutter:
    - assets/images/Google.jpg
    - assets/images/download (1).png
    - assets/images/camera-removebg-preview.png
+   - assets/samples/ui/rive_app/
+   - assets/samples/ui/rive_app/rive/
+   - assets/samples/ui/rive_app/images/
+   - assets/samples/ui/rive_app/images/backgrounds/
+   - assets/samples/ui/rive_app/images/avatars/avatar_2.png
+   - assets/samples/ui/rive_app/images/avatars/
+   - assets/samples/ui/rive_app/images/avatars/avatar_1.png
+   - assets/samples/ui/rive_app/images/avatars/avatar_3.png
+   - assets/samples/ui/rive_app/images/avatars/avatar_4.png
+   - assets/samples/ui/rive_app/images/avatars/avatar_default.jpg
+   - assets/samples/ui/rive_app/images/avatars/addshop.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
