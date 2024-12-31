@@ -46,6 +46,7 @@ dependencies:
   responsive_framework: ^1.5.1
   flutter_searchable_dropdown: ^2.0.0
   rive: ^0.13.14
+  rxdart: ^0.28.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

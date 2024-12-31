@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../screens/shop_visit_screen.dart';
+
 class ShopVisitViewModel extends GetxController {
   final ImagePicker picker = ImagePicker();
 
@@ -66,10 +68,15 @@ class ShopVisitViewModel extends GetxController {
     final image = await picker.pickImage(source: ImageSource.gallery);
     selectedImage.value = image;
   }
+   Future<void> takePicture() async{
+    final image = await picker.pickImage(source: ImageSource.camera);
+    selectedImage.value = image;
+   }
 
   void submitForm(GlobalKey<FormState> formKey) {
     if (formKey.currentState!.validate()) {
       rowsNotifier.value = filteredRows.value;
+
       Get.snackbar("Success", "Form submitted successfully!",
           snackPosition: SnackPosition.BOTTOM);
     }

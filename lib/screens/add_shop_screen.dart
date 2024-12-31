@@ -59,18 +59,18 @@ class _AddShopScreenState extends State<AddShopScreen> {
                     validator: (value) =>
                     value == null || value.isEmpty ? "Please enter shop name" : null,
                   ),
-                  CustomDropdown(
-                    label: "City",
-
-                      icon: Icons.location_city,
-                      items: cities,
-                      selectedValue: selectedCity,
-                      onChanged: (value){
-
-                      },
-                    validator: (value) =>
-                    value == null || value.isEmpty ? "Please enter City name" : null,
-                  ),
+                  // CustomDropdown(
+                  //   label: "City",
+                  //     icon: Icons.location_city,
+                  //     items: cities,
+                  //     selectedValue: selectedCity,
+                  //     onChanged: (value){
+                  //     },
+                  //   validator: (value) =>
+                  //   value == null || value.isEmpty ? "Please enter City name" : null,
+                  //   showBorder: true,
+                  //
+                  // ),
                   _buildTextField(
                     label: "Shop Address",
                     icon: Icons.place,

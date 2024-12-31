@@ -12,8 +12,8 @@ class ProductSearchCard extends StatelessWidget {
     required this.filterData,
     required this.rowsNotifier,
     required this.filteredRows,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +62,10 @@ class ProductSearchCard extends StatelessWidget {
                   final rowsToShow = filteredRows.isNotEmpty ? filteredRows : rows;
 
                   if (rowsToShow.isEmpty) {
-                    return Center(
+                    return const Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Icon(Icons.search_off, size: 50, color: Colors.grey),
                           SizedBox(height: 10),
                           Text(

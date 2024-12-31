@@ -7,11 +7,11 @@ class ChecklistSection extends StatelessWidget {
   final Function(int index, bool value) onStateChanged;
 
   const ChecklistSection({
-    Key? key,
+    super.key,
     required this.labels,
     required this.checklistState,
     required this.onStateChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +23,34 @@ class ChecklistSection extends StatelessWidget {
         Obx(() {
           return Column(
             children: List.generate(labels.length, (index) {
-              return CheckboxListTile(
-                title: Text(labels[index]),
-                value: checklistState[index],
-                onChanged: (value) {
-                  onStateChanged(index, value!);
-                },
+              return Column(
+                children: [
+                  Row(
+                    children: [
+                      Switch(
+                        value: checklistState[index],
+                        onChanged: (value) {
+                          onStateChanged(index, value);
+                        },
+                        activeColor: Colors.blue,
+
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            labels[index],
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Divider(
+                    color: Colors.grey,
+                    thickness: 1,
+                  ),
+                ],
               );
             }),
           );
