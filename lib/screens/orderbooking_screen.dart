@@ -16,7 +16,7 @@ class OrderBookingScreen extends StatefulWidget {
 
 class _OrderBookingScreenState extends State<OrderBookingScreen> {
   final OrderBookingViewModel viewModel = Get.put(OrderBookingViewModel());
-//  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -39,53 +39,53 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: SingleChildScrollView(
             child: Form(
-              // key: _formKey,
+              key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 20),
                   _buildTextField(
-                    controller: TextEditingController(text: viewModel.selectedShop.value),
                     label: "Shop Name",
+                    text: viewModel.selectedShop.value,
                     icon: Icons.warehouse,
-                    validator: (value) => value == null || value.isEmpty ? 'Please enter the shop name' : null,
-                    onChanged: (value) => viewModel.selectedShop.value = value,
                   ),
                   _buildTextField(
-                    controller: TextEditingController(text: viewModel.ownerName.value),
                     label: "Owner Name",
+                    text: viewModel.ownerName.value,
                     icon: Icons.person_outlined,
-                    validator: (value) => value == null || value.isEmpty ? 'Please enter the owner name' : null,
-                    onChanged: (value) => viewModel.ownerName.value = value,
                   ),
                   _buildTextField(
                     label: "Phone Number",
-                    controller: TextEditingController(text: viewModel.phoneNumber.value),
+                    text: viewModel.phoneNumber.value,
                     icon: Icons.phone,
-                    validator: (value) => value == null || value.isEmpty ? 'Please enter the phone number' : null,
-                    onChanged: (value) => viewModel.phoneNumber.value = value,
                   ),
                   _buildTextField(
                     label: "Brand",
-                    controller: TextEditingController(text: viewModel.selectedBrand.value),
+                    text: viewModel.selectedBrand.value,
                     icon: Icons.branding_watermark,
-                    validator: (value) => value == null || value.isEmpty ? 'Please enter the brand' : null,
-                    onChanged: (value) => viewModel.selectedBrand.value = value,
                   ),
                   const SizedBox(height: 20),
                   OrderMasterProductSearchCard(
                     filterData: viewModel.filterData,
                     rowsNotifier: viewModel.rowsNotifier,
                     filteredRows: viewModel.filteredRows,
+                    viewModel: viewModel,
                   ),
                   const SizedBox(height: 20),
-                  _buildTextField(
+                  Obx(() => CustomEditableMenuOption(
                     label: "Total",
-                    controller: TextEditingController(text: viewModel.total.value),
+                    initialValue: viewModel.total.value,
+                    onChanged: (value) {}, // Read-only mode, no need to change
+                    inputBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue, width: 1.0),
+                    ),
+                    iconColor: Colors.blue,
+                    useBoxShadow: false,
                     icon: Icons.money,
-                    validator: (value) => value == null || value.isEmpty ? 'Please enter the total' : null,
-                    onChanged: (value) => viewModel.total.value = value,
-                  ),
+                    readOnly: true,
+                    enableListener: true, // Enable listener where required
+                    viewModel: viewModel, // Pass the viewModel parameter
+                  )),
                   const SizedBox(height: 10),
                   Obx(() => CustomDropdown(
                     label: "Credit Limit",
@@ -109,10 +109,8 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
                   const SizedBox(height: 10),
                   _buildTextField(
                     label: "Required Delivery",
-                    controller: TextEditingController(text: viewModel.requiredDelivery.value),
+                    text: viewModel.requiredDelivery.value,
                     icon: Icons.calendar_today,
-                    validator: (value) => value == null || value.isEmpty ? 'Please enter the required delivery' : null,
-                    onChanged: (value) => viewModel.requiredDelivery.value = value,
                   ),
                   const SizedBox(height: 30),
                   _buildSubmitButton(),
@@ -128,27 +126,20 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
 
   Widget _buildTextField({
     required String label,
+    required String text,
     required IconData icon,
-    required TextEditingController controller,
-    required String? Function(String?) validator,
-    required Function(String) onChanged,
-    TextInputType keyboardType = TextInputType.text,
-    bool obscureText = false,
   }) {
     return CustomEditableMenuOption(
-      height: 50,
       label: label,
-      initialValue: controller.text,
-      onChanged: onChanged,
+      initialValue: text,
+      onChanged: (value) {},
       inputBorder: const UnderlineInputBorder(
         borderSide: BorderSide(color: Colors.blue, width: 1.0),
       ),
       iconColor: Colors.blue,
       useBoxShadow: false,
       icon: icon,
-      validator: validator,
-      keyboardType: keyboardType,
-      obscureText: obscureText,
+      readOnly: true, // Make it read-only
     );
   }
 
@@ -158,10 +149,9 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
         text: 'Confirm',
         press: () {
           Get.to(() => const ReconfirmOrderScreen());
-          // if (_formKey.currentState!.validate()) {
-          //
-          //   //viewModel.submitForm(_formKey);
-          // }
+          if (_formKey.currentState!.validate()) {
+            viewModel.submitForm(_formKey);
+          }
         },
       ),
     );

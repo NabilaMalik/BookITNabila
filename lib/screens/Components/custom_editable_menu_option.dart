@@ -20,12 +20,15 @@ class CustomEditableMenuOption extends StatefulWidget {
   final double spacing;
   final IconPosition iconPosition;
   final TextAlign textAlign;
-  final bool obscureText; // Parameter for obscuring text
-  final InputBorder? inputBorder; // Parameter for InputBorder
-  final List<BoxShadow>? boxShadow; // Parameter for box shadow
-  final bool useBoxShadow; // Parameter to control box shadow
-  final FormFieldValidator<String>? validator; // Add validator parameter
+  final bool obscureText;
+  final InputBorder? inputBorder;
+  final List<BoxShadow>? boxShadow;
+  final bool useBoxShadow;
+  final FormFieldValidator<String>? validator;
   final TextInputType? keyboardType;
+  final bool readOnly;  // Parameter for read-only mode
+  final bool enableListener; // New optional parameter
+  final dynamic viewModel; // Add viewModel as a parameter
 
   const CustomEditableMenuOption({
     super.key,
@@ -46,12 +49,15 @@ class CustomEditableMenuOption extends StatefulWidget {
     this.spacing = 5.0,
     this.iconPosition = IconPosition.left,
     this.textAlign = TextAlign.center,
-    this.obscureText = false, // Default value for obscuring text
-    this.inputBorder, // Initialize the new parameter
-    this.boxShadow, // Initialize the new parameter
-    this.useBoxShadow = true, // Initialize the new parameter with default value
+    this.obscureText = false,
+    this.inputBorder,
+    this.boxShadow,
+    this.useBoxShadow = true,
     this.validator,
-    this.keyboardType, // Initialize the validator
+    this.keyboardType,
+    this.readOnly = false,  // Initialize the new parameter with default value
+    this.enableListener = false, // Initialize the new parameter with default value
+    this.viewModel, // Initialize viewModel parameter
   });
 
   @override
@@ -68,12 +74,27 @@ class _CustomEditableMenuOptionState extends State<CustomEditableMenuOption> {
     super.initState();
     _controller = TextEditingController(text: widget.initialValue);
     _obscureText = widget.obscureText;
+
+    if (widget.enableListener) {
+      // Add listener only if enableListener is true
+      widget.viewModel.total.addListener(_updateText);
+    }
   }
 
   @override
   void dispose() {
+    if (widget.enableListener) {
+      // Remove listener only if it was added
+      widget.viewModel.total.removeListener(_updateText);
+    }
     _controller.dispose();
     super.dispose();
+  }
+
+  void _updateText() {
+    if (_controller.text != widget.viewModel.total.value) {
+      _controller.text = widget.viewModel.total.value;
+    }
   }
 
   @override
@@ -95,7 +116,7 @@ class _CustomEditableMenuOptionState extends State<CustomEditableMenuOption> {
                 blurRadius: 6,
               ),
             ]
-            : null, // Use the dynamic box shadow if enabled
+            : null,
         border: Border.all(
           color: widget.borderColor ?? Colors.transparent,
           width: 1.0,
@@ -108,7 +129,10 @@ class _CustomEditableMenuOptionState extends State<CustomEditableMenuOption> {
       ),
     );
 
-    if (widget.top != null || widget.left != null || widget.right != null || widget.bottom != null) {
+    if (widget.top != null ||
+        widget.left != null ||
+        widget.right != null ||
+        widget.bottom != null) {
       return Positioned(
         top: widget.top,
         left: widget.left,
@@ -142,6 +166,7 @@ class _CustomEditableMenuOptionState extends State<CustomEditableMenuOption> {
         child: TextFormField(
           controller: _controller,
           obscureText: _obscureText,
+          readOnly: widget.readOnly, // Use the read-only parameter
           style: const TextStyle(
             fontSize: 16,
             color: Colors.black,
@@ -153,12 +178,13 @@ class _CustomEditableMenuOptionState extends State<CustomEditableMenuOption> {
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
-            border: widget.inputBorder ?? InputBorder.none, // Use the dynamic input border
+            border: widget.inputBorder ?? InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(vertical: 5),
             suffixIcon: widget.obscureText
                 ? IconButton(
-              icon: Icon(
-                  _obscureText ? Icons.visibility : Icons.visibility_off),
+              icon: Icon(_obscureText
+                  ? Icons.visibility
+                  : Icons.visibility_off),
               onPressed: () {
                 setState(() {
                   _obscureText = !_obscureText;
@@ -168,7 +194,7 @@ class _CustomEditableMenuOptionState extends State<CustomEditableMenuOption> {
                 : null,
           ),
           onChanged: widget.onChanged,
-          validator: widget.validator, // Use the validator
+          validator: widget.validator,
         ),
       ),
     ];
@@ -180,6 +206,7 @@ class _CustomEditableMenuOptionState extends State<CustomEditableMenuOption> {
         child: TextFormField(
           controller: _controller,
           obscureText: _obscureText,
+          readOnly: widget.readOnly, // Use the read-only parameter
           style: const TextStyle(
             fontSize: 16,
             color: Colors.black,
@@ -191,7 +218,7 @@ class _CustomEditableMenuOptionState extends State<CustomEditableMenuOption> {
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
-            border: widget.inputBorder ?? InputBorder.none, // Use the dynamic input border
+            border: widget.inputBorder ?? InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(vertical: 5),
             suffixIcon: widget.obscureText
                 ? IconButton(
@@ -208,7 +235,7 @@ class _CustomEditableMenuOptionState extends State<CustomEditableMenuOption> {
                 : null,
           ),
           onChanged: widget.onChanged,
-          validator: widget.validator, // Use the validator
+          validator: widget.validator,
         ),
       ),
       if (widget.icon != null) ...[

@@ -43,6 +43,7 @@ class OrderBookingViewModel extends GetxController {
     filteredRows.value = productData;
 
     print("Initialized Product Data: $productData");
+    updateTotal(); // Update total after initializing product data
   }
 
   void filterData(String query) {
@@ -52,6 +53,7 @@ class OrderBookingViewModel extends GetxController {
           value.toString().toLowerCase().contains(lowerCaseQuery));
     }).toList();
     filteredRows.value = tempList;
+    updateTotal(); // Update total after filtering data
   }
 
   void submitForm(GlobalKey<FormState> formKey) {
@@ -63,6 +65,14 @@ class OrderBookingViewModel extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
+  }
+
+  void updateTotal() {
+    double totalAmount = 0;
+    for (var row in filteredRows) {
+      totalAmount += row['Amount'] ?? 0.0;
+    }
+    total.value = totalAmount.toStringAsFixed(2); // Update total with 2 decimal places
   }
 
   void _updateAmount(Map<String, dynamic> row) {
