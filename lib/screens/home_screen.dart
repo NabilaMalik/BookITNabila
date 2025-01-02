@@ -171,9 +171,9 @@ class _RiveAppHomeState extends State<HomeScreen>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              ActionBox(icon: Icons.remove_circle, label: 'Recovery',onTap:  () => Get.to(() => const RecoveryFormScreen()),
+              ActionBox(icon: Icons.remove_circle, label: 'Recovery',onTap:  () => Get.to(() =>  RecoveryFormScreen()),
               ),
-              ActionBox(icon: Icons.book, label: 'Booking Status', onTap:  () => Get.to(() => const OrderBookingStatusScreen()),
+              ActionBox(icon: Icons.book, label: 'Booking Status', onTap:  () => Get.to(() =>  OrderBookingStatusScreen()),
               ),
             ],
           ),

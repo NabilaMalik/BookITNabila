@@ -9,13 +9,13 @@ class OrderMasterProductSearchCard extends StatelessWidget {
   final Function(String) filterData;
   final ValueListenable<List<Map<String, dynamic>>> rowsNotifier;
   final RxList<Map<String, dynamic>> filteredRows;
-  final OrderBookingViewModel viewModel;  // Add reference to the ViewModel
+  final OrderBookingViewModel viewModel; // Add reference to the ViewModel
 
   const OrderMasterProductSearchCard({
     required this.filterData,
     required this.rowsNotifier,
     required this.filteredRows,
-    required this.viewModel,  // Add the ViewModel to constructor
+    required this.viewModel, // Add the ViewModel to constructor
     super.key,
   });
 
@@ -41,7 +41,8 @@ class OrderMasterProductSearchCard extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 color: Colors.blue.shade50,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(12)),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               child: TextField(
@@ -52,10 +53,12 @@ class OrderMasterProductSearchCard extends StatelessWidget {
                   hintStyle: const TextStyle(fontSize: 16, color: Colors.grey),
                   filled: true,
                   fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: Colors.grey, width: 1.5),
+                    borderSide:
+                        const BorderSide(color: Colors.grey, width: 1.5),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -67,7 +70,8 @@ class OrderMasterProductSearchCard extends StatelessWidget {
             const Divider(color: Colors.grey, height: 1),
             Expanded(
               child: Obx(() {
-                final rowsToShow = filteredRows.isNotEmpty ? filteredRows : rowsNotifier.value;
+                final rowsToShow =
+                    filteredRows.isNotEmpty ? filteredRows : rowsNotifier.value;
 
                 if (rowsToShow.isEmpty) {
                   return const Center(
@@ -90,11 +94,11 @@ class OrderMasterProductSearchCard extends StatelessWidget {
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
                     child: DataTable(
-                      headingRowColor: MaterialStateProperty.resolveWith(
-                            (states) => Colors.blue.shade100,
+                      headingRowColor: WidgetStateProperty.resolveWith(
+                        (states) => Colors.blue.shade100,
                       ),
-                      dataRowColor: MaterialStateProperty.resolveWith(
-                            (states) => states.contains(MaterialState.selected)
+                      dataRowColor: WidgetStateProperty.resolveWith(
+                        (states) => states.contains(WidgetState.selected)
                             ? Colors.blue.shade50
                             : Colors.grey.shade50,
                       ),
@@ -176,7 +180,7 @@ class OrderMasterProductSearchCard extends StatelessWidget {
                         ),
                       ],
                       rows: rowsToShow.map(
-                            (row) {
+                        (row) {
                           final quantityController = TextEditingController(
                             text: (row['Quantity'] ?? '').toString(),
                           );
@@ -193,7 +197,8 @@ class OrderMasterProductSearchCard extends StatelessWidget {
                           return DataRow(
                             cells: [
                               DataCell(
-                                Text(row['Product'] ?? '', overflow: TextOverflow.ellipsis),
+                                Text(row['Product'] ?? '',
+                                    overflow: TextOverflow.ellipsis),
                               ),
                               DataCell(
                                 TextField(
@@ -205,7 +210,8 @@ class OrderMasterProductSearchCard extends StatelessWidget {
                                   onChanged: (value) {
                                     row['Quantity'] = int.tryParse(value) ?? 0;
                                     _updateAmount(row, amountController);
-                                    viewModel.updateTotal();  // Update total here
+                                    viewModel
+                                        .updateTotal(); // Update total here
                                     filteredRows.refresh();
                                   },
                                   decoration: const InputDecoration(
@@ -229,7 +235,8 @@ class OrderMasterProductSearchCard extends StatelessWidget {
                                   ],
                                   onChanged: (value) {
                                     row['In Stock'] = int.tryParse(value) ?? 0;
-                                    viewModel.updateTotal();  // Update total here
+                                    viewModel
+                                        .updateTotal(); // Update total here
                                     filteredRows.refresh();
                                   },
                                   decoration: const InputDecoration(
@@ -249,12 +256,14 @@ class OrderMasterProductSearchCard extends StatelessWidget {
                                   controller: rateController,
                                   keyboardType: TextInputType.number,
                                   inputFormatters: [
-                                    FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*')),
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'^\d+\.?\d*')),
                                   ],
                                   onChanged: (value) {
                                     row['Rate'] = double.tryParse(value) ?? 0.0;
                                     _updateAmount(row, amountController);
-                                    viewModel.updateTotal();  // Update total here
+                                    viewModel
+                                        .updateTotal(); // Update total here
                                     filteredRows.refresh();
                                   },
                                   decoration: const InputDecoration(
@@ -301,7 +310,8 @@ class OrderMasterProductSearchCard extends StatelessWidget {
     );
   }
 
-  void _updateAmount(Map<String, dynamic> row, TextEditingController amountController) {
+  void _updateAmount(
+      Map<String, dynamic> row, TextEditingController amountController) {
     final quantity = row['Quantity'] ?? 0;
     final rate = row['Rate'] ?? 0.0;
     final amount = quantity * rate;

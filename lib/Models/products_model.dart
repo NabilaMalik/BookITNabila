@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_question_mark
+
 class ProductsModel{
   int? id;
   String? product_code;

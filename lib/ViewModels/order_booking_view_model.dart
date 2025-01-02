@@ -18,7 +18,7 @@ class OrderBookingViewModel extends GetxController {
   var rows = <DataRow>[].obs;
   ValueNotifier<List<Map<String, dynamic>>> rowsNotifier =
   ValueNotifier<List<Map<String, dynamic>>>([]);
-  final List<String> credits = ['7 days', '15 days', 'On Cash'];
+  final List<String>credits = ['7 days', '15 days', 'On Cash'];
   final List<String> shops = ['Shop X', 'Shop Y', 'Shop Z'];
 
   @override

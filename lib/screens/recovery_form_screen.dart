@@ -1,51 +1,23 @@
 import 'package:flutter/material.dart';
-class RecoveryFormScreen extends StatefulWidget {
-  const RecoveryFormScreen({super.key});
+import 'package:get/get.dart';
+import '../ViewModels/recovery_form_view_model.dart';
+import 'RecoveryFormScreenComponents/recovery_payment_history_card.dart';
 
-  @override
-  _RecoveryformScreenState createState() => _RecoveryformScreenState();
-}
+class RecoveryFormScreen extends StatelessWidget {
+  final RecoveryFormViewModel viewModel = Get.put(RecoveryFormViewModel());
 
-class _RecoveryformScreenState extends State<RecoveryFormScreen> {
-  // Dropdown items and selected value
-  final List<String> _shops = ["Shop 1", "Shop 2", "Shop 3", "Shop 4"];
-  String? _selectedShop; // Holds the selected shop value
+  RecoveryFormScreen({super.key});
 
-  // Controller for date fields
-  final TextEditingController _startDateController = TextEditingController();
-  final TextEditingController _endDateController = TextEditingController();
-
-  // Sample data for the data table (replace this with your dynamic data)
-  final List<Map<String, String>> _paymentHistory = [
-    {"Date": "2024-12-01", "Amount": "\$100", "Status": "Completed"},
-    {"Date": "2024-12-05", "Amount": "\$50", "Status": "Pending"},
-    {"Date": "2024-12-10", "Amount": "\$200", "Status": "Completed"},
-  ];
-
-  // Method to show a date picker
-  Future<void> _selectDate(BuildContext context, TextEditingController controller) async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-    if (pickedDate != null) {
-      setState(() {
-        controller.text = "${pickedDate.toLocal()}".split(' ')[0];
-      });
-    }
-  }
-
-  // A helper method to build TextField widgets with custom decoration
   Widget _buildTextField({
     required String label,
     required TextInputType keyboardType,
     TextEditingController? controller,
     double width = 200,
-    double height = 50,
+    double height = 30,
     bool readOnly = false,
     VoidCallback? onTap,
+    ValueChanged<String>? onChanged,
+    bool enabled = true,
   }) {
     return SizedBox(
       width: width,
@@ -55,11 +27,13 @@ class _RecoveryformScreenState extends State<RecoveryFormScreen> {
         keyboardType: keyboardType,
         readOnly: readOnly,
         onTap: onTap,
-        style: const TextStyle(fontSize: 18),
+        onChanged: onChanged,
+        enabled: enabled,
+        style: const TextStyle(fontSize: 16),
         decoration: InputDecoration(
           hintText: label,
           hintStyle: const TextStyle(color: Colors.grey, fontSize: 16),
-          border: const UnderlineInputBorder(), // Adds a bottom border
+          border: const UnderlineInputBorder(),
         ),
       ),
     );
@@ -67,164 +41,166 @@ class _RecoveryformScreenState extends State<RecoveryFormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final TextEditingController cashRecoveryController = TextEditingController();
 
     return SafeArea(
-        child: Scaffold(
-            appBar: AppBar(
-              title: const Text(
-                'Recovery Form',
-                style: TextStyle(color: Colors.white, fontSize: 24),
-              ),
-              centerTitle: true,
-              backgroundColor: Colors.blue,
-            ),
-            body: Container(
-              color: Colors.white,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: const Text(
+            'Recovery Form',
+            style: TextStyle(color: Colors.white, fontSize: 24),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.blue,
+        ),
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            final Size size = MediaQuery.of(context).size;
+            return Container(
               width: size.width,
               height: size.height,
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    const SizedBox(height: 50),
-                    // Dropdown for selecting shop
-                    SizedBox(
-                      width: size.width * 0.8, // Adjusts to 80% of screen width
-                      child: DropdownButtonFormField<String>(
-                        decoration: const InputDecoration(
-                          labelText: "Shop Name",
-                          labelStyle: TextStyle(fontSize: 18),
-                          border: UnderlineInputBorder(), // Adds a bottom border
-                        ),
-                        value: _selectedShop, // Selected value
-                        items: _shops.map((shop) {
-                          return DropdownMenuItem(
-                            value: shop,
-                            child: Text(shop),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedShop = value; // Update selected shop
-                          });
-                        },
+                    const SizedBox(height: 10),
+                    Obx(() => DropdownButtonFormField<String>(
+                      decoration: const InputDecoration(
+                        labelText: "Shop Name",
+                        labelStyle: TextStyle(fontSize: 15),
+                        border: UnderlineInputBorder(),
                       ),
-                    ),
-                    const SizedBox(height: 30),
-                    // Row with TextField and text widget aligned on the right
+                      value: viewModel.selectedShop.value.isEmpty
+                          ? null
+                          : viewModel.selectedShop.value,
+                      items: viewModel.shops.map((shop) {
+                        return DropdownMenuItem(
+                          value: shop.name,
+                          child: Text(shop.name),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        viewModel.selectedShop.value = value!;
+                        viewModel.updateCurrentBalance(value);
+                      },
+                    )),
+                    const SizedBox(height: 15),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         const Text(
-                          'Current Balance',
+                          'Current Balance:',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
                         ),
-                        const SizedBox(width: 30),
-                        // TextField on the right
-                        _buildTextField(
-                          label: "",
+                        const SizedBox(width: 10),
+                        Obx(() => _buildTextField(
+                          readOnly: true,
+                          label: viewModel.currentBalance.value.toString(),
                           keyboardType: TextInputType.text,
-                          width: size.width * 0.36, // Adjusts to 60% of screen width
-                          height: 60,
-                        ),
+                          width: size.width * 0.36,
+                          height: 50,
+                          enabled: viewModel.areFieldsEnabled.value,
+                        )),
                       ],
                     ),
-                    const SizedBox(height: 30),
-                    Text(
+                    const SizedBox(height: 10),
+                    const Text(
                       "----- Previous Payment History -----",
                       style: TextStyle(
-                        fontSize: 19,
+                        fontSize: 15,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    // DataTable for displaying payment history
-                    DataTable(
-                      columns: const [
-                        DataColumn(label: Text("Date")),
-                        DataColumn(label: Text("Amount")),
-                        DataColumn(label: Text("Status")),
-                      ],
-                      rows: _paymentHistory.map((payment) {
-                        return DataRow(cells: [
-                          DataCell(Text(payment["Date"] ?? "")),
-                          DataCell(Text(payment["Amount"] ?? "")),
-                          DataCell(Text(payment["Status"] ?? "")),
-                        ]);
-                      }).toList(),
+                    const SizedBox(height: 5),
+                    RecoveryPaymentHistoryCard(
+                      filterData: viewModel.filterData,
+                      rowsNotifier: ValueNotifier(viewModel.paymentHistoryAsMapList),
+                      viewModel: viewModel,
                     ),
-                    const SizedBox(height: 30),
-                    // Row with text and a text box with underline border horizontally
+                    const SizedBox(height: 10),
                     Row(
                       children: [
                         const Text(
-                          "Cash Recovery",
+                          "Cash Recovery:",
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
                         ),
-                        const SizedBox(width: 20),
-                        // TextField for Cash Recovery
-                        _buildTextField(
-                          label: "",
-                          keyboardType: TextInputType.text,
-                          width: size.width * 0.5, // Adjusts to 60% of screen width
+                        const SizedBox(width: 10),
+                        Obx(() => _buildTextField(
+                          controller: cashRecoveryController,
+                          label: " Enter Amount",
+                          keyboardType: TextInputType.number,
+                          width: size.width * 0.5,
                           height: 40,
-                        ),
+                          onChanged: viewModel.updateCashRecovery,
+                          enabled: viewModel.areFieldsEnabled.value,
+                        )),
                       ],
                     ),
                     Row(
                       children: [
                         const Text(
-                          "New Balance",
+                          "New Balance:",
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
                         ),
-                        const SizedBox(width: 30),
-                        // TextField for New Balance
-                        _buildTextField(
-                          label: "",
+                        const SizedBox(width: 10),
+                        Obx(() => _buildTextField(
+                          readOnly: true,
+                          label: viewModel.newBalance.value.toString(),
                           keyboardType: TextInputType.text,
-                          width: size.width * 0.5, // Adjusts to 60% of screen width
-                          height: 60,
-                        ),
+                          width: size.width * 0.5,
+                          height: 40,
+                          enabled: viewModel.areFieldsEnabled.value,
+                        )),
                       ],
                     ),
                     const SizedBox(height: 30),
-                    // Submit Button
-                    ElevatedButton(
-                      onPressed: () {
-                        // Implement your submit action here
-                        print("Form Submitted");
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 70),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                    Obx(
+                          () => ElevatedButton(
+                        onPressed: viewModel.areFieldsEnabled.value
+                            ? () {
+                          viewModel.submitForm();
+                        }
+                            : null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: viewModel.areFieldsEnabled.value
+                              ? Colors.blue
+                              : Colors.grey,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 70),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: const Text(
+                          "Submit",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
                         ),
                       ),
-                      child: const Text(
-                        "Submit",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
+                    )
                   ],
                 ),
               ),
-            ),
+            );
+          },
         ),
-        );
-    }
+      ),
+    );
+  }
 }

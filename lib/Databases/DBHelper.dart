@@ -1,10 +1,8 @@
-import 'dart:convert';
-import 'dart:math' show max;
 import 'package:flutter/foundation.dart' show kDebugMode;
 
 import 'package:path_provider/path_provider.dart' show getApplicationDocumentsDirectory;
 
-import 'package:sqflite/sqflite.dart' show ConflictAlgorithm, Database, openDatabase;
+import 'package:sqflite/sqflite.dart' show Database, openDatabase;
 import 'package:path/path.dart' show join;
 import 'dart:io' as io;
 import 'dart:async' show Future;

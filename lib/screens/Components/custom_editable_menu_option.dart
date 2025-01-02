@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 enum IconPosition { left, right }
 
@@ -26,7 +27,7 @@ class CustomEditableMenuOption extends StatefulWidget {
   final bool useBoxShadow;
   final FormFieldValidator<String>? validator;
   final TextInputType? keyboardType;
-  final bool readOnly;  // Parameter for read-only mode
+  final bool readOnly; // Parameter for read-only mode
   final bool enableListener; // New optional parameter
   final dynamic viewModel; // Add viewModel as a parameter
 
@@ -55,7 +56,7 @@ class CustomEditableMenuOption extends StatefulWidget {
     this.useBoxShadow = true,
     this.validator,
     this.keyboardType,
-    this.readOnly = false,  // Initialize the new parameter with default value
+    this.readOnly = false, // Initialize the new parameter with default value
     this.enableListener = false, // Initialize the new parameter with default value
     this.viewModel, // Initialize viewModel parameter
   });
@@ -77,24 +78,18 @@ class _CustomEditableMenuOptionState extends State<CustomEditableMenuOption> {
 
     if (widget.enableListener) {
       // Add listener only if enableListener is true
-      widget.viewModel.total.addListener(_updateText);
+      widget.viewModel.total.listen((value) {
+        if (_controller.text != value) {
+          _controller.text = value;
+        }
+      });
     }
   }
 
   @override
   void dispose() {
-    if (widget.enableListener) {
-      // Remove listener only if it was added
-      widget.viewModel.total.removeListener(_updateText);
-    }
     _controller.dispose();
     super.dispose();
-  }
-
-  void _updateText() {
-    if (_controller.text != widget.viewModel.total.value) {
-      _controller.text = widget.viewModel.total.value;
-    }
   }
 
   @override

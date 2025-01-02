@@ -1,10 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/ViewModels/order_booking_view_model.dart';
 import 'package:order_booking_app/screens/reconfirm_order_screen.dart';
 import '../widgets/rounded_button.dart';
+import 'Components/custom_dropdown.dart';
 import 'Components/custom_editable_menu_option.dart';
-import 'Components/cutstom_dropdown.dart';
 import 'OrderBookingScreenComponents/order_master_product_search_card.dart';
 
 class OrderBookingScreen extends StatefulWidget {
@@ -73,30 +74,37 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
                   ),
                   const SizedBox(height: 20),
                   Obx(() => CustomEditableMenuOption(
-                    label: "Total",
-                    initialValue: viewModel.total.value,
-                    onChanged: (value) {}, // Read-only mode, no need to change
-                    inputBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 1.0),
-                    ),
-                    iconColor: Colors.blue,
-                    useBoxShadow: false,
-                    icon: Icons.money,
-                    readOnly: true,
-                    enableListener: true, // Enable listener where required
-                    viewModel: viewModel, // Pass the viewModel parameter
-                  )),
+                        label: "Total",
+                        initialValue: viewModel.total.value,
+                        onChanged:
+                            (value) {}, // Read-only mode, no need to change
+                        inputBorder: const UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.blue, width: 1.0),
+                        ),
+                        iconColor: Colors.blue,
+                        useBoxShadow: false,
+                        icon: Icons.money,
+                        readOnly: true,
+                        enableListener: true, // Enable listener where required
+                        viewModel: viewModel, // Pass the viewModel parameter
+                      )),
                   const SizedBox(height: 10),
-                  Obx(() => CustomDropdown(
+                CustomDropdown(
                     label: "Credit Limit",
                     icon: Icons.payment,
                     items: viewModel.credits,
                     selectedValue: viewModel.creditLimit.value,
                     onChanged: (value) {
                       viewModel.creditLimit.value = value!;
+                      if (kDebugMode) {
+                        print("Selected: ${viewModel.creditLimit.value}");
+                      }
                     },
                     useBoxShadow: false,
-                    validator: (value) => value == null || value.isEmpty ? 'Please select a credit limit' : null,
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Please select a credit limit'
+                        : null,
                     inputBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.blue, width: 1.0),
                     ),
@@ -105,7 +113,8 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
                     iconSize: 20.0,
                     contentPadding: 10.0,
                     iconColor: Colors.blue,
-                  )),
+                  ),
+
                   const SizedBox(height: 10),
                   _buildTextField(
                     label: "Required Delivery",
