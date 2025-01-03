@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/screens/orderbooking_screen.dart';
-import '../ViewModels/shop_visit_view_model.dart';
+import '../ViewModels/ScreenViewModels/shop_visit_view_model.dart';
 import '../widgets/rounded_button.dart';
 import 'Components/custom_dropdown.dart';
 import 'Components/custom_editable_menu_option.dart';

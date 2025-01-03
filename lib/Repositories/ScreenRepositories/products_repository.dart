@@ -1,9 +1,9 @@
 
 import 'package:flutter/foundation.dart';
 
-import '../Databases/DBHelper.dart';
-import '../Databases/util.dart';
-import '../Models/products_model.dart';
+import '../../Databases/DBHelper.dart';
+import '../../Databases/util.dart';
+import '../../Models/ScreenModels/products_model.dart';
 
 
 class ProductsRepository {

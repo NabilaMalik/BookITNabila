@@ -1,5 +1,5 @@
 
-import '../Models/order_status_models.dart';
+import '../../Models/ScreenModels/order_status_models.dart';
 
 class OrderBookingStatusRepository {
   // Simulating a delay like fetching data from an API or Database

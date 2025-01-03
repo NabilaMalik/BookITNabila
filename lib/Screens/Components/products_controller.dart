@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../Databases/util.dart';
-import '../../ViewModels/ProductsViewModel.dart';
+import '../../ViewModels/ScreenViewModels/ProductsViewModel.dart';
 
 class Products extends GetxController {
   final productsViewModel = ProductsViewModel();

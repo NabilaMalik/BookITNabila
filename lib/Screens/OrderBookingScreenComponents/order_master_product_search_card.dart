@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import '../../ViewModels/order_booking_view_model.dart';
+import '../../ViewModels/ScreenViewModels/order_booking_view_model.dart';
 
 class OrderMasterProductSearchCard extends StatelessWidget {
   final Function(String) filterData;

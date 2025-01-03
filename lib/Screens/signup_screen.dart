@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/screens/home_screen.dart';
 
-import '../ViewModels/signup_view_model.dart';
+import '../ViewModels/ScreenViewModels/signup_view_model.dart';
 import '../components/under_part.dart';
 import 'Components/custom_button.dart';
 import 'Components/custom_editable_menu_option.dart';

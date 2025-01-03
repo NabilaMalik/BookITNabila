@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../Models/signup_model.dart';
+import '../../Models/ScreenModels/signup_model.dart';
 
 class SignUpController extends GetxController {
   // Form Key

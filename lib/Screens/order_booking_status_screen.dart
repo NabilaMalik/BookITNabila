@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:order_booking_app/ViewModels/order_booking_status_view_model.dart';
+import 'package:order_booking_app/ViewModels/ScreenViewModels/order_booking_status_view_model.dart';
 import 'package:order_booking_app/screens/OrderBookingStatusScreenComponents/order_booking_status_history_card.dart';
 import 'OrderBookingStatusScreenComponents/build_action_button_row.dart';
 import 'OrderBookingStatusScreenComponents/build_date_range.dart';
@@ -10,14 +10,11 @@ import 'OrderBookingStatusScreenComponents/build_status_and_button_row.dart';
 class OrderBookingStatusScreen extends StatelessWidget {
   OrderBookingStatusScreen({super.key});
   final viewModel = Get.put(OrderBookingStatusViewModel());
-
   @override
   Widget build(BuildContext context) {
     // Fetch the orders as soon as the screen is displayed
     viewModel.fetchOrders();
-
     Size size = MediaQuery.of(context).size;
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -36,7 +33,7 @@ class OrderBookingStatusScreen extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Obx(() => buildShopAndOrderRow(viewModel)), // Observe changes                const SizedBox(height: 20),
+                Obx(() => buildShopAndOrderRow(viewModel)), // Observe changes
                 const SizedBox(height: 20),
                 Obx(()=> buildDateRangeRow(context, viewModel)),
                 const SizedBox(height: 20),

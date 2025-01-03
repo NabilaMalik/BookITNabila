@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../Models/recovery_form_models.dart';
+import '../../Models/ScreenModels/recovery_form_models.dart';
 
 class RecoveryFormViewModel extends GetxController {
   var selectedShop = ''.obs;

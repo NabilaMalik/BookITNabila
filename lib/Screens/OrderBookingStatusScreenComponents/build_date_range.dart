@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:order_booking_app/ViewModels/order_booking_status_view_model.dart';
+import 'package:order_booking_app/ViewModels/ScreenViewModels/order_booking_status_view_model.dart';
 
 Widget buildDateRangeRow(
     BuildContext context, OrderBookingStatusViewModel viewModel) {

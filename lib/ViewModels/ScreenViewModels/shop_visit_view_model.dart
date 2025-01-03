@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../screens/shop_visit_screen.dart';
+import '../../screens/shop_visit_screen.dart';
 
 class ShopVisitViewModel extends GetxController {
   final ImagePicker picker = ImagePicker();

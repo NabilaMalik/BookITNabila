@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import '../Models/order_status_models.dart';
-import '../Repositories/order_booking_status_repository.dart';
+import '../../Models/ScreenModels/order_status_models.dart';
+import '../../Repositories/ScreenRepositories/order_booking_status_repository.dart';
 
 class OrderBookingStatusViewModel extends GetxController {
   // Observables

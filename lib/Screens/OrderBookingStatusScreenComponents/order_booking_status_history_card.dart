@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../Models/order_status_models.dart';
-import '../../ViewModels/order_booking_status_view_model.dart';
+import '../../Models/ScreenModels/order_status_models.dart';
+import '../../ViewModels/ScreenViewModels/order_booking_status_view_model.dart';
 
 class OrderBookingStatusHistoryCard extends StatelessWidget {
   final Function(String) filterData;

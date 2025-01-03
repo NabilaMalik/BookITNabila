@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import '../Databases/util.dart';
-import '../Models/products_model.dart';
-import '../Repositories/products_repository.dart';
+import '../../Databases/util.dart';
+import '../../Models/ScreenModels/products_model.dart';
+import '../../Repositories/ScreenRepositories/products_repository.dart';
 
 
 class ProductsViewModel extends GetxController {

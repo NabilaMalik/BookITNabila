@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:order_booking_app/ViewModels/order_booking_view_model.dart';
+import 'package:order_booking_app/ViewModels/ScreenViewModels/order_booking_view_model.dart';
 import 'package:order_booking_app/screens/reconfirm_order_screen.dart';
 import '../widgets/rounded_button.dart';
 import 'Components/custom_dropdown.dart';
