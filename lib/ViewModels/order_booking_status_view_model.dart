@@ -13,7 +13,8 @@ class OrderBookingStatusViewModel extends GetxController {
   var filteredRows = <OrderBookingStatusModel>[].obs;
 
   // Instance of the repository
-  final OrderBookingStatusRepository _orderRepository = OrderBookingStatusRepository();
+  final OrderBookingStatusRepository _orderRepository =
+      OrderBookingStatusRepository();
 
   @override
   void onInit() {
@@ -24,7 +25,8 @@ class OrderBookingStatusViewModel extends GetxController {
   // Fetch orders from the repository
   Future<void> fetchOrders() async {
     try {
-      List<OrderBookingStatusModel> fetchedOrders = await _orderRepository.safeFetchOrders();
+      List<OrderBookingStatusModel> fetchedOrders =
+          await _orderRepository.safeFetchOrders();
       orders.value = fetchedOrders;
       filteredRows.value = fetchedOrders;
     } catch (e) {
@@ -36,6 +38,7 @@ class OrderBookingStatusViewModel extends GetxController {
   void updateDateRange(String start, String end) {
     startDate.value = start;
     endDate.value = end;
+    filterData();
   }
 
   // Clear filters
@@ -45,16 +48,24 @@ class OrderBookingStatusViewModel extends GetxController {
     status.value = '';
     startDate.value = '';
     endDate.value = '';
+    filteredRows.value = orders;
   }
 
-  // Filter data based on query
-  void filterData(String query) {
+// Filter data based on query
+  void filterData([String query = '']) {
     final lowerCaseQuery = query.toLowerCase();
     filteredRows.value = orders.where((order) {
-      return order.shop.toLowerCase().contains(lowerCaseQuery) ||
-          order.date.toLowerCase().contains(lowerCaseQuery) ||
-          order.status.toLowerCase().contains(lowerCaseQuery) ||
-          order.orderNo.toLowerCase().contains(lowerCaseQuery);
+      final isShopMatch = shopName.value.isEmpty ||
+          order.shop.toLowerCase().contains(shopName.value.toLowerCase());
+      final isOrderNoMatch = orderId.value.isEmpty ||
+          order.orderNo.toLowerCase().contains(orderId.value.toLowerCase());
+      final isStatusMatch = status.value.isEmpty ||
+          order.status.toLowerCase().contains(status.value.toLowerCase());
+      final isDateRangeMatch =
+          (startDate.value.isEmpty || endDate.value.isEmpty) ||
+              (order.date.compareTo(startDate.value) >= 0 &&
+                  order.date.compareTo(endDate.value) <= 0);
+      return isShopMatch && isOrderNoMatch && isStatusMatch && isDateRangeMatch;
     }).toList();
   }
 

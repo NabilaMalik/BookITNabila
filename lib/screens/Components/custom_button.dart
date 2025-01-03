@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'custom_editable_menu_option.dart';
-
 class CustomButton extends StatelessWidget {
   final double? top;
   final double? left;
@@ -10,7 +9,7 @@ class CustomButton extends StatelessWidget {
   final double? height;
   final dynamic buttonText;
   final TextStyle? textStyle;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final double borderRadius;
   final List<Color> gradientColors;
   final List<BoxShadow>? boxShadow;
@@ -20,10 +19,12 @@ class CustomButton extends StatelessWidget {
   final double? iconSize;
   final Color? iconColor;
   final Color? iconBackgroundColor;
+  final ImageProvider? iconImage; // New parameter for iconImage
+  final double? iconImageSize; // New parameter for iconImage size
   final double spacing;
   final IconPosition iconPosition;
   final TextAlign textAlign;
-  final Color? borderColor; // New parameter for border color
+  final Color? borderColor;
 
   const CustomButton({
     super.key,
@@ -34,7 +35,7 @@ class CustomButton extends StatelessWidget {
     this.width,
     this.height,
     this.buttonText,
-    required this.onTap,
+    this.onTap,
     this.textStyle,
     this.borderRadius = 20.0,
     this.gradientColors = const [Color(0xFF00C853), Color(0xFF64DD17)],
@@ -45,10 +46,12 @@ class CustomButton extends StatelessWidget {
     this.iconSize = 24.0,
     this.iconColor,
     this.iconBackgroundColor,
-    this.spacing = 8.0,
+    this.iconImage, // Initialize iconImage
+    this.iconImageSize = 24.0, // Default iconImage size
+    this.spacing = 1.0,
     this.iconPosition = IconPosition.left,
     this.textAlign = TextAlign.center,
-    this.borderColor, // Initialize the border color
+    this.borderColor,
   });
 
   @override
@@ -57,7 +60,7 @@ class CustomButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: width ?? MediaQuery.of(context).size.width * 0.9,
-        height: height ?? 60.0,
+        height: height ?? 55.0,
         margin: margin,
         padding: padding ?? const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
         decoration: BoxDecoration(
@@ -75,8 +78,8 @@ class CustomButton extends StatelessWidget {
             ),
           ],
           border: Border.all(
-            color: borderColor ?? Colors.transparent, // Use the border color parameter
-            width: 2.0, // Set the border width
+            color: borderColor ?? Colors.transparent,
+            width: 1.5,
           ),
         ),
         child: Center(
@@ -84,42 +87,18 @@ class CustomButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: iconPosition == IconPosition.left
-                ? _buildIconWithTextLeft()
-                : _buildIconWithTextRight(),
+                ? _buildIconOrImageWithTextLeft()
+                : _buildIconOrImageWithTextRight(),
           ),
         ),
       ),
     );
   }
 
-  List<Widget> _buildIconWithTextLeft() {
+  List<Widget> _buildIconOrImageWithTextLeft() {
     return [
-      if (icon != null) ...[
-        if (iconBackgroundColor != null)
-          Container(
-            width: 58,
-            height: 48,
-            decoration: BoxDecoration(
-              color: iconBackgroundColor,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(10),
-                bottomLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-                bottomRight: Radius.circular(10),
-              ),
-            ),
-            child: Icon(
-              icon,
-              size: iconSize,
-              color: iconColor ?? Colors.black,
-            ),
-          )
-        else
-          Icon(
-            icon,
-            size: iconSize,
-            color: iconColor ?? Colors.black,
-          ),
+      if (icon != null || iconImage != null) ...[
+        _buildIconOrImage(),
         SizedBox(width: spacing),
       ],
       if (buttonText != null)
@@ -138,7 +117,7 @@ class CustomButton extends StatelessWidget {
     ];
   }
 
-  List<Widget> _buildIconWithTextRight() {
+  List<Widget> _buildIconOrImageWithTextRight() {
     return [
       if (buttonText != null)
         Expanded(
@@ -154,35 +133,32 @@ class CustomButton extends StatelessWidget {
           ),
         ),
       SizedBox(width: spacing),
-      if (icon != null) ...[
-        if (iconBackgroundColor != null)
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: iconBackgroundColor,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(10),
-                bottomLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
-                bottomRight: Radius.circular(10),
-              ),
-            ),
-            child: Icon(
-              icon,
-              size: iconSize,
-              color: iconColor ?? Colors.black,
-            ),
-          )
-        else
-          Icon(
-            icon,
-            size: iconSize,
-            color: iconColor ?? Colors.black,
-          ),
+      if (icon != null || iconImage != null) ...[
+        _buildIconOrImage(),
       ],
     ];
   }
+
+  Widget _buildIconOrImage() {
+    if (iconImage != null) {
+      return Container(
+        width: iconImageSize,
+        height: iconImageSize,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: iconImage!,
+            fit: BoxFit.contain,
+          ),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+      );
+    } else if (icon != null) {
+      return Icon(
+        icon,
+        size: iconSize,
+        color: iconColor ?? Colors.black,
+      );
+    }
+    return const SizedBox.shrink();
+  }
 }
-
-

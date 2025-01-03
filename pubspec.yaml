@@ -48,6 +48,7 @@ dependencies:
   rive: ^0.13.14
   rxdart: ^0.28.0
   dropdown_search: ^5.0.3
+  dropdown_button2: ^2.3.9
 dev_dependencies:
   flutter_test:
     sdk: flutter
