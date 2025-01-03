@@ -1,32 +1,17 @@
+// lib/screens/add_shop_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/screens/home_screen.dart';
+
+import '../ViewModels/ScreenViewModels/add_shop_view_model.dart';
 import 'Components/custom_button.dart';
+import 'Components/custom_dropdown.dart';
 
-class AddShopScreen extends StatefulWidget {
-  const AddShopScreen({super.key});
+class AddShopScreen extends StatelessWidget {
+  final AddShopViewModel _viewModel = Get.put(AddShopViewModel());
 
-  @override
-  _AddShopScreenState createState() => _AddShopScreenState();
-}
-
-class _AddShopScreenState extends State<AddShopScreen> {
-  final _formKey = GlobalKey<FormState>();
-
-  // Form fields
-  String? selectedCity;
-  final List<String> cities = [
-    'Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad', 'Peshawar',
-    'Quetta', 'Multan', 'Gujranwala', 'Sialkot', 'Hyderabad', 'Sukkur',
-    'Sargodha', 'Bahawalpur', 'Abbottabad', 'Mardan', 'Sheikhupura',
-    'Gujrat', 'Jhelum', 'Kasur', 'Okara', 'Sahiwal', 'Rahim Yar Khan',
-    'Dera Ghazi Khan', 'Chiniot', 'Nawabshah', 'Mirpur Khas', 'Khairpur',
-    'Mansehra', 'Swat', 'Muzaffarabad', 'Kotli', 'Larkana', 'Jacobabad',
-    'Shikarpur', 'Hafizabad', 'Toba Tek Singh', 'Mianwali', 'Bannu',
-    'Dera Ismail Khan', 'Chaman', 'Gwadar', 'Zhob', 'Lakhdar', 'Ghotki',
-    'Snowshed', 'Haripur', 'Charade'
-  ];
-  bool isGpsEnabled = false; // For GPS toggle
+  AddShopScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,43 +33,50 @@ class _AddShopScreenState extends State<AddShopScreen> {
             width: size.width,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
             child: Form(
-              key: _formKey,
+              key: _viewModel.formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildTextField(
                     label: "Shop Name",
                     icon: Icons.store,
+                    onChanged: (value) => _viewModel.setShopField('name', value),
                     validator: (value) =>
                     value == null || value.isEmpty ? "Please enter shop name" : null,
                   ),
-                  // CustomDropdown(
-                  //   label: "City",
-                  //     icon: Icons.location_city,
-                  //     items: cities,
-                  //     selectedValue: selectedCity,
-                  //     onChanged: (value){
-                  //     },
-                  //   validator: (value) =>
-                  //   value == null || value.isEmpty ? "Please enter City name" : null,
-                  //   showBorder: true,
-                  //
-                  // ),
+                  CustomDropdown(
+                    borderColor: Colors.black,
+                    iconColor: Colors.blue,
+                    label: "City",
+                    useBoxShadow: false,
+                    icon: Icons.location_city,
+                    items: _viewModel.cities,
+                    selectedValue: _viewModel.selectedCity.value,
+                    onChanged: (value){
+                    },
+                    validator: (value) =>
+                    value == null || value.isEmpty ? "Please enter City name" : null,
+                    // showBorder: true,
+
+                  ),
                   _buildTextField(
                     label: "Shop Address",
                     icon: Icons.place,
+                    onChanged: (value) => _viewModel.setShopField('address', value),
                     validator: (value) =>
                     value == null || value.isEmpty ? "Please enter shop address" : null,
                   ),
                   _buildTextField(
                     label: "Owner Name",
                     icon: Icons.person,
+                    onChanged: (value) => _viewModel.setShopField('ownerName', value),
                     validator: (value) =>
                     value == null || value.isEmpty ? "Please enter owner name" : null,
                   ),
                   _buildTextField(
                     label: "Owner CNIC",
                     icon: Icons.badge,
+                    onChanged: (value) => _viewModel.setShopField('ownerCnic', value),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Please enter CNIC";
@@ -100,6 +92,7 @@ class _AddShopScreenState extends State<AddShopScreen> {
                   _buildTextField(
                     label: "Phone Number",
                     icon: Icons.phone,
+                    onChanged: (value) => _viewModel.setShopField('phoneNumber', value),
                     validator: (value) =>
                     value == null || value.isEmpty ? "Please enter phone number" : null,
                     keyboardType: TextInputType.phone,
@@ -107,20 +100,21 @@ class _AddShopScreenState extends State<AddShopScreen> {
                   _buildTextField(
                     label: "Alternative Phone Number",
                     icon: Icons.phone_android,
+                    onChanged: (value) => _viewModel.setShopField('alternativePhoneNumber', value),
                     validator: (value) =>
                     value == null || value.isEmpty ? "Please enter alternative number" : null,
                     keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: 10),
-                  _buildSwitch(
+                  Obx(() => _buildSwitch(
                     label: "GPS Enabled",
-                    value: isGpsEnabled,
-                    onChanged: (value) => setState(() => isGpsEnabled = value),
-                  ),
+                    value: _viewModel.shop.isGpsEnabled,
+                    onChanged: (value) => _viewModel.setShopField('isGpsEnabled', value),
+                  )),
                   const SizedBox(height: 10),
                   CustomButton(
                     buttonText: "Save",
-                    onTap: () => Get.to(() => HomeScreen()),
+                    onTap: _viewModel.saveForm,
                     gradientColors: [Colors.blue, Colors.blue],
                   ),
                 ],
@@ -136,6 +130,7 @@ class _AddShopScreenState extends State<AddShopScreen> {
   Widget _buildTextField({
     required String label,
     required IconData icon,
+    required ValueChanged<String> onChanged,
     required String? Function(String?) validator,
     TextInputType keyboardType = TextInputType.text,
   }) {
@@ -147,6 +142,7 @@ class _AddShopScreenState extends State<AddShopScreen> {
           prefixIcon: Icon(icon, color: Colors.blue),
           border: const OutlineInputBorder(),
         ),
+        onChanged: onChanged,
         keyboardType: keyboardType,
         validator: validator,
       ),
