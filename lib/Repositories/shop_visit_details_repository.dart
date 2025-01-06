@@ -4,14 +4,18 @@ import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Models/shop_visit_details_model.dart';
 
-class ShopVisitDetailsRepository{
+class ShopVisitDetailsRepository {
   DBHelper dbHelper = DBHelper();
-  Future<List<ShopVisitDetailsModel>> getShopVisitDetails() async{
+  Future<List<ShopVisitDetailsModel>> getShopVisitDetails() async {
     var dbClient = await dbHelper.db;
-    List<Map> maps = await dbClient.query(shopVisitDetailsTableName,columns: ['id','product','quantity','shopVisitMasterId',]);
+    List<Map> maps = await dbClient.query(shopVisitDetailsTableName, columns: [
+      'id',
+      'product',
+      'quantity',
+      'shopVisitMasterId',
+    ]);
     List<ShopVisitDetailsModel> shopvisitdetails = [];
-    for(int i = 0; i<maps.length; i++)
-    {
+    for (int i = 0; i < maps.length; i++) {
       shopvisitdetails.add(ShopVisitDetailsModel.fromMap(maps[i]));
     }
     if (kDebugMode) {
@@ -24,18 +28,23 @@ class ShopVisitDetailsRepository{
     }
     return shopvisitdetails;
   }
-  Future<int> add(ShopVisitDetailsModel shopvisitdetailsModel) async{
+
+  Future<int> add(ShopVisitDetailsModel shopvisitdetailsModel) async {
     var dbClient = await dbHelper.db;
-    return await dbClient.insert(shopVisitDetailsTableName, shopvisitdetailsModel.toMap());
+    return await dbClient.insert(
+        shopVisitDetailsTableName, shopvisitdetailsModel.toMap());
   }
-  Future<int> update(ShopVisitDetailsModel shopvisitdetailsModel) async{
+
+  Future<int> update(ShopVisitDetailsModel shopvisitdetailsModel) async {
     var dbClient = await dbHelper.db;
-    return await dbClient.update(shopVisitDetailsTableName, shopvisitdetailsModel.toMap(),
+    return await dbClient.update(
+        shopVisitDetailsTableName, shopvisitdetailsModel.toMap(),
         where: 'id = ?', whereArgs: [shopvisitdetailsModel.id]);
   }
-  Future<int> delete(int id) async{
+
+  Future<int> delete(int id) async {
     var dbClient = await dbHelper.db;
-    return await dbClient.delete(shopVisitDetailsTableName,
-        where: 'id = ?', whereArgs: [id]);
+    return await dbClient
+        .delete(shopVisitDetailsTableName, where: 'id = ?', whereArgs: [id]);
   }
 }

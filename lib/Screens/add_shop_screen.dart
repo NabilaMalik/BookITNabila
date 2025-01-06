@@ -1,11 +1,8 @@
 // lib/screens/add_shop_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/Screens/Components/custom_switch.dart';
-import 'package:order_booking_app/screens/home_screen.dart';
-
-import '../ViewModels/ScreenViewModels/add_shop_view_model.dart';
+import '../ViewModels/add_shop_view_model.dart';
 import 'Components/custom_button.dart';
 import 'Components/custom_dropdown.dart';
 
@@ -24,7 +21,8 @@ class AddShopScreen extends StatelessWidget {
         appBar: AppBar(
           title: const Text(
             'Add Shop',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(
+                fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           centerTitle: true,
           backgroundColor: Colors.blue,
@@ -41,9 +39,11 @@ class AddShopScreen extends StatelessWidget {
                   _buildTextField(
                     label: "Shop Name",
                     icon: Icons.store,
-                    onChanged: (value) => _viewModel.setShopField('name', value),
-                    validator: (value) =>
-                    value == null || value.isEmpty ? "Please enter shop name" : null,
+                    onChanged: (value) =>
+                        _viewModel.setShopField('shopName', value),
+                    validator: (value) => value == null || value.isEmpty
+                        ? "Please enter shop name"
+                        : null,
                   ),
                   CustomDropdown(
                     borderColor: Colors.black,
@@ -53,38 +53,43 @@ class AddShopScreen extends StatelessWidget {
                     icon: Icons.location_city,
                     items: _viewModel.cities,
                     selectedValue: _viewModel.selectedCity.value,
-                    onChanged: (value){
-                    },
-                    validator: (value) =>
-                    value == null || value.isEmpty ? "Please enter City name" : null,
+                    onChanged: (value) =>
+                        _viewModel.setShopField('city', value),
+                    validator: (value) => value == null || value.isEmpty
+                        ? "Please enter City name"
+                        : null,
                     // showBorder: true,
-
                   ),
                   _buildTextField(
                     label: "Shop Address",
                     icon: Icons.place,
-                    onChanged: (value) => _viewModel.setShopField('address', value),
-                    validator: (value) =>
-                    value == null || value.isEmpty ? "Please enter shop address" : null,
+                    onChanged: (value) =>
+                        _viewModel.setShopField('shopAddress', value),
+                    validator: (value) => value == null || value.isEmpty
+                        ? "Please enter shop address"
+                        : null,
                   ),
                   _buildTextField(
                     label: "Owner Name",
                     icon: Icons.person,
-                    onChanged: (value) => _viewModel.setShopField('ownerName', value),
-                    validator: (value) =>
-                    value == null || value.isEmpty ? "Please enter owner name" : null,
+                    onChanged: (value) =>
+                        _viewModel.setShopField('ownerName', value),
+                    validator: (value) => value == null || value.isEmpty
+                        ? "Please enter owner name"
+                        : null,
                   ),
                   _buildTextField(
                     label: "Owner CNIC",
                     icon: Icons.badge,
-                    onChanged: (value) => _viewModel.setShopField('ownerCnic', value),
+                    onChanged: (value) =>
+                        _viewModel.setShopField('ownerCNIC', value),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Please enter CNIC";
                       }
-                      const cnicPattern = r'^\d{5}-\d{7}-\d{1}\$';
+                      const cnicPattern = r'^\d{5}-\d{7}-\d{1}$';
                       if (!RegExp(cnicPattern).hasMatch(value)) {
-                        return "Please enter a valid CNIC (e.g., 12345-1234567-1)";
+                        return "Please enter a valid CNIC (e.g.12345-1234567-1)";
                       }
                       return null;
                     },
@@ -93,25 +98,30 @@ class AddShopScreen extends StatelessWidget {
                   _buildTextField(
                     label: "Phone Number",
                     icon: Icons.phone,
-                    onChanged: (value) => _viewModel.setShopField('phoneNumber', value),
-                    validator: (value) =>
-                    value == null || value.isEmpty ? "Please enter phone number" : null,
+                    onChanged: (value) =>
+                        _viewModel.setShopField('phoneNumber', value),
+                    validator: (value) => value == null || value.isEmpty
+                        ? "Please enter phone number"
+                        : null,
                     keyboardType: TextInputType.phone,
                   ),
                   _buildTextField(
                     label: "Alternative Phone Number",
                     icon: Icons.phone_android,
-                    onChanged: (value) => _viewModel.setShopField('alternativePhoneNumber', value),
-                    validator: (value) =>
-                    value == null || value.isEmpty ? "Please enter alternative number" : null,
+                    onChanged: (value) =>
+                        _viewModel.setShopField('alterPhoneNumber', value),
+                    validator: (value) => value == null || value.isEmpty
+                        ? "Please enter alternative number"
+                        : null,
                     keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: 10),
                   Obx(() => CustomSwitch(
-                    label: "GPS Enabled",
-                    value: _viewModel.shop.isGpsEnabled,
-                    onChanged: (value) => _viewModel.setShopField('isGpsEnabled', value),
-                  )),
+                        label: "GPS Enabled",
+                        value: _viewModel.shop.isGPSEnabled,
+                        onChanged: (value) =>
+                            _viewModel.setShopField('isGPSEnabled', value),
+                      )),
                   const SizedBox(height: 10),
                   CustomButton(
                     buttonText: "Save",
@@ -149,6 +159,4 @@ class AddShopScreen extends StatelessWidget {
       ),
     );
   }
-
-
 }
