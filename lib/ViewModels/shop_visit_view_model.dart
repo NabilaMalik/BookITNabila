@@ -3,14 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../Models/shop_visit_model.dart';
-import '../repositories/shop_visit_repository.dart';
-
+import '../Repositories/shop_visit_repository.dart';
 class ShopVisitViewModel extends GetxController{
 
   var allShopVisit = <ShopVisitModel>[].obs;
   ShopVisitRepository shopvisitRepository = ShopVisitRepository();
-
+  final _shopVisit = ShopVisitModel().obs;
   final ImagePicker picker = ImagePicker();
+  ShopVisitModel get shopVisit => _shopVisit.value;
+
+  GlobalKey<FormState> get formKey => _formKey;
+  final _formKey = GlobalKey<FormState>();
 
   var shopAddress = ''.obs;
   var ownerName = ''.obs;
@@ -19,11 +22,9 @@ class ShopVisitViewModel extends GetxController{
   var selectedShop = ''.obs;
   var selectedImage = Rx<XFile?>(null);
   var filteredRows = <Map<String, dynamic>>[].obs;
-
   var checklistState = List<bool>.filled(4, false).obs;
   var rows = <DataRow>[].obs;
-  ValueNotifier<List<Map<String, dynamic>>> rowsNotifier =
-  ValueNotifier<List<Map<String, dynamic>>>([]);
+  ValueNotifier<List<Map<String, dynamic>>> rowsNotifier = ValueNotifier<List<Map<String, dynamic>>>([]);
   final List<String> brands = ['Brand A', 'Brand B', 'Brand C'];
   final List<String> shops = ['Shop X', 'Shop Y', 'Shop Z'];
   final List<String> checklistLabels = [
@@ -77,21 +78,43 @@ class ShopVisitViewModel extends GetxController{
     final image = await picker.pickImage(source: ImageSource.camera);
     selectedImage.value = image;
   }
+  // Clear filters
+  clearFilters() {
+    _shopVisit.value = ShopVisitModel();
+   //selectedCity.value = ''; // Reset selected city
+    _formKey.currentState?.reset();
+  }
 
-  void submitForm(GlobalKey<FormState> formKey) {
-    if (formKey.currentState!.validate()) {
+  bool validateForm() {
+    return _formKey.currentState?.validate() ?? false;
+  }
+
+  void saveForm() async {
+    if (validateForm()) {
+      print("saveeeeeeeeeeeeeeeeee");
+     await addShopVisit(ShopVisitModel(
+       shopName: selectedShop.value,
+       shopAddress: shopAddress.value,
+       shopOwner: ownerName.value,
+       brand: selectedBrand.value,
+      // addPhoto: selectedImage.value
+
+     ));
+      await shopvisitRepository.getShopVisit();
+      // Navigate to another screen if needed
+      // Get.to(() => HomeScreen());
+    }
+  }
+
+  Future<void> submitForm() async {
+    if (validateForm()) {
+      await shopvisitRepository.add(shopVisit);
+      await shopvisitRepository.getShopVisit();
       rowsNotifier.value = filteredRows.value;
-
       Get.snackbar("Success", "Form submitted successfully!",
           snackPosition: SnackPosition.BOTTOM);
     }
   }
-  // @override
-  // void onInit() {
-  //   // TODO: implement onInit
-  //   super.onInit();
-  //   fetchAllShopVisit();
-  // }
 
   fetchAllShopVisit() async{
     var shopvisit = await shopvisitRepository.getShopVisit();

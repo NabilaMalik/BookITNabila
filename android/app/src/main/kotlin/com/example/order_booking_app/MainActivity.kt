@@ -1,4 +1,4 @@
-package com.example.order_booking_app
+package com.metaxperts.order_booking_app
 
 import io.flutter.embedding.android.FlutterActivity
 

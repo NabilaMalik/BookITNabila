@@ -4,6 +4,7 @@ import 'package:order_booking_app/screens/orderbooking_screen.dart';
 
 import '../ViewModels/shop_visit_view_model.dart';
 import '../widgets/rounded_button.dart';
+import 'Components/custom_button.dart';
 import 'Components/custom_dropdown.dart';
 import 'Components/custom_editable_menu_option.dart';
 import 'ShopVisitScreenComponents/check_list_section.dart';
@@ -13,8 +14,6 @@ import 'ShopVisitScreenComponents/product_search_card.dart';
 
 class ShopVisitScreen extends StatelessWidget {
   ShopVisitScreen({super.key});
-
-  final _formKey = GlobalKey<FormState>();
   final ShopVisitViewModel viewModel = Get.put(ShopVisitViewModel());
 
   @override
@@ -30,7 +29,7 @@ class ShopVisitScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Form(
-                  key: _formKey,
+                  key: viewModel.formKey,
                   child: Column(
                     children: [
                       Obx(() => CustomDropdown(
@@ -120,12 +119,10 @@ class ShopVisitScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 const FeedbackSection(),
                 const SizedBox(height: 20),
-                RoundedButton(
-                  text: "Submit",
-                  press: () {
-                    Get.to(() => const OrderBookingScreen());
-                    viewModel.submitForm(_formKey);
-                  },
+               CustomButton(
+                  buttonText: "Save",
+                  onTap: viewModel.saveForm,
+                  gradientColors: [Colors.blue, Colors.blue],
                 ),
               ],
             ),
