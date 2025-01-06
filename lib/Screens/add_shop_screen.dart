@@ -45,7 +45,7 @@ class AddShopScreen extends StatelessWidget {
                         ? "Please enter shop name"
                         : null,
                   ),
-                  CustomDropdown(
+                 Obx(()=> CustomDropdown(
                     borderColor: Colors.black,
                     iconColor: Colors.blue,
                     label: "City",
@@ -59,7 +59,7 @@ class AddShopScreen extends StatelessWidget {
                         ? "Please enter City name"
                         : null,
                     // showBorder: true,
-                  ),
+                  )),
                   _buildTextField(
                     label: "Shop Address",
                     icon: Icons.place,

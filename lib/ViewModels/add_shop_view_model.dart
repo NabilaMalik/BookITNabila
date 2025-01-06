@@ -14,43 +14,99 @@ class AddShopViewModel extends GetxController {
   GlobalKey<FormState> get formKey => _formKey;
 
   List<String> cities = [
-    'Karachi', 'Lahore', 'Islamabad', 'Rawalpindi', 'Faisalabad', 'Peshawar',
-    'Quetta', 'Multan', 'Gujranwala', 'Sialkot', 'Hyderabad', 'Sukkur',
-    'Sargodha', 'Bahawalpur', 'Abbottabad', 'Mardan', 'Sheikhupura',
-    'Gujrat', 'Jhelum', 'Kasur', 'Okara', 'Sahiwal', 'Rahim Yar Khan',
-    'Dera Ghazi Khan', 'Chiniot', 'Nawabshah', 'Mirpur Khas', 'Khairpur',
-    'Mansehra', 'Swat', 'Muzaffarabad', 'Kotli', 'Larkana', 'Jacobabad',
-    'Shikarpur', 'Hafizabad', 'Toba Tek Singh', 'Mianwali', 'Bannu',
-    'Dera Ismail Khan', 'Chaman', 'Gwadar', 'Zhob', 'Lakhdar', 'Ghotki',
-    'Snowshed', 'Haripur', 'Charade'
+    'Karachi',
+    'Lahore',
+    'Islamabad',
+    'Rawalpindi',
+    'Faisalabad',
+    'Peshawar',
+    'Quetta',
+    'Multan',
+    'Gujranwala',
+    'Sialkot',
+    'Hyderabad',
+    'Sukkur',
+    'Sargodha',
+    'Bahawalpur',
+    'Abbottabad',
+    'Mardan',
+    'Sheikhupura',
+    'Gujrat',
+    'Jhelum',
+    'Kasur',
+    'Okara',
+    'Sahiwal',
+    'Rahim Yar Khan',
+    'Dera Ghazi Khan',
+    'Chiniot',
+    'Nawabshah',
+    'Mirpur Khas',
+    'Khairpur',
+    'Mansehra',
+    'Swat',
+    'Muzaffarabad',
+    'Kotli',
+    'Larkana',
+    'Jacobabad',
+    'Shikarpur',
+    'Hafizabad',
+    'Toba Tek Singh',
+    'Mianwali',
+    'Bannu',
+    'Dera Ismail Khan',
+    'Chaman',
+    'Gwadar',
+    'Zhob',
+    'Lakhdar',
+    'Ghotki',
+    'Snowshed',
+    'Haripur',
+    'Charade'
   ];
   var selectedCity = ''.obs;
 
   void setShopField(String field, dynamic value) {
     switch (field) {
       case 'shopName':
-        _shop.update((shop) { shop!.shopName = value; });
+        _shop.update((shop) {
+          shop!.shopName = value;
+        });
         break;
       case 'shopAddress':
-        _shop.update((shop) { shop!.shopAddress = value; });
+        _shop.update((shop) {
+          shop!.shopAddress = value;
+        });
         break;
       case 'ownerName':
-        _shop.update((shop) { shop!.ownerName = value; });
+        _shop.update((shop) {
+          shop!.ownerName = value;
+        });
         break;
       case 'ownerCNIC':
-        _shop.update((shop) { shop!.ownerCNIC = value; });
+        _shop.update((shop) {
+          shop!.ownerCNIC = value;
+        });
         break;
       case 'phoneNumber':
-        _shop.update((shop) { shop!.phoneNumber = value; });
+        _shop.update((shop) {
+          shop!.phoneNumber = value;
+        });
         break;
       case 'alterPhoneNumber':
-        _shop.update((shop) { shop!.alterPhoneNumber = value; });
+        _shop.update((shop) {
+          shop!.alterPhoneNumber = value;
+        });
         break;
       case 'city':
-        _shop.update((shop) { shop!.city = value; });
+        _shop.update((shop) {
+          selectedCity.value=value;
+          shop!.city = value;
+        });
         break;
       case 'isGPSEnabled':
-        _shop.update((shop) { shop!.isGPSEnabled = value; });
+        _shop.update((shop) {
+          shop!.isGPSEnabled = value;
+        });
         break;
       default:
         break;
@@ -58,15 +114,10 @@ class AddShopViewModel extends GetxController {
   }
 
   // Clear filters
-clearFilters() {
-    shop.shopName= '';
-    shop.city= '';
-    shop.shopAddress= '';
-    shop.ownerName= '';
-    shop.ownerCNIC= '';
-    shop.phoneNumber= '';
-    shop.alterPhoneNumber= '';
-    shop.isGPSEnabled = false;
+  clearFilters() {
+    _shop.value = AddShopModel();
+    selectedCity.value = ''; // Reset selected city
+    _formKey.currentState?.reset();
   }
 
   bool validateForm() {
@@ -75,31 +126,31 @@ clearFilters() {
 
   void saveForm() async {
     if (validateForm()) {
-     await _shopRepository.add(shop);
-     await _shopRepository.getAddShop();
-     await clearFilters();
+      await _shopRepository.add(shop);
+      await _shopRepository.getAddShop();
+      await clearFilters();
       // Navigate to another screen if needed
       // Get.to(() => HomeScreen());
     }
   }
-  fetchAllAddShop() async{
+
+  fetchAllAddShop() async {
     var addShop = await _shopRepository.getAddShop();
     allAddShop.value = addShop;
   }
 
-  addAddShop(AddShopModel addShopModel){
+  addAddShop(AddShopModel addShopModel) {
     _shopRepository.add(addShopModel);
     fetchAllAddShop();
   }
 
-  updateAddShop(AddShopModel addShopModel){
+  updateAddShop(AddShopModel addShopModel) {
     _shopRepository.update(addShopModel);
     fetchAllAddShop();
   }
 
-  deleteAddShop(int id){
+  deleteAddShop(int id) {
     _shopRepository.delete(id);
     fetchAllAddShop();
   }
-
 }
