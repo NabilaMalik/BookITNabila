@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:order_booking_app/Screens/Components/custom_switch.dart';
 import 'package:order_booking_app/screens/home_screen.dart';
 
 import '../ViewModels/ScreenViewModels/add_shop_view_model.dart';
@@ -106,7 +107,7 @@ class AddShopScreen extends StatelessWidget {
                     keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: 10),
-                  Obx(() => _buildSwitch(
+                  Obx(() => CustomSwitch(
                     label: "GPS Enabled",
                     value: _viewModel.shop.isGpsEnabled,
                     onChanged: (value) => _viewModel.setShopField('isGpsEnabled', value),
@@ -149,25 +150,5 @@ class AddShopScreen extends StatelessWidget {
     );
   }
 
-  /// Builds a custom switch with a label.
-  Widget _buildSwitch({
-    required String label,
-    required bool value,
-    required ValueChanged<bool> onChanged,
-  }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Switch(
-          value: value,
-          onChanged: onChanged,
-          activeColor: Colors.blue,
-        ),
-        Text(
-          label,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-        ),
-      ],
-    );
-  }
+
 }

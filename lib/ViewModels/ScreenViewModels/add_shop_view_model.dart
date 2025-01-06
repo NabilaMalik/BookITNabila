@@ -1,5 +1,3 @@
-// lib/viewmodels/add_shop_viewmodel.dart
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../Models/ScreenModels/shop_model.dart';

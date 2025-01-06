@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ShopVisitModel {
+class ShopVisitScreenModel {
   String brand;
   String shop;
   String shopAddress;
@@ -11,7 +11,7 @@ class ShopVisitModel {
   List<DataRow> filteredRows;
   List<bool> checklistState;
 
-  ShopVisitModel({
+  ShopVisitScreenModel({
     required this.brand,
     required this.shop,
     required this.shopAddress,

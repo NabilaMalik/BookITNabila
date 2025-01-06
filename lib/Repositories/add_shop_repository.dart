@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 
 import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Models/add_shop_model.dart';
 
-class AddShopRepository{
+class AddShopRepository extends GetxService{
 
   DBHelper dbHelper = DBHelper();
 
