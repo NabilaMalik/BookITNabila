@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:order_booking_app/screens/orderbooking_screen.dart';
-
 import '../ViewModels/shop_visit_view_model.dart';
-import '../widgets/rounded_button.dart';
 import 'Components/custom_button.dart';
 import 'Components/custom_dropdown.dart';
 import 'Components/custom_editable_menu_option.dart';
@@ -33,63 +30,80 @@ class ShopVisitScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Obx(() => CustomDropdown(
-                        label: "Brand",
-                        icon: Icons.branding_watermark,
-                        items: viewModel.brands,
-                        selectedValue: viewModel.selectedBrand.value,
-                        onChanged: (value) {
-                          viewModel.selectedBrand.value = value!;
-                        },
-                        useBoxShadow: false,
-                        validator: (value) => value == null || value.isEmpty ? 'Please select a brand' : null,
-                        inputBorder: const UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue, width: 1.0),
-                        ),
-                        maxHeight: 40.0,
-                        maxWidth: 300.0,
-                        iconSize: 20.0,
-                        contentPadding: 10.0,
-                        iconColor: Colors.blue,
-                      )),
+                            label: "Brand",
+                            icon: Icons.branding_watermark,
+                            items: viewModel.brands,
+                            selectedValue: viewModel.selectedBrand.value,
+                            onChanged: (value) {
+                              viewModel.selectedBrand.value = value!;
+                            },
+                            useBoxShadow: false,
+                            validator: (value) => value == null || value.isEmpty
+                                ? 'Please select a brand'
+                                : null,
+                            inputBorder: const UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.blue, width: 1.0),
+                            ),
+                            maxHeight: 40.0,
+                            maxWidth: 300.0,
+                            iconSize: 20.0,
+                            contentPadding: 10.0,
+                            iconColor: Colors.blue,
+                          )),
                       Obx(() => CustomDropdown(
-                        label: "Shop",
-                        icon: Icons.store,
-                        items: viewModel.shops,
-                        selectedValue: viewModel.selectedShop.value,
-                        onChanged: (value) {
-                          // Keep this empty if there is no specific action on change
-                        },
-                        validator: (value) => value == null || value.isEmpty ? 'Please select a shop' : null,
-                        useBoxShadow: false,
-                        inputBorder: const UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue, width: 1.0),
-                        ),
-                        maxHeight: 40.0,
-                        maxWidth: 300.0,
-                        iconSize: 25.0,
-                        contentPadding: 10.0,
-                        iconColor: Colors.blue,
-                      )),
+                            label: "Shop",
+                            icon: Icons.store,
+                            items: viewModel.shops,
+                            selectedValue: viewModel.selectedShop.value,
+                            onChanged: (value) {
+                              viewModel.selectedShop.value = value!;
+                            },
+                            validator: (value) => value == null || value.isEmpty
+                                ? 'Please select a shop'
+                                : null,
+                            useBoxShadow: false,
+                            inputBorder: const UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.blue, width: 1.0),
+                            ),
+                            maxHeight: 40.0,
+                            maxWidth: 300.0,
+                            iconSize: 25.0,
+                            contentPadding: 10.0,
+                            iconColor: Colors.blue,
+                          )),
                       _buildTextField(
-                        controller: TextEditingController(text: viewModel.shopAddress.value),
+                        controller: TextEditingController(
+                            text: viewModel.shopAddress.value),
                         label: "Shop Address",
                         icon: Icons.location_on,
-                        validator: (value) => value == null || value.isEmpty ? 'Please enter the shop address' : null,
-                        onChanged: (value) => viewModel.shopAddress.value = value,
+                        validator: (value) => value == null || value.isEmpty
+                            ? 'Please enter the shop address'
+                            : null,
+                        onChanged: (value) =>
+                            viewModel.shopAddress.value = value,
                       ),
                       _buildTextField(
-                        controller: TextEditingController(text: viewModel.ownerName.value),
+                        controller: TextEditingController(
+                            text: viewModel.ownerName.value),
                         label: "Owner Name",
                         icon: Icons.person_outlined,
-                        validator: (value) => value == null || value.isEmpty ? 'Please enter the owner name' : null,
+                        validator: (value) => value == null || value.isEmpty
+                            ? 'Please enter the owner name'
+                            : null,
                         onChanged: (value) => viewModel.ownerName.value = value,
                       ),
                       _buildTextField(
                         label: "Booker Name",
-                        controller: TextEditingController(text: viewModel.bookerName.value),
+                        controller: TextEditingController(
+                            text: viewModel.bookerName.value),
                         icon: Icons.person,
-                        validator: (value) => value == null || value.isEmpty ? 'Please enter the booker name' : null,
-                        onChanged: (value) => viewModel.bookerName.value = value,
+                        validator: (value) => value == null || value.isEmpty
+                            ? 'Please enter the booker name'
+                            : null,
+                        onChanged: (value) =>
+                            viewModel.bookerName.value = value,
                       ),
                     ],
                   ),
@@ -119,7 +133,7 @@ class ShopVisitScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 const FeedbackSection(),
                 const SizedBox(height: 20),
-               CustomButton(
+                CustomButton(
                   buttonText: "Save",
                   onTap: viewModel.saveForm,
                   gradientColors: [Colors.blue, Colors.blue],
@@ -134,7 +148,8 @@ class ShopVisitScreen extends StatelessWidget {
 
   AppBar _buildAppBar() {
     return AppBar(
-      title: const Text('Shop Visit', style: TextStyle(color: Colors.white, fontSize: 24)),
+      title: const Text('Shop Visit',
+          style: TextStyle(color: Colors.white, fontSize: 24)),
       centerTitle: true,
       backgroundColor: Colors.blue,
     );
@@ -177,7 +192,10 @@ class SectionHeader extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Text(
         title,
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+        style: Theme.of(context)
+            .textTheme
+            .titleLarge
+            ?.copyWith(fontWeight: FontWeight.bold),
       ),
     );
   }
