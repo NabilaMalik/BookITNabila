@@ -12,7 +12,7 @@ class ShopVisitModel{
   dynamic? planogram;
   dynamic? signage;
   dynamic? productReviewed;
-  Uint8List? addPhoto;
+  String? addPhoto;
   String? feedback;
 
   ShopVisitModel({
@@ -44,9 +44,13 @@ class ShopVisitModel{
       signage: json['signage'] == 1 || json['signage'] == 'true' || json['signage'] == true,
       productReviewed: json['productReviewed'] == 1 || json['productReviewed'] == 'true' || json['productReviewed'] == true,
 
-        addPhoto: json['body'] != null && json['body'].toString().isNotEmpty
-          ? Uint8List.fromList(base64Decode(json['body'].toString()))
-          : null,
+        addPhoto: json['body'] ,
+      //   != null && json['body'].toString().isNotEmpty
+      //     ? Uint8List.fromList(base64Decode(json['body'].toString()))
+      //     : null,
+      // addPhoto: json['body'] != null && json['body'].toString().isNotEmpty
+      //     ? Uint8List.fromList(base64Decode(json['body'].toString()))
+      //     : null,
         feedback: json['feedback'],
 
     );
@@ -65,7 +69,8 @@ class ShopVisitModel{
       'planogram':planogram,
       'signage':signage,
       'productReviewed':productReviewed,
-      'body': addPhoto != null ? base64Encode(addPhoto!) : null,
+      // 'body': addPhoto != null ? base64Encode(addPhoto!) : null,
+      'body': addPhoto,
       'feedback':feedback,
     };
   }

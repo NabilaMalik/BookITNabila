@@ -131,7 +131,9 @@ class ShopVisitScreen extends StatelessWidget {
                   onTakePicture: viewModel.takePicture,
                 ),
                 const SizedBox(height: 20),
-                const FeedbackSection(),
+                 FeedbackSection( feedBackController: TextEditingController(
+                     text: viewModel.ownerName.value),
+                     onChanged:(value) => viewModel.feedBack.value = value),
                 const SizedBox(height: 20),
                 CustomButton(
                   buttonText: "Save",

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../Models/add_shop_model.dart';
@@ -12,57 +13,26 @@ class AddShopViewModel extends GetxController {
 
   AddShopModel get shop => _shop.value;
   GlobalKey<FormState> get formKey => _formKey;
+  var cities = <String>[].obs;
 
-  List<String> cities = [
-    'Karachi',
-    'Lahore',
-    'Islamabad',
-    'Rawalpindi',
-    'Faisalabad',
-    'Peshawar',
-    'Quetta',
-    'Multan',
-    'Gujranwala',
-    'Sialkot',
-    'Hyderabad',
-    'Sukkur',
-    'Sargodha',
-    'Bahawalpur',
-    'Abbottabad',
-    'Mardan',
-    'Sheikhupura',
-    'Gujrat',
-    'Jhelum',
-    'Kasur',
-    'Okara',
-    'Sahiwal',
-    'Rahim Yar Khan',
-    'Dera Ghazi Khan',
-    'Chiniot',
-    'Nawabshah',
-    'Mirpur Khas',
-    'Khairpur',
-    'Mansehra',
-    'Swat',
-    'Muzaffarabad',
-    'Kotli',
-    'Larkana',
-    'Jacobabad',
-    'Shikarpur',
-    'Hafizabad',
-    'Toba Tek Singh',
-    'Mianwali',
-    'Bannu',
-    'Dera Ismail Khan',
-    'Chaman',
-    'Gwadar',
-    'Zhob',
-    'Lakhdar',
-    'Ghotki',
-    'Snowshed',
-    'Haripur',
-    'Charade'
-  ];
+  @override
+  void onInit() {
+    super.onInit();
+    fetchCities();
+  }
+
+  void fetchCities() async {
+    try {
+      var fetchedCities = await _shopRepository.fetchCities();
+      cities.value = fetchedCities;
+    } catch (e) {
+      // Handle error
+      if (kDebugMode) {
+        print('Failed to fetch cities: $e');
+      }
+    }
+  }
+
   var selectedCity = ''.obs;
 
   void setShopField(String field, dynamic value) {
@@ -99,7 +69,7 @@ class AddShopViewModel extends GetxController {
         break;
       case 'city':
         _shop.update((shop) {
-          selectedCity.value=value;
+          selectedCity.value = value;
           shop!.city = value;
         });
         break;

@@ -1,7 +1,11 @@
 
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import '../Models/shop_visit_model.dart';
 import '../Repositories/shop_visit_repository.dart';
 class ShopVisitViewModel extends GetxController{
@@ -18,6 +22,7 @@ class ShopVisitViewModel extends GetxController{
   var shopAddress = ''.obs;
   var ownerName = ''.obs;
   var bookerName = ''.obs;
+  var feedBack = ''.obs;
   var selectedBrand = ''.obs;
   var selectedShop = ''.obs;
   var selectedImage = Rx<XFile?>(null);
@@ -89,22 +94,57 @@ class ShopVisitViewModel extends GetxController{
     return _formKey.currentState?.validate() ?? false;
   }
 
+
+
   void saveForm() async {
     if (validateForm()) {
       print("saveeeeeeeeeeeeeeeeee");
-     await addShopVisit(ShopVisitModel(
-       shopName: selectedShop.value,
-       shopAddress: shopAddress.value,
-       shopOwner: ownerName.value,
-       brand: selectedBrand.value,
-      // addPhoto: selectedImage.value
 
-     ));
+      // Compress the image
+      Uint8List? compressedImageBytes;
+      if (selectedImage.value != null) {
+        compressedImageBytes = await FlutterImageCompress.compressWithFile(
+          selectedImage.value!.path,
+          minWidth: 400,
+          minHeight: 600,
+          quality: 40,
+        );
+      }
+
+      // Save compressed image to file and get the path
+      String? imagePath;
+      if (compressedImageBytes != null) {
+        imagePath = await saveImageToFile(compressedImageBytes);
+      }
+
+      await addShopVisit(ShopVisitModel(
+        shopName: selectedShop.value,
+        shopAddress: shopAddress.value,
+        shopOwner: ownerName.value,
+        brand: selectedBrand.value,
+        bookerName: bookerName.value,
+        walkthrough: checklistState[0],
+        planogram: checklistState[1],
+        signage: checklistState[2],
+        productReviewed: checklistState[3],
+        addPhoto: imagePath,
+        feedback: feedBack.value,
+      ));
       await shopvisitRepository.getShopVisit();
       // Navigate to another screen if needed
       // Get.to(() => HomeScreen());
     }
   }
+
+  Future<String> saveImageToFile(Uint8List imageBytes) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = '${directory.path}/images';
+    final file = File('$path/${DateTime.now().millisecondsSinceEpoch}.png');
+    await file.create(recursive: true);
+    await file.writeAsBytes(imageBytes);
+    return file.path;
+  }
+
 
   Future<void> submitForm() async {
     if (validateForm()) {

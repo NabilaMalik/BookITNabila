@@ -1,8 +1,15 @@
-import 'package:flutter/foundation.dart';
+import 'dart:convert';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Models/add_shop_model.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
+
+import '../Services/ApiServices/api_service.dart';
+import '../Services/FirebaseServices/firebase_remote_config.dart';
+
 
 class AddShopRepository extends GetxService {
   DBHelper dbHelper = DBHelper();
@@ -18,17 +25,10 @@ class AddShopRepository extends GetxService {
       'ownerCNIC',
       'phoneNumber',
       'alterPhoneNumber',
-      // 'isGPSEnabled'
     ]);
     List<AddShopModel> addShop = [];
     for (int i = 0; i < maps.length; i++) {
       addShop.add(AddShopModel.fromMap(maps[i]));
-    }
-    if (kDebugMode) {
-      print('Raw data from database:');
-      for (var map in maps) {
-        print(map);
-      }
     }
     return addShop;
   }
@@ -46,7 +46,60 @@ class AddShopRepository extends GetxService {
 
   Future<int> delete(int id) async {
     var dbClient = await dbHelper.db;
-    return await dbClient
-        .delete(addShopTableName, where: 'id = ?', whereArgs: [id]);
+    return await dbClient.delete(addShopTableName, where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<void> fetchAllAddShop(RxList<AddShopModel> allAddShop) async {
+    var addShop = await getAddShop();
+    allAddShop.value = addShop;
+  }
+
+  Future<void> addAddShop(AddShopModel addShopModel, RxList<AddShopModel> allAddShop) async {
+    await add(addShopModel);
+    await fetchAllAddShop(allAddShop);
+  }
+
+  Future<void> updateAddShop(AddShopModel addShopModel, RxList<AddShopModel> allAddShop) async {
+    await update(addShopModel);
+    await fetchAllAddShop(allAddShop);
+  }
+
+  Future<void> deleteAddShop(int id, RxList<AddShopModel> allAddShop) async {
+    await delete(id);
+    await fetchAllAddShop(allAddShop);
+  }
+
+  Future<List<String>> fetchCitiesFromApi() async {
+    String url = Config.getApiUrlCities;
+    List<dynamic> data = await ApiService.getData(url);
+    List<String> fetchedCities = data.map((city) => city.toString()).toList();
+
+    List<String> storedCities = await getCitiesFromSharedPreferences();
+    List<String> newCities = fetchedCities.where((city) => !storedCities.contains(city)).toList();
+    List<String> removedCities = storedCities.where((city) => !fetchedCities.contains(city)).toList();
+
+    storedCities.addAll(newCities);
+    removedCities.forEach((city) => storedCities.remove(city));
+
+    await saveCitiesToSharedPreferences(storedCities);
+    return storedCities;
+  }
+
+  Future<void> saveCitiesToSharedPreferences(List<String> cities) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('cities', cities);
+  }
+
+  Future<List<String>> getCitiesFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('cities') ?? [];
+  }
+
+  Future<List<String>> fetchCities() async {
+    List<String> cities = await getCitiesFromSharedPreferences();
+    if (cities.isEmpty) {
+      cities = await fetchCitiesFromApi();
+    }
+    return cities;
   }
 }
