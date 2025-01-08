@@ -15,8 +15,8 @@ class OrderMasterProductSearchCard extends StatelessWidget {
     required this.rowsNotifier,
     required this.filteredRows,
     required this.viewModel,
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -91,8 +91,8 @@ class OrderMasterProductSearchCard extends StatelessWidget {
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: DataTable(
-            headingRowColor: WidgetStateProperty.resolveWith((states) => Colors.blue.shade100),
-            dataRowColor: WidgetStateProperty.resolveWith((states) => states.contains(WidgetState.selected) ? Colors.blue.shade50 : Colors.grey.shade50),
+            headingRowColor: MaterialStateProperty.resolveWith((states) => Colors.blue.shade100),
+            dataRowColor: MaterialStateProperty.resolveWith((states) => states.contains(MaterialState.selected) ? Colors.blue.shade50 : Colors.grey.shade50),
             border: TableBorder.all(color: Colors.grey.shade300),
             columnSpacing: 10,
             columns: _buildDataColumns(),
@@ -120,7 +120,7 @@ class OrderMasterProductSearchCard extends StatelessWidget {
           width: 100,
           child: Center(
             child: Text(
-              'Quantity',
+              'Enter Qty',
               textAlign: TextAlign.center,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
             ),
@@ -167,22 +167,9 @@ class OrderMasterProductSearchCard extends StatelessWidget {
   }
 
   DataRow _buildDataRow(Map<String, dynamic> row) {
-    final quantityController = TextEditingController(text: row['Quantity'].toString());
-    final amountController = TextEditingController(text: row['Amount'].toString());
-    FocusNode focusNode = FocusNode();
-    // Listener for focus changes
-    focusNode.addListener(() {
-      if (!focusNode.hasFocus && quantityController.text.isEmpty) {
-        quantityController.text = '0'; // Restore '0' when losing focus and text is empty
-      }
-    });
+    final quantityController = TextEditingController(text: row['Enter Qty']?.toString() ?? '');
+    final amountController = TextEditingController(text: row['Amount']?.toString() ?? '');
 
-    // Adding a text listener to handle clear on focus
-    quantityController.addListener(() {
-      if (focusNode.hasFocus && quantityController.text == '0') {
-        quantityController.clear();
-      }
-    });
     return DataRow(cells: [
       DataCell(
         Text(row['Product'] ?? '', overflow: TextOverflow.ellipsis),
@@ -191,13 +178,19 @@ class OrderMasterProductSearchCard extends StatelessWidget {
         TextField(
           controller: quantityController,
           keyboardType: TextInputType.number,
-          focusNode: focusNode,
           // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           onTap: () {
+            // Clear the text field and place the cursor at the end
             quantityController.clear();
+            Future.delayed(Duration.zero, () {
+              quantityController.selection = TextSelection.fromPosition(
+                TextPosition(offset: quantityController.text.length),
+              );
+            });
           },
           onChanged: (value) {
-            row['Quantity'] = value.isEmpty ? 0 : int.tryParse(value) ?? 0;
+            // Update the row data and refresh the UI
+            row['Enter Qty'] = value.isEmpty ? 0 : int.tryParse(value) ?? 0;
             _updateAmount(row, amountController);
             viewModel.updateTotal();
             filteredRows.refresh();
@@ -205,17 +198,17 @@ class OrderMasterProductSearchCard extends StatelessWidget {
           decoration: const InputDecoration(
             border: InputBorder.none,
             isDense: true,
-            hintText: 'Enter quantity',
             contentPadding: EdgeInsets.symmetric(vertical: 1, horizontal: 8),
           ),
           textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 14),
         ),
       ),
+
       DataCell(
         Center(
           child: Text(
-            row['In Stock'].toString(),
+            row['In Stock']?.toString() ?? '',
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 14),
           ),
@@ -224,7 +217,7 @@ class OrderMasterProductSearchCard extends StatelessWidget {
       DataCell(
         Center(
           child: Text(
-            row['Rate'].toString(),
+            row['Rate']?.toString() ?? '',
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 14),
           ),
@@ -248,7 +241,7 @@ class OrderMasterProductSearchCard extends StatelessWidget {
   }
 
   void _updateAmount(Map<String, dynamic> row, TextEditingController amountController) {
-    final quantity = row['Quantity'] ?? 0;
+    final quantity = row['Enter Qty'] ?? 0;
     final rate = row['Rate'] ?? 0.0;
     final amount = quantity * rate;
     row['Amount'] = amount;

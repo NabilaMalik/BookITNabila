@@ -61,7 +61,7 @@ class OrderBookingViewModel extends GetxController {
         return {
           'Product': product.product_name,
           // 'Enter Quantity': quantity,
-          // 'In Stock': quantity,
+           'In Stock': product,
           'Rate': price,
           'Amount': quantity * price,
           'Brand': product.brand

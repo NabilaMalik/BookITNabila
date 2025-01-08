@@ -1,16 +1,19 @@
-
 import 'dart:typed_data';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import '../Models/ScreenModels/products_model.dart';
 import '../Models/shop_visit_model.dart';
+import '../Repositories/ScreenRepositories/products_repository.dart';
 import '../Repositories/shop_visit_repository.dart';
 import '../Screens/orderbooking_screen.dart';
-class ShopVisitViewModel extends GetxController{
 
+class ShopVisitViewModel extends GetxController {
   var allShopVisit = <ShopVisitModel>[].obs;
   ShopVisitRepository shopvisitRepository = ShopVisitRepository();
+  ProductsRepository productsRepository = Get.put(ProductsRepository());
+
   final _shopVisit = ShopVisitModel().obs;
   final ImagePicker picker = ImagePicker();
   ShopVisitModel get shopVisit => _shopVisit.value;
@@ -37,36 +40,37 @@ class ShopVisitViewModel extends GetxController{
     'Checked Shelf Tags and Price Signage',
     'Reviewed Expiry Dates on Products',
   ];
+
   @override
   void onInit() {
     super.onInit();
     _initializeProductData();
   }
-  void _initializeProductData() {
-    final productData = [
-      {'Product': 'Shampoo', 'Quantity': 20, 'Brand': 'Roxie Color' },
-      {'Product': 'Soap',  'Quantity': 35, 'Brand': 'Roxie Color'},
-      {'Product': 'Cookies',  'Quantity': 50, 'Brand': 'Roxie Color'},
-      {'Product': 'Milk',  'Quantity': 15, 'Brand': 'Roxie'},
-      {'Product': 'Shampoo', 'Quantity': 20, 'Brand': 'Roxie'},
-      {'Product': 'Soap', 'Quantity': 35, 'Brand': 'USHA'},
-      {'Product': 'Cookies','Quantity': 50,  'Brand': 'USHA'},
-      {'Product': 'Milk', 'Quantity': 15,  'Brand': 'USHA'},
-    ];
-    rowsNotifier.value = productData;
-    filteredRows.value = productData;
 
-    print("Initialized Product Data: $productData");
+  Future<void> _initializeProductData() async {
+    try {
+      List<ProductsModel> products = await productsRepository.getProductsModel();
+      final productData = products.map((product) {
+        final quantity = num.tryParse(product.quantity.toString()) ?? 0;
+        return {
+          'Product': product.product_name,
+          'Enter Quantity': quantity,
+          'Brand': product.brand,
+        };
+      }).toList();
+
+      rowsNotifier.value = productData;
+      filterProductsByBrand(selectedBrand.value); // Apply brand filter initially
+
+      print("Initialized Product Data: $productData");
+    } catch (e) {
+      print("Error initializing product data: $e");
+    }
   }
-
-  // void updateRows(List<DataRow> newRows) {
-  //   rowsNotifier.value = newRows;
-  // }
-
   void filterData(String query) {
     final lowerCaseQuery = query.toLowerCase();
     final tempList = rowsNotifier.value.where((row) {
-      final matchesBrand = row['Brand'] == selectedBrand.value;
+      final matchesBrand = row['Brand'].toString().toLowerCase() == selectedBrand.value.toLowerCase();
       final matchesQuery = row.values.any((value) =>
           value.toString().toLowerCase().contains(lowerCaseQuery));
       return matchesBrand && matchesQuery;
@@ -74,24 +78,24 @@ class ShopVisitViewModel extends GetxController{
     filteredRows.value = tempList;
   }
 
-
   Future<void> pickImage() async {
     final image = await picker.pickImage(source: ImageSource.gallery);
     selectedImage.value = image;
   }
-  Future<void> takePicture() async{
+
+  Future<void> takePicture() async {
     final image = await picker.pickImage(source: ImageSource.camera);
     selectedImage.value = image;
   }
-  // Clear filters
-  clearFilters() {
+
+  void clearFilters() {
     _shopVisit.value = ShopVisitModel();
-   //selectedCity.value = ''; // Reset selected city
     _formKey.currentState?.reset();
   }
+
   void filterProductsByBrand(String selectedBrand) {
     final filtered = rowsNotifier.value.where((product) {
-      return product['Brand'] == selectedBrand;
+      return product['Brand'].toString().toLowerCase() == selectedBrand.toLowerCase();
     }).toList();
     filteredRows.value = filtered;
   }
@@ -102,8 +106,6 @@ class ShopVisitViewModel extends GetxController{
 
   void saveForm() async {
     if (validateForm()) {
-      print("saveeeeeeeeeeeeeeeeee");
-
       // Compress the image
       Uint8List? compressedImageBytes;
       if (selectedImage.value != null) {
@@ -130,7 +132,7 @@ class ShopVisitViewModel extends GetxController{
       ));
       await shopvisitRepository.getShopVisit();
       // Navigate to another screen if needed
-       Get.to(() => OrderBookingScreen());
+      Get.to(() => OrderBookingScreen());
     }
   }
 
@@ -139,29 +141,27 @@ class ShopVisitViewModel extends GetxController{
       await shopvisitRepository.add(shopVisit);
       await shopvisitRepository.getShopVisit();
       rowsNotifier.value = filteredRows.value;
-      Get.snackbar("Success", "Form submitted successfully!",
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar("Success", "Form submitted successfully!", snackPosition: SnackPosition.BOTTOM);
     }
   }
 
-  fetchAllShopVisit() async{
+  fetchAllShopVisit() async {
     var shopvisit = await shopvisitRepository.getShopVisit();
     allShopVisit.value = shopvisit;
   }
 
-  addShopVisit(ShopVisitModel shopvisitModel){
+  addShopVisit(ShopVisitModel shopvisitModel) {
     shopvisitRepository.add(shopvisitModel);
     fetchAllShopVisit();
   }
 
-  updateShopVisit(ShopVisitModel shopvisitModel){
+  updateShopVisit(ShopVisitModel shopvisitModel) {
     shopvisitRepository.update(shopvisitModel);
     fetchAllShopVisit();
   }
 
-  deleteShopVisit(int id){
+  deleteShopVisit(int id) {
     shopvisitRepository.delete(id);
     fetchAllShopVisit();
   }
-
 }

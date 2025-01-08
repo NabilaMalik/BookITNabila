@@ -116,6 +116,7 @@ class ShopVisitScreen extends StatelessWidget {
                   filterData: viewModel.filterData,
                   rowsNotifier: viewModel.rowsNotifier,
                   filteredRows: viewModel.filteredRows,
+                  viewModel: viewModel,
                 ),
                 const SizedBox(height: 20),
                 ChecklistSection(
