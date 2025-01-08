@@ -1,13 +1,12 @@
 
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import '../Models/shop_visit_model.dart';
 import '../Repositories/shop_visit_repository.dart';
+import '../Screens/orderbooking_screen.dart';
 class ShopVisitViewModel extends GetxController{
 
   var allShopVisit = <ShopVisitModel>[].obs;
@@ -30,7 +29,7 @@ class ShopVisitViewModel extends GetxController{
   var checklistState = List<bool>.filled(4, false).obs;
   var rows = <DataRow>[].obs;
   ValueNotifier<List<Map<String, dynamic>>> rowsNotifier = ValueNotifier<List<Map<String, dynamic>>>([]);
-  final List<String> brands = ['Brand A', 'Brand B', 'Brand C'];
+  final List<String> brands = ['Roxie Color', 'Roxie', 'USHA'];
   final List<String> shops = ['Shop X', 'Shop Y', 'Shop Z'];
   final List<String> checklistLabels = [
     'Performed Store Walkthrough',
@@ -45,16 +44,15 @@ class ShopVisitViewModel extends GetxController{
   }
   void _initializeProductData() {
     final productData = [
-      {'Product': 'Shampoo', 'Quantity': 20},
-      {'Product': 'Soap',  'Quantity': 35},
-      {'Product': 'Cookies',  'Quantity': 50},
-      {'Product': 'Milk',  'Quantity': 15},
-      {'Product': 'Shampoo', 'Quantity': 20},
-      {'Product': 'Soap', 'Quantity': 35},
-      {'Product': 'Cookies','Quantity': 50},
-      {'Product': 'Milk', 'Quantity': 15},
+      {'Product': 'Shampoo', 'Quantity': 20, 'Brand': 'Roxie Color' },
+      {'Product': 'Soap',  'Quantity': 35, 'Brand': 'Roxie Color'},
+      {'Product': 'Cookies',  'Quantity': 50, 'Brand': 'Roxie Color'},
+      {'Product': 'Milk',  'Quantity': 15, 'Brand': 'Roxie'},
+      {'Product': 'Shampoo', 'Quantity': 20, 'Brand': 'Roxie'},
+      {'Product': 'Soap', 'Quantity': 35, 'Brand': 'USHA'},
+      {'Product': 'Cookies','Quantity': 50,  'Brand': 'USHA'},
+      {'Product': 'Milk', 'Quantity': 15,  'Brand': 'USHA'},
     ];
-
     rowsNotifier.value = productData;
     filteredRows.value = productData;
 
@@ -68,8 +66,10 @@ class ShopVisitViewModel extends GetxController{
   void filterData(String query) {
     final lowerCaseQuery = query.toLowerCase();
     final tempList = rowsNotifier.value.where((row) {
-      return row.values.any((value) =>
+      final matchesBrand = row['Brand'] == selectedBrand.value;
+      final matchesQuery = row.values.any((value) =>
           value.toString().toLowerCase().contains(lowerCaseQuery));
+      return matchesBrand && matchesQuery;
     }).toList();
     filteredRows.value = tempList;
   }
@@ -89,12 +89,16 @@ class ShopVisitViewModel extends GetxController{
    //selectedCity.value = ''; // Reset selected city
     _formKey.currentState?.reset();
   }
+  void filterProductsByBrand(String selectedBrand) {
+    final filtered = rowsNotifier.value.where((product) {
+      return product['Brand'] == selectedBrand;
+    }).toList();
+    filteredRows.value = filtered;
+  }
 
   bool validateForm() {
     return _formKey.currentState?.validate() ?? false;
   }
-
-
 
   void saveForm() async {
     if (validateForm()) {
@@ -111,12 +115,6 @@ class ShopVisitViewModel extends GetxController{
         );
       }
 
-      // Save compressed image to file and get the path
-      String? imagePath;
-      if (compressedImageBytes != null) {
-        imagePath = await saveImageToFile(compressedImageBytes);
-      }
-
       await addShopVisit(ShopVisitModel(
         shopName: selectedShop.value,
         shopAddress: shopAddress.value,
@@ -127,24 +125,14 @@ class ShopVisitViewModel extends GetxController{
         planogram: checklistState[1],
         signage: checklistState[2],
         productReviewed: checklistState[3],
-        addPhoto: imagePath,
+        addPhoto: compressedImageBytes,
         feedback: feedBack.value,
       ));
       await shopvisitRepository.getShopVisit();
       // Navigate to another screen if needed
-      // Get.to(() => HomeScreen());
+       Get.to(() => OrderBookingScreen());
     }
   }
-
-  Future<String> saveImageToFile(Uint8List imageBytes) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final path = '${directory.path}/images';
-    final file = File('$path/${DateTime.now().millisecondsSinceEpoch}.png');
-    await file.create(recursive: true);
-    await file.writeAsBytes(imageBytes);
-    return file.path;
-  }
-
 
   Future<void> submitForm() async {
     if (validateForm()) {

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
 enum IconPosition { left, right }
 
 class CustomEditableMenuOption extends StatefulWidget {

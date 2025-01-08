@@ -1,18 +1,16 @@
-
 import 'package:flutter/foundation.dart';
-
+import 'package:get/get.dart';
 import '../../Databases/dp_helper.dart';
 import '../../Databases/util.dart';
 import '../../Models/ScreenModels/products_model.dart';
 
+class ProductsRepository extends GetxService{
 
-class ProductsRepository {
-
-  DBHelper dbHelperProducts = DBHelper();
+  DBHelper dbHelperProducts = Get.put(DBHelper());
 
   Future<List<ProductsModel>> getProductsModel() async {
     var dbClient = await dbHelperProducts.db;
-    List<Map> maps = await dbClient!.query('products', columns: [
+    List<Map> maps = await dbClient.query(productsTableName, columns: [
       'product_code',
       'product_name',
       'uom',
@@ -37,12 +35,12 @@ class ProductsRepository {
   }
   Future<int> add(ProductsModel productsModel) async {
     var dbClient = await dbHelperProducts.db;
-    return await dbClient!.insert('products', productsModel.toMap());
+    return await dbClient.insert(productsTableName, productsModel.toMap());
   }
 
   Future<List<ProductsModel>> getProductsByBrand(String brand) async {
     var dbClient = await dbHelperProducts.db;
-    List<Map> maps = await dbClient!.query(
+    List<Map> maps = await dbClient.query(
       'products',
       columns: [
         'product_code',
@@ -62,18 +60,16 @@ class ProductsRepository {
     return products;
   }
 
-
-
   Future<int> update(ProductsModel productsModel) async {
     var dbClient = await dbHelperProducts.db;
-    return await dbClient!.update('products', productsModel.toMap(),
+    return await dbClient.update(productsTableName, productsModel.toMap(),
        where: 'product_code = ?', whereArgs: [productsModel.product_code]);
   }
 
-  Future<int> delete(int product_code) async {
+  Future<int> delete(int productCode) async {
     var dbClient = await dbHelperProducts.db;
-    return await dbClient!.delete('products',
-        where: 'product_code = ?', whereArgs: [product_code]);
+    return await dbClient.delete(productsTableName,
+        where: 'product_code = ?', whereArgs: [productCode]);
   }
 
 

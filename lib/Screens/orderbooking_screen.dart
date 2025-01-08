@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/ViewModels/ScreenViewModels/order_booking_view_model.dart';
+import 'package:order_booking_app/ViewModels/shop_visit_view_model.dart';
 import 'package:order_booking_app/screens/reconfirm_order_screen.dart';
 import '../widgets/rounded_button.dart';
 import 'Components/custom_dropdown.dart';
@@ -17,6 +18,7 @@ class OrderBookingScreen extends StatefulWidget {
 
 class _OrderBookingScreenState extends State<OrderBookingScreen> {
   final OrderBookingViewModel viewModel = Get.put(OrderBookingViewModel());
+  final ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -47,12 +49,12 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
                   const SizedBox(height: 20),
                   _buildTextField(
                     label: "Shop Name",
-                    text: viewModel.selectedShop.value,
+                    text: shopVisitViewModel.selectedShop.value,
                     icon: Icons.warehouse,
                   ),
                   _buildTextField(
                     label: "Owner Name",
-                    text: viewModel.ownerName.value,
+                    text: shopVisitViewModel.ownerName.value,
                     icon: Icons.person_outlined,
                   ),
                   _buildTextField(
@@ -62,7 +64,7 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
                   ),
                   _buildTextField(
                     label: "Brand",
-                    text: viewModel.selectedBrand.value,
+                    text: shopVisitViewModel.selectedBrand.value,
                     icon: Icons.branding_watermark,
                   ),
                   const SizedBox(height: 20),

@@ -2,12 +2,12 @@
 
 class ProductsModel{
   int? id;
-  String? product_code;
+  dynamic? product_code;
   String?product_name;
   String? uom;
-  String? price;
+  dynamic? price;
   String? brand;
-  dynamic? quantity;
+  String? quantity;
 
   ProductsModel({
     this.id,

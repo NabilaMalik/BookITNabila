@@ -7,7 +7,7 @@ import '../../Repositories/ScreenRepositories/products_repository.dart';
 class ProductsViewModel extends GetxController {
   var allProducts = <ProductsModel>[].obs;
 
-  ProductsRepository productsRepository = ProductsRepository();
+  ProductsRepository productsRepository =Get.put(ProductsRepository());
 
   @override
   void onInit() {

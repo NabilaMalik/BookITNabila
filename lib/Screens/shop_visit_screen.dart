@@ -30,27 +30,28 @@ class ShopVisitScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Obx(() => CustomDropdown(
-                            label: "Brand",
-                            icon: Icons.branding_watermark,
-                            items: viewModel.brands,
-                            selectedValue: viewModel.selectedBrand.value,
-                            onChanged: (value) {
-                              viewModel.selectedBrand.value = value!;
-                            },
-                            useBoxShadow: false,
-                            validator: (value) => value == null || value.isEmpty
-                                ? 'Please select a brand'
-                                : null,
-                            inputBorder: const UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.blue, width: 1.0),
-                            ),
-                            maxHeight: 40.0,
-                            maxWidth: 300.0,
-                            iconSize: 20.0,
-                            contentPadding: 10.0,
-                            iconColor: Colors.blue,
-                          )),
+                        label: "Brand",
+                        icon: Icons.branding_watermark,
+                        items: viewModel.brands,
+                        selectedValue: viewModel.selectedBrand.value,
+                        onChanged: (value) {
+                          viewModel.selectedBrand.value = value!;
+                          viewModel.filterProductsByBrand(value);
+                        },
+                        useBoxShadow: false,
+                        validator: (value) => value == null || value.isEmpty
+                            ? 'Please select a brand'
+                            : null,
+                        inputBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue, width: 1.0),
+                        ),
+                        maxHeight: 50.0,
+                        maxWidth: 355.0,
+                        iconSize: 23.0,
+                        contentPadding: 6.0,
+                        iconColor: Colors.blue,
+                      )),
+
                       Obx(() => CustomDropdown(
                             label: "Shop",
                             icon: Icons.store,
@@ -67,10 +68,10 @@ class ShopVisitScreen extends StatelessWidget {
                               borderSide:
                                   BorderSide(color: Colors.blue, width: 1.0),
                             ),
-                            maxHeight: 40.0,
-                            maxWidth: 300.0,
-                            iconSize: 25.0,
-                            contentPadding: 10.0,
+                            maxHeight: 50.0,
+                            maxWidth: 355.0,
+                            iconSize: 23.0,
+                            contentPadding: 6.0,
                             iconColor: Colors.blue,
                           )),
                       _buildTextField(
@@ -131,9 +132,9 @@ class ShopVisitScreen extends StatelessWidget {
                   onTakePicture: viewModel.takePicture,
                 ),
                 const SizedBox(height: 20),
-                 FeedbackSection( feedBackController: TextEditingController(
-                     text: viewModel.ownerName.value),
-                     onChanged:(value) => viewModel.feedBack.value = value),
+                Obx(()=> FeedbackSection( feedBackController: TextEditingController(
+                     text: viewModel.feedBack.value),
+                     onChanged:(value) => viewModel.feedBack.value = value)),
                 const SizedBox(height: 20),
                 CustomButton(
                   buttonText: "Save",

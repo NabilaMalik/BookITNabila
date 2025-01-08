@@ -1,11 +1,11 @@
-
+import 'package:get/get.dart';
 import 'package:order_booking_app/Databases/util.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart'  show join;
 import 'package:sqflite/sqflite.dart';
 import 'dart:io' as io;
 
-class DBHelper{
+class DBHelper extends GetxService{
  /// In Dart, the underscore (_) at the beginning of a variable or method name indicates private access.
   /// This means the variable or method is only accessible within the file in which it is declared.
   /// Like Encapsulation process
@@ -39,6 +39,8 @@ class DBHelper{
     db.execute("CREATE TABLE $attendanceTableName(id INTEGER PRIMARY KEY, date TEXT, timeIn TEXT, userId TEXT, latIn TEXT, lngIn TEXT, bookerName TEXT,designation, city TEXT, address TEXT)");
     db.execute("CREATE TABLE $attendanceOutTableName(id INTEGER PRIMARY KEY, date TEXT, timeOut TEXT, totalTime TEXT, userId TEXT, latOut TEXT, lngOut TEXT, totalDistance TEXT, address TEXT)");
     db.execute("CREATE TABLE $locationTableName(id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, fileName TEXT, userId TEXT, totalDistance TEXT, userName TEXT, posted INTEGER DEFAULT 0, body BLOB)");
+  db.execute("CREATE TABLE $productsTableName(id NUMBER PRIMARY KEY, product_code TEXT, product_name TEXT, uom TEXT ,price TEXT, brand TEXT, quantity TEXT)");
+
   }
 
 }

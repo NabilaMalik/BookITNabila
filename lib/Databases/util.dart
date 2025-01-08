@@ -1,16 +1,18 @@
 String globalselectedbrand="";
 String userBrand="";
 
-final addShopTableName = "addShop";
-final shopVisitMasterTableName = "shopMasterVisit";
-final shopVisitDetailsTableName = "shopVisitDetails";
-final orderMasterTableName = "orderMaster";
-final orderDetailsTableName = "orderDetails";
-final returnFormMasterTableName = "reConfirmOrder";
-final returnFormDetailsTableName = "returnFormDetails";
-final recoveryFormTableName = "recoveryForm";
-final attendanceTableName = "attendance";
-final attendanceOutTableName = "attendanceOut";
-final locationTableName = "location";
+const addShopTableName = "addShop";
+const shopVisitMasterTableName = "shopMasterVisit";
+const shopVisitDetailsTableName = "shopVisitDetails";
+const orderMasterTableName = "orderMaster";
+const orderDetailsTableName = "orderDetails";
+const returnFormMasterTableName = "reConfirmOrder";
+const returnFormDetailsTableName = "returnFormDetails";
+const recoveryFormTableName = "recoveryForm";
+const attendanceTableName = "attendance";
+const attendanceOutTableName = "attendanceOut";
+const locationTableName = "location";
+const productsTableName = "products";
+
 
 
