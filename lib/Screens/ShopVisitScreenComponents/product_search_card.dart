@@ -161,7 +161,7 @@ class ProductSearchCard extends StatelessWidget {
             ],
             onChanged: (value) {
               row['Quantity'] = int.tryParse(value) ?? 0;
-              filteredRows.refresh();
+              // filteredRows.refresh();
             },
             decoration: const InputDecoration(
               border: InputBorder.none,

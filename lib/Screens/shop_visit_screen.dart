@@ -34,7 +34,8 @@ class ShopVisitScreen extends StatelessWidget {
                         icon: Icons.branding_watermark,
                         items: viewModel.brands,
                         selectedValue: viewModel.selectedBrand.value,
-                        onChanged: (value) {
+                        onChanged: (value) async {
+                          await viewModel.filteredRows.refresh();
                           viewModel.selectedBrand.value = value!;
                           viewModel.filterProductsByBrand(value);
                         },

@@ -63,7 +63,8 @@ class OrderMasterProductSearchCard extends StatelessWidget {
           hintStyle: const TextStyle(fontSize: 16, color: Colors.grey),
           filled: true,
           fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: const BorderSide(color: Colors.grey, width: 1.5),
@@ -80,7 +81,8 @@ class OrderMasterProductSearchCard extends StatelessWidget {
 
   Widget _buildDataTable(BuildContext context) {
     return Obx(() {
-      final rowsToShow = filteredRows.isNotEmpty ? filteredRows : rowsNotifier.value;
+      final rowsToShow =
+          filteredRows.isNotEmpty ? filteredRows : rowsNotifier.value;
 
       if (rowsToShow.isEmpty) {
         return const _NoDataFound();
@@ -91,8 +93,12 @@ class OrderMasterProductSearchCard extends StatelessWidget {
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: DataTable(
-            headingRowColor: MaterialStateProperty.resolveWith((states) => Colors.blue.shade100),
-            dataRowColor: MaterialStateProperty.resolveWith((states) => states.contains(MaterialState.selected) ? Colors.blue.shade50 : Colors.grey.shade50),
+            headingRowColor: MaterialStateProperty.resolveWith(
+                (states) => Colors.blue.shade100),
+            dataRowColor: MaterialStateProperty.resolveWith((states) =>
+                states.contains(MaterialState.selected)
+                    ? Colors.blue.shade50
+                    : Colors.grey.shade50),
             border: TableBorder.all(color: Colors.grey.shade300),
             columnSpacing: 10,
             columns: _buildDataColumns(),
@@ -167,8 +173,10 @@ class OrderMasterProductSearchCard extends StatelessWidget {
   }
 
   DataRow _buildDataRow(Map<String, dynamic> row) {
-    final quantityController = TextEditingController(text: row['Enter Qty']?.toString() ?? '');
-    final amountController = TextEditingController(text: row['Amount']?.toString() ?? '');
+    final quantityController =
+        TextEditingController(text: row['Enter Qty']?.toString() ?? '');
+    final amountController =
+        TextEditingController(text: row['Amount']?.toString() ?? '');
 
     return DataRow(cells: [
       DataCell(
@@ -193,7 +201,7 @@ class OrderMasterProductSearchCard extends StatelessWidget {
             row['Enter Qty'] = value.isEmpty ? 0 : int.tryParse(value) ?? 0;
             _updateAmount(row, amountController);
             viewModel.updateTotal();
-            filteredRows.refresh();
+       //     filteredRows.refresh();
           },
           decoration: const InputDecoration(
             border: InputBorder.none,
@@ -204,7 +212,6 @@ class OrderMasterProductSearchCard extends StatelessWidget {
           style: const TextStyle(fontSize: 14),
         ),
       ),
-
       DataCell(
         Center(
           child: Text(
@@ -240,7 +247,8 @@ class OrderMasterProductSearchCard extends StatelessWidget {
     ]);
   }
 
-  void _updateAmount(Map<String, dynamic> row, TextEditingController amountController) {
+  void _updateAmount(
+      Map<String, dynamic> row, TextEditingController amountController) {
     final quantity = row['Enter Qty'] ?? 0;
     final rate = row['Rate'] ?? 0.0;
     final amount = quantity * rate;
