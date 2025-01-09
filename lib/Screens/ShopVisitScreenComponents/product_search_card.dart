@@ -2,19 +2,21 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:order_booking_app/ViewModels/shop_visit_view_model.dart';
+import 'package:order_booking_app/ViewModels/shop_visit_details_view_model.dart';
 
 class ProductSearchCard extends StatelessWidget {
   final Function(String) filterData;
   final ValueListenable<List<Map<String, dynamic>>> rowsNotifier;
   final RxList<Map<String, dynamic>> filteredRows;
-  final ShopVisitViewModel viewModel;
+  // final ShopVisitViewModel viewModel;
+  final ShopVisitDetailsViewModel shopVisitDetailsViewModel;
 
   const ProductSearchCard({
     required this.filterData,
     required this.rowsNotifier,
     required this.filteredRows,
-    required this.viewModel,
+    // required this.viewModel,
+    required this.shopVisitDetailsViewModel,
     Key? key,
   }) : super(key: key);
 
@@ -63,7 +65,8 @@ class ProductSearchCard extends StatelessWidget {
           hintStyle: const TextStyle(fontSize: 16, color: Colors.grey),
           filled: true,
           fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: const BorderSide(color: Colors.grey, width: 1.5),
@@ -80,7 +83,8 @@ class ProductSearchCard extends StatelessWidget {
 
   Widget _buildDataTable(BuildContext context) {
     return Obx(() {
-      final rowsToShow = filteredRows.isNotEmpty ? filteredRows : rowsNotifier.value;
+      final rowsToShow =
+          filteredRows.isNotEmpty ? filteredRows : rowsNotifier.value;
 
       if (rowsToShow.isEmpty) {
         return const Center(
@@ -103,8 +107,12 @@ class ProductSearchCard extends StatelessWidget {
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: DataTable(
-            headingRowColor: MaterialStateProperty.resolveWith((states) => Colors.blue.shade100),
-            dataRowColor: MaterialStateProperty.resolveWith((states) => states.contains(MaterialState.selected) ? Colors.blue.shade50 : Colors.grey.shade50),
+            headingRowColor: MaterialStateProperty.resolveWith(
+                (states) => Colors.blue.shade100),
+            dataRowColor: MaterialStateProperty.resolveWith((states) =>
+                states.contains(MaterialState.selected)
+                    ? Colors.blue.shade50
+                    : Colors.grey.shade50),
             border: TableBorder.all(color: Colors.grey.shade300),
             columnSpacing: 10,
             columns: _buildDataColumns(),

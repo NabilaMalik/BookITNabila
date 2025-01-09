@@ -12,6 +12,7 @@ class ProductsViewModel extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    fetchAndSaveProducts();
     fetchAllProductsModel();
   }
 
@@ -32,7 +33,9 @@ class ProductsViewModel extends GetxController {
     productsRepository.delete(id);
     fetchAllProductsModel();
   }
-
+  fetchAndSaveProducts() async {
+    await productsRepository.fetchAndSaveProducts();
+  }
   Future<void> fetchProductsByBrands(String brand) async {
     try {
       String brand = userBrand;
@@ -45,7 +48,4 @@ class ProductsViewModel extends GetxController {
       print("Error fetching products by brand: $e");
     }
   }
-
-
-
 }

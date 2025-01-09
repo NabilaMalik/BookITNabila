@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:order_booking_app/Models/shop_visit_details_model.dart';
+import 'package:order_booking_app/ViewModels/ScreenViewModels/ProductsViewModel.dart';
+import '../ViewModels/shop_visit_details_view_model.dart';
 import '../ViewModels/shop_visit_view_model.dart';
 import 'Components/custom_button.dart';
 import 'Components/custom_dropdown.dart';
@@ -11,8 +14,9 @@ import 'ShopVisitScreenComponents/product_search_card.dart';
 
 class ShopVisitScreen extends StatelessWidget {
   ShopVisitScreen({super.key});
-  final ShopVisitViewModel viewModel = Get.put(ShopVisitViewModel());
-
+  final ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
+  final ShopVisitDetailsViewModel shopVisitDetailsViewModel = Get.put(ShopVisitDetailsViewModel());
+  final ProductsViewModel productsViewModel = Get.put(ProductsViewModel());
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -26,18 +30,18 @@ class ShopVisitScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Form(
-                  key: viewModel.formKey,
+                  key: shopVisitViewModel.formKey,
                   child: Column(
                     children: [
                       Obx(() => CustomDropdown(
                         label: "Brand",
                         icon: Icons.branding_watermark,
-                        items: viewModel.brands,
-                        selectedValue: viewModel.selectedBrand.value,
+                        items: shopVisitViewModel.brands,
+                        selectedValue: shopVisitViewModel.selectedBrand.value,
                         onChanged: (value) async {
-                          await viewModel.filteredRows.refresh();
-                          viewModel.selectedBrand.value = value!;
-                          viewModel.filterProductsByBrand(value);
+                          await shopVisitDetailsViewModel.filteredRows.refresh();
+                          shopVisitViewModel.selectedBrand.value = value!;
+                          shopVisitDetailsViewModel.filterProductsByBrand(value);
                         },
                         useBoxShadow: false,
                         validator: (value) => value == null || value.isEmpty
@@ -56,10 +60,10 @@ class ShopVisitScreen extends StatelessWidget {
                       Obx(() => CustomDropdown(
                             label: "Shop",
                             icon: Icons.store,
-                            items: viewModel.shops,
-                            selectedValue: viewModel.selectedShop.value,
+                            items: shopVisitViewModel.shops,
+                            selectedValue: shopVisitViewModel.selectedShop.value,
                             onChanged: (value) {
-                              viewModel.selectedShop.value = value!;
+                              shopVisitViewModel.selectedShop.value = value!;
                             },
                             validator: (value) => value == null || value.isEmpty
                                 ? 'Please select a shop'
@@ -77,35 +81,35 @@ class ShopVisitScreen extends StatelessWidget {
                           )),
                       _buildTextField(
                         controller: TextEditingController(
-                            text: viewModel.shopAddress.value),
+                            text: shopVisitViewModel.shopAddress.value),
                         label: "Shop Address",
                         icon: Icons.location_on,
                         validator: (value) => value == null || value.isEmpty
                             ? 'Please enter the shop address'
                             : null,
                         onChanged: (value) =>
-                            viewModel.shopAddress.value = value,
+                            shopVisitViewModel.shopAddress.value = value,
                       ),
                       _buildTextField(
                         controller: TextEditingController(
-                            text: viewModel.ownerName.value),
+                            text: shopVisitViewModel.ownerName.value),
                         label: "Owner Name",
                         icon: Icons.person_outlined,
                         validator: (value) => value == null || value.isEmpty
                             ? 'Please enter the owner name'
                             : null,
-                        onChanged: (value) => viewModel.ownerName.value = value,
+                        onChanged: (value) => shopVisitViewModel.ownerName.value = value,
                       ),
                       _buildTextField(
                         label: "Booker Name",
                         controller: TextEditingController(
-                            text: viewModel.bookerName.value),
+                            text: shopVisitViewModel.bookerName.value),
                         icon: Icons.person,
                         validator: (value) => value == null || value.isEmpty
                             ? 'Please enter the booker name'
                             : null,
                         onChanged: (value) =>
-                            viewModel.bookerName.value = value,
+                            shopVisitViewModel.bookerName.value = value,
                       ),
                     ],
                   ),
@@ -114,33 +118,33 @@ class ShopVisitScreen extends StatelessWidget {
                 const SectionHeader(title: "Stock Check"),
                 const SizedBox(height: 10),
                 ProductSearchCard(
-                  filterData: viewModel.filterData,
-                  rowsNotifier: viewModel.rowsNotifier,
-                  filteredRows: viewModel.filteredRows,
-                  viewModel: viewModel,
+                  filterData: shopVisitDetailsViewModel.filterData,
+                  rowsNotifier: shopVisitDetailsViewModel.rowsNotifier,
+                  filteredRows: shopVisitDetailsViewModel.filteredRows,
+                  shopVisitDetailsViewModel: shopVisitDetailsViewModel,
                 ),
                 const SizedBox(height: 20),
                 ChecklistSection(
-                  labels: viewModel.checklistLabels,
-                  checklistState: viewModel.checklistState,
+                  labels: shopVisitViewModel.checklistLabels,
+                  checklistState: shopVisitViewModel.checklistState,
                   onStateChanged: (index, value) {
-                    viewModel.checklistState[index] = value;
+                    shopVisitViewModel.checklistState[index] = value;
                   },
                 ),
                 const SizedBox(height: 20),
                 PhotoPicker(
-                  onPickImage: viewModel.pickImage,
-                  selectedImage: viewModel.selectedImage,
-                  onTakePicture: viewModel.takePicture,
+                  onPickImage: shopVisitViewModel.pickImage,
+                  selectedImage: shopVisitViewModel.selectedImage,
+                  onTakePicture: shopVisitViewModel.takePicture,
                 ),
                 const SizedBox(height: 20),
                 Obx(()=> FeedbackSection( feedBackController: TextEditingController(
-                     text: viewModel.feedBack.value),
-                     onChanged:(value) => viewModel.feedBack.value = value)),
+                     text: shopVisitViewModel.feedBack.value),
+                     onChanged:(value) => shopVisitViewModel.feedBack.value = value)),
                 const SizedBox(height: 20),
                 CustomButton(
                   buttonText: "Save",
-                  onTap: viewModel.saveForm,
+                  onTap:() =>   shopVisitViewModel.saveForm,
                   gradientColors: [Colors.blue, Colors.blue],
                 ),
               ],

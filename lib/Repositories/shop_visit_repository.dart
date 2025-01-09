@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 
 import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Models/shop_visit_model.dart';
 
-class ShopVisitRepository {
+class ShopVisitRepository extends GetxService{
   DBHelper dbHelper = DBHelper();
   Future<List<ShopVisitModel>> getShopVisit() async {
     var dbClient = await dbHelper.db;

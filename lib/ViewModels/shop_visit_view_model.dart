@@ -28,7 +28,7 @@ class ShopVisitViewModel extends GetxController {
   var selectedBrand = ''.obs;
   var selectedShop = ''.obs;
   var selectedImage = Rx<XFile?>(null);
-  var filteredRows = <Map<String, dynamic>>[].obs;
+  // var filteredRows = <Map<String, dynamic>>[].obs;
   var checklistState = List<bool>.filled(4, false).obs;
   var rows = <DataRow>[].obs;
   ValueNotifier<List<Map<String, dynamic>>> rowsNotifier = ValueNotifier<List<Map<String, dynamic>>>([]);
@@ -44,39 +44,39 @@ class ShopVisitViewModel extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _initializeProductData();
+    // _initializeProductData();
   }
 
-  Future<void> _initializeProductData() async {
-    try {
-      List<ProductsModel> products = await productsRepository.getProductsModel();
-      final productData = products.map((product) {
-        final quantity = num.tryParse(product.quantity.toString()) ?? 0;
-        return {
-          'Product': product.product_name,
-          'Enter Quantity': quantity,
-          'Brand': product.brand,
-        };
-      }).toList();
-
-      rowsNotifier.value = productData;
-      filterProductsByBrand(selectedBrand.value); // Apply brand filter initially
-
-      print("Initialized Product Data: $productData");
-    } catch (e) {
-      print("Error initializing product data: $e");
-    }
-  }
-  void filterData(String query) {
-    final lowerCaseQuery = query.toLowerCase();
-    final tempList = rowsNotifier.value.where((row) {
-      final matchesBrand = row['Brand'].toString().toLowerCase() == selectedBrand.value.toLowerCase();
-      final matchesQuery = row.values.any((value) =>
-          value.toString().toLowerCase().contains(lowerCaseQuery));
-      return matchesBrand && matchesQuery;
-    }).toList();
-    filteredRows.value = tempList;
-  }
+  // Future<void> _initializeProductData() async {
+  //   try {
+  //     List<ProductsModel> products = await productsRepository.getProductsModel();
+  //     final productData = products.map((product) {
+  //       final quantity = num.tryParse(product.quantity.toString()) ?? 0;
+  //       return {
+  //         'Product': product.product_name,
+  //         'Enter Quantity': quantity,
+  //         'Brand': product.brand,
+  //       };
+  //     }).toList();
+  //
+  //     rowsNotifier.value = productData;
+  //     filterProductsByBrand(selectedBrand.value); // Apply brand filter initially
+  //
+  //     print("Initialized Product Data: $productData");
+  //   } catch (e) {
+  //     print("Error initializing product data: $e");
+  //   }
+  // }
+  // void filterData(String query) {
+  //   final lowerCaseQuery = query.toLowerCase();
+  //   final tempList = rowsNotifier.value.where((row) {
+  //     final matchesBrand = row['Brand'].toString().toLowerCase() == selectedBrand.value.toLowerCase();
+  //     final matchesQuery = row.values.any((value) =>
+  //         value.toString().toLowerCase().contains(lowerCaseQuery));
+  //     return matchesBrand && matchesQuery;
+  //   }).toList();
+  //   filteredRows.value = tempList;
+  // }
 
   Future<void> pickImage() async {
     final image = await picker.pickImage(source: ImageSource.gallery);
@@ -93,12 +93,12 @@ class ShopVisitViewModel extends GetxController {
     _formKey.currentState?.reset();
   }
 
-  void filterProductsByBrand(String selectedBrand) {
-    final filtered = rowsNotifier.value.where((product) {
-      return product['Brand'].toString().toLowerCase() == selectedBrand.toLowerCase();
-    }).toList();
-    filteredRows.value = filtered;
-  }
+  // void filterProductsByBrand(String selectedBrand) {
+  //   final filtered = rowsNotifier.value.where((product) {
+  //     return product['Brand'].toString().toLowerCase() == selectedBrand.toLowerCase();
+  //   }).toList();
+  //   filteredRows.value = filtered;
+  // }
 
   bool validateForm() {
     return _formKey.currentState?.validate() ?? false;
@@ -140,7 +140,7 @@ class ShopVisitViewModel extends GetxController {
     if (validateForm()) {
       await shopvisitRepository.add(shopVisit);
       await shopvisitRepository.getShopVisit();
-      rowsNotifier.value = filteredRows.value;
+    //  rowsNotifier.value = filteredRows.value;
       Get.snackbar("Success", "Form submitted successfully!", snackPosition: SnackPosition.BOTTOM);
     }
   }

@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import '../../Databases/dp_helper.dart';
 import '../../Databases/util.dart';
 import '../../Models/ScreenModels/products_model.dart';
+import '../../Services/ApiServices/api_service.dart';
+import '../../Services/FirebaseServices/firebase_remote_config.dart';
 
 class ProductsRepository extends GetxService{
 
@@ -72,6 +74,20 @@ class ProductsRepository extends GetxService{
         where: 'product_code = ?', whereArgs: [productCode]);
   }
 
+  Future<void> fetchAndSaveProducts() async {
+    try {
+      List<dynamic> data = await ApiService.getData(Config.getApiUrlProducts);
+      var dbClient = await dbHelperProducts.db;
 
+      // Save data to database
+      for (var item in data) {
+        item['posted'] = 1; // Set posted to 1
+        ProductsModel model = ProductsModel.fromMap(item);
+        await dbClient.insert(productsTableName, model.toMap());
+      }
+    } catch (e) {
+      print("Error fetching and saving products: $e");
+    }
+  }
 }
 

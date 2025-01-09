@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:order_booking_app/Databases/dp_helper.dart';
-import 'package:order_booking_app/Databases/util.dart';
 import 'package:order_booking_app/Models/ScreenModels/products_model.dart';
 import 'package:order_booking_app/Repositories/ScreenRepositories/products_repository.dart';
 import 'package:order_booking_app/ViewModels/shop_visit_view_model.dart';
-import '../../Services/ApiServices/api_service.dart';
-import '../../Services/FirebaseServices/firebase_remote_config.dart';
+
 
 class OrderBookingViewModel extends GetxController {
-  DBHelper dbHelper = Get.put(DBHelper());
   ProductsRepository productsRepository = Get.put(ProductsRepository());
   final ImagePicker picker = ImagePicker();
   ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
@@ -34,23 +30,9 @@ class OrderBookingViewModel extends GetxController {
   void onInit() {
     super.onInit();
     _initializeProductData();
+
   }
 
-  Future<void> fetchAndSaveProducts() async {
-    try {
-      List<dynamic> data = await ApiService.getData(Config.getApiUrlProducts);
-      var dbClient = await dbHelper.db;
-
-      // Save data to database
-      for (var item in data) {
-        item['posted'] = 1; // Set posted to 1
-        ProductsModel model = ProductsModel.fromMap(item);
-        await dbClient.insert(productsTableName, model.toMap());
-      }
-    } catch (e) {
-      print("Error fetching and saving products: $e");
-    }
-  }
 
   Future<void> _initializeProductData() async {
     try {

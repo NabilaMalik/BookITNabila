@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 
 import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Models/shop_visit_details_model.dart';
 
-class ShopVisitDetailsRepository {
+
+class ShopVisitDetailsRepository extends GetxService{
   DBHelper dbHelper = DBHelper();
   Future<List<ShopVisitDetailsModel>> getShopVisitDetails() async {
     var dbClient = await dbHelper.db;
@@ -47,4 +49,5 @@ class ShopVisitDetailsRepository {
     return await dbClient
         .delete(shopVisitDetailsTableName, where: 'id = ?', whereArgs: [id]);
   }
+
 }
