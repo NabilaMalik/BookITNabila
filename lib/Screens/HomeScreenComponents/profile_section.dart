@@ -35,7 +35,7 @@ class ProfileSection extends StatelessWidget {
             Spacer(),
             CircleAvatar(
               radius: 40,
-              backgroundImage: AssetImage('assets/images/profile.png'),
+              backgroundImage: AssetImage('assets/images/Hamid2.jpg'),
             ),
           ],
         ),
