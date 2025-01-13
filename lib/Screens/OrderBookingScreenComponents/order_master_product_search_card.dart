@@ -174,10 +174,8 @@ class OrderMasterProductSearchCard extends StatelessWidget {
   }
 
   DataRow _buildDataRow(Map<String, dynamic> row) {
-    final quantityController =
-        TextEditingController(text: row['Enter Qty']?.toString() ?? '');
-    final amountController =
-        TextEditingController(text: row['Amount']?.toString() ?? '');
+    final quantityController = TextEditingController(text: row['Enter Qty']?.toString() ?? '');
+    final amountController = TextEditingController(text: row['Amount']?.toString() ?? '');
 
     return DataRow(cells: [
       DataCell(
@@ -187,10 +185,9 @@ class OrderMasterProductSearchCard extends StatelessWidget {
         TextField(
           controller: quantityController,
           keyboardType: TextInputType.number,
-          // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           onTap: () {
             // Clear the text field and place the cursor at the end
-            quantityController.clear();
+            //quantityController.clear();
             Future.delayed(Duration.zero, () {
               quantityController.selection = TextSelection.fromPosition(
                 TextPosition(offset: quantityController.text.length),
@@ -202,7 +199,7 @@ class OrderMasterProductSearchCard extends StatelessWidget {
             row['Enter Qty'] = value.isEmpty ? 0 : int.tryParse(value) ?? 0;
             _updateAmount(row, amountController);
             orderDetailsViewModel.updateTotalAmount();
-            //     filteredRows.refresh();
+            //filteredRows.refresh(); // Ensure the UI is updated
           },
           decoration: const InputDecoration(
             border: InputBorder.none,
@@ -255,6 +252,7 @@ class OrderMasterProductSearchCard extends StatelessWidget {
     final amount = quantity * rate;
     row['Amount'] = amount;
     amountController.text = amount.toString();
+    //filteredRows.refresh();
   }
 }
 
