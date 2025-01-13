@@ -1,5 +1,5 @@
 
-class ReConfirmOrderModel{
+class OrderDetailsModel{
   int? id;
   String? product;
   String? quantity;
@@ -8,7 +8,7 @@ class ReConfirmOrderModel{
   String? amount;
   int? orderMasterId;
 
-  ReConfirmOrderModel({
+  OrderDetailsModel({
     this.id,
     this.product,
     this.quantity,
@@ -17,8 +17,8 @@ class ReConfirmOrderModel{
     this.amount,
     this.orderMasterId
   });
-  factory ReConfirmOrderModel.fromMap(Map<dynamic,dynamic> json){
-    return ReConfirmOrderModel(
+  factory OrderDetailsModel.fromMap(Map<dynamic,dynamic> json){
+    return OrderDetailsModel(
       id: json['id'],
       product: json['product'],
       quantity: json['quantity'],

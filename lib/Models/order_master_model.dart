@@ -1,4 +1,4 @@
-class ConfirmOrderModel{
+class OrderMasterModel{
   int? orderMasterId;
   String? shopName;
   String? ownerName;
@@ -8,7 +8,7 @@ class ConfirmOrderModel{
   String? creditLimit;
   String? requiredDelivery;
 
-  ConfirmOrderModel({
+  OrderMasterModel({
     this.orderMasterId,
     this.shopName,
     this.ownerName,
@@ -18,8 +18,8 @@ class ConfirmOrderModel{
     this.creditLimit,
     this.requiredDelivery,
   });
-  factory ConfirmOrderModel.fromMap(Map<dynamic,dynamic> json){
-    return ConfirmOrderModel(
+  factory OrderMasterModel.fromMap(Map<dynamic,dynamic> json){
+    return OrderMasterModel(
       orderMasterId: json['orderMasterId'],
       shopName: json['shopName'],
       ownerName: json['ownerName'],

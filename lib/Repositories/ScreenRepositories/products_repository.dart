@@ -18,17 +18,18 @@ class ProductsRepository extends GetxService{
       'uom',
       'price',
       'brand',
-      'quantity'
+      'quantity',
+      'inStock'
     ]);
-    // Print the raw data retrieved from the database
-    if (kDebugMode) {
-      print('Raw data from database:');
-    }
-    for (var map in maps) {
-      if (kDebugMode) {
-        print(map);
-      }
-    }
+    // // Print the raw data retrieved from the database
+    // if (kDebugMode) {
+    //   print('Raw data from database:');
+    // }
+    // for (var map in maps) {
+    //   if (kDebugMode) {
+    //     print(map);
+    //   }
+    // }
     List<ProductsModel> products = [];
     for (int i = 0; i < maps.length; i++) {
       products.add(ProductsModel.fromMap(maps[i]));
@@ -50,7 +51,8 @@ class ProductsRepository extends GetxService{
         'uom',
         'price',
         'brand',
-        'quantity'
+        'quantity',
+        'inStock'
       ],
       where: 'brand = ?',
       whereArgs: [globalselectedbrand],

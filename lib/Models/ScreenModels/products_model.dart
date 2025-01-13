@@ -1,13 +1,12 @@
-// ignore_for_file: unnecessary_question_mark
-
-class ProductsModel{
+class ProductsModel {
   int? id;
-  dynamic? product_code;
-  String?product_name;
+  dynamic product_code;
+  String? product_name;
   String? uom;
-  dynamic? price;
+  dynamic price;
   String? brand;
-  String? quantity;
+  String? quantity; // Existing quantity field
+  String? inStock;  // New inStock field
 
   ProductsModel({
     this.id,
@@ -16,7 +15,8 @@ class ProductsModel{
     this.uom,
     this.price,
     this.brand,
-    this.quantity
+    this.quantity,
+    this.inStock,  // Initialize inStock
   });
 
   // Create a factory constructor to create a Product instance from a map
@@ -28,20 +28,22 @@ class ProductsModel{
       uom: json['uom'],
       price: json['price'],
       brand: json['brand'],
-      quantity: json['quantity']
+      quantity: json['quantity'],
+      inStock: json['inStock'],  // Map inStock
     );
   }
 
   // Create a method to convert a Product instance to a map
   Map<String, dynamic> toMap() {
     return {
-      'id':id,
+      'id': id,
       'product_code': product_code,
       'product_name': product_name,
       'uom': uom,
       'price': price,
       'brand': brand,
-      'quantity':quantity
+      'quantity': quantity,
+      'inStock': inStock,  // Convert inStock to map
     };
   }
 }

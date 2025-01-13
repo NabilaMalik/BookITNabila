@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:order_booking_app/ViewModels/ScreenViewModels/ProductsViewModel.dart';
+import 'package:order_booking_app/ViewModels/ProductsViewModel.dart';
 import 'package:order_booking_app/ViewModels/shop_visit_view_model.dart';
 import '../Databases/dp_helper.dart';
 import '../Models/ScreenModels/products_model.dart';
@@ -13,7 +13,7 @@ class ShopVisitDetailsViewModel extends GetxController {
   ShopVisitDetailsRepository shopvisitDetailsRepository =
       Get.put(ShopVisitDetailsRepository());
   ProductsViewModel productsViewModel = Get.put(ProductsViewModel());
-  ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
+  late ShopVisitViewModel shopVisitViewModel; // remove direct dependency here
   var filteredRows = <Map<String, dynamic>>[].obs;
   var rows = <DataRow>[].obs;
   ValueNotifier<List<Map<String, dynamic>>> rowsNotifier =
@@ -27,7 +27,8 @@ class ShopVisitDetailsViewModel extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
+    // Initialize shopVisitViewModel here after initial dependencies are ready
+    shopVisitViewModel = Get.find<ShopVisitViewModel>();
     super.onInit();
     _initializeProductData();
     fetchAllShopVisitDetails();
@@ -35,10 +36,11 @@ class ShopVisitDetailsViewModel extends GetxController {
 
   Future<void> _initializeProductData() async {
     try {
-      // Fetch all products before accessing them
-      await productsViewModel.fetchAllProductsModel();
+      // // Fetch all products before accessing them
+      // await productsViewModel.fetchAllProductsModel();
 
-      List<ProductsModel> products = productsViewModel.allProducts;
+      List<ProductsModel> products =
+          await productsRepository.getProductsModel();
 
       final productData = products.map((product) {
         final quantity = num.tryParse(product.quantity.toString()) ?? 0;
@@ -50,16 +52,13 @@ class ShopVisitDetailsViewModel extends GetxController {
       }).toList();
 
       rowsNotifier.value = productData;
-
       // Apply brand filter initially
       filterProductsByBrand(shopVisitViewModel.selectedBrand.value);
-
       print("Initialized Product Data: $productData");
     } catch (e) {
       print("Error initializing product data: $e");
     }
   }
-
 
   void filterData(String query) {
     final lowerCaseQuery = query.toLowerCase();
@@ -73,9 +72,11 @@ class ShopVisitDetailsViewModel extends GetxController {
     filteredRows.value = tempList;
   }
 
-  void clearFilters() {
+  clearFilters() {
     _shopVisitDetails.value = ShopVisitDetailsModel();
     _formKey.currentState?.reset();
+    filteredRows.clear(); // Clear the filtered rows
+    rowsNotifier.value = []; // Clear the notifier
   }
 
   void filterProductsByBrand(String selectedBrand) {
@@ -91,36 +92,40 @@ class ShopVisitDetailsViewModel extends GetxController {
         await shopvisitDetailsRepository.getShopVisitDetails();
     allShopVisitDetails.value = shopvisitdetails;
   }
+
   bool validateForm() {
     return _formKey.currentState?.validate() ?? false;
   }
-  // Method to save all shop visit details
-  Future<void> saveAllShopVisitDetails() async {
-    for (var detail in allShopVisitDetails) {
-      await shopvisitDetailsRepository.add(detail);
-    }
-  }
-  void addOrUpdateShopVisitDetails(Map<String, dynamic> row) {
-    // Create a ShopVisitDetailsModel object from the row data
-  addShopVisitDetails(ShopVisitDetailsModel(
-    // id: ,
-      product: row['Product'],
-      quantity: row['Enter Quantity'],
-    // shopVisitMasterId: ,
-  ));
 
-    // Check if the product already exists in the shop visit details
-    int existingIndex = allShopVisitDetails.indexWhere((detail) => detail.product == shopVisitDetails.product);
+  saveFilteredProducts() async {
+    final productsToSave = filteredRows.where((row) {
+      final quantity = row['Quantity'];
+      return quantity != null && quantity != 0;
+    }).toList();
 
-    if (existingIndex >= 0 && existingIndex != isNullOrBlank) {
-      // If it exists, update it
-      allShopVisitDetails[existingIndex] = shopVisitDetails;
-      updateShopVisitDetails(shopVisitDetails);
-    } else {
-      // If it does not exist, add it
-      addShopVisitDetails(shopVisitDetails);
+    for (var product in productsToSave) {
+      final shopVisitDetailsModel = ShopVisitDetailsModel(
+        product: product['Product'],
+        quantity: product['Quantity'].toString(), // Convert quantity to string
+        //shopVisitMasterId: /* Provide appropriate master ID */,
+      );
+      await shopvisitDetailsRepository.add(shopVisitDetailsModel);
+
+      // Map the quantity to the ProductsModel here
+      final products = productsViewModel.allProducts
+          .where((p) => p.product_name == product['Product'])
+          .toList();
+      if (products.isNotEmpty) {
+        products[0].inStock = product['Quantity'].toString();
+        // Debugging print statement
+        print("Updated ${products[0].product_name} quantity to: ${products[0].inStock}");
+      }
     }
+
+    // fetchAllShopVisitDetails(); // Refresh the data
+   // await clearFilters();
   }
+
 
 
   addShopVisitDetails(ShopVisitDetailsModel shopvisitdetailsModel) {

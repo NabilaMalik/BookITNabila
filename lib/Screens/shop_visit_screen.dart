@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/Models/shop_visit_details_model.dart';
-import 'package:order_booking_app/ViewModels/ScreenViewModels/ProductsViewModel.dart';
+import 'package:order_booking_app/ViewModels/ProductsViewModel.dart';
 import '../ViewModels/shop_visit_details_view_model.dart';
 import '../ViewModels/shop_visit_view_model.dart';
 import 'Components/custom_button.dart';
@@ -144,7 +144,7 @@ class ShopVisitScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 CustomButton(
                   buttonText: "Save",
-                  onTap:() =>   shopVisitViewModel.saveForm,
+                  onTap: shopVisitViewModel.saveForm,
                   gradientColors: [Colors.blue, Colors.blue],
                 ),
               ],

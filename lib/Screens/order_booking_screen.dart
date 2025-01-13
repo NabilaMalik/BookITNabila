@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:order_booking_app/ViewModels/ScreenViewModels/order_booking_view_model.dart';
+import 'package:order_booking_app/ViewModels/order_details_view_model.dart';
+import 'package:order_booking_app/ViewModels/order_master_view_model.dart';
 import 'package:order_booking_app/ViewModels/shop_visit_view_model.dart';
 import 'package:order_booking_app/screens/reconfirm_order_screen.dart';
 import '../widgets/rounded_button.dart';
@@ -17,7 +18,8 @@ class OrderBookingScreen extends StatefulWidget {
 }
 
 class _OrderBookingScreenState extends State<OrderBookingScreen> {
-  final OrderBookingViewModel viewModel = Get.put(OrderBookingViewModel());
+  final OrderMasterViewModel orderMasterViewModel = Get.put(OrderMasterViewModel());
+  final OrderDetailsViewModel orderDetailsViewModel = Get.put(OrderDetailsViewModel());
   final ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
   final _formKey = GlobalKey<FormState>();
 
@@ -59,7 +61,7 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
                   ),
                   _buildTextField(
                     label: "Phone Number",
-                    text: viewModel.phoneNumber.value,
+                    text: orderMasterViewModel.phoneNumber.value,
                     icon: Icons.phone,
                   ),
                   _buildTextField(
@@ -69,15 +71,16 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
                   ),
                   const SizedBox(height: 20),
                   OrderMasterProductSearchCard(
-                    filterData: viewModel.filterData,
-                    rowsNotifier: viewModel.rowsNotifier,
-                    filteredRows: viewModel.filteredRows,
-                    viewModel: viewModel,
+                    filterData: orderDetailsViewModel.filterData,
+                    rowsNotifier: orderDetailsViewModel.rowsNotifier,
+                    filteredRows: orderDetailsViewModel.filteredRows,
+                    orderDetailsViewModel: orderDetailsViewModel,
                   ),
                   const SizedBox(height: 20),
                   Obx(() => CustomEditableMenuOption(
                         label: "Total",
-                        initialValue: viewModel.total.value,
+                        //initialValue: orderMasterViewModel.total.value,
+                        initialValue: orderDetailsViewModel.total.value,
                         onChanged:
                             (value) {}, // Read-only mode, no need to change
                         inputBorder: const UnderlineInputBorder(
@@ -89,18 +92,19 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
                         icon: Icons.money,
                         readOnly: true,
                         enableListener: true, // Enable listener where required
-                        viewModel: viewModel, // Pass the viewModel parameter
+                       // viewModel: orderMasterViewModel, // Pass the orderMasterViewModel parameter
+                        viewModel: orderDetailsViewModel, // Pass the orderMasterViewModel parameter
                       )),
                   const SizedBox(height: 10),
                 CustomDropdown(
                     label: "Credit Limit",
                     icon: Icons.payment,
-                    items: viewModel.credits,
-                    selectedValue: viewModel.creditLimit.value,
+                    items: orderMasterViewModel.credits,
+                    selectedValue: orderMasterViewModel.creditLimit.value,
                     onChanged: (value) {
-                      viewModel.creditLimit.value = value!;
+                      orderMasterViewModel.creditLimit.value = value!;
                       if (kDebugMode) {
-                        print("Selected: ${viewModel.creditLimit.value}");
+                        print("Selected: ${orderMasterViewModel.creditLimit.value}");
                       }
                     },
                     useBoxShadow: false,
@@ -120,7 +124,7 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
                   const SizedBox(height: 10),
                   _buildTextField(
                     label: "Required Delivery",
-                    text: viewModel.requiredDelivery.value,
+                    text: orderMasterViewModel.requiredDelivery.value,
                     icon: Icons.calendar_today,
                   ),
                   const SizedBox(height: 30),
@@ -159,9 +163,9 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
       child: RoundedButton(
         text: 'Confirm',
         press: () {
-          Get.to(() => const ReconfirmOrderScreen());
+          // Get.to(() => const ReconfirmOrderScreen());
           if (_formKey.currentState!.validate()) {
-            viewModel.submitForm(_formKey);
+            orderMasterViewModel.submitForm(_formKey);
           }
         },
       ),

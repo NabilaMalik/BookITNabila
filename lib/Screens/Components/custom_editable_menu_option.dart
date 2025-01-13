@@ -9,7 +9,7 @@ class CustomEditableMenuOption extends StatefulWidget {
   final double? width;
   final double? height;
   final String label;
-  final String initialValue;
+  final dynamic initialValue;
   final ValueChanged<String> onChanged;
   final Color? borderColor;
   final IconData? icon;

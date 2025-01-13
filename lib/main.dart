@@ -7,8 +7,10 @@ import 'package:provider/provider.dart';
 import 'Services/FirebaseServices/firebase_remote_config.dart';
 import 'ViewModels/WidgetsViewModel/camera_view_model.dart';
 import 'Services/FirebaseServices/firebase_options.dart';
+import 'ViewModels/order_details_view_model.dart';
+import 'ViewModels/order_master_view_model.dart';
+import 'ViewModels/shop_visit_view_model.dart';
 // import 'package:firebase_app_check/firebase_app_check.dart';
-
 
 // void main() {
 //   runApp(
@@ -32,18 +34,20 @@ Future<void> main() async {
     // await FirebaseAppCheck.instance.activate();
     // // Enable automatic token refresh
     // await FirebaseAppCheck.instance.setTokenAutoRefreshEnabled(true);
-  }
+  } // Lazy instantiation of view models
+  // Get.lazyPut(() => OrderMasterViewModel());
+  // Get.lazyPut(() => OrderDetailsViewModel());
+  // Get.lazyPut(() => ShopVisitViewModel());
+
   runApp(const MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        home:SplashScreen()
-    );
+        debugShowCheckedModeBanner: false, home: SplashScreen());
   }
 }
-

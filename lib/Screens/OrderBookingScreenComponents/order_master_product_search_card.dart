@@ -1,20 +1,21 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import '../../ViewModels/ScreenViewModels/order_booking_view_model.dart';
+
+import '../../ViewModels/order_details_view_model.dart';
+
 
 class OrderMasterProductSearchCard extends StatelessWidget {
   final Function(String) filterData;
   final ValueListenable<List<Map<String, dynamic>>> rowsNotifier;
   final RxList<Map<String, dynamic>> filteredRows;
-  final OrderBookingViewModel viewModel;
+  final OrderDetailsViewModel orderDetailsViewModel;
 
   const OrderMasterProductSearchCard({
     required this.filterData,
     required this.rowsNotifier,
     required this.filteredRows,
-    required this.viewModel,
+    required this.orderDetailsViewModel,
     Key? key,
   }) : super(key: key);
 
@@ -200,8 +201,8 @@ class OrderMasterProductSearchCard extends StatelessWidget {
             // Update the row data and refresh the UI
             row['Enter Qty'] = value.isEmpty ? 0 : int.tryParse(value) ?? 0;
             _updateAmount(row, amountController);
-            viewModel.updateTotal();
-       //     filteredRows.refresh();
+            orderDetailsViewModel.updateTotalAmount();
+            //     filteredRows.refresh();
           },
           decoration: const InputDecoration(
             border: InputBorder.none,

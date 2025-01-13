@@ -8,14 +8,12 @@ class ProductSearchCard extends StatelessWidget {
   final Function(String) filterData;
   final ValueListenable<List<Map<String, dynamic>>> rowsNotifier;
   final RxList<Map<String, dynamic>> filteredRows;
-  // final ShopVisitViewModel viewModel;
   final ShopVisitDetailsViewModel shopVisitDetailsViewModel;
 
   const ProductSearchCard({
     required this.filterData,
     required this.rowsNotifier,
     required this.filteredRows,
-    // required this.viewModel,
     required this.shopVisitDetailsViewModel,
     Key? key,
   }) : super(key: key);
@@ -32,7 +30,7 @@ class ProductSearchCard extends StatelessWidget {
     });
 
     return SizedBox(
-      height: 400, // Adjust this height as needed
+      height: 450, // Adjust this height as needed
       child: Card(
         elevation: 5,
         shape: RoundedRectangleBorder(
@@ -66,7 +64,7 @@ class ProductSearchCard extends StatelessWidget {
           filled: true,
           fillColor: Colors.white,
           contentPadding:
-              const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+          const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: const BorderSide(color: Colors.grey, width: 1.5),
@@ -84,7 +82,7 @@ class ProductSearchCard extends StatelessWidget {
   Widget _buildDataTable(BuildContext context) {
     return Obx(() {
       final rowsToShow =
-          filteredRows.isNotEmpty ? filteredRows : rowsNotifier.value;
+      filteredRows.isNotEmpty ? filteredRows : rowsNotifier.value;
 
       if (rowsToShow.isEmpty) {
         return const Center(
@@ -108,11 +106,11 @@ class ProductSearchCard extends StatelessWidget {
           scrollDirection: Axis.vertical,
           child: DataTable(
             headingRowColor: MaterialStateProperty.resolveWith(
-                (states) => Colors.blue.shade100),
+                    (states) => Colors.blue.shade100),
             dataRowColor: MaterialStateProperty.resolveWith((states) =>
-                states.contains(MaterialState.selected)
-                    ? Colors.blue.shade50
-                    : Colors.grey.shade50),
+            states.contains(MaterialState.selected)
+                ? Colors.blue.shade50
+                : Colors.grey.shade50),
             border: TableBorder.all(color: Colors.grey.shade300),
             columnSpacing: 10,
             columns: _buildDataColumns(),
@@ -169,7 +167,6 @@ class ProductSearchCard extends StatelessWidget {
             ],
             onChanged: (value) {
               row['Quantity'] = int.tryParse(value) ?? 0;
-              // filteredRows.refresh();
             },
             decoration: const InputDecoration(
               border: InputBorder.none,
