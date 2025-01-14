@@ -60,6 +60,7 @@ dependencies:
   firebase_analytics: ^11.3.6
   shared_preferences: ^2.3.5
   flutter_image_compress: ^2.4.0
+  intl: ^0.20.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

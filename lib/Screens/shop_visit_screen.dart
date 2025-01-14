@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:order_booking_app/Models/shop_visit_details_model.dart';
 import 'package:order_booking_app/ViewModels/ProductsViewModel.dart';
 import '../ViewModels/shop_visit_details_view_model.dart';
 import '../ViewModels/shop_visit_view_model.dart';

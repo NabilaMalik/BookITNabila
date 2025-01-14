@@ -1,8 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:order_booking_app/ViewModels/ProductsViewModel.dart';
 import 'package:order_booking_app/ViewModels/shop_visit_view_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../Databases/dp_helper.dart';
+import '../Databases/util.dart';
 import '../Models/ScreenModels/products_model.dart';
 import '../Models/shop_visit_details_model.dart';
 import '../Repositories/ScreenRepositories/products_repository.dart';
@@ -24,6 +28,10 @@ class ShopVisitDetailsViewModel extends GetxController {
   GlobalKey<FormState> get formKey => _formKey;
   final _formKey = GlobalKey<FormState>();
   ProductsRepository productsRepository = Get.put(ProductsRepository());
+  
+  int shopVisitDetailsSerialCounter = 1;
+  String shopVisitDetailsCurrentMonth = DateFormat('MMM').format(DateTime.now());
+  String currentUserId = '';
 
   @override
   void onInit() {
@@ -32,8 +40,49 @@ class ShopVisitDetailsViewModel extends GetxController {
     super.onInit();
     _initializeProductData();
     fetchAllShopVisitDetails();
+    _loadCounter();
+  }
+  Future<void> _loadCounter() async {
+    String currentMonth = DateFormat('MMM').format(DateTime.now());
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    shopVisitDetailsSerialCounter = (prefs.getInt('shopVisitDetailsSerialCounter') ?? 1);
+    shopVisitDetailsCurrentMonth = prefs.getString('shopVisitDetailsCurrentMonth') ?? currentMonth;
+    currentUserId = prefs.getString('currentUserId') ?? '';
+
+    if (shopVisitDetailsCurrentMonth != currentMonth) {
+      shopVisitDetailsSerialCounter = 1;
+      shopVisitDetailsCurrentMonth = currentMonth;
+    }
+    if (kDebugMode) {
+      print('shopVisitDetailsSerialCounter: $shopVisitDetailsSerialCounter');
+    }
   }
 
+  Future<void> _saveCounter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('shopVisitDetailsSerialCounter', shopVisitDetailsSerialCounter);
+    await prefs.setString('shopVisitDetailsCurrentMonth', shopVisitDetailsCurrentMonth);
+    await prefs.setString('currentUserId', currentUserId);
+  }
+
+ String generateNewOrderId(String userId) {
+    String currentMonth = DateFormat('MMM').format(DateTime.now());
+
+    if (currentUserId != userId) {
+      shopVisitDetailsSerialCounter = 1;
+      currentUserId = userId;
+    }
+
+    if (shopVisitDetailsCurrentMonth != currentMonth) {
+      shopVisitDetailsSerialCounter = 1;
+      shopVisitDetailsCurrentMonth = currentMonth;
+    }
+
+    String orderId = "SVD-$userId-$currentMonth-${shopVisitDetailsSerialCounter.toString().padLeft(3, '0')}";
+    shopVisitDetailsSerialCounter++;
+    _saveCounter();
+    return orderId;
+  }
   Future<void> _initializeProductData() async {
     try {
       // // Fetch all products before accessing them
@@ -98,16 +147,21 @@ class ShopVisitDetailsViewModel extends GetxController {
   }
 
   saveFilteredProducts() async {
+    
     final productsToSave = filteredRows.where((row) {
       final quantity = row['Quantity'];
       return quantity != null && quantity != 0;
     }).toList();
 
+
     for (var product in productsToSave) {
+      await _loadCounter();
+      dynamic orderSerial = await generateNewOrderId(userId);
       final shopVisitDetailsModel = ShopVisitDetailsModel(
+        shopVisitDetailsId: orderSerial,
         product: product['Product'],
         quantity: product['Quantity'].toString(), // Convert quantity to string
-        //shopVisitMasterId: /* Provide appropriate master ID */,
+        shopVisitMasterId: shopVisitMasterId,
       );
       await shopvisitDetailsRepository.add(shopVisitDetailsModel);
 
@@ -120,8 +174,9 @@ class ShopVisitDetailsViewModel extends GetxController {
         // Debugging print statement
         print("Updated ${products[0].product_name} quantity to: ${products[0].inStock}");
       }
-    }
 
+    }
+    fetchAllShopVisitDetails();
     // fetchAllShopVisitDetails(); // Refresh the data
    // await clearFilters();
   }

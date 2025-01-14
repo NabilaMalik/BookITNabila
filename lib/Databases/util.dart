@@ -1,6 +1,8 @@
 String globalselectedbrand="";
 String userBrand="";
-
+String userId= "BO2";
+String? shopVisitMasterId = "";
+String? orderMasterId = "";
 const addShopTableName = "addShop";
 const shopVisitMasterTableName = "shopMasterVisit";
 const shopVisitDetailsTableName = "shopVisitDetails";

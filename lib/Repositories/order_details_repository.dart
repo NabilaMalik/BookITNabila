@@ -2,10 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
-import '../Models/ScreenModels/products_model.dart';
 import '../Models/order_details_model.dart';
-import '../ViewModels/order_master_view_model.dart';
-import '../ViewModels/shop_visit_view_model.dart';
 
 class OrderDetailsRepository extends GetxService {
   DBHelper dbHelper = DBHelper();
@@ -13,7 +10,7 @@ class OrderDetailsRepository extends GetxService {
   Future<List<OrderDetailsModel>> getReConfirmOrder() async {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(orderDetailsTableName, columns: [
-      'id',
+      'orderDetailsId',
       'product',
       'quantity',
       'inStock',
@@ -38,7 +35,8 @@ class OrderDetailsRepository extends GetxService {
 
   Future<int> add(OrderDetailsModel orderDetailsModel) async {
     var dbClient = await dbHelper.db;
-    int result = await dbClient.insert(orderDetailsTableName, orderDetailsModel.toMap());
+    int result =
+        await dbClient.insert(orderDetailsTableName, orderDetailsModel.toMap());
     if (kDebugMode) {
       print('Inserted OrderDetailsModel: ${orderDetailsModel.toMap()}');
     }
@@ -47,13 +45,14 @@ class OrderDetailsRepository extends GetxService {
 
   Future<int> update(OrderDetailsModel orderDetailsModel) async {
     var dbClient = await dbHelper.db;
-    return await dbClient.update(orderDetailsTableName, orderDetailsModel.toMap(),
-        where: 'id = ?', whereArgs: [orderDetailsModel.id]);
+    return await dbClient.update(
+        orderDetailsTableName, orderDetailsModel.toMap(),
+        where: 'orderDetailsId = ?', whereArgs: [orderDetailsModel.orderDetailsId]);
   }
 
   Future<int> delete(int id) async {
     var dbClient = await dbHelper.db;
-    return await dbClient.delete(orderDetailsTableName, where: 'id = ?', whereArgs: [id]);
+    return await dbClient
+        .delete(orderDetailsTableName, where: 'orderDetailsId = ?', whereArgs: [id]);
   }
-
 }

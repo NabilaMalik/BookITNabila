@@ -48,12 +48,12 @@ class ShopVisitRepository extends GetxService{
     var dbClient = await dbHelper.db;
     return await dbClient.update(
         shopVisitMasterTableName, shopvisitModel.toMap(),
-        where: 'id = ?', whereArgs: [shopvisitModel.shopVisitMasterId]);
+        where: 'shopVisitMasterId = ?', whereArgs: [shopvisitModel.shopVisitMasterId]);
   }
 
   Future<int> delete(int id) async {
     var dbClient = await dbHelper.db;
     return await dbClient
-        .delete(shopVisitMasterTableName, where: 'id = ?', whereArgs: [id]);
+        .delete(shopVisitMasterTableName, where: 'shopVisitMasterId = ?', whereArgs: [id]);
   }
 }

@@ -1,18 +1,18 @@
 class ShopVisitDetailsModel {
-  int? id;
+  String? shopVisitDetailsId;
   String? product;
   String? quantity;
-  int? shopVisitMasterId;
+  String? shopVisitMasterId;
 
   ShopVisitDetailsModel({
-    this.id,
+    this.shopVisitDetailsId,
     this.product,
     this.quantity,
     this.shopVisitMasterId,
   });
   factory ShopVisitDetailsModel.fromMap(Map<dynamic,dynamic> json){
     return ShopVisitDetailsModel(
-      id: json['id'],
+      shopVisitDetailsId: json['shopVisitDetailsId'],
       product: json['product'],
       quantity: json['quantity'],
       shopVisitMasterId: json['shopVisitMasterId'],
@@ -20,7 +20,7 @@ class ShopVisitDetailsModel {
   }
   Map<String, dynamic> toMap(){
     return{
-      'id':id,
+      'shopVisitDetailsId':shopVisitDetailsId,
       'product':product,
       'quantity':quantity,
       'shopVisitMasterId':shopVisitMasterId,

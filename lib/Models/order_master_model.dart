@@ -1,5 +1,5 @@
 class OrderMasterModel{
-  int? orderMasterId;
+  String? orderMasterId;
   String? shopName;
   String? ownerName;
   String? phoneNumber;

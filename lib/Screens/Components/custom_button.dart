@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'custom_editable_menu_option.dart';
+
 class CustomButton extends StatelessWidget {
   final double? top;
   final double? left;
@@ -9,6 +11,7 @@ class CustomButton extends StatelessWidget {
   final double? height;
   final dynamic buttonText;
   final TextStyle? textStyle;
+  final double? textSize; // Optional text size
   final VoidCallback? onTap;
   final double borderRadius;
   final List<Color> gradientColors;
@@ -19,8 +22,8 @@ class CustomButton extends StatelessWidget {
   final double? iconSize;
   final Color? iconColor;
   final Color? iconBackgroundColor;
-  final ImageProvider? iconImage; // New parameter for iconImage
-  final double? iconImageSize; // New parameter for iconImage size
+  final ImageProvider? iconImage; // Icon image
+  final double? iconImageSize; // Icon image size
   final double spacing;
   final IconPosition iconPosition;
   final TextAlign textAlign;
@@ -37,6 +40,7 @@ class CustomButton extends StatelessWidget {
     this.buttonText,
     this.onTap,
     this.textStyle,
+    this.textSize, // Initialize optional text size
     this.borderRadius = 20.0,
     this.gradientColors = const [Color(0xFF00C853), Color(0xFF64DD17)],
     this.boxShadow,
@@ -46,8 +50,8 @@ class CustomButton extends StatelessWidget {
     this.iconSize = 24.0,
     this.iconColor,
     this.iconBackgroundColor,
-    this.iconImage, // Initialize iconImage
-    this.iconImageSize = 24.0, // Default iconImage size
+    this.iconImage,
+    this.iconImageSize = 24.0,
     this.spacing = 1.0,
     this.iconPosition = IconPosition.left,
     this.textAlign = TextAlign.center,
@@ -107,9 +111,9 @@ class CustomButton extends StatelessWidget {
             buttonText,
             textAlign: textAlign,
             style: textStyle ??
-                const TextStyle(
+                TextStyle(
                   color: Colors.white,
-                  fontSize: 18,
+                  fontSize: textSize ?? 18, // Use the optional textSize here
                   fontWeight: FontWeight.w600,
                 ),
           ),
@@ -125,9 +129,9 @@ class CustomButton extends StatelessWidget {
             buttonText,
             textAlign: textAlign,
             style: textStyle ??
-                const TextStyle(
+                TextStyle(
                   color: Colors.white,
-                  fontSize: 18,
+                  fontSize: textSize ?? 18, // Use the optional textSize here
                   fontWeight: FontWeight.w600,
                 ),
           ),

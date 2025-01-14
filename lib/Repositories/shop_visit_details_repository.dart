@@ -11,7 +11,7 @@ class ShopVisitDetailsRepository extends GetxService{
   Future<List<ShopVisitDetailsModel>> getShopVisitDetails() async {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(shopVisitDetailsTableName, columns: [
-      'id',
+      'shopVisitDetailsId',
       'product',
       'quantity',
       'shopVisitMasterId',
@@ -41,13 +41,13 @@ class ShopVisitDetailsRepository extends GetxService{
     var dbClient = await dbHelper.db;
     return await dbClient.update(
         shopVisitDetailsTableName, shopvisitdetailsModel.toMap(),
-        where: 'id = ?', whereArgs: [shopvisitdetailsModel.id]);
+        where: 'shopVisitDetailsId = ?', whereArgs: [shopvisitdetailsModel.shopVisitDetailsId]);
   }
 
   Future<int> delete(int id) async {
     var dbClient = await dbHelper.db;
     return await dbClient
-        .delete(shopVisitDetailsTableName, where: 'id = ?', whereArgs: [id]);
+        .delete(shopVisitDetailsTableName, where: 'shopVisitDetailsId = ?', whereArgs: [id]);
   }
 
 }

@@ -1,10 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../ViewModels/order_details_view_model.dart';
-
-
 class OrderMasterProductSearchCard extends StatelessWidget {
   final Function(String) filterData;
   final ValueListenable<List<Map<String, dynamic>>> rowsNotifier;

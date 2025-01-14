@@ -1,7 +1,10 @@
-import 'dart:typed_data';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart'; // Add this import
+import 'package:order_booking_app/Databases/util.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:order_booking_app/ViewModels/shop_visit_details_view_model.dart';
 import '../Models/shop_visit_model.dart';
@@ -13,7 +16,7 @@ class ShopVisitViewModel extends GetxController {
   var allShopVisit = <ShopVisitModel>[].obs;
   ShopVisitRepository shopvisitRepository = ShopVisitRepository();
   ProductsRepository productsRepository = Get.put(ProductsRepository());
-  late ShopVisitDetailsViewModel shopVisitDetailsViewModel= Get.put(ShopVisitDetailsViewModel()); // remove direct dependency here
+  late ShopVisitDetailsViewModel shopVisitDetailsViewModel = Get.put(ShopVisitDetailsViewModel());
   final _shopVisit = ShopVisitModel().obs;
   final ImagePicker picker = ImagePicker();
   ShopVisitModel get shopVisit => _shopVisit.value;
@@ -28,7 +31,6 @@ class ShopVisitViewModel extends GetxController {
   var selectedBrand = ''.obs;
   var selectedShop = ''.obs;
   var selectedImage = Rx<XFile?>(null);
-  // var filteredRows = <Map<String, dynamic>>[].obs;
   var checklistState = List<bool>.filled(4, false).obs;
   var rows = <DataRow>[].obs;
   ValueNotifier<List<Map<String, dynamic>>> rowsNotifier = ValueNotifier<List<Map<String, dynamic>>>([]);
@@ -41,37 +43,61 @@ class ShopVisitViewModel extends GetxController {
     'Reviewed Expiry Dates on Products',
   ];
 
+  int shopVisitsSerialCounter = 1;
+  String shopVisitCurrentMonth = DateFormat('MMM').format(DateTime.now());
+  String currentUserId = '';
+
   @override
   void onInit() {
-    // Initialize shopVisitDetailsViewModel here after initial dependencies are ready
-  //  shopVisitDetailsViewModel = Get.find<ShopVisitDetailsViewModel>();
     super.onInit();
+    _loadCounter();
   }
 
-  Future<void> pickImage() async {
-    final image = await picker.pickImage(source: ImageSource.gallery);
-    selectedImage.value = image;
+  Future<void> _loadCounter() async {
+    String currentMonth = DateFormat('MMM').format(DateTime.now());
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    shopVisitsSerialCounter = (prefs.getInt('shopVisitsSerialCounter') ?? 1);
+    shopVisitCurrentMonth = prefs.getString('shopVisitCurrentMonth') ?? currentMonth;
+    currentUserId = prefs.getString('currentUserId') ?? '';
+
+    if (shopVisitCurrentMonth != currentMonth) {
+      shopVisitsSerialCounter = 1;
+      shopVisitCurrentMonth = currentMonth;
+    }
+    if (kDebugMode) {
+      print('SR: $shopVisitsSerialCounter');
+    }
   }
 
-  Future<void> takePicture() async {
-    final image = await picker.pickImage(source: ImageSource.camera);
-    selectedImage.value = image;
+  Future<void> _saveCounter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('shopVisitsSerialCounter', shopVisitsSerialCounter);
+    await prefs.setString('shopVisitCurrentMonth', shopVisitCurrentMonth);
+    await prefs.setString('currentUserId', currentUserId);
   }
 
-clearFilters() {
-    // _shopVisit.value = ShopVisitModel();
-    // _formKey.currentState?.reset();
+  String generateNewOrderId(String userId) {
+    String currentMonth = DateFormat('MMM').format(DateTime.now());
+
+    if (currentUserId != userId) {
+      shopVisitsSerialCounter = 1;
+      currentUserId = userId;
+    }
+
+    if (shopVisitCurrentMonth != currentMonth) {
+      shopVisitsSerialCounter = 1;
+      shopVisitCurrentMonth = currentMonth;
+    }
+
+    String orderId = "SV-$userId-$currentMonth-${shopVisitsSerialCounter.toString().padLeft(3, '0')}";
+    shopVisitsSerialCounter++;
+    _saveCounter();
+    return orderId;
   }
 
-  bool validateForm() {
-    return _formKey.currentState?.validate() ?? false;
-  }
-
-  saveForm() async {
-
+  Future<void> saveForm() async {
     if (validateForm()) {
       print("Start Savinggggggggggggg");
-      // Compress the image
       Uint8List? compressedImageBytes;
       if (selectedImage.value != null) {
         compressedImageBytes = await FlutterImageCompress.compressWithFile(
@@ -81,6 +107,9 @@ clearFilters() {
           quality: 40,
         );
       }
+
+      final orderSerial = generateNewOrderId(userId);
+      shopVisitMasterId = orderSerial;
 
       await addShopVisit(ShopVisitModel(
         shopName: selectedShop.value,
@@ -94,15 +123,13 @@ clearFilters() {
         productReviewed: checklistState[3],
         addPhoto: compressedImageBytes,
         feedback: feedBack.value,
+        shopVisitMasterId: shopVisitMasterId, // Add the generated serial here
       ));
       await shopvisitRepository.getShopVisit();
       await shopVisitDetailsViewModel.saveFilteredProducts();
-      Get.snackbar(
-          "Success", "Form submitted successfully!",
-          snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar("Success", "Form submitted successfully!", snackPosition: SnackPosition.BOTTOM);
       await clearFilters();
 
-      // Navigate to another screen if needed
       Get.to(() => OrderBookingScreen());
     }
   }
@@ -125,5 +152,25 @@ clearFilters() {
   deleteShopVisit(int id) {
     shopvisitRepository.delete(id);
     fetchAllShopVisit();
+  }
+
+  Future<void> pickImage() async {
+    final image = await picker.pickImage(source: ImageSource.gallery);
+    selectedImage.value = image;
+  }
+
+  Future<void> takePicture() async {
+    final image = await picker.pickImage(source: ImageSource.camera);
+    selectedImage.value = image;
+  }
+
+  clearFilters() {
+    // _shopVisit.value = ShopVisitModel();
+    // _formKey.currentState?.reset();
+  }
+
+  bool validateForm() {
+
+    return _formKey.currentState?.validate() ?? false;
   }
 }

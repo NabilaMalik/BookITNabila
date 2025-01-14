@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 class ShopVisitModel {
-  int? shopVisitMasterId;
+  String? shopVisitMasterId;
   String? brand;
   String? shopName;
   String? shopAddress;
