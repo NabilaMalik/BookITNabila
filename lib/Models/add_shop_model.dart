@@ -1,5 +1,5 @@
 class AddShopModel {
-  int? id;
+  String? shopId;
   String? shopName;
   String? city;
   String? shopAddress;
@@ -8,9 +8,10 @@ class AddShopModel {
   String? phoneNumber;
   String? alterPhoneNumber;
   bool isGPSEnabled;
+  int posted;
 
   AddShopModel({
-    this.id,
+    this.shopId,
     this.shopName,
     this.city,
     this.shopAddress,
@@ -19,11 +20,12 @@ class AddShopModel {
     this.phoneNumber,
     this.alterPhoneNumber,
     this.isGPSEnabled = false,
+    this.posted =0,
   });
 
   factory AddShopModel.fromMap(Map<dynamic, dynamic> json) {
     return AddShopModel(
-      id: json['id'],
+      shopId: json['shopId'],
       shopName: json['shopName'],
       city: json['city'],
       shopAddress: json['shopAddress'],
@@ -32,12 +34,13 @@ class AddShopModel {
       phoneNumber: json['phoneNumber'],
       alterPhoneNumber: json['alterPhoneNumber'],
       // isGPSEnabled: json['isGPSEnabled'] == 1,
+      posted:  json['posted']??0
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      'shopId': shopId,
       'shopName': shopName,
       'city': city,
       'shopAddress': shopAddress,
@@ -45,6 +48,7 @@ class AddShopModel {
       'ownerCNIC': ownerCNIC,
       'phoneNumber': phoneNumber,
       'alterPhoneNumber': alterPhoneNumber,
+      'posted': posted
       // 'isGPSEnabled': isGPSEnabled == true ? 1 : 0,
     };
   }

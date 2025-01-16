@@ -36,7 +36,10 @@ class Config {
 // Static configuration parameters for GET API URLs
   static String get getApiUrlLogin => remoteConfig.getString('LoginGetUrl');
 
-  static String get getApiUrlShops => remoteConfig.getString('ShopsGetUrl');
+  static String get getApiUrlShops1 => remoteConfig.getString('ShopsGetUrl1');
+  static String get getApiUrlShops2 => remoteConfig.getString('ShopsGetUrl2');
+  static String get getApiUrlShops3 => remoteConfig.getString('ShopsGetUrl3');
+  static String get getApiUrlShops4 => remoteConfig.getString('ShopsGetUrl4');
 
   static String get getApiUrlProducts =>
       remoteConfig.getString('ProductsGetUrl');

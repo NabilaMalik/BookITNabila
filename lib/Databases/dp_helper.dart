@@ -28,7 +28,7 @@ class DBHelper extends GetxService{
   }
   _onCreate(Database db, int version){
     // Database Table
-    db.execute("CREATE TABLE $addShopTableName(id INTEGER PRIMARY KEY, shopName TEXT,city SELECTED,shopAddress TEXT,ownerName TEXT,ownerCNIC TEXT,phoneNumber TEXT, alterPhoneNumber TEXT )");
+    db.execute("CREATE TABLE $addShopTableName(shopId TEXT PRIMARY KEY, shopName TEXT,city SELECTED,shopAddress TEXT,ownerName TEXT,ownerCNIC TEXT,phoneNumber TEXT, alterPhoneNumber TEXT, userId TEXT, posted INTEGER DEFAULT 0 )");
     db.execute("CREATE TABLE $shopVisitMasterTableName(shopVisitMasterId TEXT PRIMARY KEY, brand TEXT, shopName TEXT, shopAddress TEXT, ShopOwner TEXT, bookerName TEXT,walkthrough TEXT,planogram TEXT,signage TEXT,productReviewed TEXT,feedback TEXT,body BLOB)");
     db.execute("CREATE TABLE $shopVisitDetailsTableName(shopVisitDetailsId TEXT, shopVisitMasterId TEXT, product TEXT, quantity TEXT, FOREIGN KEY(shopVisitMasterId) REFERENCES $shopVisitMasterTableName(shopVisitMasterId))");
     db.execute("CREATE TABLE $orderMasterTableName(orderMasterId TEXT PRIMARY KEY,shopName TEXT,ownerName TEXT, phoneNumber TEXT,brand TEXT,total TEXT, creditLimit TEXT, requiredDelivery TEXT)");

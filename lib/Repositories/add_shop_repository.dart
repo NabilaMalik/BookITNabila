@@ -1,23 +1,32 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:connectivity_plus/connectivity_plus.dart';
 import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Models/add_shop_model.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
-
 import '../Services/ApiServices/api_service.dart';
 import '../Services/FirebaseServices/firebase_remote_config.dart';
-
-
+import 'package:connectivity/connectivity.dart';
 class AddShopRepository extends GetxService {
-  DBHelper dbHelper = DBHelper();
+  DBHelper dbHelper = Get.put(DBHelper());
+
+  void onInit() {
+    super.onInit();
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      if (result != ConnectivityResult.none) {
+        postDataFromDatabaseToAPI();
+      }
+    });
+  }
+
 
   Future<List<AddShopModel>> getAddShop() async {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(addShopTableName, columns: [
-      'id',
+      'shopId',
       'shopName',
       'city',
       'shopAddress',
@@ -25,10 +34,19 @@ class AddShopRepository extends GetxService {
       'ownerCNIC',
       'phoneNumber',
       'alterPhoneNumber',
+      'posted'
     ]);
     List<AddShopModel> addShop = [];
     for (int i = 0; i < maps.length; i++) {
       addShop.add(AddShopModel.fromMap(maps[i]));
+    }
+    if (kDebugMode) {
+      print('Shop Raw data from database:');
+    }
+    for (var map in maps) {
+      if (kDebugMode) {
+        print(map);
+      }
     }
     return addShop;
   }
@@ -41,12 +59,12 @@ class AddShopRepository extends GetxService {
   Future<int> update(AddShopModel addShopModel) async {
     var dbClient = await dbHelper.db;
     return await dbClient.update(addShopTableName, addShopModel.toMap(),
-        where: 'id = ?', whereArgs: [addShopModel.id]);
+        where: 'shopId = ?', whereArgs: [addShopModel.shopId]);
   }
 
-  Future<int> delete(int id) async {
+  Future<int> delete(String? id) async {
     var dbClient = await dbHelper.db;
-    return await dbClient.delete(addShopTableName, where: 'id = ?', whereArgs: [id]);
+    return await dbClient.delete(addShopTableName, where: 'shopId = ?', whereArgs: [id]);
   }
 
   Future<void> fetchAllAddShop(RxList<AddShopModel> allAddShop) async {
@@ -57,6 +75,7 @@ class AddShopRepository extends GetxService {
   Future<void> addAddShop(AddShopModel addShopModel, RxList<AddShopModel> allAddShop) async {
     await add(addShopModel);
     await fetchAllAddShop(allAddShop);
+    await postDataFromDatabaseToAPI();
   }
 
   Future<void> updateAddShop(AddShopModel addShopModel, RxList<AddShopModel> allAddShop) async {
@@ -64,7 +83,7 @@ class AddShopRepository extends GetxService {
     await fetchAllAddShop(allAddShop);
   }
 
-  Future<void> deleteAddShop(int id, RxList<AddShopModel> allAddShop) async {
+  Future<void> deleteAddShop(String? id, RxList<AddShopModel> allAddShop) async {
     await delete(id);
     await fetchAllAddShop(allAddShop);
   }
@@ -101,5 +120,94 @@ class AddShopRepository extends GetxService {
       cities = await fetchCitiesFromApi();
     }
     return cities;
+  }
+
+  Future<void> fetchAndSaveShops() async {
+    print(Config.getApiUrlShops1);
+    List<dynamic> data = await ApiService.getData(Config.getApiUrlShops1);
+    var dbClient = await dbHelper.db;
+
+    // Save data to database
+    for (var item in data) {
+      item['posted'] = 1; // Set posted to 1
+      AddShopModel model = AddShopModel.fromMap(item);
+      await dbClient.insert(addShopTableName, model.toMap());
+    }
+  }
+
+  // Fetch all unposted shops (posted = 0)
+  Future<List<AddShopModel>> getUnPostedShops() async {
+    var dbClient = await dbHelper.db;
+    List<Map> maps = await dbClient.query(
+      addShopTableName,
+      where: 'posted = ?',
+      whereArgs: [0],  // Fetch shops that have not been posted
+    );
+
+    List<AddShopModel> unpostedShops = maps.map((map) => AddShopModel.fromMap(map)).toList();
+    return unpostedShops;
+  }
+
+  Future<void> postDataFromDatabaseToAPI() async {
+    try {
+      var unPostedShops = await getUnPostedShops();
+
+      if (await isNetworkAvailable()) {
+        for (var shop in unPostedShops) {
+          try {
+            await postShopToAPI(shop);
+            shop.posted = 1;
+            await update(shop);
+            if (kDebugMode) {
+              print('Shop with id ${shop.shopId} posted and updated in local database.');
+            }
+          } catch (e) {
+            if (kDebugMode) {
+              print('Failed to post shop with id ${shop.shopId}: $e');
+            }
+          }
+        }
+      } else {
+        if (kDebugMode) {
+          print('Network not available. Unposted shops will remain local.');
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error fetching unposted shops: $e');
+      }
+    }
+  }
+
+  Future<void> postShopToAPI(AddShopModel shop) async {
+    try {
+      await Config.fetchLatestConfig();
+      if (kDebugMode) {
+        print('Updated Shop Post API: ${Config.postApiUrlShops}');
+      }
+      var shopData = shop.toMap();
+      final response = await http.post(
+        Uri.parse(Config.postApiUrlShops),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode(shopData),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print('Shop data posted successfully: $shopData');
+      } else {
+        throw Exception('Server error: ${response.statusCode}, ${response.body}');
+      }
+    } catch (e) {
+      print('Error posting shop data: $e');
+      throw Exception('Failed to post data: $e');
+    }
+  }
+
+  Future<bool> isNetworkAvailable() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    return connectivityResult != ConnectivityResult.none;
   }
 }
