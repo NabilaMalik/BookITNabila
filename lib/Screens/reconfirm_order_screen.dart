@@ -74,7 +74,7 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildField(label: 'Order ID', value: orderMasterId),
+            _buildField(label: 'Order ID', value: order_master_id),
             _buildField(label: 'Customer Name', value: shopVisitViewModel.selectedShop.value),
             _buildField(label: 'Phone Number', value: '+1234567890'),
 
@@ -239,7 +239,7 @@ class _OrderFooterState extends State<OrderFooter> {
           ),
           _buildField(
             label: 'Credit Limit',
-            value: orderMasterViewModel.creditLimit.value,
+            value: orderMasterViewModel.credit_limit.value,
           ),
           _buildField(
             label: 'Required Date',

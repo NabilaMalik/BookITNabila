@@ -3,10 +3,10 @@ import 'dart:typed_data';
 class ShopVisitModel {
   String? shopVisitMasterId;
   String? brand;
-  String? shopName;
-  String? shopAddress;
-  String? shopOwner;
-  String? bookerName;
+  String? shop_name;
+  String? shop_address;
+  String? owner_name;
+  String? booker_name;
   bool? walkthrough;
   bool? planogram;
   bool? signage;
@@ -17,10 +17,10 @@ class ShopVisitModel {
   ShopVisitModel({
     this.shopVisitMasterId,
     this.brand,
-    this.shopName,
-    this.shopAddress,
-    this.shopOwner,
-    this.bookerName,
+    this.shop_name,
+    this.shop_address,
+    this.owner_name,
+    this.booker_name,
     this.walkthrough,
     this.planogram,
     this.signage,
@@ -33,10 +33,10 @@ class ShopVisitModel {
     return ShopVisitModel(
       shopVisitMasterId: json['shopVisitMasterId'],
       brand: json['brand'],
-      shopName: json['shopName'],
-      shopAddress: json['shopAddress'],
-      shopOwner: json['ShopOwner'],
-      bookerName: json['bookerName'],
+      shop_name: json['shop_name'],
+      shop_address: json['shop_address'],
+      owner_name: json['owner_name'],
+      booker_name: json['booker_name'],
       walkthrough: json['walkthrough'] == 1,
       planogram: json['planogram'] == 1,
       signage: json['signage'] == 1,
@@ -50,10 +50,10 @@ class ShopVisitModel {
     return {
       'shopVisitMasterId': shopVisitMasterId,
       'brand': brand,
-      'shopName': shopName,
-      'shopAddress': shopAddress,
-      'ShopOwner': shopOwner,
-      'bookerName': bookerName,
+      'shop_name': shop_name,
+      'shop_address': shop_address,
+      'owner_name': owner_name,
+      'booker_name': booker_name,
       'walkthrough': walkthrough == true ? 1 : 0,
       'planogram': planogram == true ? 1 : 0,
       'signage': signage == true ? 1 : 0,

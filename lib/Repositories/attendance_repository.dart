@@ -11,11 +11,11 @@ class AttendanceRepository {
     List<Map> maps = await dbClient.query(attendanceTableName, columns: [
       'id',
       'date',
-      'timeIn',
+      'time_in',
       'userId',
       'latIn',
       'lngIn',
-      'bookerName',
+      'booker_name',
       'designation',
       'city',
       'address'

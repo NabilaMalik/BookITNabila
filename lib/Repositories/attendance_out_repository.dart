@@ -12,12 +12,12 @@ class AttendanceOutRepository extends GetxService {
     List<Map> maps = await dbClient.query(attendanceOutTableName, columns: [
       'id',
       'date',
-      'timeOut',
+      'time_out',
       'userId',
-      'totalTime',
+      'total_time',
       'latOut',
       'lngOut',
-      'totalDistance',
+      'total_distance',
       'address'
     ]);
     List<AttendanceOutModel> attendanceout = [];

@@ -43,34 +43,34 @@ class AddShopViewModel extends GetxController {
 
   void setShopField(String field, dynamic value) {
     switch (field) {
-      case 'shopName':
+      case 'shop_name':
         _shop.update((shop) {
-          shop!.shopName = value;
+          shop!.shop_name = value;
         });
         break;
-      case 'shopAddress':
+      case 'shop_address':
         _shop.update((shop) {
-          shop!.shopAddress = value;
+          shop!.shop_address = value;
         });
         break;
-      case 'ownerName':
+      case 'owner_name':
         _shop.update((shop) {
-          shop!.ownerName = value;
+          shop!.owner_name = value;
         });
         break;
-      case 'ownerCNIC':
+      case 'owner_cnic':
         _shop.update((shop) {
-          shop!.ownerCNIC = value;
+          shop!.owner_cnic = value;
         });
         break;
-      case 'phoneNumber':
+      case 'phone_no':
         _shop.update((shop) {
-          shop!.phoneNumber = value;
+          shop!.phone_no = value;
         });
         break;
-      case 'alterPhoneNumber':
+      case 'alternative_phone_no':
         _shop.update((shop) {
-          shop!.alterPhoneNumber = value;
+          shop!.alternative_phone_no = value;
         });
         break;
       case 'city':
@@ -147,13 +147,13 @@ class AddShopViewModel extends GetxController {
       final shopSerial = generateNewOrderId(userId);
 
       await _shopRepository.addAddShop(AddShopModel(
-        shopId: shopSerial,
-        shopName: _shop.value.shopName,
-        shopAddress: _shop.value.shopAddress,
-        ownerName: _shop.value.ownerName,
-        ownerCNIC: _shop.value.ownerCNIC,
-        phoneNumber: _shop.value.phoneNumber,
-        alterPhoneNumber: _shop.value.alterPhoneNumber,
+        shop_id: shopSerial,
+        shop_name: _shop.value.shop_name,
+        shop_address: _shop.value.shop_address,
+        owner_name: _shop.value.owner_name,
+        owner_cnic: _shop.value.owner_cnic,
+        phone_no: _shop.value.phone_no,
+        alternative_phone_no: _shop.value.alternative_phone_no,
         city: _shop.value.city,
         isGPSEnabled: _shop.value.isGPSEnabled,
       ), allAddShop);

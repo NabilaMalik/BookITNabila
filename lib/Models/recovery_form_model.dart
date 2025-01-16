@@ -1,27 +1,27 @@
 class RecoveryFormModel{
   int? id;
-  String? shopName;
-  String? currentBalance;
+  String? shop_name;
+  String? current_balance;
   String? date;
-  String? cashRecovery;
-  String? newBalance;
+  String? cash_recovery;
+  String? new_balance;
 
   RecoveryFormModel({
     this.id,
-    this.shopName,
-    this.currentBalance,
-    this.cashRecovery,
-    this.newBalance,
+    this.shop_name,
+    this.current_balance,
+    this.cash_recovery,
+    this.new_balance,
     this.date,
   });
 
   factory RecoveryFormModel.fromMap(Map<dynamic,dynamic> json){
     return RecoveryFormModel(
       id: json['id'],
-      shopName: json['shopName'],
-      currentBalance: json['currentBalance'],
-        cashRecovery: json['cashRecovery'],
-        newBalance: json['newBalance'],
+      shop_name: json['shop_name'],
+      current_balance: json['current_balance'],
+        cash_recovery: json['cash_recovery'],
+        new_balance: json['new_balance'],
         date: json['date'],
     );
   }
@@ -29,10 +29,10 @@ class RecoveryFormModel{
   Map<String, dynamic> toMap(){
     return{
       'id':id,
-      'shopName':shopName,
-      'currentBalance':currentBalance,
-      'cashRecovery':cashRecovery,
-      'newBalance':newBalance,
+      'shop_name':shop_name,
+      'current_balance':current_balance,
+      'cash_recovery':cash_recovery,
+      'new_balance':new_balance,
       'date':date,
 
     };

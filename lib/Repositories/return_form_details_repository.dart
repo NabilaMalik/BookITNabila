@@ -9,7 +9,7 @@ class ReturnFormDetailsRepository {
   Future<List<ReturnFormDetailsModel>> getReturnFormDetails() async {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(returnFormDetailsTableName,
-        columns: ['id', 'item', 'qty', 'reason', 'returnMasterId']);
+        columns: ['id', 'item', 'qty', 'reason', 'return_master_id']);
     List<ReturnFormDetailsModel> returnformdetails = [];
     for (int i = 0; i < maps.length; i++) {
       returnformdetails.add(ReturnFormDetailsModel.fromMap(maps[i]));

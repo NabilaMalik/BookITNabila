@@ -10,10 +10,10 @@ class RecoveryFormRepository {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(recoveryFormTableName, columns: [
       'Id',
-      'shopName',
-      'currentBalance',
-      'cashRecovery',
-      'newBalance',
+      'shop_name',
+      'current_balance',
+      'cash_recovery',
+      'new_balance',
       'date'
     ]);
     List<RecoveryFormModel> recoveryform = [];

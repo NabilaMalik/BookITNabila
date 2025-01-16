@@ -13,13 +13,13 @@ OrderDetailsViewModel orderDetailsViewModel =Get.put(OrderDetailsViewModel());
   Future<List<OrderMasterModel>> getConfirmOrder() async {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(orderMasterTableName, columns: [
-      'orderMasterId',
-      'shopName',
-      'ownerName',
-      'phoneNumber',
-      'ownerName',
+      'order_master_id',
+      'shop_name',
+      'owner_name',
+      'phone_no',
+      'owner_name',
       'total',
-      'creditLimit',
+      'credit_limit',
       'requiredDelivery'
     ]);
     List<OrderMasterModel> confirmorder = [];
@@ -45,12 +45,12 @@ OrderDetailsViewModel orderDetailsViewModel =Get.put(OrderDetailsViewModel());
   Future<int> update(OrderMasterModel confirmorderModel) async {
     var dbClient = await dbHelper.db;
     return await dbClient.update(orderMasterTableName, confirmorderModel.toMap(),
-        where: 'orderMasterId = ?', whereArgs: [confirmorderModel.orderMasterId]);
+        where: 'order_master_id = ?', whereArgs: [confirmorderModel.order_master_id]);
   }
 
   Future<int> delete(int id) async {
     var dbClient = await dbHelper.db;
-    return await dbClient.delete(orderMasterTableName, where: 'orderMasterId = ?', whereArgs: [id]);
+    return await dbClient.delete(orderMasterTableName, where: 'order_master_id = ?', whereArgs: [id]);
   }
 
 }

@@ -35,7 +35,7 @@ class ShopVisitScreen extends StatelessWidget {
                       Obx(() => CustomDropdown(
                         label: "Brand",
                         icon: Icons.branding_watermark,
-                        items: shopVisitViewModel.brands,
+                        items: shopVisitViewModel.brands.where((brand) => brand != null).cast<String>().toList(),
                         selectedValue: shopVisitViewModel.selectedBrand.value,
                         onChanged: (value) async {
                           await shopVisitDetailsViewModel.filteredRows.refresh();
@@ -59,7 +59,7 @@ class ShopVisitScreen extends StatelessWidget {
                       Obx(() => CustomDropdown(
                             label: "Shop",
                             icon: Icons.store,
-                            items: shopVisitViewModel.shops,
+                        items: shopVisitViewModel.shops.value.where((shop) => shop != null).cast<String>().toList(),
                             selectedValue: shopVisitViewModel.selectedShop.value,
                             onChanged: (value) {
                               shopVisitViewModel.selectedShop.value = value!;
@@ -80,35 +80,35 @@ class ShopVisitScreen extends StatelessWidget {
                           )),
                       _buildTextField(
                         controller: TextEditingController(
-                            text: shopVisitViewModel.shopAddress.value),
+                            text: shopVisitViewModel.shop_address.value),
                         label: "Shop Address",
                         icon: Icons.location_on,
                         validator: (value) => value == null || value.isEmpty
                             ? 'Please enter the shop address'
                             : null,
                         onChanged: (value) =>
-                            shopVisitViewModel.shopAddress.value = value,
+                            shopVisitViewModel.shop_address.value = value,
                       ),
                       _buildTextField(
                         controller: TextEditingController(
-                            text: shopVisitViewModel.ownerName.value),
+                            text: shopVisitViewModel.owner_name.value),
                         label: "Owner Name",
                         icon: Icons.person_outlined,
                         validator: (value) => value == null || value.isEmpty
                             ? 'Please enter the owner name'
                             : null,
-                        onChanged: (value) => shopVisitViewModel.ownerName.value = value,
+                        onChanged: (value) => shopVisitViewModel.owner_name.value = value,
                       ),
                       _buildTextField(
                         label: "Booker Name",
                         controller: TextEditingController(
-                            text: shopVisitViewModel.bookerName.value),
+                            text: shopVisitViewModel.booker_name.value),
                         icon: Icons.person,
                         validator: (value) => value == null || value.isEmpty
                             ? 'Please enter the booker name'
                             : null,
                         onChanged: (value) =>
-                            shopVisitViewModel.bookerName.value = value,
+                            shopVisitViewModel.booker_name.value = value,
                       ),
                     ],
                   ),

@@ -1,38 +1,38 @@
 class AddShopModel {
-  String? shopId;
-  String? shopName;
+  String? shop_id;
+  String? shop_name;
   String? city;
-  String? shopAddress;
-  String? ownerName;
-  String? ownerCNIC;
-  String? phoneNumber;
-  String? alterPhoneNumber;
+  String? shop_address;
+  String? owner_name;
+  String? owner_cnic;
+  String? phone_no;
+  String? alternative_phone_no;
   bool isGPSEnabled;
   int posted;
 
   AddShopModel({
-    this.shopId,
-    this.shopName,
+    this.shop_id,
+    this.shop_name,
     this.city,
-    this.shopAddress,
-    this.ownerName,
-    this.ownerCNIC,
-    this.phoneNumber,
-    this.alterPhoneNumber,
+    this.shop_address,
+    this.owner_name,
+    this.owner_cnic,
+    this.phone_no,
+    this.alternative_phone_no,
     this.isGPSEnabled = false,
     this.posted =0,
   });
 
   factory AddShopModel.fromMap(Map<dynamic, dynamic> json) {
     return AddShopModel(
-      shopId: json['shopId'],
-      shopName: json['shopName'],
+      shop_id: json['shop_id'],
+      shop_name: json['shop_name'],
       city: json['city'],
-      shopAddress: json['shopAddress'],
-      ownerName: json['ownerName'],
-      ownerCNIC: json['ownerCNIC'],
-      phoneNumber: json['phoneNumber'],
-      alterPhoneNumber: json['alterPhoneNumber'],
+      shop_address: json['shop_address'],
+      owner_name: json['owner_name'],
+      owner_cnic: json['owner_cnic'],
+      phone_no: json['phone_no'],
+      alternative_phone_no: json['alternative_phone_no'],
       // isGPSEnabled: json['isGPSEnabled'] == 1,
       posted:  json['posted']??0
     );
@@ -40,14 +40,14 @@ class AddShopModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'shopId': shopId,
-      'shopName': shopName,
+      'shop_id': shop_id,
+      'shop_name': shop_name,
       'city': city,
-      'shopAddress': shopAddress,
-      'ownerName': ownerName,
-      'ownerCNIC': ownerCNIC,
-      'phoneNumber': phoneNumber,
-      'alterPhoneNumber': alterPhoneNumber,
+      'shop_address': shop_address,
+      'owner_name': owner_name,
+      'owner_cnic': owner_cnic,
+      'phone_no': phone_no,
+      'alternative_phone_no': alternative_phone_no,
       'posted': posted
       // 'isGPSEnabled': isGPSEnabled == true ? 1 : 0,
     };

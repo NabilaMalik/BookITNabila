@@ -11,9 +11,9 @@ class SignUpController extends GetxController {
   final companyNameController = TextEditingController();
   final companyAddressController = TextEditingController();
   final companyEmailController = TextEditingController();
-  final ownerNameController = TextEditingController();
+  final owner_nameController = TextEditingController();
   final ownerEmailController = TextEditingController();
-  final phoneNumberController = TextEditingController();
+  final phone_noController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
@@ -27,9 +27,9 @@ class SignUpController extends GetxController {
         companyName: companyNameController.text,
         companyAddress: companyAddressController.text,
         companyEmail: companyEmailController.text,
-        ownerName: ownerNameController.text,
+        owner_name: owner_nameController.text,
         ownerEmail: ownerEmailController.text,
-        phoneNumber: phoneNumberController.text,
+        phone_no: phone_noController.text,
         password: passwordController.text,
       );
       return true;
@@ -43,9 +43,9 @@ class SignUpController extends GetxController {
     companyNameController.dispose();
     companyAddressController.dispose();
     companyEmailController.dispose();
-    ownerNameController.dispose();
+    owner_nameController.dispose();
     ownerEmailController.dispose();
-    phoneNumberController.dispose();
+    phone_noController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
     super.onClose();

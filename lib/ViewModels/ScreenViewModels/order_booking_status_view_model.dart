@@ -7,7 +7,7 @@ class OrderBookingStatusViewModel extends GetxController {
   var orders = <OrderBookingStatusModel>[].obs;
   var startDate = ''.obs;
   var endDate = ''.obs;
-  var shopName = ''.obs;
+  var shop_name = ''.obs;
   var orderId = ''.obs;
   var status = ''.obs;
   var filteredRows = <OrderBookingStatusModel>[].obs;
@@ -43,7 +43,7 @@ class OrderBookingStatusViewModel extends GetxController {
 
   // Clear filters
   void clearFilters() {
-    shopName.value = '';
+    shop_name.value = '';
     orderId.value = '';
     status.value = '';
     startDate.value = '';
@@ -55,8 +55,8 @@ class OrderBookingStatusViewModel extends GetxController {
   void filterData([String query = '']) {
     final lowerCaseQuery = query.toLowerCase();
     filteredRows.value = orders.where((order) {
-      final isShopMatch = shopName.value.isEmpty ||
-          order.shop.toLowerCase().contains(shopName.value.toLowerCase());
+      final isShopMatch = shop_name.value.isEmpty ||
+          order.shop.toLowerCase().contains(shop_name.value.toLowerCase());
       final isOrderNoMatch = orderId.value.isEmpty ||
           order.orderNo.toLowerCase().contains(orderId.value.toLowerCase());
       final isStatusMatch = status.value.isEmpty ||

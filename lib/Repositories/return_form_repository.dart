@@ -9,7 +9,7 @@ class ReturnFormRepository {
   Future<List<ReturnFormModel>> getReturnForm() async {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(returnFormMasterTableName,
-        columns: ['returnMasterId', 'selectShop']);
+        columns: ['return_master_id', 'select_shop']);
     List<ReturnFormModel> returnform = [];
     for (int i = 0; i < maps.length; i++) {
       returnform.add(ReturnFormModel.fromMap(maps[i]));
@@ -35,7 +35,7 @@ class ReturnFormRepository {
     var dbClient = await dbHelper.db;
     return await dbClient.update(
         returnFormMasterTableName, returnformModel.toMap(),
-        where: 'id = ?', whereArgs: [returnformModel.returnMasterId]);
+        where: 'id = ?', whereArgs: [returnformModel.return_master_id]);
   }
 
   Future<int> delete(int id) async {

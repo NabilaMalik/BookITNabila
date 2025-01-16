@@ -12,10 +12,10 @@ Widget buildShopAndOrderRow(OrderBookingStatusViewModel viewModel) {
           hint: "Search",
           items: viewModel.orders.map((order) => order.shop).toList(),
           onChanged: (value) {
-            viewModel.shopName.value = value ?? '';
+            viewModel.shop_name.value = value ?? '';
             viewModel.filterData();
           },
-          selectedItem: viewModel.shopName.value.isEmpty ? null : viewModel.shopName.value,
+          selectedItem: viewModel.shop_name.value.isEmpty ? null : viewModel.shop_name.value,
         ),
       ),
       const SizedBox(width: 10),

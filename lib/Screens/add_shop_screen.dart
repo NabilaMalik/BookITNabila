@@ -40,7 +40,7 @@ class AddShopScreen extends StatelessWidget {
                     label: "Shop Name",
                     icon: Icons.store,
                     onChanged: (value) =>
-                        _viewModel.setShopField('shopName', value),
+                        _viewModel.setShopField('shop_name', value),
                     validator: (value) => value == null || value.isEmpty
                         ? "Please enter shop name"
                         : null,
@@ -64,7 +64,7 @@ class AddShopScreen extends StatelessWidget {
                     label: "Shop Address",
                     icon: Icons.place,
                     onChanged: (value) =>
-                        _viewModel.setShopField('shopAddress', value),
+                        _viewModel.setShopField('shop_address', value),
                     validator: (value) => value == null || value.isEmpty
                         ? "Please enter shop address"
                         : null,
@@ -73,7 +73,7 @@ class AddShopScreen extends StatelessWidget {
                     label: "Owner Name",
                     icon: Icons.person,
                     onChanged: (value) =>
-                        _viewModel.setShopField('ownerName', value),
+                        _viewModel.setShopField('owner_name', value),
                     validator: (value) => value == null || value.isEmpty
                         ? "Please enter owner name"
                         : null,
@@ -82,7 +82,7 @@ class AddShopScreen extends StatelessWidget {
                     label: "Owner CNIC",
                     icon: Icons.badge,
                     onChanged: (value) =>
-                        _viewModel.setShopField('ownerCNIC', value),
+                        _viewModel.setShopField('owner_cnic', value),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Please enter CNIC";
@@ -99,7 +99,7 @@ class AddShopScreen extends StatelessWidget {
                     label: "Phone Number",
                     icon: Icons.phone,
                     onChanged: (value) =>
-                        _viewModel.setShopField('phoneNumber', value),
+                        _viewModel.setShopField('phone_no', value),
                     validator: (value) => value == null || value.isEmpty
                         ? "Please enter phone number"
                         : null,
@@ -109,7 +109,7 @@ class AddShopScreen extends StatelessWidget {
                     label: "Alternative Phone Number",
                     icon: Icons.phone_android,
                     onChanged: (value) =>
-                        _viewModel.setShopField('alterPhoneNumber', value),
+                        _viewModel.setShopField('alternative_phone_no', value),
                     validator: (value) => value == null || value.isEmpty
                         ? "Please enter alternative number"
                         : null,

@@ -56,12 +56,12 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
                   ),
                   _buildTextField(
                     label: "Owner Name",
-                    text: shopVisitViewModel.ownerName.value,
+                    text: shopVisitViewModel.owner_name.value,
                     icon: Icons.person_outlined,
                   ),
                   _buildTextField(
                     label: "Phone Number",
-                    text: orderMasterViewModel.phoneNumber.value,
+                    text: orderMasterViewModel.phone_no.value,
                     icon: Icons.phone,
                   ),
                   _buildTextField(
@@ -100,11 +100,11 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
                     label: "Credit Limit",
                     icon: Icons.payment,
                     items: orderMasterViewModel.credits,
-                    selectedValue: orderMasterViewModel.creditLimit.value,
+                    selectedValue: orderMasterViewModel.credit_limit.value,
                     onChanged: (value) {
-                      orderMasterViewModel.creditLimit.value = value!;
+                      orderMasterViewModel.credit_limit.value = value!;
                       if (kDebugMode) {
-                        print("Selected: ${orderMasterViewModel.creditLimit.value}");
+                        print("Selected: ${orderMasterViewModel.credit_limit.value}");
                       }
                     },
                     useBoxShadow: false,

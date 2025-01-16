@@ -90,11 +90,11 @@ class OrderDetailsViewModel extends GetxController {
 
       final productData = products.map((product) {
         final quantity = num.tryParse(product.quantity?.toString() ?? '0') ?? 0;
-        final inStock = num.tryParse(product.inStock.toString());
+        final in_stock = num.tryParse(product.in_stock.toString());
         final price = num.tryParse(product.price.toString()) ?? 0.0;
         return {
           'Product': product.product_name,
-          'In Stock': inStock,
+          'In Stock': in_stock,
           'Rate': price,
           'Amount': quantity * price,
           'Brand': product.brand,
@@ -201,13 +201,13 @@ class OrderDetailsViewModel extends GetxController {
       await _loadCounter();
       dynamic orderSerial = await generateNewOrderId(userId);
       final orderDetailsModel = OrderDetailsModel(
-        orderDetailsId: orderSerial,
+        order_details_id: orderSerial,
         rate: product['Rate'].toString(),
-        inStock: product['In Stock'].toString(),
+        in_stock: product['In Stock'].toString(),
         amount: product['Amount'].toString(),
         product: product['Product'],
         quantity: product['Enter Qty'].toString(),
-        orderMasterId: orderMasterId
+        order_master_id: order_master_id
       );
       try {
         await addReConfirmOrder(orderDetailsModel);

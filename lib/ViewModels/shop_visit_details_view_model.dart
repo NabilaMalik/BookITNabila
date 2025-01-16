@@ -170,9 +170,9 @@ class ShopVisitDetailsViewModel extends GetxController {
           .where((p) => p.product_name == product['Product'])
           .toList();
       if (products.isNotEmpty) {
-        products[0].inStock = product['Quantity'].toString();
+        products[0].in_stock = product['Quantity'].toString();
         // Debugging print statement
-        print("Updated ${products[0].product_name} quantity to: ${products[0].inStock}");
+        print("Updated ${products[0].product_name} quantity to: ${products[0].in_stock}");
       }
 
     }

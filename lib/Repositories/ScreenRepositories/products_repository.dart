@@ -19,7 +19,7 @@ class ProductsRepository extends GetxService{
       'price',
       'brand',
       'quantity',
-      'inStock'
+      'in_stock'
     ]);
     // // Print the raw data retrieved from the database
     // if (kDebugMode) {
@@ -52,7 +52,7 @@ class ProductsRepository extends GetxService{
         'price',
         'brand',
         'quantity',
-        'inStock'
+        'in_stock'
       ],
       where: 'brand = ?',
       whereArgs: [globalselectedbrand],

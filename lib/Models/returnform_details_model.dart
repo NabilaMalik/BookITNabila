@@ -6,13 +6,13 @@ class ReturnFormDetailsModel{
   String? item;
   String? qty;
   String? reason;
-  int? returnMasterId;
+  int? return_master_id;
   ReturnFormDetailsModel({
     this.id,
     this.item,
     this.qty,
     this.reason,
-    this.returnMasterId,
+    this.return_master_id,
   });
 
   factory ReturnFormDetailsModel.fromMap(Map<dynamic,dynamic> json){
@@ -21,7 +21,7 @@ class ReturnFormDetailsModel{
       item: json['item'],
       qty: json['qty'],
       reason: json['reason'],
-      returnMasterId: json['returnMasterId'],
+      return_master_id: json['return_master_id'],
     );
   }
 
@@ -31,7 +31,7 @@ class ReturnFormDetailsModel{
       'item':item,
       'qty':qty,
       'reason':reason,
-      'returnMasterId':returnMasterId,
+      'return_master_id':return_master_id,
     };
   }
 }

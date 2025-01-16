@@ -23,7 +23,7 @@ class OrderMasterViewModel extends GetxController {
   ProductsViewModel productsViewModel = Get.put(ProductsViewModel());
    OrderDetailsViewModel orderDetailsViewModel = Get.put(OrderDetailsViewModel());
   OrderMasterRepository orderMasterRepository = Get.put(OrderMasterRepository());
-  var phoneNumber = ''.obs;
+  var phone_no = ''.obs;
   GlobalKey<FormState> get formKey => _formKey;
   final _formKey = GlobalKey<FormState>();
 
@@ -31,7 +31,7 @@ class OrderMasterViewModel extends GetxController {
   String orderMasterCurrentMonth = DateFormat('MMM').format(DateTime.now());
   String currentUserId = '';
 
-  var creditLimit = ''.obs;
+  var credit_limit = ''.obs;
   var requiredDelivery = ''.obs;
   final List<String> credits = ['7 days', '15 days', 'On Cash'];
   @override
@@ -94,7 +94,7 @@ class OrderMasterViewModel extends GetxController {
   Future<void> submitForm(GlobalKey<FormState> formKey) async {
     if (formKey.currentState!.validate()) {
       final orderSerial = generateNewOrderId(userId); // Sirf serial generate hoga
-      orderMasterId = orderSerial;
+      order_master_id = orderSerial;
       print("Saving filtered products...");
       await orderDetailsViewModel.saveFilteredProducts();
     }
@@ -105,16 +105,16 @@ class OrderMasterViewModel extends GetxController {
     // if (validateForm()) {
     if (shopVisitViewModel.selectedShop.value.isNotEmpty) {
       final orderSerial = await generateAndSaveOrderId(userId); // Generate aur save dono yahan
-      orderMasterId = orderSerial;
+      order_master_id = orderSerial;
       OrderMasterModel orderMasterModel = OrderMasterModel(
-          shopName: shopVisitViewModel.selectedShop.value,
-          ownerName: shopVisitViewModel.selectedBrand.value,
-          phoneNumber: phoneNumber.value,
+          shop_name: shopVisitViewModel.selectedShop.value,
+          owner_name: shopVisitViewModel.selectedBrand.value,
+          phone_no: phone_no.value,
           brand: shopVisitViewModel.selectedBrand.value,
           total: orderDetailsViewModel.total.value.toString(),
-          creditLimit: creditLimit.value,
+          credit_limit: credit_limit.value,
           requiredDelivery: requiredDelivery.value,
-          orderMasterId: orderMasterId
+          order_master_id: order_master_id
       );
 
       print("Submitting OrderMasterModel: ${orderMasterModel.toMap()}");

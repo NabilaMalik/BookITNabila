@@ -109,7 +109,7 @@ class SignUpScreen extends StatelessWidget {
                 _buildTextField(
                   label: "Owner Name",
                   icon: Icons.person_outline,
-                  controller: controller.ownerNameController,
+                  controller: controller.owner_nameController,
                   validator: (value) =>
                       Validators.validateTextField(value, "owner name"),
                 ),
@@ -122,7 +122,7 @@ class SignUpScreen extends StatelessWidget {
                 _buildTextField(
                   label: "Phone Number",
                   icon: Icons.phone,
-                  controller: controller.phoneNumberController,
+                  controller: controller.phone_noController,
                   validator: (value) =>
                       Validators.validateTextField(value, "phone number"),
                   keyboardType: TextInputType.phone,

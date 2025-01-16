@@ -1,35 +1,35 @@
 class AttendanceOutModel {
   dynamic id;
   String? date;
-  String? timeOut;
+  String? time_out;
   String? userId;
-  dynamic totalTime;
+  dynamic total_time;
   dynamic latOut;
   dynamic lngOut;
-  dynamic totalDistance;
+  dynamic total_distance;
   dynamic address;
 
   AttendanceOutModel({
     this.id,
     this.date,
-    this.timeOut,
+    this.time_out,
     this.userId,
-    this.totalTime,
+    this.total_time,
     this.latOut,
     this.lngOut,
-    this.totalDistance,
+    this.total_distance,
     this.address
   });
   factory AttendanceOutModel.fromMap(Map<dynamic, dynamic> json) {
     return AttendanceOutModel(
         id: json['id'],
         date : json['date'],
-        timeOut: json['timeOut'],
+        time_out: json['time_out'],
         userId: json['userId'],
-        totalTime: json['totalTime'],
+        total_time: json['total_time'],
         latOut: json['latOut'],
         lngOut:json['lngOut'],
-        totalDistance: json['totalDistance'],
+        total_distance: json['total_distance'],
         address: json['address']
     );
   }
@@ -37,12 +37,12 @@ class AttendanceOutModel {
     return {
       'id': id,
       'date': date,
-      'timeOut': timeOut,
+      'time_out': time_out,
       'userId': userId,
-      'totalTime':totalTime,
+      'total_time':total_time,
       'latOut': latOut,
       'lngOut':lngOut,
-      'totalDistance': totalDistance,
+      'total_distance': total_distance,
       'address': address
     };
   }

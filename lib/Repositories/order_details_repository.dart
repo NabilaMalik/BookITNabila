@@ -10,13 +10,13 @@ class OrderDetailsRepository extends GetxService {
   Future<List<OrderDetailsModel>> getReConfirmOrder() async {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(orderDetailsTableName, columns: [
-      'orderDetailsId',
+      'order_details_id',
       'product',
       'quantity',
-      'inStock',
+      'in_stock',
       'rate',
       'amount',
-      'orderMasterId'
+      'order_master_id'
     ]);
     List<OrderDetailsModel> reconfirmorder = [];
     for (int i = 0; i < maps.length; i++) {
@@ -47,12 +47,12 @@ class OrderDetailsRepository extends GetxService {
     var dbClient = await dbHelper.db;
     return await dbClient.update(
         orderDetailsTableName, orderDetailsModel.toMap(),
-        where: 'orderDetailsId = ?', whereArgs: [orderDetailsModel.orderDetailsId]);
+        where: 'order_details_id = ?', whereArgs: [orderDetailsModel.order_details_id]);
   }
 
   Future<int> delete(int id) async {
     var dbClient = await dbHelper.db;
     return await dbClient
-        .delete(orderDetailsTableName, where: 'orderDetailsId = ?', whereArgs: [id]);
+        .delete(orderDetailsTableName, where: 'order_details_id = ?', whereArgs: [id]);
   }
 }

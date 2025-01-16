@@ -10,6 +10,7 @@ import '../Models/add_shop_model.dart';
 import '../Services/ApiServices/api_service.dart';
 import '../Services/FirebaseServices/firebase_remote_config.dart';
 import 'package:connectivity/connectivity.dart';
+
 class AddShopRepository extends GetxService {
   DBHelper dbHelper = Get.put(DBHelper());
 
@@ -26,14 +27,14 @@ class AddShopRepository extends GetxService {
   Future<List<AddShopModel>> getAddShop() async {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(addShopTableName, columns: [
-      'shopId',
-      'shopName',
+      'shop_id',
+      'shop_name',
       'city',
-      'shopAddress',
-      'ownerName',
-      'ownerCNIC',
-      'phoneNumber',
-      'alterPhoneNumber',
+      'shop_address',
+      'owner_name',
+      'owner_cnic',
+      'phone_no',
+      'alternative_phone_no',
       'posted'
     ]);
     List<AddShopModel> addShop = [];
@@ -59,12 +60,12 @@ class AddShopRepository extends GetxService {
   Future<int> update(AddShopModel addShopModel) async {
     var dbClient = await dbHelper.db;
     return await dbClient.update(addShopTableName, addShopModel.toMap(),
-        where: 'shopId = ?', whereArgs: [addShopModel.shopId]);
+        where: 'shop_id = ?', whereArgs: [addShopModel.shop_id]);
   }
 
   Future<int> delete(String? id) async {
     var dbClient = await dbHelper.db;
-    return await dbClient.delete(addShopTableName, where: 'shopId = ?', whereArgs: [id]);
+    return await dbClient.delete(addShopTableName, where: 'shop_id = ?', whereArgs: [id]);
   }
 
   Future<void> fetchAllAddShop(RxList<AddShopModel> allAddShop) async {
@@ -133,6 +134,7 @@ class AddShopRepository extends GetxService {
       AddShopModel model = AddShopModel.fromMap(item);
       await dbClient.insert(addShopTableName, model.toMap());
     }
+    getAddShop();
   }
 
   // Fetch all unposted shops (posted = 0)
@@ -159,11 +161,11 @@ class AddShopRepository extends GetxService {
             shop.posted = 1;
             await update(shop);
             if (kDebugMode) {
-              print('Shop with id ${shop.shopId} posted and updated in local database.');
+              print('Shop with id ${shop.shop_id} posted and updated in local database.');
             }
           } catch (e) {
             if (kDebugMode) {
-              print('Failed to post shop with id ${shop.shopId}: $e');
+              print('Failed to post shop with id ${shop.shop_id}: $e');
             }
           }
         }

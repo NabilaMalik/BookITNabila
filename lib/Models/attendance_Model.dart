@@ -1,11 +1,11 @@
 class AttendanceModel{
   dynamic id;
   String? date;
-  String? timeIn;
+  String? time_in;
   String? userId;
   dynamic latIn;
   dynamic lngIn;
-  dynamic bookerName;
+  dynamic booker_name;
   dynamic designation;
   dynamic city;
   dynamic address;
@@ -13,11 +13,11 @@ class AttendanceModel{
   AttendanceModel({
     this.id,
     this.date,
-    this.timeIn,
+    this.time_in,
     this.userId,
     this.latIn,
     this.lngIn,
-    this.bookerName,
+    this.booker_name,
     this.city,
     this.designation,
     this.address
@@ -28,11 +28,11 @@ class AttendanceModel{
     return AttendanceModel(
       id: json['id'],
       date : json['date'],
-      timeIn: json['timeIn'],
+      time_in: json['time_in'],
       userId: json['userId'],
       latIn: json['latIn'],
       lngIn: json['lngIn'],
-      bookerName: json['bookerName'],
+      booker_name: json['booker_name'],
       city: json['city'],
       designation: json['designation'],
       address: json['address'],
@@ -45,11 +45,11 @@ class AttendanceModel{
     return {
       'id': id,
       'date': date,
-      'timeIn': timeIn,
+      'time_in': time_in,
       'userId': userId,
       'latIn': latIn,
       'lngIn': lngIn,
-      'bookerName': bookerName,
+      'booker_name': booker_name,
       'city':city,
       'designation':designation,
       'address':address

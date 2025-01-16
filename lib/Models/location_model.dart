@@ -8,8 +8,8 @@ class LocationModel {
   String? fileName;
   String? userId;
   Uint8List? body;
-  dynamic? userName;
-  dynamic? totalDistance;
+  dynamic? bokker_name;
+  dynamic? total_distance;
 
 
   LocationModel({
@@ -18,8 +18,8 @@ class LocationModel {
     this.fileName,
     this.userId,
     this.body,
-    this.userName,
-    this.totalDistance
+    this.bokker_name,
+    this.total_distance
   });
 
   factory LocationModel.fromMap(Map<dynamic, dynamic> json) {
@@ -29,8 +29,8 @@ class LocationModel {
       date : json['date'],
       fileName: json['fileName'],
       userId: json['userId'],
-      userName: json['userName'],
-      totalDistance: json['totalDistance'],
+      bokker_name: json['bokker_name'],
+      total_distance: json['total_distance'],
       body: json['body'] != null && json['body'].toString().isNotEmpty
           ? Uint8List.fromList(base64Decode(json['body'].toString()))
           : null,
@@ -44,8 +44,8 @@ class LocationModel {
       'date': date,
       'fileName': fileName,
       'userId': userId,
-      'userName':userName,
-      'totalDistance': totalDistance,
+      'bokker_name':bokker_name,
+      'total_distance': total_distance,
       'body':  body != null ? base64Encode(body!) : null,
     };
   }

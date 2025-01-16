@@ -1,26 +1,26 @@
 class ReturnFormModel{
-  int? returnMasterId;
-  String? selectShop;
+  int? return_master_id;
+  String? select_shop;
 
 
   ReturnFormModel({
-    this.returnMasterId,
-    this.selectShop,
+    this.return_master_id,
+    this.select_shop,
 
   });
 
   factory ReturnFormModel.fromMap(Map<dynamic,dynamic> json){
     return ReturnFormModel(
-      returnMasterId: json['returnMasterId'],
-      selectShop: json['selectShop'],
+      return_master_id: json['return_master_id'],
+      select_shop: json['select_shop'],
 
     );
   }
 
   Map<String, dynamic> toMap(){
     return{
-      'returnMasterId':returnMasterId,
-      'selectShop':selectShop,
+      'return_master_id':return_master_id,
+      'select_shop':select_shop,
 
     };
   }

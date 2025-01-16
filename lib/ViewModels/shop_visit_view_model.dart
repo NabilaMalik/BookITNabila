@@ -1,15 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart'; // Add this import
-import 'package:order_booking_app/Databases/util.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:order_booking_app/ViewModels/shop_visit_details_view_model.dart';
+import '../Databases/util.dart';
 import '../Models/shop_visit_model.dart';
 import '../Repositories/ScreenRepositories/products_repository.dart';
 import '../Repositories/shop_visit_repository.dart';
+import '../Repositories/add_shop_repository.dart'; // Add this import
 import '../Screens/order_booking_screen.dart';
 
 class ShopVisitViewModel extends GetxController {
@@ -17,6 +18,7 @@ class ShopVisitViewModel extends GetxController {
   ShopVisitRepository shopvisitRepository = ShopVisitRepository();
   ProductsRepository productsRepository = Get.put(ProductsRepository());
   late ShopVisitDetailsViewModel shopVisitDetailsViewModel = Get.put(ShopVisitDetailsViewModel());
+  AddShopRepository addShopRepository = Get.put(AddShopRepository()); // Add this line
   final _shopVisit = ShopVisitModel().obs;
   final ImagePicker picker = ImagePicker();
   ShopVisitModel get shopVisit => _shopVisit.value;
@@ -24,9 +26,9 @@ class ShopVisitViewModel extends GetxController {
   GlobalKey<FormState> get formKey => _formKey;
   final _formKey = GlobalKey<FormState>();
 
-  var shopAddress = ''.obs;
-  var ownerName = ''.obs;
-  var bookerName = ''.obs;
+  var shop_address = ''.obs;
+  var owner_name = ''.obs;
+  var booker_name = ''.obs;
   var feedBack = ''.obs;
   var selectedBrand = ''.obs;
   var selectedShop = ''.obs;
@@ -34,8 +36,9 @@ class ShopVisitViewModel extends GetxController {
   var checklistState = List<bool>.filled(4, false).obs;
   var rows = <DataRow>[].obs;
   ValueNotifier<List<Map<String, dynamic>>> rowsNotifier = ValueNotifier<List<Map<String, dynamic>>>([]);
-  final List<String> brands = ['Roxie Color', 'Roxie', 'USHA'];
-  final List<String> shops = ['Shop X', 'Shop Y', 'Shop Z'];
+  // final List<String> brands = ['Roxie Color', 'Roxie', 'USHA'];
+  var shops = <String?>[].obs; // Change this line
+  var brands = <String?>[].obs; // Change this line
   final List<String> checklistLabels = [
     'Performed Store Walkthrough',
     'Updated Store Planogram',
@@ -48,9 +51,32 @@ class ShopVisitViewModel extends GetxController {
   String currentUserId = '';
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
     _loadCounter();
+   await addShopRepository.fetchAndSaveShops();
+    fetchShops(); // Add this line to fetch saved shops
+    fetchBrands(); // Add this line to fetch saved shops
+  }
+
+  Future<void> fetchBrands() async {
+    try {
+      var savedBrands = await productsRepository.getProductsModel();
+      brands.value = savedBrands.map((product) => product.brand).toSet().toList();
+    } catch (e) {
+      if (kDebugMode) {
+        print('Failed to fetch Brands: $e');
+      }
+    }
+  }  Future<void> fetchShops() async {
+    try {
+      var savedShops = await addShopRepository.getAddShop();
+      shops.value = savedShops.map((shop) => shop.shop_name).toSet().toList();
+    } catch (e) {
+      if (kDebugMode) {
+        print('Failed to fetch shops: $e');
+      }
+    }
   }
 
   Future<void> _loadCounter() async {
@@ -112,11 +138,11 @@ class ShopVisitViewModel extends GetxController {
       shopVisitMasterId = orderSerial;
 
       await addShopVisit(ShopVisitModel(
-        shopName: selectedShop.value,
-        shopAddress: shopAddress.value,
-        shopOwner: ownerName.value,
+        shop_name: selectedShop.value,
+        shop_address: shop_address.value,
+        owner_name: owner_name.value,
         brand: selectedBrand.value,
-        bookerName: bookerName.value,
+        booker_name: booker_name.value,
         walkthrough: checklistState[0],
         planogram: checklistState[1],
         signage: checklistState[2],

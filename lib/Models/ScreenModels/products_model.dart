@@ -6,7 +6,7 @@ class ProductsModel {
   dynamic price;
   String? brand;
   String? quantity; // Existing quantity field
-  String? inStock;  // New inStock field
+  String? in_stock;  // New in_stock field
 
   ProductsModel({
     this.id,
@@ -16,7 +16,7 @@ class ProductsModel {
     this.price,
     this.brand,
     this.quantity,
-    this.inStock,  // Initialize inStock
+    this.in_stock,  // Initialize in_stock
   });
 
   // Create a factory constructor to create a Product instance from a map
@@ -29,7 +29,7 @@ class ProductsModel {
       price: json['price'],
       brand: json['brand'],
       quantity: json['quantity'],
-      inStock: json['inStock'],  // Map inStock
+      in_stock: json['in_stock'],  // Map in_stock
     );
   }
 
@@ -43,7 +43,7 @@ class ProductsModel {
       'price': price,
       'brand': brand,
       'quantity': quantity,
-      'inStock': inStock,  // Convert inStock to map
+      'in_stock': in_stock,  // Convert in_stock to map
     };
   }
 }

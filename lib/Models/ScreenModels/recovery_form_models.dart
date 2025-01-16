@@ -1,8 +1,8 @@
 class Shop {
   final String name;
-  final double currentBalance;
+  final double current_balance;
 
-  Shop({required this.name, required this.currentBalance});
+  Shop({required this.name, required this.current_balance});
 }
 
 

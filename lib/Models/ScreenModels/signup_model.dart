@@ -2,18 +2,18 @@ class SignupModel {
   String companyName;
   String companyAddress;
   String companyEmail;
-  String ownerName;
+  String owner_name;
   String ownerEmail;
-  String phoneNumber;
+  String phone_no;
   String password;
 
   SignupModel({
     required this.companyName,
     required this.companyAddress,
     required this.companyEmail,
-    required this.ownerName,
+    required this.owner_name,
     required this.ownerEmail,
-    required this.phoneNumber,
+    required this.phone_no,
     required this.password,
   });
 }

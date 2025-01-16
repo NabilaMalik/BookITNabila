@@ -14,8 +14,8 @@ class LocationRepository {
       'date',
       'fileName',
       'userId',
-      'userName',
-      'totalDistance',
+      'bokker_name',
+      'total_distance',
       'body',
       'posted'
     ]);
