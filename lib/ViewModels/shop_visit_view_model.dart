@@ -7,25 +7,30 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:order_booking_app/ViewModels/shop_visit_details_view_model.dart';
 import '../Databases/util.dart';
+import '../Models/add_shop_model.dart';
 import '../Models/shop_visit_model.dart';
 import '../Repositories/ScreenRepositories/products_repository.dart';
 import '../Repositories/shop_visit_repository.dart';
-import '../Repositories/add_shop_repository.dart'; // Add this import
+import '../Repositories/add_shop_repository.dart';
 import '../Screens/order_booking_screen.dart';
 
 class ShopVisitViewModel extends GetxController {
   var allShopVisit = <ShopVisitModel>[].obs;
   ShopVisitRepository shopvisitRepository = ShopVisitRepository();
   ProductsRepository productsRepository = Get.put(ProductsRepository());
-  late ShopVisitDetailsViewModel shopVisitDetailsViewModel = Get.put(ShopVisitDetailsViewModel());
-  AddShopRepository addShopRepository = Get.put(AddShopRepository()); // Add this line
+  late ShopVisitDetailsViewModel shopVisitDetailsViewModel =
+      Get.put(ShopVisitDetailsViewModel());
+  AddShopRepository addShopRepository = Get.put(AddShopRepository());
   final _shopVisit = ShopVisitModel().obs;
   final ImagePicker picker = ImagePicker();
   ShopVisitModel get shopVisit => _shopVisit.value;
 
   GlobalKey<FormState> get formKey => _formKey;
   final _formKey = GlobalKey<FormState>();
-
+// Add TextEditingControllers
+  final TextEditingController shopAddressController = TextEditingController();
+  final TextEditingController ownerNameController = TextEditingController();
+  final TextEditingController bookerNameController = TextEditingController();
   var shop_address = ''.obs;
   var owner_name = ''.obs;
   var booker_name = ''.obs;
@@ -35,10 +40,12 @@ class ShopVisitViewModel extends GetxController {
   var selectedImage = Rx<XFile?>(null);
   var checklistState = List<bool>.filled(4, false).obs;
   var rows = <DataRow>[].obs;
-  ValueNotifier<List<Map<String, dynamic>>> rowsNotifier = ValueNotifier<List<Map<String, dynamic>>>([]);
-  // final List<String> brands = ['Roxie Color', 'Roxie', 'USHA'];
-  var shops = <String?>[].obs; // Change this line
+  ValueNotifier<List<Map<String, dynamic>>> rowsNotifier =
+      ValueNotifier<List<Map<String, dynamic>>>([]);
+  // final List<String?> brands = ['Roxie Color', 'Roxie', 'USHA'];
   var brands = <String?>[].obs; // Change this line
+  var shops = <String?>[].obs; // Change this line
+  var shopDetails = <AddShopModel>[].obs; // Add this line
   final List<String> checklistLabels = [
     'Performed Store Walkthrough',
     'Updated Store Planogram',
@@ -54,7 +61,7 @@ class ShopVisitViewModel extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     _loadCounter();
-   await addShopRepository.fetchAndSaveShops();
+   // await addShopRepository.fetchAndSaveShops();
     fetchShops(); // Add this line to fetch saved shops
     fetchBrands(); // Add this line to fetch saved shops
   }
@@ -68,10 +75,14 @@ class ShopVisitViewModel extends GetxController {
         print('Failed to fetch Brands: $e');
       }
     }
-  }  Future<void> fetchShops() async {
+  }
+
+  Future<void> fetchShops() async {
     try {
       var savedShops = await addShopRepository.getAddShop();
-      shops.value = savedShops.map((shop) => shop.shop_name).toSet().toList();
+      shops.value = savedShops.map((shop) => shop.shop_name).toList();
+      shopDetails.value =
+          savedShops; // Update this line to store full shop details
     } catch (e) {
       if (kDebugMode) {
         print('Failed to fetch shops: $e');
@@ -79,11 +90,22 @@ class ShopVisitViewModel extends GetxController {
     }
   }
 
+  updateShopDetails(String shopName) {
+    var shop = shopDetails.firstWhere((shop) => shop.shop_name == shopName);
+    shop_address.value = shop.shop_address!;
+    owner_name.value = shop.owner_name!;
+
+    shopAddressController.text = shop.shop_address!;
+    ownerNameController.text = shop.owner_name!;
+  }
+
+
   Future<void> _loadCounter() async {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
     SharedPreferences prefs = await SharedPreferences.getInstance();
     shopVisitsSerialCounter = (prefs.getInt('shopVisitsSerialCounter') ?? 1);
-    shopVisitCurrentMonth = prefs.getString('shopVisitCurrentMonth') ?? currentMonth;
+    shopVisitCurrentMonth =
+        prefs.getString('shopVisitCurrentMonth') ?? currentMonth;
     currentUserId = prefs.getString('currentUserId') ?? '';
 
     if (shopVisitCurrentMonth != currentMonth) {
@@ -115,7 +137,8 @@ class ShopVisitViewModel extends GetxController {
       shopVisitCurrentMonth = currentMonth;
     }
 
-    String orderId = "SV-$userId-$currentMonth-${shopVisitsSerialCounter.toString().padLeft(3, '0')}";
+    String orderId =
+        "SV-$userId-$currentMonth-${shopVisitsSerialCounter.toString().padLeft(3, '0')}";
     shopVisitsSerialCounter++;
     _saveCounter();
     return orderId;
@@ -153,7 +176,8 @@ class ShopVisitViewModel extends GetxController {
       ));
       await shopvisitRepository.getShopVisit();
       await shopVisitDetailsViewModel.saveFilteredProducts();
-      Get.snackbar("Success", "Form submitted successfully!", snackPosition: SnackPosition.BOTTOM);
+      Get.snackbar("Success", "Form submitted successfully!",
+          snackPosition: SnackPosition.BOTTOM);
       await clearFilters();
 
       Get.to(() => OrderBookingScreen());
@@ -192,11 +216,11 @@ class ShopVisitViewModel extends GetxController {
 
   clearFilters() {
     // _shopVisit.value = ShopVisitModel();
+
     // _formKey.currentState?.reset();
   }
 
   bool validateForm() {
-
     return _formKey.currentState?.validate() ?? false;
   }
 }

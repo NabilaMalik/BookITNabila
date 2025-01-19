@@ -28,6 +28,7 @@ class CustomEditableMenuOption extends StatefulWidget {
   final bool readOnly; // Parameter for read-only mode
   final bool enableListener; // New optional parameter
   final dynamic viewModel; // Add viewModel as a parameter
+  final dynamic dynamicParameter;
 
   const CustomEditableMenuOption({
     super.key,
@@ -56,7 +57,8 @@ class CustomEditableMenuOption extends StatefulWidget {
     this.keyboardType,
     this.readOnly = false, // Initialize the new parameter with default value
     this.enableListener = false, // Initialize the new parameter with default value
-    this.viewModel, // Initialize viewModel parameter
+    this.viewModel,
+    this.dynamicParameter// Initialize viewModel parameter
   });
 
   @override
@@ -76,7 +78,7 @@ class _CustomEditableMenuOptionState extends State<CustomEditableMenuOption> {
 
     if (widget.enableListener) {
       // Add listener only if enableListener is true
-      widget.viewModel.total.listen((value) {
+      widget.viewModel.listenToParameter(widget.dynamicParameter).listen((value) {
         if (_controller.text != value) {
           _controller.text = value;
         }

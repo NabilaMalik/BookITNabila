@@ -93,7 +93,8 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
                         readOnly: true,
                         enableListener: true, // Enable listener where required
                        // viewModel: orderMasterViewModel, // Pass the orderMasterViewModel parameter
-                        viewModel: orderDetailsViewModel, // Pass the orderMasterViewModel parameter
+                        viewModel: orderDetailsViewModel,
+                   // dynamicParameter: 'total',// Pass the orderMasterViewModel parameter
                       )),
                   const SizedBox(height: 10),
                 CustomDropdown(

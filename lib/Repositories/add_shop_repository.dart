@@ -134,7 +134,7 @@ class AddShopRepository extends GetxService {
       AddShopModel model = AddShopModel.fromMap(item);
       await dbClient.insert(addShopTableName, model.toMap());
     }
-    getAddShop();
+    await getAddShop();
   }
 
   // Fetch all unposted shops (posted = 0)
