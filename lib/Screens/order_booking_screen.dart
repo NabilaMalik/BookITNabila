@@ -61,7 +61,7 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
                   ),
                   _buildTextField(
                     label: "Phone Number",
-                    text: orderMasterViewModel.phone_no.value,
+                    text: shopVisitViewModel.phone_number.value,
                     icon: Icons.phone,
                   ),
                   _buildTextField(

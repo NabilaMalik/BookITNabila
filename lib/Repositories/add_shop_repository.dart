@@ -124,7 +124,9 @@ class AddShopRepository extends GetxService {
   }
 
   Future<void> fetchAndSaveShops() async {
-    print(Config.getApiUrlShops1);
+    if (kDebugMode) {
+      print(Config.getApiUrlShops1);
+    }
     List<dynamic> data = await ApiService.getData(Config.getApiUrlShops1);
     var dbClient = await dbHelper.db;
 

@@ -78,9 +78,20 @@ class _CustomEditableMenuOptionState extends State<CustomEditableMenuOption> {
 
     if (widget.enableListener) {
       // Add listener only if enableListener is true
-      widget.viewModel.listenToParameter(widget.dynamicParameter).listen((value) {
+      widget.viewModel.total.listen((value) {
         if (_controller.text != value) {
           _controller.text = value;
+        }
+      });
+    }
+  }
+  @override
+  void didUpdateWidget(CustomEditableMenuOption oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialValue != oldWidget.initialValue) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _controller.text = widget.initialValue;
         }
       });
     }

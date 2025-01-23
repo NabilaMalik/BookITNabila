@@ -34,6 +34,7 @@ class ShopVisitViewModel extends GetxController {
   var shop_address = ''.obs;
   var owner_name = ''.obs;
   var booker_name = ''.obs;
+  var phone_number =''.obs;
   var feedBack = ''.obs;
   var selectedBrand = ''.obs;
   var selectedShop = ''.obs;
@@ -61,7 +62,7 @@ class ShopVisitViewModel extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     _loadCounter();
-   // await addShopRepository.fetchAndSaveShops();
+    await addShopRepository.fetchAndSaveShops();
     fetchShops(); // Add this line to fetch saved shops
     fetchBrands(); // Add this line to fetch saved shops
   }
@@ -94,6 +95,8 @@ class ShopVisitViewModel extends GetxController {
     var shop = shopDetails.firstWhere((shop) => shop.shop_name == shopName);
     shop_address.value = shop.shop_address!;
     owner_name.value = shop.owner_name!;
+    phone_number.value =shop.phone_no!;
+
 
     shopAddressController.text = shop.shop_address!;
     ownerNameController.text = shop.owner_name!;
@@ -180,7 +183,7 @@ class ShopVisitViewModel extends GetxController {
           snackPosition: SnackPosition.BOTTOM);
       await clearFilters();
 
-      Get.to(() => OrderBookingScreen());
+      Get.to(() => const OrderBookingScreen());
     }
   }
 

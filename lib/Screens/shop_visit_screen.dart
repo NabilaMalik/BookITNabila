@@ -65,6 +65,8 @@ class ShopVisitScreen extends StatelessWidget {
                         onChanged: (value) async {
                           shopVisitViewModel.selectedShop.value = value!;
                           await shopVisitViewModel.updateShopDetails(value);
+                          shopVisitViewModel.selectedShop.value = value; // Pehle assignment thi, ab baad mein
+                        print(shopVisitViewModel.shop_address.value);
                         },
                         validator: (value) => value == null || value.isEmpty
                             ? 'Please select a shop'
@@ -80,7 +82,7 @@ class ShopVisitScreen extends StatelessWidget {
                         iconColor: Colors.blue,
                       )),
 
-                     _buildTextField(
+                    Obx(()=> _buildTextField(
                         initialValue: shopVisitViewModel.shop_address.value,
                         label: "Shop Address",
                         icon: Icons.location_on,
@@ -89,27 +91,18 @@ class ShopVisitScreen extends StatelessWidget {
                             : null,
                         onChanged: (value) =>
                         shopVisitViewModel.shop_address.value = value,
-                      ),
-                       Obx(()=>CustomEditableMenuOption(
-                        label: "Total",
-                        //initialValue: orderMasterViewModel.total.value,
-                         initialValue: shopVisitViewModel.shop_address.value,
-                        onChanged:
-                            (value) =>
-                              shopVisitViewModel.shop_address.value= value, // Read-only mode, no need to change
-                        inputBorder: const UnderlineInputBorder(
-                          borderSide:
-                          BorderSide(color: Colors.blue, width: 1.0),
-                        ),
-                        iconColor: Colors.blue,
-                        useBoxShadow: false,
-                        icon: Icons.money,
-                       // readOnly: true,
-                        //useTextField: false,
-                        enableListener: true, // Enable listener where required
-                         viewModel: shopVisitViewModel, // Pass the orderMasterViewModel parameter
-                         // Pass the orderMasterViewModel parameter
                       )),
+                      Obx(()=> _buildTextField(
+                        initialValue: shopVisitViewModel.owner_name.value,
+                        label: "Owner Name",
+                        icon: Icons.location_on,
+                        validator: (value) => value == null || value.isEmpty
+                            ? 'Please enter the shop address'
+                            : null,
+                        onChanged: (value) =>
+                        shopVisitViewModel.owner_name.value = value,
+                      )),
+
           _buildTextField(
                         label: "Booker Name",
                         initialValue: shopVisitViewModel.booker_name.value,
@@ -186,7 +179,8 @@ class ShopVisitScreen extends StatelessWidget {
     TextInputType keyboardType = TextInputType.text,
     bool obscureText = false,
   }) {
-    return CustomEditableMenuOption(
+    return
+      CustomEditableMenuOption(
       //readOnly: true,
       label: label,
       initialValue: initialValue,
