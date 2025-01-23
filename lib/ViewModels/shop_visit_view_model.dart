@@ -48,7 +48,7 @@ class ShopVisitViewModel extends GetxController {
   var shops = <String?>[].obs; // Change this line
   var shopDetails = <AddShopModel>[].obs; // Add this line
   final List<String> checklistLabels = [
-    'Performed Store Walkthrough',
+    'Performed Store walk_through',
     'Updated Store Planogram',
     'Checked Shelf Tags and Price Signage',
     'Reviewed Expiry Dates on Products',
@@ -56,7 +56,7 @@ class ShopVisitViewModel extends GetxController {
 
   int shopVisitsSerialCounter = 1;
   String shopVisitCurrentMonth = DateFormat('MMM').format(DateTime.now());
-  String currentUserId = '';
+  String currentuser_id = '';
 
   @override
   Future<void> onInit() async {
@@ -109,7 +109,7 @@ class ShopVisitViewModel extends GetxController {
     shopVisitsSerialCounter = (prefs.getInt('shopVisitsSerialCounter') ?? 1);
     shopVisitCurrentMonth =
         prefs.getString('shopVisitCurrentMonth') ?? currentMonth;
-    currentUserId = prefs.getString('currentUserId') ?? '';
+    currentuser_id = prefs.getString('currentuser_id') ?? '';
 
     if (shopVisitCurrentMonth != currentMonth) {
       shopVisitsSerialCounter = 1;
@@ -124,15 +124,15 @@ class ShopVisitViewModel extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('shopVisitsSerialCounter', shopVisitsSerialCounter);
     await prefs.setString('shopVisitCurrentMonth', shopVisitCurrentMonth);
-    await prefs.setString('currentUserId', currentUserId);
+    await prefs.setString('currentuser_id', currentuser_id);
   }
 
-  String generateNewOrderId(String userId) {
+  String generateNewOrderId(String user_id) {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
 
-    if (currentUserId != userId) {
+    if (currentuser_id != user_id) {
       shopVisitsSerialCounter = 1;
-      currentUserId = userId;
+      currentuser_id = user_id;
     }
 
     if (shopVisitCurrentMonth != currentMonth) {
@@ -141,7 +141,7 @@ class ShopVisitViewModel extends GetxController {
     }
 
     String orderId =
-        "SV-$userId-$currentMonth-${shopVisitsSerialCounter.toString().padLeft(3, '0')}";
+        "SV-$user_id-$currentMonth-${shopVisitsSerialCounter.toString().padLeft(3, '0')}";
     shopVisitsSerialCounter++;
     _saveCounter();
     return orderId;
@@ -160,8 +160,8 @@ class ShopVisitViewModel extends GetxController {
         );
       }
 
-      final orderSerial = generateNewOrderId(userId);
-      shopVisitMasterId = orderSerial;
+      final orderSerial = generateNewOrderId(user_id);
+      shop_visit_master_id = orderSerial;
 
       await addShopVisit(ShopVisitModel(
         shop_name: selectedShop.value,
@@ -169,13 +169,13 @@ class ShopVisitViewModel extends GetxController {
         owner_name: owner_name.value,
         brand: selectedBrand.value,
         booker_name: booker_name.value,
-        walkthrough: checklistState[0],
+        walk_through: checklistState[0],
         planogram: checklistState[1],
         signage: checklistState[2],
-        productReviewed: checklistState[3],
+        product_reviewed: checklistState[3],
         addPhoto: compressedImageBytes,
         feedback: feedBack.value,
-        shopVisitMasterId: shopVisitMasterId, // Add the generated serial here
+        shop_visit_master_id: shop_visit_master_id, // Add the generated serial here
       ));
       await shopvisitRepository.getShopVisit();
       await shopVisitDetailsViewModel.saveFilteredProducts();

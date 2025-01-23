@@ -1,5 +1,4 @@
-/* eslint-disable no-undef */
-module.exports = {
+npmmmodule.exports = {
   env: {
     es6: true,
     node: true,

@@ -25,52 +25,66 @@ const transporter = nodemailer.createTransport({
 /**
  * This function sends an OTP email to the specified email address.
  * @param {object} data - The data object containing the email address.
+ * @param {object} context - The context object containing App Check token.
  * @returns {Promise<object>} - A promise that resolves with the success status.
  */
-exports.sendOtpEmail = functions.https.onCall(async (data) => {
-  const {email} = data;
+exports.sendOtpEmail = functions.https.onCall(
+    {
+      enforceAppCheck: true,
+    },
+    async (data, context) => {
+      console.log("sendOtpEmail function called with data:", data);
+      const {email} = data;
 
-  if (!email) {
-    throw new functions.https.HttpsError(
-        "invalid-argument",
-        "The function must be called with a valid email.",
-    );
-  }
+      if (!email) {
+        console.error("Invalid argument: Missing email");
+        throw new functions.https.HttpsError(
+            "invalid-argument",
+            "The function must be called with a valid email.",
+        );
+      }
 
-  const otp = generateOtp();
+      if (!context.app) {
+        console.error("Failed precondition: Missing App Check token");
+        throw new functions.https.HttpsError(
+            "failed-precondition",
+            "The function must be called from an App Check verified app.",
+        );
+      }
 
-  // Store OTP in Firestore
-  const otpDocRef = admin.firestore().collection("otps").doc();
-  await otpDocRef.set({
-    otp: otp,
-    email: email,
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-  });
+      const otp = generateOtp();
 
-  const mailOptions = {
-    from: EMAIL,
-    to: email,
-    subject: "Your OTP Code",
-    html: `
-      <html>
-        <body>
-          <p>Your OTP code is <b>${otp}</b></p>
-        </body>
-      </html>
-    `,
-  };
+      // Store OTP in Firestore
+      const otpDocRef = admin.firestore().collection("otps").doc();
+      await otpDocRef.set({
+        otp: otp,
+        email: email,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
 
-  try {
-    await transporter.sendMail(mailOptions);
-    return {success: true, message: "Email sent successfully"};
-  } catch (error) {
-    throw new functions.https.HttpsError(
-        "internal",
-        "An error occurred while sending the email.",
-        error,
-    );
-  }
-});
+      console.log("OTP stored in Firestore");
+
+      const mailOptions = {
+        from: EMAIL,
+        to: email,
+        subject: "Your OTP Code",
+        html: `<p>Your OTP code is <b>${otp}</b></p>`,
+      };
+
+      try {
+        await transporter.sendMail(mailOptions);
+        console.log("Email sent successfully");
+        return {success: true, message: "Email sent successfully"};
+      } catch (error) {
+        console.error("Error sending email:", error);
+        throw new functions.https.HttpsError(
+            "internal",
+            "An error occurred while sending the email.",
+            error,
+        );
+      }
+    },
+);
 
 /**
  * Generates a 6-digit OTP code.
@@ -84,5 +98,16 @@ function generateOtp() {
   }
   return otp;
 }
+
+/**
+ * A simple test function.
+ * @param {object} data - The data object containing the message.
+ * @param {object} context - The context object.
+ * @returns {object} - A response object with a message and the provided data.
+ */
+exports.testFunction = functions.https.onCall((data) => {
+  console.log("Test function called with data:", data);
+  return {message: "Test function executed successfully", data: data};
+});
 
 /* eslint-enable no-undef, @typescript-eslint/no-require-imports */

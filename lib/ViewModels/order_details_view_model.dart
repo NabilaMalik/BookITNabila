@@ -26,7 +26,7 @@ class OrderDetailsViewModel extends GetxController {
       ValueNotifier<List<Map<String, dynamic>>>([]);
   int orderDetailsSerialCounter = 1;
   String orderDetailsCurrentMonth = DateFormat('MMM').format(DateTime.now());
-  String currentUserId = '';
+  String currentuser_id = '';
 
   @override
   void onInit() {
@@ -40,7 +40,7 @@ class OrderDetailsViewModel extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     orderDetailsSerialCounter = (prefs.getInt('orderDetailsSerialCounter') ?? 1);
     orderDetailsCurrentMonth = prefs.getString('orderDetailsCurrentMonth') ?? currentMonth;
-    currentUserId = prefs.getString('currentUserId') ?? '';
+    currentuser_id = prefs.getString('currentuser_id') ?? '';
 
     if (orderDetailsCurrentMonth != currentMonth) {
       orderDetailsSerialCounter = 1;
@@ -55,15 +55,15 @@ class OrderDetailsViewModel extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('orderDetailsSerialCounter', orderDetailsSerialCounter);
     await prefs.setString('orderDetailsCurrentMonth', orderDetailsCurrentMonth);
-    await prefs.setString('currentUserId', currentUserId);
+    await prefs.setString('currentuser_id', currentuser_id);
   }
 
-  String generateNewOrderId(String userId) {
+  String generateNewOrderId(String user_id) {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
 
-    if (currentUserId != userId) {
+    if (currentuser_id != user_id) {
       orderDetailsSerialCounter = 1;
-      currentUserId = userId;
+      currentuser_id = user_id;
     }
 
     if (orderDetailsCurrentMonth != currentMonth) {
@@ -71,7 +71,7 @@ class OrderDetailsViewModel extends GetxController {
       orderDetailsCurrentMonth = currentMonth;
     }
 
-    String orderId = "OD-$userId-$currentMonth-${orderDetailsSerialCounter.toString().padLeft(3, '0')}";
+    String orderId = "OD-$user_id-$currentMonth-${orderDetailsSerialCounter.toString().padLeft(3, '0')}";
     orderDetailsSerialCounter++;
     _saveCounter();
     return orderId;
@@ -199,15 +199,15 @@ class OrderDetailsViewModel extends GetxController {
 
     for (var product in productsToSave) {
       await _loadCounter();
-      dynamic orderSerial = await generateNewOrderId(userId);
+      dynamic orderSerial = await generateNewOrderId(user_id);
       final orderDetailsModel = OrderDetailsModel(
-        order_details_id: orderSerial,
-        rate: product['Rate'].toString(),
-        in_stock: product['In Stock'].toString(),
-        amount: product['Amount'].toString(),
-        product: product['Product'],
-        quantity: product['Enter Qty'].toString(),
-        order_master_id: order_master_id
+          order_details_id: orderSerial,
+          rate: product['Rate'].toString(),
+          in_stock: product['In Stock'].toString(),
+          amount: product['Amount'].toString(),
+          product: product['Product'],
+          quantity: product['Enter Qty'].toString(),
+          order_master_id: order_master_id
       );
       try {
         await addReConfirmOrder(orderDetailsModel);

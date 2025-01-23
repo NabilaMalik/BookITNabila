@@ -9,12 +9,13 @@ class AttendanceRepository {
   Future<List<AttendanceModel>> getAttendance() async {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(attendanceTableName, columns: [
-      'id',
-      'date',
+      'attendance_in_id',
+      'attendance_in_date',
+      'attendance_in_time',
       'time_in',
-      'userId',
-      'latIn',
-      'lngIn',
+      'user_id',
+      'lat_in',
+      'lng_in',
       'booker_name',
       'designation',
       'city',

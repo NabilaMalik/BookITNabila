@@ -29,7 +29,7 @@ class OrderMasterViewModel extends GetxController {
 
   int orderMasterSerialCounter = 1;
   String orderMasterCurrentMonth = DateFormat('MMM').format(DateTime.now());
-  String currentUserId = '';
+  String currentuser_id = '';
 
   var credit_limit = ''.obs;
   var requiredDelivery = ''.obs;
@@ -45,7 +45,7 @@ class OrderMasterViewModel extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     orderMasterSerialCounter = (prefs.getInt('orderMasterSerialCounter') ?? 1);
     orderMasterCurrentMonth = prefs.getString('orderMasterCurrentMonth') ?? currentMonth;
-    currentUserId = prefs.getString('currentUserId') ?? '';
+    currentuser_id = prefs.getString('currentuser_id') ?? '';
 
     if (orderMasterCurrentMonth != currentMonth) {
       orderMasterSerialCounter = 1;
@@ -60,15 +60,15 @@ class OrderMasterViewModel extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('orderMasterSerialCounter', orderMasterSerialCounter);
     await prefs.setString('orderMasterCurrentMonth', orderMasterCurrentMonth);
-    await prefs.setString('currentUserId', currentUserId);
+    await prefs.setString('currentuser_id', currentuser_id);
   }
 
-  String generateNewOrderId(String userId) {
+  String generateNewOrderId(String user_id) {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
 
-    if (currentUserId != userId) {
+    if (currentuser_id != user_id) {
       orderMasterSerialCounter = 1;
-      currentUserId = userId;
+      currentuser_id = user_id;
     }
 
     if (orderMasterCurrentMonth != currentMonth) {
@@ -76,13 +76,13 @@ class OrderMasterViewModel extends GetxController {
       orderMasterCurrentMonth = currentMonth;
     }
 
-    String orderId = "OM-$userId-$currentMonth-${orderMasterSerialCounter.toString().padLeft(3, '0')}";
+    String orderId = "OM-$user_id-$currentMonth-${orderMasterSerialCounter.toString().padLeft(3, '0')}";
     return orderId; // Increment yahan nahi ho raha
   }
 
-  Future<String> generateAndSaveOrderId(String userId) async {
+  Future<String> generateAndSaveOrderId(String user_id) async {
     await _loadCounter(); // Load last saved value
-    String orderId = generateNewOrderId(userId);
+    String orderId = generateNewOrderId(user_id);
 
     // Increment aur save ka kaam yahan ho raha hai
     orderMasterSerialCounter++;
@@ -93,7 +93,8 @@ class OrderMasterViewModel extends GetxController {
 
   Future<void> submitForm(GlobalKey<FormState> formKey) async {
     if (formKey.currentState!.validate()) {
-      final orderSerial = generateNewOrderId(userId); // Sirf serial generate hoga
+      final orderSerial = generateNewOrderId(
+          user_id); // Sirf serial generate hoga
       order_master_id = orderSerial;
       print("Saving filtered products...");
       await orderDetailsViewModel.saveFilteredProducts();
@@ -104,7 +105,7 @@ class OrderMasterViewModel extends GetxController {
 
     // if (validateForm()) {
     if (shopVisitViewModel.selectedShop.value.isNotEmpty) {
-      final orderSerial = await generateAndSaveOrderId(userId); // Generate aur save dono yahan
+      final orderSerial = await generateAndSaveOrderId(user_id); // Generate aur save dono yahan
       order_master_id = orderSerial;
       OrderMasterModel orderMasterModel = OrderMasterModel(
           shop_name: shopVisitViewModel.selectedShop.value,

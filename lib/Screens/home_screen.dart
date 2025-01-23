@@ -13,7 +13,8 @@ import 'HomeScreenComponents/navbar.dart';
 import 'HomeScreenComponents/overview_row.dart';
 import 'HomeScreenComponents/profile_section.dart';
 import 'HomeScreenComponents/theme.dart';
-
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'dart:async';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
   @override
@@ -123,7 +124,9 @@ class _RiveAppHomeState extends State<HomeScreen>
           child: Column(
             children: [
               _buildHeader(),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
+              TimerCard(), // Add the TimerCard here
+              const SizedBox(height: 10),
               _buildActionButtons(screenWidth),
               const SizedBox(height: 20),
               _buildOverviewSection(),
@@ -232,3 +235,69 @@ class _RiveAppHomeState extends State<HomeScreen>
     );
   }
 }
+
+
+
+
+
+class TimerCard extends HookWidget {
+  @override
+  Widget build(BuildContext context) {
+
+    final Stopwatch stopwatch = useMemoized(() => Stopwatch());
+    final ValueNotifier<Duration> timerValue = useState(Duration.zero);
+
+    useEffect(() {
+      final periodicTimer = Timer.periodic(Duration(seconds: 1), (_) {
+        if (stopwatch.isRunning) {
+          timerValue.value = stopwatch.elapsed;
+        }
+      });
+      return periodicTimer.cancel;
+    }, [stopwatch]);
+
+    return Column(
+      children: [
+        Card(
+          elevation: 2,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '${timerValue.value.inHours.toString().padLeft(2, '0')}:${(timerValue.value.inMinutes % 60).toString().padLeft(2, '0')}:${(timerValue.value.inSeconds % 60).toString().padLeft(2, '0')}',
+                  style: TextStyle(fontSize: 24),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (stopwatch.isRunning) {
+                      stopwatch.stop();
+                      timerValue.value = Duration.zero;
+                    } else {
+                      stopwatch
+                        ..reset()
+                        ..start();
+                      timerValue.value = Duration.zero;
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: stopwatch.isRunning ? Colors.red : Colors.green,
+                    shape: CircleBorder(),
+                    padding: EdgeInsets.all(16),
+                  ),
+                  child: Icon(
+                    stopwatch.isRunning ? Icons.stop : Icons.play_arrow,
+                    size: 24,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+

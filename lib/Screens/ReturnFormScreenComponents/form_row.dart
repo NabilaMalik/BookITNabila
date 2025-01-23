@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:order_booking_app/ViewModels/return_form_details_view_model.dart';
 import '../../Models/ScreenModels/return_form_model.dart';
 import '../../ViewModels/ScreenViewModels/return_form_view_model.dart';
+import '../../ViewModels/return_form_view_model.dart';
 
 class FormRow extends StatelessWidget {
   final Size size;
-  final ReturnFormViewModel viewModel;
+  // final ReturnFormViewModel viewModel;
+  final ReturnFormDetailsViewModel returnFormDetailsViewModel;
   final ReturnForm row;
   final int index;
 
-  const FormRow({required this.size, required this.viewModel, required this.row, required this.index, super.key});
+  const FormRow({required this.size, required this.returnFormDetailsViewModel, required this.row, required this.index, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +29,7 @@ class FormRow extends StatelessWidget {
               border: UnderlineInputBorder(),
             ),
             value: row.selectedItem,
-            items: viewModel.items.map((item) {
+            items: returnFormDetailsViewModel.items.map((item) {
               return DropdownMenuItem<Item>(
                 value: item,
                 child: Text(item.name),
@@ -55,7 +58,7 @@ class FormRow extends StatelessWidget {
               border: UnderlineInputBorder(),
             ),
             value: row.reason.isEmpty ? null : row.reason,
-            items: viewModel.reasons.map((reason) {
+            items: returnFormDetailsViewModel.reasons.map((reason) {
               return DropdownMenuItem<String>(
                 value: reason,
                 child: Text(reason),
@@ -68,7 +71,7 @@ class FormRow extends StatelessWidget {
         ),
         IconButton(
           icon: const Icon(Icons.delete, color: Colors.red),
-          onPressed: () => viewModel.removeRow(index),
+          onPressed: () => returnFormDetailsViewModel.removeRow(index),
         ),
       ],
     );

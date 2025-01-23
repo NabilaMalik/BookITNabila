@@ -64,6 +64,7 @@ dependencies:
   connectivity_plus: ^6.1.2
   connectivity: ^3.0.6
   cloud_functions: ^5.0.3
+  flutter_hooks: ^0.20.5
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -31,7 +31,7 @@ class ShopVisitDetailsViewModel extends GetxController {
   
   int shopVisitDetailsSerialCounter = 1;
   String shopVisitDetailsCurrentMonth = DateFormat('MMM').format(DateTime.now());
-  String currentUserId = '';
+  String currentuser_id = '';
 
   @override
   void onInit() {
@@ -47,7 +47,7 @@ class ShopVisitDetailsViewModel extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     shopVisitDetailsSerialCounter = (prefs.getInt('shopVisitDetailsSerialCounter') ?? 1);
     shopVisitDetailsCurrentMonth = prefs.getString('shopVisitDetailsCurrentMonth') ?? currentMonth;
-    currentUserId = prefs.getString('currentUserId') ?? '';
+    currentuser_id = prefs.getString('currentuser_id') ?? '';
 
     if (shopVisitDetailsCurrentMonth != currentMonth) {
       shopVisitDetailsSerialCounter = 1;
@@ -62,15 +62,15 @@ class ShopVisitDetailsViewModel extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('shopVisitDetailsSerialCounter', shopVisitDetailsSerialCounter);
     await prefs.setString('shopVisitDetailsCurrentMonth', shopVisitDetailsCurrentMonth);
-    await prefs.setString('currentUserId', currentUserId);
+    await prefs.setString('currentuser_id', currentuser_id);
   }
 
- String generateNewOrderId(String userId) {
+ String generateNewOrderId(String user_id) {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
 
-    if (currentUserId != userId) {
+    if (currentuser_id != user_id) {
       shopVisitDetailsSerialCounter = 1;
-      currentUserId = userId;
+      currentuser_id = user_id;
     }
 
     if (shopVisitDetailsCurrentMonth != currentMonth) {
@@ -78,7 +78,7 @@ class ShopVisitDetailsViewModel extends GetxController {
       shopVisitDetailsCurrentMonth = currentMonth;
     }
 
-    String orderId = "SVD-$userId-$currentMonth-${shopVisitDetailsSerialCounter.toString().padLeft(3, '0')}";
+    String orderId = "SVD-$user_id-$currentMonth-${shopVisitDetailsSerialCounter.toString().padLeft(3, '0')}";
     shopVisitDetailsSerialCounter++;
     _saveCounter();
     return orderId;
@@ -156,12 +156,12 @@ class ShopVisitDetailsViewModel extends GetxController {
 
     for (var product in productsToSave) {
       await _loadCounter();
-      dynamic orderSerial = await generateNewOrderId(userId);
+      dynamic orderSerial = await generateNewOrderId(user_id);
       final shopVisitDetailsModel = ShopVisitDetailsModel(
-        shopVisitDetailsId: orderSerial,
+        shop_visit_details_id: orderSerial,
         product: product['Product'],
         quantity: product['Quantity'].toString(), // Convert quantity to string
-        shopVisitMasterId: shopVisitMasterId,
+        shop_visit_master_id: shop_visit_master_id,
       );
       await shopvisitDetailsRepository.add(shopVisitDetailsModel);
 

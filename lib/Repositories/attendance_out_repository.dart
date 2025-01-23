@@ -10,13 +10,14 @@ class AttendanceOutRepository extends GetxService {
   Future<List<AttendanceOutModel>> getAttendanceOut() async {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(attendanceOutTableName, columns: [
-      'id',
-      'date',
+      'attendance_out_id',
+      'attendance_out_date',
+      'attendance_out_time',
       'time_out',
-      'userId',
+      'user_id',
       'total_time',
-      'latOut',
-      'lngOut',
+      'lat_out',
+      'lng_out',
       'total_distance',
       'address'
     ]);
@@ -46,12 +47,12 @@ class AttendanceOutRepository extends GetxService {
     var dbClient = await dbHelper.db;
     return await dbClient.update(
         attendanceOutTableName, attendanceoutModel.toMap(),
-        where: 'id = ?', whereArgs: [attendanceoutModel.id]);
+        where: 'attendance_out_id = ?', whereArgs: [attendanceoutModel.attendance_out_id]);
   }
 
   Future<int> delete(int id) async {
     var dbClient = await dbHelper.db;
     return await dbClient
-        .delete(attendanceOutTableName, where: 'id = ?', whereArgs: [id]);
+        .delete(attendanceOutTableName, where: 'attendance_out_id = ?', whereArgs: [id]);
   }
 }

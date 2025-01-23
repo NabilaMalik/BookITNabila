@@ -2,35 +2,45 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:intl/intl.dart';
+
 class LocationModel {
-  dynamic? id;
+  dynamic? location_id;
   String? date;
-  String? fileName;
-  String? userId;
+  String? file_name;
+  String? user_id;
   Uint8List? body;
-  dynamic? bokker_name;
+  dynamic? booker_name;
   dynamic? total_distance;
+  DateTime? location_date;
+  DateTime? location_time;
 
 
   LocationModel({
-    this.id,
+    this.location_id,
     this.date,
-    this.fileName,
-    this.userId,
+    this.file_name,
+    this.user_id,
     this.body,
-    this.bokker_name,
+    this.booker_name,
+    this.location_date,
+    this.location_time,
     this.total_distance
   });
 
   factory LocationModel.fromMap(Map<dynamic, dynamic> json) {
 
     return LocationModel(
-      id: json['id'],
+      location_id: json['location_id'],
       date : json['date'],
-      fileName: json['fileName'],
-      userId: json['userId'],
-      bokker_name: json['bokker_name'],
+      file_name: json['file_name'],
+      user_id: json['user_id'],
+      booker_name: json['booker_name'],
       total_distance: json['total_distance'],
+      location_date: DateTime.now(),
+      // Always set live date
+      location_time: DateTime.now(),
+      
       body: json['body'] != null && json['body'].toString().isNotEmpty
           ? Uint8List.fromList(base64Decode(json['body'].toString()))
           : null,
@@ -40,11 +50,13 @@ class LocationModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      'location_id': location_id,
       'date': date,
-      'fileName': fileName,
-      'userId': userId,
-      'bokker_name':bokker_name,
+      'file_name': file_name,
+      'user_id': user_id,
+      'booker_name':booker_name,
+      'location_date': DateFormat('dd-MMM-yyyy').format(location_date ?? DateTime.now()), // Always set live date
+      'location_time': DateFormat('HH:mm:ss').format(location_time ?? DateTime.now()), // Always set live time
       'total_distance': total_distance,
       'body':  body != null ? base64Encode(body!) : null,
     };

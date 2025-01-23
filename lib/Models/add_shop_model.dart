@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class AddShopModel {
   String? shop_id;
   String? shop_name;
@@ -8,20 +10,25 @@ class AddShopModel {
   String? phone_no;
   String? alternative_phone_no;
   bool isGPSEnabled;
+  DateTime? shop_date;
+  DateTime? shop_time;
   int posted;
+  String? user_id;
 
-  AddShopModel({
-    this.shop_id,
-    this.shop_name,
-    this.city,
-    this.shop_address,
-    this.owner_name,
-    this.owner_cnic,
-    this.phone_no,
-    this.alternative_phone_no,
-    this.isGPSEnabled = false,
-    this.posted =0,
-  });
+  AddShopModel(
+      {this.shop_id,
+      this.shop_name,
+      this.city,
+      this.shop_address,
+      this.owner_name,
+      this.owner_cnic,
+      this.phone_no,
+      this.alternative_phone_no,
+      this.isGPSEnabled = false,
+      this.shop_date,
+      this.shop_time,
+      this.posted = 0,
+      this.user_id});
 
   factory AddShopModel.fromMap(Map<dynamic, dynamic> json) {
     return AddShopModel(
@@ -33,8 +40,12 @@ class AddShopModel {
       owner_cnic: json['owner_cnic'],
       phone_no: json['phone_no'],
       alternative_phone_no: json['alternative_phone_no'],
-      // isGPSEnabled: json['isGPSEnabled'] == 1,
-      posted:  json['posted']??0
+      posted: json['posted'] ?? 0,
+      shop_date: DateTime.now(),
+      // Always set live date
+      shop_time: DateTime.now(),
+      // Always set live time
+      user_id: json['user_id'],
     );
   }
 
@@ -48,8 +59,12 @@ class AddShopModel {
       'owner_cnic': owner_cnic,
       'phone_no': phone_no,
       'alternative_phone_no': alternative_phone_no,
-      'posted': posted
-      // 'isGPSEnabled': isGPSEnabled == true ? 1 : 0,
+      'posted': posted,
+      'shop_date': DateFormat('dd-MMM-yyyy')
+          .format(shop_date ?? DateTime.now()), // Always set live date
+      'shop_time': DateFormat('HH:mm:ss')
+          .format(shop_time ?? DateTime.now()), // Always set live time
+      'user_id': user_id,
     };
   }
 }

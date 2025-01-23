@@ -14,6 +14,8 @@ OrderDetailsViewModel orderDetailsViewModel =Get.put(OrderDetailsViewModel());
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(orderMasterTableName, columns: [
       'order_master_id',
+      'order_master_date',
+      'order_master_time',
       'shop_name',
       'owner_name',
       'phone_no',

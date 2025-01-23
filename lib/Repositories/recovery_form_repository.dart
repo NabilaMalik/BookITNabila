@@ -9,12 +9,13 @@ class RecoveryFormRepository {
   Future<List<RecoveryFormModel>> getRecoveryForm() async {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(recoveryFormTableName, columns: [
-      'Id',
+      'recovery_id',
       'shop_name',
       'current_balance',
       'cash_recovery',
       'new_balance',
-      'date'
+      'recovery_date',
+      'recovery_time'
     ]);
     List<RecoveryFormModel> recoveryform = [];
     for (int i = 0; i < maps.length; i++) {
@@ -41,12 +42,12 @@ class RecoveryFormRepository {
     var dbClient = await dbHelper.db;
     return await dbClient.update(
         recoveryFormTableName, recoveryformModel.toMap(),
-        where: 'id = ?', whereArgs: [recoveryformModel.id]);
+        where: 'recovery_id = ?', whereArgs: [recoveryformModel.recovery_id]);
   }
 
   Future<int> delete(int id) async {
     var dbClient = await dbHelper.db;
     return await dbClient
-        .delete(recoveryFormTableName, where: 'id = ?', whereArgs: [id]);
+        .delete(recoveryFormTableName, where: 'recovery_id = ?', whereArgs: [id]);
   }
 }

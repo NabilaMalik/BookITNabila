@@ -19,7 +19,7 @@ class AddShopViewModel extends GetxController {
   var cities = <String>[].obs;
   int shopSerialCounter = 1;
   String shopCurrentMonth = DateFormat('MMM').format(DateTime.now());
-  String currentUserId = '';
+  String currentuser_id = '';
 
   @override
   void onInit() {
@@ -94,7 +94,7 @@ class AddShopViewModel extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     shopSerialCounter = (prefs.getInt('shopSerialCounter') ?? 1);
     shopCurrentMonth = prefs.getString('shopCurrentMonth') ?? currentMonth;
-    currentUserId = prefs.getString('currentUserId') ?? '';
+    currentuser_id = prefs.getString('currentuser_id') ?? '';
 
     if (shopCurrentMonth != currentMonth) {
       shopSerialCounter = 1;
@@ -109,15 +109,15 @@ class AddShopViewModel extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('shopSerialCounter', shopSerialCounter);
     await prefs.setString('shopCurrentMonth', shopCurrentMonth);
-    await prefs.setString('currentUserId', currentUserId);
+    await prefs.setString('currentuser_id', currentuser_id);
   }
 
-  String generateNewOrderId(String userId) {
+  String generateNewOrderId(String user_id) {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
 
-    if (currentUserId != userId) {
+    if (currentuser_id != user_id) {
       shopSerialCounter = 1;
-      currentUserId = userId;
+      currentuser_id = user_id;
     }
 
     if (shopCurrentMonth != currentMonth) {
@@ -125,7 +125,7 @@ class AddShopViewModel extends GetxController {
       shopCurrentMonth = currentMonth;
     }
 
-    String orderId = "S-$userId-$currentMonth-${shopSerialCounter.toString().padLeft(3, '0')}";
+    String orderId = "S-$user_id-$currentMonth-${shopSerialCounter.toString().padLeft(3, '0')}";
     shopSerialCounter++;
     _saveCounter();
     return orderId;
@@ -144,7 +144,7 @@ class AddShopViewModel extends GetxController {
 
   void saveForm() async {
     if (validateForm()) {
-      final shopSerial = generateNewOrderId(userId);
+      final shopSerial = generateNewOrderId(user_id);
 
       await _shopRepository.addAddShop(AddShopModel(
         shop_id: shopSerial,

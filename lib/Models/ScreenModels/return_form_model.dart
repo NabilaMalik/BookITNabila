@@ -7,7 +7,11 @@ class ReturnForm {
   Item? selectedItem;
   String quantity;
   String reason;
-  String shop;
+  String items;
 
-  ReturnForm({this.selectedItem, required this.quantity, required this.reason, required this.shop});
+  ReturnForm(
+      {this.selectedItem,
+      required this.quantity,
+      required this.reason,
+      required this.items});
 }

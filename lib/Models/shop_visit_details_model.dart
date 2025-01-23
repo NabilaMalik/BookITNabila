@@ -1,28 +1,45 @@
+import 'package:intl/intl.dart';
+
 class ShopVisitDetailsModel {
-  String? shopVisitDetailsId;
+  String? shop_visit_details_id;
   String? product;
   String? quantity;
-  String? shopVisitMasterId;
+  DateTime? shop_visit_details_date;
+  DateTime? shop_visit_details_time;
+  String? shop_visit_master_id;
 
   ShopVisitDetailsModel({
-    this.shopVisitDetailsId,
+    this.shop_visit_details_id,
     this.product,
     this.quantity,
-    this.shopVisitMasterId,
+    this.shop_visit_details_date,
+    this.shop_visit_details_time,
+    this.shop_visit_master_id,
   });
-  factory ShopVisitDetailsModel.fromMap(Map<dynamic,dynamic> json){
+
+  factory ShopVisitDetailsModel.fromMap(Map<dynamic, dynamic> json){
     return ShopVisitDetailsModel(
-      shopVisitDetailsId: json['shopVisitDetailsId'],
+      shop_visit_details_id: json['shop_visit_details_id'],
       product: json['product'],
       quantity: json['quantity'],
-      shopVisitMasterId: json['shopVisitMasterId'],
+      shop_visit_details_date: DateTime.now(),
+      // Always set live date
+      shop_visit_details_time: DateTime.now(),
+      // Always set live time
+      shop_visit_master_id: json['shop_visit_master_id'],
     );
   }
-  Map<String, dynamic> toMap(){
-    return{
-      'shopVisitDetailsId':shopVisitDetailsId,
-      'product':product,
-      'quantity':quantity,
-      'shopVisitMasterId':shopVisitMasterId,
+
+  Map<String, dynamic> toMap() {
+    return {
+      'shop_visit_details_id': shop_visit_details_id,
+      'product': product,
+      'quantity': quantity,
+      'shop_visit_details_date': DateFormat('dd-MMM-yyyy')
+          .format(shop_visit_details_date ?? DateTime.now()), // Always set live date
+      'shop_visit_details_time': DateFormat('HH:mm:ss')
+          .format(shop_visit_details_time ?? DateTime.now()), // Always set live time
+      'shop_visit_master_id': shop_visit_master_id,
     };
-  }}
+  }
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../ViewModels/ScreenViewModels/recovery_form_view_model.dart';
+import '../ViewModels/recovery_form_view_model.dart';
 import 'RecoveryFormScreenComponents/recovery_payment_history_card.dart';
 
 class RecoveryFormScreen extends StatelessWidget {
