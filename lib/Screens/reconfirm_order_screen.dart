@@ -243,7 +243,7 @@ class _OrderFooterState extends State<OrderFooter> {
           ),
           _buildField(
             label: 'Required Date',
-            value: orderMasterViewModel.requiredDelivery.value,
+            value: orderMasterViewModel.required_delivery_date.value,
           ),
           const SizedBox(height: 10),
           Align(

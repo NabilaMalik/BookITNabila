@@ -22,7 +22,7 @@ OrderDetailsViewModel orderDetailsViewModel =Get.put(OrderDetailsViewModel());
       'owner_name',
       'total',
       'credit_limit',
-      'requiredDelivery'
+      'required_delivery_date'
     ]);
     List<OrderMasterModel> confirmorder = [];
     for (int i = 0; i < maps.length; i++) {

@@ -39,7 +39,7 @@ class NextPage extends StatelessWidget {
                   height: 40,
                   width: 100,
                   child: TextFormField(
-                    initialValue: rows[index]["qty"],
+                    initialValue: rows[index]["quantity"],
                     decoration: const InputDecoration(
                       labelText: 'Qty',
                       labelStyle: TextStyle(fontSize: 18, color: Colors.blue),

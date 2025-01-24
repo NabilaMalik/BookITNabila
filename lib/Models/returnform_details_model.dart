@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 class ReturnFormDetailsModel{
   String? return_details_id;
   String? item;
-  String? qty;
+  String? quantity;
   String? reason;
   String? return_master_id;
   DateTime? return_details_date;
@@ -14,7 +14,7 @@ class ReturnFormDetailsModel{
   ReturnFormDetailsModel({
     this.return_details_id,
     this.item,
-    this.qty,
+    this.quantity,
     this.reason,
     this.return_master_id,
     this.return_details_date,
@@ -25,7 +25,7 @@ class ReturnFormDetailsModel{
     return ReturnFormDetailsModel(
       return_details_id: json['return_details_id'],
       item: json['item'],
-      qty: json['qty'],
+      quantity: json['quantity'],
       reason: json['reason'],
       return_master_id: json['return_master_id'],
       return_details_date: DateTime.now(),
@@ -39,7 +39,7 @@ class ReturnFormDetailsModel{
     return{
       'return_details_id':return_details_id,
       'item':item,
-      'qty':qty,
+      'quantity':quantity,
       'reason':reason,
       'return_master_id':return_master_id,
       'return_details_date': DateFormat('dd-MMM-yyyy')

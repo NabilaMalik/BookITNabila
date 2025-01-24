@@ -160,7 +160,7 @@ class RecoveryFormScreen extends StatelessWidget {
                         const SizedBox(width: 10),
                         Obx(() => _buildTextField(
                           readOnly: true,
-                          label: viewModel.new_balance.value.toString(),
+                          label: viewModel.net_balance.value.toString(),
                           keyboardType: TextInputType.text,
                           width: size.width * 0.5,
                           height: 40,

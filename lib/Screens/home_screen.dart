@@ -7,14 +7,15 @@ import 'package:order_booking_app/screens/order_booking_status_screen.dart';
 import 'package:order_booking_app/screens/recovery_form_screen.dart';
 import 'package:order_booking_app/screens/return_form_screen.dart';
 import 'package:order_booking_app/screens/shop_visit_screen.dart';
-import 'package:rive/rive.dart' show Artboard, SMIBool, StateMachineController;
+import 'package:rive/rive.dart';
 import 'HomeScreenComponents/action_box.dart';
+import 'HomeScreenComponents/assets.dart ';
 import 'HomeScreenComponents/navbar.dart';
 import 'HomeScreenComponents/overview_row.dart';
 import 'HomeScreenComponents/profile_section.dart';
 import 'HomeScreenComponents/theme.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'dart:async';
+
+import 'HomeScreenComponents/timer_card.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
   @override
@@ -124,9 +125,9 @@ class _RiveAppHomeState extends State<HomeScreen>
           child: Column(
             children: [
               _buildHeader(),
-              const SizedBox(height: 10),
+              const SizedBox(height: 1),
               TimerCard(), // Add the TimerCard here
-              const SizedBox(height: 10),
+              const SizedBox(height: 3),
               _buildActionButtons(screenWidth),
               const SizedBox(height: 20),
               _buildOverviewSection(),
@@ -160,26 +161,28 @@ class _RiveAppHomeState extends State<HomeScreen>
       child: Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ActionBox(icon: Icons.add_shopping_cart, label: 'Add Shop',onTap:() => Get.to(() => AddShopScreen()),
-    ),
-              ActionBox(icon: Icons.business, label: 'Shop Visit',onTap:  () => Get.to(() => ShopVisitScreen()),
+              ActionBox(imagePath: add_shop, label: 'Add Shop',onTap:() => Get.to(() => AddShopScreen()),
               ),
-              ActionBox(icon: Icons.assignment, label: 'Return Form',onTap:  () => Get.to(() => const ReturnFormScreen()),
+              ActionBox(imagePath: shop_visit, label: 'Shop Visit',onTap:  () => Get.to(() => ShopVisitScreen()),
+              ),
+              ActionBox(imagePath: return_form, label: 'Return Form',onTap:  () => Get.to(() => const ReturnFormScreen()),
+              ),
+              ActionBox(imagePath: recovery2, label: 'Recovery',onTap:  () => Get.to(() =>  RecoveryFormScreen()),
+              ),
+              ActionBox(imagePath: order_booking_status, label: 'Booking Status', onTap:  () => Get.to(() =>  OrderBookingStatusScreen()),
               ),
             ],
           ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ActionBox(icon: Icons.remove_circle, label: 'Recovery',onTap:  () => Get.to(() =>  RecoveryFormScreen()),
-              ),
-              ActionBox(icon: Icons.book, label: 'Booking Status', onTap:  () => Get.to(() =>  OrderBookingStatusScreen()),
-              ),
-            ],
-          ),
+          // SizedBox(height: 20),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //   children: [
+          //
+          //
+          //   ],
+          // ),
         ],
       ),
     );
@@ -237,67 +240,5 @@ class _RiveAppHomeState extends State<HomeScreen>
 }
 
 
-
-
-
-class TimerCard extends HookWidget {
-  @override
-  Widget build(BuildContext context) {
-
-    final Stopwatch stopwatch = useMemoized(() => Stopwatch());
-    final ValueNotifier<Duration> timerValue = useState(Duration.zero);
-
-    useEffect(() {
-      final periodicTimer = Timer.periodic(Duration(seconds: 1), (_) {
-        if (stopwatch.isRunning) {
-          timerValue.value = stopwatch.elapsed;
-        }
-      });
-      return periodicTimer.cancel;
-    }, [stopwatch]);
-
-    return Column(
-      children: [
-        Card(
-          elevation: 2,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${timerValue.value.inHours.toString().padLeft(2, '0')}:${(timerValue.value.inMinutes % 60).toString().padLeft(2, '0')}:${(timerValue.value.inSeconds % 60).toString().padLeft(2, '0')}',
-                  style: TextStyle(fontSize: 24),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (stopwatch.isRunning) {
-                      stopwatch.stop();
-                      timerValue.value = Duration.zero;
-                    } else {
-                      stopwatch
-                        ..reset()
-                        ..start();
-                      timerValue.value = Duration.zero;
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: stopwatch.isRunning ? Colors.red : Colors.green,
-                    shape: CircleBorder(),
-                    padding: EdgeInsets.all(16),
-                  ),
-                  child: Icon(
-                    stopwatch.isRunning ? Icons.stop : Icons.play_arrow,
-                    size: 24,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 

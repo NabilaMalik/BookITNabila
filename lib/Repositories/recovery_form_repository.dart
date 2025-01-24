@@ -13,7 +13,7 @@ class RecoveryFormRepository {
       'shop_name',
       'current_balance',
       'cash_recovery',
-      'new_balance',
+      'net_balance',
       'recovery_date',
       'recovery_time'
     ]);

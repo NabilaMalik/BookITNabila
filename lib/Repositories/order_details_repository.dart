@@ -11,7 +11,7 @@ class OrderDetailsRepository extends GetxService {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(orderDetailsTableName, columns: [
       'order_details_id',
-      'order_detail_date',
+      'order_details_date',
       'order_details_time',
       'product',
       'quantity',

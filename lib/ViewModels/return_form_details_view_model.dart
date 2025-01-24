@@ -57,7 +57,7 @@ class ReturnFormDetailsViewModel extends GetxController{
             return_details_id: returnFormSerial,
             item: row.selectedItem?.name,   // Use the selectedItem of the row
             reason: row.reason,   // Use the reason of the row
-            qty: row.quantity,   // Use the quantity of the row
+            quantity: row.quantity,   // Use the quantity of the row
             return_master_id: returnMasterId
         ));
       }

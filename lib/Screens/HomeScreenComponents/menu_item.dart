@@ -34,17 +34,16 @@ class MenuItemModel {
       riveIcon: TabItem(stateMachine: "CHAT_Interactivity", artboard: "CHAT"),
     ),
   ];
-
-/*  static List<MenuItemModel> menuItems2 = [
-  *//*  MenuItemModel(
+  static List<MenuItemModel> menuItems2 = [
+   MenuItemModel(
       title: "History",
       riveIcon: TabItem(stateMachine: "TIMER_Interactivity", artboard: "TIMER"),
-    ),*//*
+    ),
     MenuItemModel(
       title: "Notification",
       riveIcon: TabItem(stateMachine: "BELL_Interactivity", artboard: "BELL"),
     ),
-  ];*/
+  ];
 
   static List<MenuItemModel> menuItems3 = [
     MenuItemModel(

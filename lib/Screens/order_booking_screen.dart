@@ -125,7 +125,7 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
                   const SizedBox(height: 10),
                   _buildTextField(
                     label: "Required Delivery",
-                    text: orderMasterViewModel.requiredDelivery.value,
+                    text: orderMasterViewModel.required_delivery_date.value,
                     icon: Icons.calendar_today,
                   ),
                   const SizedBox(height: 30),

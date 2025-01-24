@@ -32,7 +32,7 @@ class OrderMasterViewModel extends GetxController {
   String currentuser_id = '';
 
   var credit_limit = ''.obs;
-  var requiredDelivery = ''.obs;
+  var required_delivery_date = ''.obs;
   final List<String> credits = ['7 days', '15 days', 'On Cash'];
   @override
   void onInit() {
@@ -114,7 +114,7 @@ class OrderMasterViewModel extends GetxController {
           brand: shopVisitViewModel.selectedBrand.value,
           total: orderDetailsViewModel.total.value.toString(),
           credit_limit: credit_limit.value,
-          requiredDelivery: requiredDelivery.value,
+          required_delivery_date: required_delivery_date.value,
           order_master_id: order_master_id
       );
 

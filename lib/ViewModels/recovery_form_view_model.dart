@@ -18,7 +18,7 @@ class RecoveryFormViewModel extends GetxController{
   var filteredRows = <PaymentHistory>[].obs;
   var current_balance = 0.0.obs; // Current balance of selected shop
   var cash_recovery = 0.0.obs; // Amount entered by the user for recovery
-  var new_balance = 0.0.obs; // Updated balance after cash recovery
+  var net_balance = 0.0.obs; // Updated balance after cash recovery
   var areFieldsEnabled = false.obs; // Add this line
 
   final TextEditingController startDateController = TextEditingController();
@@ -77,7 +77,7 @@ class RecoveryFormViewModel extends GetxController{
   void updatecurrent_balance(String shop_name) {
     final selectedShop = shops.firstWhere((shop) => shop.name == shop_name);
     current_balance.value = selectedShop.current_balance;
-    new_balance.value = selectedShop.current_balance - cash_recovery.value;
+    net_balance.value = selectedShop.current_balance - cash_recovery.value;
     areFieldsEnabled.value = true;
 
     // Filter payment history based on selected shop
@@ -90,7 +90,7 @@ class RecoveryFormViewModel extends GetxController{
     final recoveryAmount = double.tryParse(value) ?? 0.0;
     if (recoveryAmount <= current_balance.value) {
       cash_recovery.value = recoveryAmount;
-      new_balance.value = current_balance.value - cash_recovery.value;
+      net_balance.value = current_balance.value - cash_recovery.value;
     } else {
       // Handle invalid input
       Get.snackbar(
@@ -116,7 +116,7 @@ class RecoveryFormViewModel extends GetxController{
       shop_name: selectedShop.value,
       current_balance: current_balance.value!,
       cash_recovery: cash_recovery.value,
-      new_balance: new_balance.value,
+      net_balance: net_balance.value,
     ));
     // Implement your form submission logic here
     Get.snackbar("Success", "Form submitted successfully!");

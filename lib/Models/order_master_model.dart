@@ -8,7 +8,7 @@ class OrderMasterModel{
   String? brand;
   String? total;
   String? credit_limit;
-  String? requiredDelivery;
+  String? required_delivery_date;
   DateTime? order_master_date;
   DateTime? order_master_time;
   
@@ -20,7 +20,7 @@ class OrderMasterModel{
     this.brand,
     this.total,
     this.credit_limit,
-    this.requiredDelivery,
+    this.required_delivery_date,
     this.order_master_date,
     this.order_master_time,
   });
@@ -33,7 +33,7 @@ class OrderMasterModel{
       brand:json['brand'],
       total:json['total'],
       credit_limit:json['credit_limit'],
-      requiredDelivery:json['requiredDelivery'],
+      required_delivery_date:json['required_delivery_date'],
       order_master_date: DateTime.now(),
       // Always set live date
       order_master_time: DateTime.now(),
@@ -50,7 +50,7 @@ class OrderMasterModel{
       'brand':brand,
       'total':total,
       'credit_limit':credit_limit,
-      'requiredDelivery':requiredDelivery,
+      'required_delivery_date':required_delivery_date,
       'order_master_date': DateFormat('dd-MMM-yyyy')
           .format(order_master_date ?? DateTime.now()), // Always set live date
       'order_master_time': DateFormat('HH:mm:ss')

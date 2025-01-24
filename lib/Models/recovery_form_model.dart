@@ -5,7 +5,7 @@ class RecoveryFormModel{
   String? shop_name;
   dynamic? current_balance;
   String? date;  dynamic? cash_recovery;
-  dynamic? new_balance;
+  dynamic? net_balance;
   DateTime? recovery_date;
   DateTime? recovery_time;
 
@@ -14,7 +14,7 @@ class RecoveryFormModel{
     this.shop_name,
     this.current_balance,
     this.cash_recovery,
-    this.new_balance,
+    this.net_balance,
     this.date,
     this.recovery_date,
     this.recovery_time,
@@ -26,7 +26,7 @@ class RecoveryFormModel{
       shop_name: json['shop_name'],
       current_balance: json['current_balance'],
         cash_recovery: json['cash_recovery'],
-        new_balance: json['new_balance'],
+        net_balance: json['net_balance'],
       recovery_date: DateTime.now(),
       // Always set live date
       recovery_time: DateTime.now(),
@@ -41,7 +41,7 @@ class RecoveryFormModel{
       'shop_name':shop_name,
       'current_balance':current_balance,
       'cash_recovery':cash_recovery,
-      'new_balance':new_balance,
+      'net_balance':net_balance,
 
       'recovery_date': DateFormat('dd-MMM-yyyy')
           .format(recovery_date ?? DateTime.now()), // Always set live date

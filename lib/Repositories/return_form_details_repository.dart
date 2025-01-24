@@ -13,7 +13,7 @@ class ReturnFormDetailsRepository {
       'return_details_date',
       'return_details_time',
       'item',
-      'qty',
+      'quantity',
       'reason',
       'return_master_id'
     ]);
