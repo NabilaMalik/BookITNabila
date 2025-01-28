@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:order_booking_app/Screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
@@ -184,6 +185,46 @@ class ShopVisitViewModel extends GetxController {
       await clearFilters();
 
       Get.to(() => const OrderBookingScreen());
+    }
+  }
+
+  Future<void> saveFormNoOrder() async {
+    if (validateForm()) {
+      print("Start Savinggggggggggggg");
+      Uint8List? compressedImageBytes;
+      if (selectedImage.value != null) {
+        compressedImageBytes = await FlutterImageCompress.compressWithFile(
+          selectedImage.value!.path,
+          minWidth: 400,
+          minHeight: 600,
+          quality: 40,
+        );
+      }
+
+      final orderSerial = generateNewOrderId(user_id);
+      shop_visit_master_id = orderSerial;
+
+      await addShopVisit(ShopVisitModel(
+        shop_name: selectedShop.value,
+        shop_address: shop_address.value,
+        owner_name: owner_name.value,
+        brand: selectedBrand.value,
+        booker_name: booker_name.value,
+        walk_through: checklistState[0],
+        planogram: checklistState[1],
+        signage: checklistState[2],
+        product_reviewed: checklistState[3],
+        addPhoto: compressedImageBytes,
+        feedback: feedBack.value,
+        shop_visit_master_id: shop_visit_master_id, // Add the generated serial here
+      ));
+      await shopvisitRepository.getShopVisit();
+      await shopVisitDetailsViewModel.saveFilteredProducts();
+      Get.snackbar("Success", "Form submitted successfully!",
+          snackPosition: SnackPosition.BOTTOM);
+      await clearFilters();
+
+      Get.to(() => const HomeScreen());
     }
   }
 

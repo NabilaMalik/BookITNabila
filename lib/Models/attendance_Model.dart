@@ -1,9 +1,9 @@
 import 'package:intl/intl.dart';
 
 class AttendanceModel {
-  dynamic id;
-  String? date;
-  String? time_in;
+  dynamic attendance_in_id;
+
+
   String? user_id;
   dynamic lat_in;
   dynamic lng_in;
@@ -13,11 +13,12 @@ class AttendanceModel {
   dynamic address;
   DateTime? attendance_in_date;
   DateTime? attendance_in_time;
+  int posted;
 
   AttendanceModel(
-      {this.id,
-      this.date,
-      this.time_in,
+      {this.attendance_in_id,
+
+
       this.user_id,
       this.lat_in,
       this.lng_in,
@@ -26,13 +27,14 @@ class AttendanceModel {
       this.designation,
       this.attendance_in_date,
       this.attendance_in_time,
-      this.address});
+      this.address,
+        this.posted = 0
+      });
+
 
   factory AttendanceModel.fromMap(Map<dynamic, dynamic> json) {
     return AttendanceModel(
-      id: json['id'],
-      date: json['date'],
-      time_in: json['time_in'],
+      attendance_in_id: json['attendance_in_id'],
       user_id: json['user_id'],
       lat_in: json['lat_in'],
       lng_in: json['lng_in'],
@@ -43,15 +45,14 @@ class AttendanceModel {
       attendance_in_date: DateTime.now(),
       // Always set live date
       attendance_in_time: DateTime.now(),
+        posted: json['posted']?? 0
       // Always set live time
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
-      'date': date,
-      'time_in': time_in,
+      'attendance_in_id': attendance_in_id,
       'user_id': user_id,
       'lat_in': lat_in,
       'lng_in': lng_in,
@@ -63,6 +64,7 @@ class AttendanceModel {
           .format(attendance_in_date ?? DateTime.now()), // Always set live date
       'attendance_in_time': DateFormat('HH:mm:ss')
           .format(attendance_in_time ?? DateTime.now()), // Always set live time
+      'posted':posted,
     };
   }
 }

@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 
 class LocationModel {
   dynamic? location_id;
-  String? date;
+  int posted;
   String? file_name;
   String? user_id;
   Uint8List? body;
@@ -18,7 +18,7 @@ class LocationModel {
 
   LocationModel({
     this.location_id,
-    this.date,
+    this.posted = 0,
     this.file_name,
     this.user_id,
     this.body,
@@ -32,7 +32,7 @@ class LocationModel {
 
     return LocationModel(
       location_id: json['location_id'],
-      date : json['date'],
+      posted: json['posted'] ?? 0,
       file_name: json['file_name'],
       user_id: json['user_id'],
       booker_name: json['booker_name'],
@@ -51,7 +51,7 @@ class LocationModel {
   Map<String, dynamic> toMap() {
     return {
       'location_id': location_id,
-      'date': date,
+      'posted': posted,
       'file_name': file_name,
       'user_id': user_id,
       'booker_name':booker_name,

@@ -131,6 +131,7 @@ class OrderMasterViewModel extends GetxController {
   bool validateForm() {
     return _formKey.currentState?.validate() ?? false;
   }
+
   fetchAllConfirmOrder() async {
     var confirmorder = await orderMasterRepository.getConfirmOrder();
     allOrderMaster.value = confirmorder;

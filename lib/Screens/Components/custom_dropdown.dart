@@ -55,13 +55,13 @@ class _CustomDropdownState extends State<CustomDropdown> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      padding: const EdgeInsets.only(bottom: 10.0),
       child: Container(
         width: widget.maxWidth ?? double.infinity,
-        height: widget.maxHeight ?? 65.0,
+        height: widget.maxHeight ?? 67.0,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(3),
           boxShadow: widget.useBoxShadow
               ? widget.boxShadow ??
               [

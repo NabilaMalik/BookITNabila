@@ -40,7 +40,14 @@ class Config {
   static String get getApiUrlShops2 => remoteConfig.getString('ShopsGetUrl2');
   static String get getApiUrlShops3 => remoteConfig.getString('ShopsGetUrl3');
   static String get getApiUrlShops4 => remoteConfig.getString('ShopsGetUrl4');
-
+  static String get getApiUrlShopVisitDetails =>
+      remoteConfig.getString('ShopVisitDetailsGetUrl');
+  static String get getApiUrlLocation =>
+      remoteConfig.getString('LocationGetUrl');
+  static String get getApiUrlAttendanceIn =>
+      remoteConfig.getString('AttendanceInGetUrl');
+  static String get getApiUrlAttendanceOut =>
+      remoteConfig.getString('AttendanceOutGetUrl');
   static String get getApiUrlProducts =>
       remoteConfig.getString('ProductsGetUrl');
 
@@ -73,6 +80,8 @@ class Config {
       remoteConfig.getString('OrderBookingStatusGetUrl');
 
 // Static configuration parameters for POST API URLs with postApiUrl prefix
+  static String get postApiUrlShopVisitDetails =>
+      remoteConfig.getString('ShopVisitDetailsPostUrl');
   static String get postApiUrlShops => remoteConfig.getString('ShopsPostUrl');
 
   static String get postApiUrlProducts =>
@@ -97,9 +106,6 @@ class Config {
 
   static String get postApiUrlShopVisit =>
       remoteConfig.getString('ShopVisitPostUrl');
-
-  static String get postApiUrlStockCheckItems =>
-      remoteConfig.getString('StockCheckItemsPostUrl');
 
   static String get postApiUrlAttendanceIn =>
       remoteConfig.getString('AttendanceInPostUrl');

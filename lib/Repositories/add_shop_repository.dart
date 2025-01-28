@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:connectivity_plus/connectivity_plus.dart';
 import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Models/add_shop_model.dart';
@@ -212,8 +211,4 @@ class AddShopRepository extends GetxService {
     }
   }
 
-  Future<bool> isNetworkAvailable() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    return connectivityResult != ConnectivityResult.none;
-  }
 }

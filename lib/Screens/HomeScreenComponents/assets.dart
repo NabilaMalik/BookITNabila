@@ -9,7 +9,7 @@ const String recovery2 = 'assets/samples/ui/rive_app/images/recovery2.ico';
 const String return_form = 'assets/samples/ui/rive_app/images/return_form.ico';
 const String shop_visit = 'assets/samples/ui/rive_app/images/shop_visit.ico';
 const String bg4 = 'assets/images/bg4.png';
-// const String spline = 'assets/samples/ui/rive_app/images/backgrounds/spline.png';
+ const String spline = 'assets/samples/ui/rive_app/images/backgrounds/spline.png';
 const String doodle = 'assets/samples/ui/rive_app/images/backgrounds/doodle.png';
 
 

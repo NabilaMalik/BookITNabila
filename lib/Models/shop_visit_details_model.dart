@@ -7,6 +7,7 @@ class ShopVisitDetailsModel {
   DateTime? shop_visit_details_date;
   DateTime? shop_visit_details_time;
   String? shop_visit_master_id;
+  int posted;
 
   ShopVisitDetailsModel({
     this.shop_visit_details_id,
@@ -15,6 +16,7 @@ class ShopVisitDetailsModel {
     this.shop_visit_details_date,
     this.shop_visit_details_time,
     this.shop_visit_master_id,
+    this.posted = 0,
   });
 
   factory ShopVisitDetailsModel.fromMap(Map<dynamic, dynamic> json){
@@ -26,6 +28,8 @@ class ShopVisitDetailsModel {
       // Always set live date
       shop_visit_details_time: DateTime.now(),
       // Always set live time
+      posted: json['posted'] ?? 0,
+
       shop_visit_master_id: json['shop_visit_master_id'],
     );
   }
@@ -35,6 +39,7 @@ class ShopVisitDetailsModel {
       'shop_visit_details_id': shop_visit_details_id,
       'product': product,
       'quantity': quantity,
+      'posted': posted,
       'shop_visit_details_date': DateFormat('dd-MMM-yyyy')
           .format(shop_visit_details_date ?? DateTime.now()), // Always set live date
       'shop_visit_details_time': DateFormat('HH:mm:ss')

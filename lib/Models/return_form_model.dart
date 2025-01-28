@@ -5,13 +5,13 @@ class ReturnFormModel{
   String? select_shop;
   DateTime? return_master_date;
   DateTime? return_master_time;
-
+  int posted;
   ReturnFormModel({
     this.return_master_id,
     this.select_shop,
     this.return_master_date,
     this.return_master_time,
-    
+    this.posted = 0,
   });
 
   factory ReturnFormModel.fromMap(Map<dynamic,dynamic> json){
@@ -22,6 +22,7 @@ class ReturnFormModel{
       // Always set live date
       return_master_time: DateTime.now(),
       // Always set live time
+      posted: json['posted'] ?? 0,
 
     );
   }
@@ -34,7 +35,7 @@ class ReturnFormModel{
           .format(return_master_date ?? DateTime.now()), // Always set live date
       'return_master_time': DateFormat('HH:mm:ss')
           .format(return_master_time ?? DateTime.now()), // Always set live time
-
+      'posted': posted,
     };
   }
 }

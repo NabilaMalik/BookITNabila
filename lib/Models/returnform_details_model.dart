@@ -10,6 +10,7 @@ class ReturnFormDetailsModel{
   String? return_master_id;
   DateTime? return_details_date;
   DateTime? return_details_time;
+  int posted;
 
   ReturnFormDetailsModel({
     this.return_details_id,
@@ -19,6 +20,8 @@ class ReturnFormDetailsModel{
     this.return_master_id,
     this.return_details_date,
     this.return_details_time,
+    this.posted = 0,
+
   });
 
   factory ReturnFormDetailsModel.fromMap(Map<dynamic,dynamic> json){
@@ -32,6 +35,8 @@ class ReturnFormDetailsModel{
       // Always set live date
       return_details_time: DateTime.now(),
       // Always set live time
+      posted: json['posted'] ?? 0,
+
     );
   }
 
@@ -46,7 +51,7 @@ class ReturnFormDetailsModel{
           .format(return_details_date ?? DateTime.now()), // Always set live date
       'return_details_time': DateFormat('HH:mm:ss')
           .format(return_details_time ?? DateTime.now()), // Always set live time
-
+      'posted': posted,
     };
   }
 }

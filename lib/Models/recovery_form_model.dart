@@ -8,6 +8,7 @@ class RecoveryFormModel{
   dynamic? net_balance;
   DateTime? recovery_date;
   DateTime? recovery_time;
+  int posted;
 
   RecoveryFormModel({
     this.recovery_id,
@@ -18,6 +19,7 @@ class RecoveryFormModel{
     this.date,
     this.recovery_date,
     this.recovery_time,
+    this.posted = 0,
   });
 
   factory RecoveryFormModel.fromMap(Map<dynamic,dynamic> json){
@@ -31,7 +33,7 @@ class RecoveryFormModel{
       // Always set live date
       recovery_time: DateTime.now(),
       // Always set live time
-      
+      posted: json['posted'] ?? 0,
     );
   }
 
@@ -47,7 +49,7 @@ class RecoveryFormModel{
           .format(recovery_date ?? DateTime.now()), // Always set live date
       'recovery_time': DateFormat('HH:mm:ss')
           .format(recovery_time ?? DateTime.now()), // Always set live time
-
+      'posted': posted,
 
     };
   }

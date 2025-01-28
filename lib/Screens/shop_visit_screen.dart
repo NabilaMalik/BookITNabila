@@ -14,7 +14,8 @@ import 'ShopVisitScreenComponents/product_search_card.dart';
 class ShopVisitScreen extends StatelessWidget {
   ShopVisitScreen({super.key});
   final ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
-  final ShopVisitDetailsViewModel shopVisitDetailsViewModel = Get.put(ShopVisitDetailsViewModel());
+  final ShopVisitDetailsViewModel shopVisitDetailsViewModel =
+      Get.put(ShopVisitDetailsViewModel());
   final ProductsViewModel productsViewModel = Get.put(ProductsViewModel());
 
   @override
@@ -34,76 +35,86 @@ class ShopVisitScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Obx(() => CustomDropdown(
-                        label: "Brand",
-                        icon: Icons.branding_watermark,
-                        items: shopVisitViewModel.brands.where((brand) => brand != null).cast<String>().toList(),
-                        selectedValue: shopVisitViewModel.selectedBrand.value,
-                        onChanged: (value) async {
-                          await shopVisitDetailsViewModel.filteredRows.refresh();
-                          shopVisitViewModel.selectedBrand.value = value!;
-                          shopVisitDetailsViewModel.filterProductsByBrand(value);
-                        },
-                        useBoxShadow: false,
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Please select a brand'
-                            : null,
-                        inputBorder: const UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue, width: 1.0),
-                        ),
-                        maxHeight: 50.0,
-                        maxWidth: 355.0,
-                        iconSize: 23.0,
-                        contentPadding: 6.0,
-                        iconColor: Colors.blue,
-                      )),
-
+                            label: "Brand",
+                            icon: Icons.branding_watermark,
+                            items: shopVisitViewModel.brands
+                                .where((brand) => brand != null)
+                                .cast<String>()
+                                .toList(),
+                            selectedValue:
+                                shopVisitViewModel.selectedBrand.value,
+                            onChanged: (value) async {
+                              await shopVisitDetailsViewModel.filteredRows
+                                  .refresh();
+                              shopVisitViewModel.selectedBrand.value = value!;
+                              shopVisitDetailsViewModel
+                                  .filterProductsByBrand(value);
+                            },
+                            useBoxShadow: false,
+                            validator: (value) => value == null || value.isEmpty
+                                ? 'Please select a brand'
+                                : null,
+                            inputBorder: const UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.blue, width: 1.0),
+                            ),
+                            maxHeight: 50.0,
+                            maxWidth: 355.0,
+                            iconSize: 23.0,
+                            contentPadding: 6.0,
+                            iconColor: Colors.blue,
+                          )),
                       Obx(() => CustomDropdown(
-                        label: "Shop",
-                        icon: Icons.store,
-                        items: shopVisitViewModel.shops.value.where((shop) => shop != null).cast<String>().toList(),
-                        selectedValue: shopVisitViewModel.selectedShop.value,
-                        onChanged: (value) async {
-                          shopVisitViewModel.selectedShop.value = value!;
-                          await shopVisitViewModel.updateShopDetails(value);
-                          shopVisitViewModel.selectedShop.value = value; // Pehle assignment thi, ab baad mein
-                        print(shopVisitViewModel.shop_address.value);
-                        },
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Please select a shop'
-                            : null,
-                        useBoxShadow: false,
-                        inputBorder: const UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue, width: 1.0),
-                        ),
-                        maxHeight: 50.0,
-                        maxWidth: 355.0,
-                        iconSize: 23.0,
-                        contentPadding: 6.0,
-                        iconColor: Colors.blue,
-                      )),
-
-                    Obx(()=> _buildTextField(
-                        initialValue: shopVisitViewModel.shop_address.value,
-                        label: "Shop Address",
-                        icon: Icons.location_on,
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Please enter the shop address'
-                            : null,
-                        onChanged: (value) =>
-                        shopVisitViewModel.shop_address.value = value,
-                      )),
-                      Obx(()=> _buildTextField(
-                        initialValue: shopVisitViewModel.owner_name.value,
-                        label: "Owner Name",
-                        icon: Icons.location_on,
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Please enter the shop address'
-                            : null,
-                        onChanged: (value) =>
-                        shopVisitViewModel.owner_name.value = value,
-                      )),
-
-          _buildTextField(
+                            label: "Shop",
+                            icon: Icons.store,
+                            items: shopVisitViewModel.shops.value
+                                .where((shop) => shop != null)
+                                .cast<String>()
+                                .toList(),
+                            selectedValue:
+                                shopVisitViewModel.selectedShop.value,
+                            onChanged: (value) async {
+                              shopVisitViewModel.selectedShop.value = value!;
+                              await shopVisitViewModel.updateShopDetails(value);
+                              shopVisitViewModel.selectedShop.value =
+                                  value; // Pehle assignment thi, ab baad mein
+                              print(shopVisitViewModel.shop_address.value);
+                            },
+                            validator: (value) => value == null || value.isEmpty
+                                ? 'Please select a shop'
+                                : null,
+                            useBoxShadow: false,
+                            inputBorder: const UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.blue, width: 1.0),
+                            ),
+                            maxHeight: 50.0,
+                            maxWidth: 355.0,
+                            iconSize: 23.0,
+                            contentPadding: 6.0,
+                            iconColor: Colors.blue,
+                          )),
+                      Obx(() => _buildTextField(
+                            initialValue: shopVisitViewModel.shop_address.value,
+                            label: "Shop Address",
+                            icon: Icons.location_on,
+                            validator: (value) => value == null || value.isEmpty
+                                ? 'Please enter the shop address'
+                                : null,
+                            onChanged: (value) =>
+                                shopVisitViewModel.shop_address.value = value,
+                          )),
+                      Obx(() => _buildTextField(
+                            initialValue: shopVisitViewModel.owner_name.value,
+                            label: "Owner Name",
+                            icon: Icons.location_on,
+                            validator: (value) => value == null || value.isEmpty
+                                ? 'Please enter the shop address'
+                                : null,
+                            onChanged: (value) =>
+                                shopVisitViewModel.owner_name.value = value,
+                          )),
+                      _buildTextField(
                         label: "Booker Name",
                         initialValue: shopVisitViewModel.booker_name.value,
                         icon: Icons.person,
@@ -111,7 +122,7 @@ class ShopVisitScreen extends StatelessWidget {
                             ? 'Please enter the booker name'
                             : null,
                         onChanged: (value) =>
-                        shopVisitViewModel.booker_name.value = value,
+                            shopVisitViewModel.booker_name.value = value,
                       ),
                     ],
                   ),
@@ -141,18 +152,58 @@ class ShopVisitScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 Obx(() => FeedbackSection(
-                  feedBackController: TextEditingController(
-                      text: shopVisitViewModel.feedBack.value
-                  ),
-                  onChanged: (value) =>
-                  shopVisitViewModel.feedBack.value = value,
-                )),
+                      feedBackController: TextEditingController(
+                          text: shopVisitViewModel.feedBack.value),
+                      onChanged: (value) =>
+                          shopVisitViewModel.feedBack.value = value,
+                    )),
                 const SizedBox(height: 20),
-                CustomButton(
-                  buttonText: "Save",
-                  onTap: shopVisitViewModel.saveForm,
-                  gradientColors: [Colors.blue, Colors.blue],
-                ),
+                Row(children: [
+                  CustomButton(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        offset: const Offset(0, 4),
+                        blurRadius: 8,
+                      ),
+                    ],
+                    textSize: 16,
+                    iconSize: 18,
+                    height: 45,
+                    padding: EdgeInsets.only(left: 3, right: 25),
+                    icon: Icons.arrow_back_ios_new_rounded,
+                    iconColor: Colors.white,
+                    iconPosition: IconPosition.left,
+                    spacing: 0,
+                    //iconBackgroundColor: Colors.white,
+                    width: 120,
+                    buttonText: "Only Visit",
+                    onTap: shopVisitViewModel.saveFormNoOrder,
+                    gradientColors: [Colors.red, Colors.red],
+                  ),
+                  const SizedBox(width: 80),
+                  CustomButton(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        offset: const Offset(0, 4),
+                        blurRadius: 8,
+                      ),
+                    ],
+                    textSize: 16,
+                    iconSize: 18,
+                    height: 45,
+                    padding: EdgeInsets.only(left: 10, right: 5),
+                    width: 120,
+                    spacing: 0,
+                    buttonText: "Order Form",
+                    icon: Icons.arrow_forward_ios_outlined,
+                    iconColor: Colors.white,
+                    onTap: shopVisitViewModel.saveForm,
+                    iconPosition: IconPosition.right,
+                    gradientColors: [Colors.blue.shade900, Colors.blue],
+                  ),
+                ]),
               ],
             ),
           ),
@@ -179,8 +230,7 @@ class ShopVisitScreen extends StatelessWidget {
     TextInputType keyboardType = TextInputType.text,
     bool obscureText = false,
   }) {
-    return
-      CustomEditableMenuOption(
+    return CustomEditableMenuOption(
       //readOnly: true,
       label: label,
       initialValue: initialValue,
@@ -198,7 +248,6 @@ class ShopVisitScreen extends StatelessWidget {
       //useTextField: true, // Ensure this is true to use TextField
     );
   }
-
 }
 
 class SectionHeader extends StatelessWidget {

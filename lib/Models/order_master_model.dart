@@ -11,6 +11,7 @@ class OrderMasterModel{
   String? required_delivery_date;
   DateTime? order_master_date;
   DateTime? order_master_time;
+  int posted;
   
   OrderMasterModel({
     this.order_master_id,
@@ -23,6 +24,7 @@ class OrderMasterModel{
     this.required_delivery_date,
     this.order_master_date,
     this.order_master_time,
+    this.posted = 0,
   });
   factory OrderMasterModel.fromMap(Map<dynamic,dynamic> json){
     return OrderMasterModel(
@@ -37,6 +39,7 @@ class OrderMasterModel{
       order_master_date: DateTime.now(),
       // Always set live date
       order_master_time: DateTime.now(),
+      posted: json['posted'] ?? 0,
       // Always set live time
     );
   }
@@ -55,7 +58,7 @@ class OrderMasterModel{
           .format(order_master_date ?? DateTime.now()), // Always set live date
       'order_master_time': DateFormat('HH:mm:ss')
           .format(order_master_time ?? DateTime.now()), // Always set live time
-
+      'posted': posted,
     };
   }
 

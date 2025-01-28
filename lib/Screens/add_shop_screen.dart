@@ -2,13 +2,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/Screens/Components/custom_switch.dart';
+import 'package:order_booking_app/ViewModels/location_view_model.dart';
 import '../ViewModels/add_shop_view_model.dart';
 import 'Components/custom_button.dart';
 import 'Components/custom_dropdown.dart';
 
 class AddShopScreen extends StatelessWidget {
   final AddShopViewModel _viewModel = Get.put(AddShopViewModel());
-
+final LocationViewModel locationViewModel = Get.put(LocationViewModel());
   AddShopScreen({super.key});
 
   @override
@@ -116,12 +117,17 @@ class AddShopScreen extends StatelessWidget {
                     keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: 10),
+                  // Use Obx to reactively update CustomSwitch
                   Obx(() => CustomSwitch(
-                        label: "GPS Enabled",
-                        value: _viewModel.shop.isGPSEnabled,
-                        onChanged: (value) =>
-                            _viewModel.setShopField('isGPSEnabled', value),
-                      )),
+                    label: "GPS Enabled",
+                    value: locationViewModel.isGPSEnabled.value,
+                    onChanged: (value) async {
+                      locationViewModel.isGPSEnabled.value = value;
+                      if (value) {
+                        await locationViewModel.saveCurrentLocation(); // Save location when switch is turned on
+                      }
+                    },
+                  )),
                   const SizedBox(height: 10),
                   CustomButton(
                     buttonText: "Save",

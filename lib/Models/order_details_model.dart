@@ -11,7 +11,7 @@ class OrderDetailsModel{
   String? order_master_id;
   DateTime? order_details_date;
   DateTime? order_details_time;
-  
+  int posted;
   OrderDetailsModel({
     this.order_details_id,
     this.product,
@@ -21,6 +21,7 @@ class OrderDetailsModel{
     this.amount,
     this.order_details_date,
     this.order_details_time,
+    this.posted = 0,
     this.order_master_id
   });
   factory OrderDetailsModel.fromMap(Map<dynamic,dynamic> json){
@@ -34,6 +35,7 @@ class OrderDetailsModel{
         order_details_date: DateTime.now(),
         // Always set live date
         order_details_time: DateTime.now(),
+        posted: json['posted'] ?? 0,
         // Always set live time
       order_master_id: json['order_master_id']
 
@@ -46,6 +48,7 @@ class OrderDetailsModel{
       'in_stock':in_stock,
       'rate':rate,
       'amount':amount,
+      'posted': posted,
       'order_details_date': DateFormat('dd-MMM-yyyy').format(order_details_date ?? DateTime.now()), // Always set live date
       'order_details_time': DateFormat('HH:mm:ss').format(order_details_time ?? DateTime.now()), // Always set live time
       'order_master_id':order_master_id,
