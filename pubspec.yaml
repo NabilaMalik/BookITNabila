@@ -73,6 +73,7 @@ dependencies:
   flutter_background_service: ^5.1.0
   device_info_plus: ^11.2.1
   isolate: ^2.1.1
+  flutter_background_service_android: ^6.3.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

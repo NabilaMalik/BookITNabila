@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:io' show Directory, InternetAddress, Platform, SocketException;
+
 import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart' show DeviceInfoPlugin;
 import 'package:connectivity/connectivity.dart';
@@ -15,7 +17,8 @@ import 'Services/FirebaseServices/firebase_remote_config.dart';
 import 'Services/FirebaseServices/firebase_options.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_background_service/flutter_background_service.dart' show AndroidConfiguration, AndroidServiceInstance, FlutterBackgroundService, IosConfiguration, ServiceInstance;
+import 'package:flutter_background_service_android/flutter_background_service_android.dart' show AndroidServiceInstance;
+import 'package:flutter_background_service/flutter_background_service.dart' show AndroidConfiguration, FlutterBackgroundService, IosConfiguration, ServiceInstance;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart' show AndroidFlutterLocalNotificationsPlugin, AndroidInitializationSettings, AndroidNotificationChannel, AndroidNotificationDetails, DarwinInitializationSettings, FlutterLocalNotificationsPlugin, Importance, InitializationSettings, NotificationDetails;
 import 'Tracker/location00.dart';
 import 'Tracker/trac.dart';

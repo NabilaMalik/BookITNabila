@@ -158,7 +158,7 @@ class AddShopViewModel extends GetxController {
         isGPSEnabled: _shop.value.isGPSEnabled,
       ), allAddShop);
 
-      await fetchAllAddShop();
+      //await fetchAllAddShop();
       // await clearFilters();
       // Navigate to another screen if needed
       // Get.to(() => HomeScreen());

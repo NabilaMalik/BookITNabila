@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:gpx/gpx.dart';
@@ -14,7 +13,6 @@ import '../Databases/util.dart';
 import '../Models/location_model.dart';
 import '../Repositories/location_repository.dart';
 import 'package:geocoding/geocoding.dart';
-
 import '../Tracker/trac.dart';
 
 class LocationViewModel extends GetxController {
@@ -36,6 +34,7 @@ class LocationViewModel extends GetxController {
   void onInit() {
     super.onInit();
     _loadCounter();
+    requestPermissions();
     saveCurrentLocation();  // Ensure this function is called
     fetchAllLocation();
     loadClockStatus();
@@ -245,7 +244,7 @@ saveLocation() async {
   List<int> gpxBytesList = await maingpxFile.readAsBytes();
   Uint8List gpxBytes = Uint8List.fromList(gpxBytesList);
   final orderSerial = generateNewOrderId(user_id);
-  addLocation(LocationModel(
+ await addLocation(LocationModel(
     location_id:  orderSerial,
     user_id: user_id,
      total_distance: totalDistance.toString(),
@@ -254,14 +253,61 @@ saveLocation() async {
      body: gpxBytes,
 
   ));
+ await locationRepository.postDataFromDatabaseToAPI();
 }
+  Future<void> requestPermissions() async {
 
+    if (kDebugMode) {
+      print('Requesting notification permission...');
+    }
+    if (await Permission.notification.request().isDenied) {
+      // Notification permission not granted
+      if (kDebugMode) {
+        print('Notification permission denied');
+      }
+      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+      return;
+    }
+
+    if (kDebugMode) {
+      print('Requesting location permission...');
+    }
+    if (await Permission.location.request().isDenied) {
+      // Location permission not granted
+      if (kDebugMode) {
+        print('Location permission denied');
+      }
+      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    } else if (await Permission.location.request().isGranted) {
+      if (kDebugMode) {
+        print('Location permission granted');
+      }
+      // Check and request background location permission if necessary
+      if (await Permission.locationAlways.request().isDenied) {
+        // Background location permission not granted
+        if (kDebugMode) {
+          print('Background location permission denied');
+        }
+        SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+      } else {
+        if (kDebugMode) {
+          print('All permissions granted');
+        }
+        // Navigator.of(context).push(
+        //   MaterialPageRoute(
+        //     builder: (context) => const LoginForm(),
+        //   ),
+        // );
+        // Navigate to the login page if all permissions are granted
+      }
+    }
+  }
   Future<void> fetchAllLocation() async {
     var location = await locationRepository.getLocation();
     allLocation.value = location;
   }
 
-  void addLocation(LocationModel locationModel) {
+   addLocation(LocationModel locationModel) {
     locationRepository.add(locationModel);
     fetchAllLocation();
   }

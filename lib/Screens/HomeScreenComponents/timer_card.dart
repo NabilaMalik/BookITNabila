@@ -1,23 +1,17 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
-import 'package:order_booking_app/Models/attendanceOut_model.dart';
-import 'package:order_booking_app/Models/attendance_Model.dart';
 import 'package:order_booking_app/ViewModels/attendance_view_model.dart';
 import 'package:order_booking_app/ViewModels/location_view_model.dart';
 import 'package:rive/rive.dart';
 import 'package:location/location.dart' as loc;
-import '../../Databases/util.dart';
 import '../../ViewModels/attendance_out_view_model.dart';
 import '../../main.dart';
 import 'assets.dart ';
 import 'menu_item.dart';
 
 class TimerCard extends StatelessWidget {
-  LocationViewModel locationViewModel = Get.put(LocationViewModel());
+ final locationViewModel = Get.put(LocationViewModel());
   final attendanceViewModel = Get.put(AttendanceViewModel());
   final attendanceOutViewModel = Get.put(AttendanceOutViewModel());
   final loc.Location location = loc.Location();
@@ -101,7 +95,9 @@ class TimerCard extends StatelessWidget {
                 await locationViewModel.saveClockStatus(false);
                 await locationViewModel.stopTimer();
                 await locationViewModel.clockRefresh();
+                await locationViewModel.saveLocation();
                 await location.enableBackgroundMode(enable: false);
+
                 // stopwatch.stop();
                 // timerValue.value = Duration.zero;
                 _themeMenuIcon[0].riveIcon.status!.value = false;
@@ -117,7 +113,7 @@ class TimerCard extends StatelessWidget {
                 locationViewModel.saveClockStatus(true);
                 locationViewModel.clockRefresh();
                 locationViewModel.isClockedIn.value = true;
-                attendanceViewModel.saveFormAttendanceIn();
+                await attendanceViewModel.saveFormAttendanceIn();
 
                 // timerValue.value = Duration.zero;
                  _themeMenuIcon[0].riveIcon.status!.value = true;

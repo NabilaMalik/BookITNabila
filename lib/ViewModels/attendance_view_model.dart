@@ -73,10 +73,10 @@ LocationViewModel locationViewModel = Get.put(LocationViewModel());
     _saveCounter();
     return orderId;
   }
-  saveFormAttendanceIn(){
+  saveFormAttendanceIn() async {
     final orderSerial = generateNewOrderId(user_id);
    // shop_visit_master_id = orderSerial;
-    addAttendance(AttendanceModel(
+   await addAttendance(AttendanceModel(
       attendance_in_id: orderSerial,
       user_id: user_id,
       // booker_name: ,
@@ -86,67 +86,9 @@ LocationViewModel locationViewModel = Get.put(LocationViewModel());
       // designation: ,
        address: locationViewModel.shopAddress.value,
     ));
-  }
-  Future<void> postDataFromDatabaseToAPI() async {
-    try {
-      // Step 1: Fetch machines that haven't been posted yet
-      var unPostedMachines = await attendanceRepository.getUnPostedAttendanceIn();
-
-      for (var attendanceIn in unPostedMachines) {
-        try {
-          // Step 2: Attempt to post the data to the API
-          await postAttendanceInToAPI(attendanceIn);
-
-          // Step 3: If successful, update the posted status in the local database
-          attendanceIn.posted = 1;
-          await attendanceRepository.update(attendanceIn);
-
-          // Optionally, delete the machine from the local database after posting
-          // await machineRepository.delete(machine.id);
-
-          if (kDebugMode) {
-            print('AttendanceIn with id ${attendanceIn.attendance_in_id} posted and updated in local database.');
-          }
-        } catch (e) {
-          if (kDebugMode) {
-            print('Failed to post AttendanceIn with id ${attendanceIn.attendance_in_id}: $e');
-          }
-          // Handle any errors (e.g., server down, network issues)
-        }
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error fetching unPosted AttendanceIn: $e');
-      }
-    }
+    await attendanceRepository.postDataFromDatabaseToAPI();
   }
 
-  // Function to post data to the API
-  Future<void> postAttendanceInToAPI(AttendanceModel attendanceInModel) async {
-    try {
-      await Config.fetchLatestConfig();
-      if (kDebugMode) {
-        print('Updated Attendance In Post API: ${Config.postApiUrlAttendanceIn}');
-      }
-      var attendanceInModelData = attendanceInModel.toMap(); // Converts MachineModel to JSON
-      final response = await http.post(
-        Uri.parse(Config.postApiUrlAttendanceIn),         headers: {
-        "Content-Type": "application/json",  // Set the request content type to JSON
-        "Accept": "application/json",
-      },
-        body: jsonEncode(attendanceInModelData),  // Encode the map as JSON
-      );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        print('AttendanceIn data posted successfully: $attendanceInModelData');
-      } else {
-        throw Exception('Server error: ${response.statusCode}, ${response.body}');
-      }
-    } catch (e) {
-      print('Error posting AttendanceIn data: $e');
-      throw Exception('Failed to post data: $e');
-    }
-  }
   fetchAllAttendance() async{
     var attendance = await attendanceRepository.getAttendance();
     allAttendance.value = attendance;

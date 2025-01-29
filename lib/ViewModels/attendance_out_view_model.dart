@@ -72,7 +72,7 @@ class AttendanceOutViewModel extends GetxController{
 
 
   
-  saveFormAttendanceOut(){
+  saveFormAttendanceOut() async {
     final orderSerial = generateNewOrderId(user_id);
     // shop_visit_master_id = orderSerial;
     addAttendanceOut (AttendanceOutModel(
@@ -80,13 +80,15 @@ class AttendanceOutViewModel extends GetxController{
       user_id: user_id,
       // booker_name: ,
       // time_out: ,
-      // total_distance: ,
-      // total_time: ,
+
+       total_distance: user_id,
+       total_time: user_id,
       lat_out: locationViewModel.globalLatitude1.value,
       lng_out: locationViewModel.globalLongitude1.value ,
       // designation: ,
       address: locationViewModel.shopAddress.value,
     ));
+    await attendanceOutRepository.postDataFromDatabaseToAPI();
   }
   fetchAllAttendanceOut() async{
     var attendanceOut = await attendanceOutRepository.getAttendanceOut();

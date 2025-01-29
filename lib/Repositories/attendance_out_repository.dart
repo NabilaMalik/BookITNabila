@@ -99,11 +99,11 @@ class AttendanceOutRepository extends GetxService {
     try {
       await Config.fetchLatestConfig();
       if (kDebugMode) {
-        print('Updated Shop Post API: ${Config.postApiUrlShops}');
+        print('Updated Shop Post API: ${Config.postApiUrlAttendanceOut}');
       }
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse(Config.postApiUrlShops),
+        Uri.parse(Config.postApiUrlAttendanceOut),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",

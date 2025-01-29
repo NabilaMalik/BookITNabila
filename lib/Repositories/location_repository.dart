@@ -100,11 +100,11 @@ class LocationRepository {
     try {
       await Config.fetchLatestConfig();
       if (kDebugMode) {
-        print('Updated Shop Post API: ${Config.postApiUrlShops}');
+        print('Updated Shop Post API: ${Config.postApiUrlLocation}');
       }
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse(Config.postApiUrlShops),
+        Uri.parse(Config.postApiUrlLocation),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
