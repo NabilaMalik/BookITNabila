@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../Databases/util.dart';
 import '../Models/ScreenModels/products_model.dart';
@@ -37,6 +38,7 @@ class ProductsViewModel extends GetxController {
 
   fetchAndSaveProducts() async {
     await productsRepository.fetchAndSaveProducts();
+    fetchAllProductsModel();
   }
 
   Future<void> fetchProductsByBrands(String brand) async {
@@ -49,7 +51,9 @@ class ProductsViewModel extends GetxController {
       // Set the products in the allProducts list
       allProducts.value = products;
     } catch (e) {
-      print("Error fetching products by brand: $e");
+      if (kDebugMode) {
+        print("Error fetching products by brand: $e");
+      }
     }
   }
 }

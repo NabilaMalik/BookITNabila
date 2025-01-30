@@ -42,6 +42,7 @@ class ReturnFormViewModel extends GetxController {
       // fetchAllReturnForm();
      await returnFormDetailsViewModel.submitForm();
      await returnFormDetailsViewModel.fetchAllReturnFormDetails();
+     await returnFormRepository.postDataFromDatabaseToAPI();
       Get.snackbar("Success", "Form Submitted!",
           snackPosition: SnackPosition.BOTTOM);
     } else {
@@ -90,7 +91,7 @@ class ReturnFormViewModel extends GetxController {
     }
 
     String orderId =
-        "SV-$user_id-$currentMonth-${returnFormSerialCounter.toString().padLeft(3, '0')}";
+        "RF-$user_id-$currentMonth-${returnFormSerialCounter.toString().padLeft(3, '0')}";
     returnFormSerialCounter++;
     _saveCounter();
     return orderId;

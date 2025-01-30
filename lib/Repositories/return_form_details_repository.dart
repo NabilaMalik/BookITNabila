@@ -97,11 +97,11 @@ class ReturnFormDetailsRepository {
     try {
       await Config.fetchLatestConfig();
       if (kDebugMode) {
-        print('Updated Shop Post API: ${Config.postApiUrlShops}');
+        print('Updated Shop Post API: ${Config.postApiUrlReturnFormDetails}');
       }
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse(Config.postApiUrlShops),
+        Uri.parse(Config.postApiUrlReturnFormDetails),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",

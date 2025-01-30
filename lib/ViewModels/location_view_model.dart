@@ -34,8 +34,8 @@ class LocationViewModel extends GetxController {
   void onInit() {
     super.onInit();
     _loadCounter();
-    requestPermissions();
-    saveCurrentLocation();  // Ensure this function is called
+    // requestPermissions();
+  //  saveCurrentLocation();  // Ensure this function is called
     fetchAllLocation();
     loadClockStatus();
     clockRefresh();
@@ -79,7 +79,7 @@ class LocationViewModel extends GetxController {
     }
 
     String orderId =
-        "ATD-$user_id-$currentMonth-${locationSerialCounter.toString().padLeft(3, '0')}";
+        "LOC-$user_id-$currentMonth-${locationSerialCounter.toString().padLeft(3, '0')}";
     locationSerialCounter++;
     _saveCounter();
     return orderId;
@@ -245,11 +245,11 @@ saveLocation() async {
   Uint8List gpxBytes = Uint8List.fromList(gpxBytesList);
   final orderSerial = generateNewOrderId(user_id);
  await addLocation(LocationModel(
-    location_id:  orderSerial,
+    location_id:  orderSerial.toString(),
     user_id: user_id,
      total_distance: totalDistance.toString(),
      file_name: "$date.gpx",
-    // booker_name: ,
+    booker_name: user_id,
      body: gpxBytes,
 
   ));

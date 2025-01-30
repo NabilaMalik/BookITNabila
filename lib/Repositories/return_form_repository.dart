@@ -90,11 +90,11 @@ class ReturnFormRepository {
     try {
       await Config.fetchLatestConfig();
       if (kDebugMode) {
-        print('Updated Shop Post API: ${Config.postApiUrlShops}');
+        print('Updated Shop Post API: ${Config.postApiUrlReturnForm}');
       }
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse(Config.postApiUrlShops),
+        Uri.parse(Config.postApiUrlReturnForm),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -122,12 +122,12 @@ class ReturnFormRepository {
     var dbClient = await dbHelper.db;
     return await dbClient.update(
         returnFormMasterTableName, returnformModel.toMap(),
-        where: 'id = ?', whereArgs: [returnformModel.return_master_id]);
+        where: 'return_master_id = ?', whereArgs: [returnformModel.return_master_id]);
   }
 
   Future<int> delete(int id) async {
     var dbClient = await dbHelper.db;
     return await dbClient
-        .delete(returnFormMasterTableName, where: 'id = ?', whereArgs: [id]);
+        .delete(returnFormMasterTableName, where: 'return_master_id = ?', whereArgs: [id]);
   }
 }

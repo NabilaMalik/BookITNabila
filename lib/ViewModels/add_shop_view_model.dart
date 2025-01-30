@@ -24,8 +24,8 @@ class AddShopViewModel extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    fetchAndSaveShop();
     fetchCities();
-    _loadCounter();
   }
 
   void fetchCities() async {
@@ -144,7 +144,8 @@ class AddShopViewModel extends GetxController {
 
   void saveForm() async {
     if (validateForm()) {
-      final shopSerial = generateNewOrderId(user_id);
+      await _loadCounter();
+      final shopSerial = await generateNewOrderId(user_id);
 
       await _shopRepository.addAddShop(AddShopModel(
         shop_id: shopSerial,
@@ -168,6 +169,10 @@ class AddShopViewModel extends GetxController {
   fetchAllAddShop() async {
     var addShop = await _shopRepository.getAddShop();
     allAddShop.value = addShop;
+  }
+  fetchAndSaveShop() async {
+    await _shopRepository.fetchAndSaveShops();
+    await fetchAllAddShop();
   }
 
   addAddShop(AddShopModel addShopModel) async {

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/foundation.dart';
@@ -49,6 +50,54 @@ class RecoveryFormRepository {
       await dbClient.insert(recoveryFormTableName, model.toMap());
     }
   }
+  Future<void> getRecoveryHighestSerialNo() async {
+    int serial;
+    String month='';
+
+    final db = await dbHelper.db;
+    final result = await db!.rawQuery('''
+    SELECT recovery_id 
+    FROM $recoveryFormTableName
+    WHERE user_id = ? AND recovery_id IS NOT NULL
+  ''', [user_id]);
+
+    if (result.isNotEmpty) {
+      // Extract the serial numbers and month from the recovery_id strings
+      final serialNos = result.map((row) {
+        final recoveryId = row['recovery_id'] as String?;
+        if (recoveryId != null) {
+          // Assuming the format is like "SHP-B02-Jan-001"
+          final parts = recoveryId.split('-');
+          if (parts.length == 4) { // There should be exactly 4 parts
+            final serialNoPart = parts[3];
+            month = parts[2]; // Extract the month part
+            if (serialNoPart.isNotEmpty) {
+              return int.tryParse(serialNoPart);
+            }
+          }
+        }
+        return null;
+      }).where((serialNo) => serialNo != null).cast<int>().toList();
+
+      // Find and set the maximum serial number
+      if (serialNos.isNotEmpty) {
+        serial = serialNos.reduce(max);
+        serial++;
+        // Increment the highest serial number
+        recoveryHighestSerial = serial;
+        recoverySavedMonthCounter = month; // Save the month part to savedMonth variable
+      } else {
+        if (kDebugMode) {
+          print('No valid recovery_id numbers found for this user');
+        }
+      }
+    } else {
+      if (kDebugMode) {
+        print('No orders found for this user');
+      }
+    }
+  }
+
 
   Future<List<RecoveryFormModel>> getUnPostedRecovery() async {
     var dbClient = await dbHelper.db;
@@ -97,11 +146,12 @@ class RecoveryFormRepository {
     try {
       await Config.fetchLatestConfig();
       if (kDebugMode) {
-        print('Updated Shop Post API: ${Config.postApiUrlShops}');
+        print('Updated Shop Post API: ${Config.postApiUrlRecoveryForm}');
+        print('Updated Shop Post API: ${Config.postApiUrlRecoveryForm}');
       }
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse(Config.postApiUrlShops),
+        Uri.parse(Config.postApiUrlRecoveryForm),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",

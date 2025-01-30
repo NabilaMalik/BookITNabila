@@ -1,7 +1,27 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:order_booking_app/Models/return_form_model.dart';
+import 'package:order_booking_app/Models/returnform_details_model.dart';
+import 'package:order_booking_app/ViewModels/ProductsViewModel.dart';
+import 'package:order_booking_app/ViewModels/add_shop_view_model.dart';
+import 'package:order_booking_app/ViewModels/attendance_out_view_model.dart';
+import 'package:order_booking_app/ViewModels/attendance_view_model.dart';
+import 'package:order_booking_app/ViewModels/location_view_model.dart';
+import 'package:order_booking_app/ViewModels/login_view_model.dart';
+import 'package:order_booking_app/ViewModels/order_details_view_model.dart';
+import 'package:order_booking_app/ViewModels/order_master_view_model.dart';
+import 'package:order_booking_app/ViewModels/recovery_form_view_model.dart';
+import 'package:order_booking_app/ViewModels/shop_visit_details_view_model.dart';
+import 'package:order_booking_app/ViewModels/shop_visit_view_model.dart';
 import 'package:order_booking_app/screens/Components/custom_button.dart';
 import 'package:order_booking_app/screens/signup_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../Databases/util.dart';
 import '../components/under_part.dart';
 import '../constants.dart';
 import '../widgets/rounded_button.dart';
@@ -16,34 +36,106 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  LoginViewModel loginViewModel =Get.put(LoginViewModel());
+
   final _formKey = GlobalKey<FormState>();
   bool isChecked = true;
   bool isPasswordVisible = false;
-  String? email;
-  String? password;
+  // String? email;
+  // String? password;
+  bool _isLoading = false;
+  String _loadingMessage = '';
+  // // Mocked registered users
+  // final List<String> _registeredUsers = ['B02', 'hamid2'];
 
-  // Mocked registered users
-  final List<String> _registeredUsers = ['test@example.com', 'user@example.com'];
+  // Future<bool> _checkIfUserExists(String email) async {
+  //   await Future.delayed(const Duration(seconds: 1));
+  //   return _registeredUsers.contains(email);
+  // }
+  _login() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  Future<bool> _checkIfUserExists(String email) async {
-    await Future.delayed(const Duration(seconds: 1));
-    return _registeredUsers.contains(email);
+    bool isConnected = false;
+    for (int i = 0; i < 20; i++) {
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      if (connectivityResult != ConnectivityResult.none) {
+        try {
+          final result = await InternetAddress.lookup('example.com');
+          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+            isConnected = true;
+            break;
+          }
+        } catch (_) {
+          // Internet is not working
+        }
+      }
+      await Future.delayed(Duration(seconds: 1));
+    }
+
+    if (!isConnected) {
+      Get.snackbar('Error', 'No internet connection', snackPosition: SnackPosition.BOTTOM);
+      return;
+    }
+
+    await prefs.setString('userId', _emailController.text.trim());
+    user_id = prefs.getString('userId')!;
+
+    bool success = await loginViewModel.login(
+      _emailController.text,
+      _passwordController.text,
+    );
+
+    if (success) {
+      try {
+        AddShopViewModel addShopViewModel = Get.put(AddShopViewModel());
+        ProductsViewModel productsViewModel = Get.put(ProductsViewModel());
+        ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
+        ShopVisitDetailsViewModel shopVisitDetailsViewModel = Get.put(ShopVisitDetailsViewModel());
+        OrderMasterViewModel orderMasterViewModel = Get.put(OrderMasterViewModel());
+        OrderDetailsViewModel orderDetailsViewModel = Get.put(OrderDetailsViewModel());
+        RecoveryFormViewModel recoveryFormViewModel = Get.put(RecoveryFormViewModel());
+        ReturnFormModel returnFormModel = Get.put(ReturnFormModel());
+        ReturnFormDetailsModel returnFormDetailsModel = Get.put(ReturnFormDetailsModel());
+        AttendanceViewModel attendanceViewModel = Get.put(AttendanceViewModel());
+        AttendanceOutViewModel attendanceOutViewModel = Get.put(AttendanceOutViewModel());
+        LocationViewModel locationViewModel = Get.put(LocationViewModel());
+
+        await addShopViewModel.fetchAndSaveShop();
+        await productsViewModel.fetchAndSaveProducts();
+
+        // If the above operations complete successfully, navigate to the home screen
+        Future.delayed(Duration(milliseconds: 300), () {
+          Get.offNamed('/home');
+        });
+      } catch (e) {
+        Get.snackbar('Error', 'Failed to fetch products: $e', snackPosition: SnackPosition.BOTTOM);
+      }
+    } else {
+      Get.snackbar('Error', 'Invalid user ID or password', snackPosition: SnackPosition.BOTTOM);
+    }
+
+    // setState(() {
+    //   _isLoading = false;
+    //   _loadingMessage = '';
+    // });
   }
 
-  void _handleSignIn() async {
+ _handleSignIn() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      bool userExists = await _checkIfUserExists(email!);
+      bool userExists =  _login();
       if (!userExists) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Account does not exist. Please sign up first.'),
+            content: Text('Account does not exist. Please sign up first..'),
             backgroundColor: Colors.red,
           ),
         );
       } else {
         if (kDebugMode) {
-          print('Login successful: Email: $email, Password: $password');
+          print('Login successful: Email: $_emailController, Password: $_passwordController');
         }
         // Navigate to the next screen or home page
       }
@@ -143,9 +235,9 @@ class _LoginScreenState extends State<LoginScreen> {
                  // bottom: size.height*0.9,
                  // bottom: size.height*0.1,
                   label: 'Email',
-                  initialValue: '',
+                  initialValue: _emailController.text,
                   onChanged: (value) {
-                    email = value;
+                    _emailController.text = value;
                   },
                   useBoxShadow: false,
                   icon: Icons.email,
@@ -160,9 +252,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 CustomEditableMenuOption(
                   width: size.width*1.0,
                   label: 'Password',
-                  initialValue: '',
+                  initialValue: _passwordController.text,
                   onChanged: (value) {
-                    password = value;
+                    _passwordController.text = value;
                   },
                   useBoxShadow: false,
                   icon: Icons.lock,
@@ -178,7 +270,7 @@ class _LoginScreenState extends State<LoginScreen> {
                CustomButton(
                  height: size.height*0.065,
                  width: size.width*0.45,
-                 onTap: _handleSignIn,
+                 onTap: _login,
                  buttonText: "Sign In",
                  padding: EdgeInsets.symmetric(horizontal: size.width * 0.01) ,
                  gradientColors: const [Colors.blue,Colors.blue,],
@@ -204,7 +296,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
 
   Widget _buildRememberMeRow() {
     return Padding(

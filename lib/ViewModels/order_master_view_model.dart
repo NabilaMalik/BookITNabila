@@ -114,9 +114,11 @@ class OrderMasterViewModel extends GetxController {
           brand: shopVisitViewModel.selectedBrand.value,
           total: orderDetailsViewModel.total.value.toString(),
           credit_limit: credit_limit.value,
+          order_status: "Pending",
           required_delivery_date: required_delivery_date.value,
-          order_master_id: order_master_id
+          order_master_id: order_master_id.toString()
       );
+      // await orderMasterRepository.postDataFromDatabaseToAPI();
 
       print("Submitting OrderMasterModel: ${orderMasterModel.toMap()}");
       await addConfirmOrder(orderMasterModel);
@@ -126,6 +128,7 @@ class OrderMasterViewModel extends GetxController {
 
       print("Fetching all re-confirmed orders...");
       await orderDetailsViewModel.fetchAllReConfirmOrder();
+      await orderMasterRepository.postDataFromDatabaseToAPI();
     }
   }
   bool validateForm() {

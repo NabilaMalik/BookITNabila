@@ -77,8 +77,13 @@ class ProductsRepository extends GetxService{
   }
 
   Future<void> fetchAndSaveProducts() async {
+    if (kDebugMode) {
+      // print(Config.getApiUrlShops1);
+      print('http://103.149.32.30:8080/ords/valor_trading/products/get/');
+    }
     try {
-      List<dynamic> data = await ApiService.getData(Config.getApiUrlProducts);
+     // List<dynamic> data = await ApiService.getData(Config.getApiUrlProducts);
+      List<dynamic> data = await ApiService.getData('http://103.149.32.30:8080/ords/valor_trading/products/get/');
       var dbClient = await dbHelperProducts.db;
 
       // Save data to database
@@ -87,6 +92,7 @@ class ProductsRepository extends GetxService{
         ProductsModel model = ProductsModel.fromMap(item);
         await dbClient.insert(productsTableName, model.toMap());
       }
+      getProductsModel();
     } catch (e) {
       print("Error fetching and saving products: $e");
     }

@@ -53,13 +53,14 @@ class ReturnFormDetailsViewModel extends GetxController{
     if (isValid) {
       for (var row in formRows) {
         final returnFormSerial = generateNewOrderId(user_id);
-        addReturnFormDetails(ReturnFormDetailsModel(
+        await addReturnFormDetails(ReturnFormDetailsModel(
             return_details_id: returnFormSerial,
             item: row.selectedItem?.name,   // Use the selectedItem of the row
             reason: row.reason,   // Use the reason of the row
             quantity: row.quantity,   // Use the quantity of the row
             return_master_id: returnMasterId
         ));
+        await returnformdetailsRepository.postDataFromDatabaseToAPI();
       }
 
       Get.snackbar("Success", "Form Submitted!",
@@ -109,7 +110,7 @@ class ReturnFormDetailsViewModel extends GetxController{
       returnFormDetailsCurrentMonth = currentMonth;
     }
 
-    String orderId = "SVD-$user_id-$currentMonth-${returnFormDetailsSerialCounter.toString().padLeft(3, '0')}";
+    String orderId = "RD-$user_id-$currentMonth-${returnFormDetailsSerialCounter.toString().padLeft(3, '0')}";
     returnFormDetailsSerialCounter++;
     _saveCounter();
     return orderId;

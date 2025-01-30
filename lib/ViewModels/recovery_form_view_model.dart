@@ -20,7 +20,11 @@ class RecoveryFormViewModel extends GetxController{
   var cash_recovery = 0.0.obs; // Amount entered by the user for recovery
   var net_balance = 0.0.obs; // Updated balance after cash recovery
   var areFieldsEnabled = false.obs; // Add this line
-
+  var allRecoveryForm = <RecoveryFormModel>[].obs;
+  RecoveryFormRepository recoveryformRepository = RecoveryFormRepository();
+  int recoverySerialCounter = 1;
+  String recoveryCurrentMonth = DateFormat('MMM').format(DateTime.now());
+  String currentuser_id = '';
   final TextEditingController startDateController = TextEditingController();
   final TextEditingController endDateController = TextEditingController();
 
@@ -108,39 +112,35 @@ class RecoveryFormViewModel extends GetxController{
     }).toList();
   }
 
-  void submitForm() {
+  Future<void> submitForm() async {
     final recoverySerial = generateNewOrderId(user_id);
     // shop_visit_master_id = orderSerial;
-    addRecoveryForm(RecoveryFormModel(
+   await  addRecoveryForm(RecoveryFormModel(
       recovery_id: recoverySerial,
       shop_name: selectedShop.value,
-      current_balance: current_balance.value!,
+      current_balance: current_balance.value!.toString(),
       cash_recovery: cash_recovery.value,
       net_balance: net_balance.value,
     ));
+    await recoveryformRepository.postDataFromDatabaseToAPI();
     // Implement your form submission logic here
     Get.snackbar("Success", "Form submitted successfully!");
   }
-  var allRecoveryForm = <RecoveryFormModel>[].obs;
-  RecoveryFormRepository recoveryformRepository = RecoveryFormRepository();
-  int recoverySerialCounter = 1;
-  String recoveryCurrentMonth = DateFormat('MMM').format(DateTime.now());
-  String currentuser_id = '';
+
 
 
 
   Future<void> _loadCounter() async {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    recoverySerialCounter = (prefs.getInt('recoverySerialCounter') ?? 1);
-    recoveryCurrentMonth =
-        prefs.getString('recoveryCurrentMonth') ?? currentMonth;
-    currentuser_id = prefs.getString('currentuser_id') ?? '';
-
     if (recoveryCurrentMonth != currentMonth) {
       recoverySerialCounter = 1;
       recoveryCurrentMonth = currentMonth;
     }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    recoverySerialCounter = (prefs.getInt('recoverySerialCounter') ?? recoveryHighestSerial ?? 1);
+    recoveryCurrentMonth = prefs.getString('recoveryCurrentMonth') ?? currentMonth;
+    currentuser_id = prefs.getString('currentuser_id') ?? '';
+
     if (kDebugMode) {
       print('SR: $recoverySerialCounter');
     }

@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 
 class OrderMasterModel{
   String? order_master_id;
+  String? order_status;
   String? shop_name;
   String? owner_name;
   String? phone_no;
@@ -16,6 +17,7 @@ class OrderMasterModel{
   OrderMasterModel({
     this.order_master_id,
     this.shop_name,
+    this.order_status,
     this.owner_name,
     this.phone_no,
     this.brand,
@@ -32,6 +34,7 @@ class OrderMasterModel{
       shop_name: json['shop_name'],
       owner_name: json['owner_name'],
       phone_no: json['phone_no'],
+      order_status: json['order_status'],
       brand:json['brand'],
       total:json['total'],
       credit_limit:json['credit_limit'],

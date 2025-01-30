@@ -15,8 +15,8 @@ class ShopVisitModel {
   bool? product_reviewed;
   Uint8List? addPhoto; // Store image as Uint8List
   String? feedback;
-  DateTime? shop_visit_details_date;
-  DateTime? shop_visit_details_time;
+  DateTime? shop_visit_date;
+  DateTime? shop_visit_time;
   int posted;
 
 
@@ -33,8 +33,8 @@ class ShopVisitModel {
     this.product_reviewed,
     this.addPhoto,
     this.feedback,
-    this.shop_visit_details_date,
-    this.shop_visit_details_time,
+    this.shop_visit_date,
+    this.shop_visit_time,
     this.posted = 0,
   });
 
@@ -53,9 +53,9 @@ class ShopVisitModel {
       addPhoto: json['body'] != null ? Uint8List.fromList(
           List<int>.from(json['body'])) : null,
       feedback: json['feedback'],
-      shop_visit_details_date: DateTime.now(),
+      shop_visit_date: DateTime.now(),
       // Always set live date
-      shop_visit_details_time: DateTime.now(),
+      shop_visit_time: DateTime.now(),
       posted: json['posted'] ?? 0,
 
       // Always set live time
@@ -76,10 +76,10 @@ class ShopVisitModel {
       'product_reviewed': product_reviewed == true ? 1 : 0,
       'body': addPhoto,
       'feedback': feedback,
-      'shop_visit_details_date': DateFormat('dd-MMM-yyyy')
-          .format(shop_visit_details_date ?? DateTime.now()), // Always set live date
-      'shop_visit_details_time': DateFormat('HH:mm:ss')
-          .format(shop_visit_details_time ?? DateTime.now()), // Always set live time
+      'shop_visit_date': DateFormat('dd-MMM-yyyy')
+          .format(shop_visit_date ?? DateTime.now()), // Always set live date
+      'shop_visit_time': DateFormat('HH:mm:ss')
+          .format(shop_visit_time ?? DateTime.now()), // Always set live time
       'posted': posted,
     };
   }

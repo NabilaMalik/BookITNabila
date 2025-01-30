@@ -9,6 +9,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:order_booking_app/Screens/home_screen.dart';
+import 'package:order_booking_app/Screens/login_screen.dart';
 import 'package:order_booking_app/screens/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
@@ -29,14 +31,16 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await Config.initialize();
+  final prefs = await SharedPreferences.getInstance();
+  bool isAuthenticated = prefs.getBool('isAuthenticated') ?? false;
 
   // await FirebaseAppCheck.instance
   //     .activate(androidProvider: AndroidProvider.debug);
   Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
 
-  runApp(const MyApp());
+  runApp(MyApp(isAuthenticated));
 }
 void callbackDispatcher(){
   Workmanager().executeTask((task, inputData) async {
@@ -53,12 +57,26 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   }
 }
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isAuthenticated;
+
+  MyApp(this.isAuthenticated);
 
   @override
   Widget build(BuildContext context) {
-    return const GetMaterialApp(
-        debugShowCheckedModeBanner: false, home: SplashScreen());
+    return  GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        initialRoute: isAuthenticated ? '/home' : '/login',
+        getPages: [
+          GetPage(name: '/', page: () => SplashScreen()),
+          // GetPage(name: '/policy', page: () => PolicyDialog()),
+          GetPage(name: '/login', page: () => LoginScreen()),
+          GetPage(name: '/home', page: () =>  HomeScreen()),
+          // GetPage(name: '/development', page: () =>  DevelopmentPage()),
+          // GetPage(name: '/materialShifting', page: () =>  const MaterialShiftingPage()),
+          // GetPage(name: '/newMaterial', page: () => NewMaterial()),
+          // GetPage(name: '/buildingWork', page: () => Building_Navigation_Page()),
+        ],
+        home: SplashScreen());
   }
 }
 

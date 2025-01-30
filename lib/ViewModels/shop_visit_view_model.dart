@@ -60,13 +60,13 @@ class ShopVisitViewModel extends GetxController {
   String currentuser_id = '';
 
   @override
-  Future<void> onInit() async {
-    super.onInit();
-    _loadCounter();
-    await addShopRepository.fetchAndSaveShops();
-    fetchShops(); // Add this line to fetch saved shops
-    fetchBrands(); // Add this line to fetch saved shops
-  }
+  // Future<void> onInit() async {
+  //   super.onInit();
+  //
+  //   // await addShopRepository.fetchAndSaveShops();
+  //   //  fetchShops(); // Add this line to fetch saved shops
+  //   // fetchBrands(); // Add this line to fetch saved shops
+  // }
 
   Future<void> fetchBrands() async {
     try {
@@ -97,8 +97,6 @@ class ShopVisitViewModel extends GetxController {
     shop_address.value = shop.shop_address!;
     owner_name.value = shop.owner_name!;
     phone_number.value =shop.phone_no!;
-
-
     shopAddressController.text = shop.shop_address!;
     ownerNameController.text = shop.owner_name!;
   }
@@ -160,7 +158,7 @@ class ShopVisitViewModel extends GetxController {
           quality: 40,
         );
       }
-
+     await _loadCounter();
       final orderSerial = generateNewOrderId(user_id);
       shop_visit_master_id = orderSerial;
 
@@ -176,10 +174,15 @@ class ShopVisitViewModel extends GetxController {
         product_reviewed: checklistState[3],
         addPhoto: compressedImageBytes,
         feedback: feedBack.value,
-        shop_visit_master_id: shop_visit_master_id, // Add the generated serial here
+        shop_visit_master_id: shop_visit_master_id.toString(), // Add the generated serial here
       ));
       await shopvisitRepository.getShopVisit();
       await shopVisitDetailsViewModel.saveFilteredProducts();
+      await shopvisitRepository.postDataFromDatabaseToAPI();
+      await shopvisitRepository.getShopVisit();
+
+
+
       Get.snackbar("Success", "Form submitted successfully!",
           snackPosition: SnackPosition.BOTTOM);
       await clearFilters();

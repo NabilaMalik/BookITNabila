@@ -18,6 +18,13 @@ class ShopVisitScreen extends StatelessWidget {
       Get.put(ShopVisitDetailsViewModel());
   final ProductsViewModel productsViewModel = Get.put(ProductsViewModel());
 
+  // @override
+  // void initState() {
+  //   shopVisitViewModel.fetchBrands();
+  //   shopVisitViewModel.fetchShops();
+  //   shopVisitDetailsViewModel.initializeProductData();
+  // }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

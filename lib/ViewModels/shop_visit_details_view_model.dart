@@ -38,7 +38,7 @@ class ShopVisitDetailsViewModel extends GetxController {
     // Initialize shopVisitViewModel here after initial dependencies are ready
     shopVisitViewModel = Get.find<ShopVisitViewModel>();
     super.onInit();
-    _initializeProductData();
+   _initializeProductData();
     fetchAllShopVisitDetails();
     _loadCounter();
   }
@@ -156,14 +156,15 @@ class ShopVisitDetailsViewModel extends GetxController {
 
     for (var product in productsToSave) {
       await _loadCounter();
-      dynamic orderSerial = await generateNewOrderId(user_id);
+      String orderSerial = generateNewOrderId(user_id);
       final shopVisitDetailsModel = ShopVisitDetailsModel(
-        shop_visit_details_id: orderSerial,
-        product: product['Product'],
+        shop_visit_details_id: orderSerial.toString(),
+        product: product['Product'].toString(),
         quantity: product['Quantity'].toString(), // Convert quantity to string
-        shop_visit_master_id: shop_visit_master_id,
+        shop_visit_master_id: shop_visit_master_id.toString(),
       );
       await shopvisitDetailsRepository.add(shopVisitDetailsModel);
+      await shopvisitDetailsRepository.postDataFromDatabaseToAPI();
 
       // Map the quantity to the ProductsModel here
       final products = productsViewModel.allProducts

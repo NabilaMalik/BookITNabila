@@ -4,7 +4,7 @@ class RecoveryFormModel{
   String? recovery_id;
   String? shop_name;
   dynamic? current_balance;
-  String? date;  dynamic? cash_recovery;
+ dynamic? cash_recovery;
   dynamic? net_balance;
   DateTime? recovery_date;
   DateTime? recovery_time;
@@ -16,7 +16,7 @@ class RecoveryFormModel{
     this.current_balance,
     this.cash_recovery,
     this.net_balance,
-    this.date,
+
     this.recovery_date,
     this.recovery_time,
     this.posted = 0,

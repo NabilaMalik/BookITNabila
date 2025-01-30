@@ -211,6 +211,7 @@ class OrderDetailsViewModel extends GetxController {
       );
       try {
         await addReConfirmOrder(orderDetailsModel);
+        await orderDetailsRepository.postDataFromDatabaseToAPI();
         Get.snackbar(
           "Success",
           "Form submitted successfully!",

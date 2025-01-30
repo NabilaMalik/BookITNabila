@@ -25,6 +25,7 @@ OrderDetailsViewModel orderDetailsViewModel =Get.put(OrderDetailsViewModel());
       'owner_name',
       'phone_no',
       'owner_name',
+      'order_status',
       'total',
       'credit_limit',
       'required_delivery_date',
@@ -104,11 +105,11 @@ OrderDetailsViewModel orderDetailsViewModel =Get.put(OrderDetailsViewModel());
     try {
       await Config.fetchLatestConfig();
       if (kDebugMode) {
-        print('Updated Shop Post API: ${Config.postApiUrlShops}');
+        print('Updated Shop Post API: ${Config.postApiUrlOrderMaster}');
       }
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse(Config.postApiUrlShops),
+        Uri.parse(Config.postApiUrlOrderMaster),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",

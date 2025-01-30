@@ -41,9 +41,9 @@ class ShopVisitDetailsModel {
       'quantity': quantity,
       'posted': posted,
       'shop_visit_details_date': DateFormat('dd-MMM-yyyy')
-          .format(shop_visit_details_date ?? DateTime.now()), // Always set live date
+          .format(shop_visit_details_date ?? DateTime.now()).toString(), // Always set live date
       'shop_visit_details_time': DateFormat('HH:mm:ss')
-          .format(shop_visit_details_time ?? DateTime.now()), // Always set live time
+          .format(shop_visit_details_time ?? DateTime.now()).toString(), // Always set live time
       'shop_visit_master_id': shop_visit_master_id,
     };
   }
