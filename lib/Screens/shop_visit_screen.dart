@@ -11,19 +11,25 @@ import 'ShopVisitScreenComponents/feedback_section.dart';
 import 'ShopVisitScreenComponents/photo_picker.dart';
 import 'ShopVisitScreenComponents/product_search_card.dart';
 
-class ShopVisitScreen extends StatelessWidget {
-  ShopVisitScreen({super.key});
+class ShopVisitScreen extends StatefulWidget {
+  const ShopVisitScreen({super.key});
+  @override
+  _StateShopVisitScreen createState() => _StateShopVisitScreen();
+}
+class _StateShopVisitScreen extends State<ShopVisitScreen>{
   final ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
   final ShopVisitDetailsViewModel shopVisitDetailsViewModel =
       Get.put(ShopVisitDetailsViewModel());
   final ProductsViewModel productsViewModel = Get.put(ProductsViewModel());
 
-  // @override
-  // void initState() {
-  //   shopVisitViewModel.fetchBrands();
-  //   shopVisitViewModel.fetchShops();
-  //   shopVisitDetailsViewModel.initializeProductData();
-  // }
+
+  @override
+  void initState() {
+    super.initState();
+    shopVisitViewModel.fetchBrands();
+    shopVisitViewModel.fetchShops();
+    // shopVisitDetailsViewModel.initializeProductData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +54,9 @@ class ShopVisitScreen extends StatelessWidget {
                                 .where((brand) => brand != null)
                                 .cast<String>()
                                 .toList(),
-                            selectedValue:
-                                shopVisitViewModel.selectedBrand.value,
-                            onChanged: (value) async {
+                            selectedValue: shopVisitViewModel.selectedBrand.value.isNotEmpty?
+                                shopVisitViewModel.selectedBrand.value : 'Select A Brand',
+                        onChanged: (value) async {
                               await shopVisitDetailsViewModel.filteredRows
                                   .refresh();
                               shopVisitViewModel.selectedBrand.value = value!;
@@ -66,9 +72,11 @@ class ShopVisitScreen extends StatelessWidget {
                                   BorderSide(color: Colors.blue, width: 1.0),
                             ),
                             maxHeight: 50.0,
-                            maxWidth: 355.0,
+                            maxWidth: 385.0,
+                            // maxWidth: 355.0,
                             iconSize: 23.0,
-                            contentPadding: 6.0,
+                            // contentPadding: 6.0,
+                            contentPadding: 0.0,
                             iconColor: Colors.blue,
                           )),
                       Obx(() => CustomDropdown(
@@ -78,8 +86,8 @@ class ShopVisitScreen extends StatelessWidget {
                                 .where((shop) => shop != null)
                                 .cast<String>()
                                 .toList(),
-                            selectedValue:
-                                shopVisitViewModel.selectedShop.value,
+                            selectedValue:shopVisitViewModel.selectedShop.value.isNotEmpty?
+                                shopVisitViewModel.selectedShop.value: " Select  a Shop",
                             onChanged: (value) async {
                               shopVisitViewModel.selectedShop.value = value!;
                               await shopVisitViewModel.updateShopDetails(value);
@@ -95,10 +103,12 @@ class ShopVisitScreen extends StatelessWidget {
                               borderSide:
                                   BorderSide(color: Colors.blue, width: 1.0),
                             ),
-                            maxHeight: 50.0,
-                            maxWidth: 355.0,
-                            iconSize: 23.0,
-                            contentPadding: 6.0,
+                        maxHeight: 50.0,
+                        maxWidth: 385.0,
+                        // maxWidth: 355.0,
+                        iconSize: 23.0,
+                        // contentPadding: 6.0,
+                        contentPadding: 0.0,
                             iconColor: Colors.blue,
                           )),
                       Obx(() => _buildTextField(

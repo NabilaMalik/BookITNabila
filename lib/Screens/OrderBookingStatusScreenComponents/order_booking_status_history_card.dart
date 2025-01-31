@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sqflite/sqflite.dart';
 
+import '../../Databases/dp_helper.dart';
 import '../../Models/ScreenModels/order_status_models.dart';
 import '../../ViewModels/ScreenViewModels/order_booking_status_view_model.dart';
 
@@ -238,20 +240,58 @@ class OrderBookingStatusHistoryCard extends StatelessWidget {
         DataCell(
           Center(
             child: GestureDetector(
-              onTap: () {
+              onTap: () async {
+                final Database? db = await DBHelper().db;
+                List<Map<String, dynamic>> queryRows = await db!.query(
+                    'orderDetails', where: 'order_master_id = ?',
+                    whereArgs: [row.orderNo]);
                 // Handle tap on "Order Details"
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return AlertDialog(
+                    return  AlertDialog(
                       title: const Text('Order Details'),
-                      content: Text('Details for order ${row.orderNo}'),
-                      actions: [
+                      content: ListView.builder(
+                        itemCount: queryRows.length,
+                        itemBuilder: (context, index) {
+                          return RichText(
+                            text: TextSpan(
+                              style: DefaultTextStyle
+                                  .of(context)
+                                  .style,
+                              children: <TextSpan>[
+                                const TextSpan(text: 'Sr. No: ',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                                TextSpan(text: '${index + 1}\n'),
+                                // Add serial number here
+                                const TextSpan(text: 'Product Name: ',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                                TextSpan(
+                                    text: '${queryRows[index]['product']}\n'),
+                                const TextSpan(text: 'Quantity: ',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                                TextSpan(
+                                    text: '${queryRows[index]['quantity']}\n'),
+                                const TextSpan(text: 'Unit Price: ',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                                TextSpan(
+                                    text: '${queryRows[index]['rate']}\n'),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                      actions: <Widget>[
                         TextButton(
-                          child: const Text('Close'),
                           onPressed: () {
+                            // Get.to(const HomePage());
                             Navigator.of(context).pop();
                           },
+                          child: const Text('Close'),
                         ),
                       ],
                     );

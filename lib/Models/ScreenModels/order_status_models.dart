@@ -1,7 +1,7 @@
 class OrderBookingStatusModel {
   final String orderNo;
   final String shop;
-  final int amount;
+  final String amount;
   final String status;
   final String date;
 

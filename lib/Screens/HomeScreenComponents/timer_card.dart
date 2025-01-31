@@ -87,7 +87,7 @@ class TimerCard extends StatelessWidget {
 
               if (newIsClockedIn) {
 
-                service.invoke("stopService");
+                // service.invoke("stopService");
                 locationViewModel.saveCurrentLocation();
                 attendanceOutViewModel.saveFormAttendanceOut();
 
@@ -96,19 +96,19 @@ class TimerCard extends StatelessWidget {
                 await locationViewModel.stopTimer();
                 await locationViewModel.clockRefresh();
                 await locationViewModel.saveLocation();
-                await location.enableBackgroundMode(enable: false);
+                // await location.enableBackgroundMode(enable: false);
 
                 // stopwatch.stop();
                 // timerValue.value = Duration.zero;
                 _themeMenuIcon[0].riveIcon.status!.value = false;
                 debugPrint("Timer stopped and animation set to inactive.");
               } else{
-                await initializeServiceLocation();
-                await location.enableBackgroundMode(enable: true);
-                await location.changeSettings(
-                    interval: 300, accuracy: loc.LocationAccuracy.high);
-                // locationbool = true;
-                service.startService();
+                // await initializeServiceLocation();
+                // await location.enableBackgroundMode(enable: true);
+                // await location.changeSettings(
+                //     interval: 300, accuracy: loc.LocationAccuracy.high);
+                // locationBool = true;
+                // service.startService();
                 locationViewModel.saveCurrentTime();
                 locationViewModel.saveClockStatus(true);
                 locationViewModel.clockRefresh();

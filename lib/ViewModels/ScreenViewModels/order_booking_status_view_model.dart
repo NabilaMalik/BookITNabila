@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:order_booking_app/Models/order_master_model.dart';
 import '../../Models/ScreenModels/order_status_models.dart';
 import '../../Repositories/ScreenRepositories/order_booking_status_repository.dart';
 
@@ -11,6 +12,7 @@ class OrderBookingStatusViewModel extends GetxController {
   var orderId = ''.obs;
   var status = ''.obs;
   var filteredRows = <OrderBookingStatusModel>[].obs;
+  var filteredRowsMaster = <OrderMasterModel>[].obs;
 
   // Instance of the repository
   final OrderBookingStatusRepository _orderRepository =
@@ -56,28 +58,28 @@ class OrderBookingStatusViewModel extends GetxController {
     final lowerCaseQuery = query.toLowerCase();
     filteredRows.value = orders.where((order) {
       final isShopMatch = shop_name.value.isEmpty ||
-          order.shop.toLowerCase().contains(shop_name.value.toLowerCase());
+          order.shop!.toLowerCase().contains(shop_name.value.toLowerCase());
       final isOrderNoMatch = orderId.value.isEmpty ||
-          order.orderNo.toLowerCase().contains(orderId.value.toLowerCase());
+          order.orderNo!.toLowerCase().contains(orderId.value.toLowerCase());
       final isStatusMatch = status.value.isEmpty ||
-          order.status.toLowerCase().contains(status.value.toLowerCase());
+          order.status!.toLowerCase().contains(status.value.toLowerCase());
       final isDateRangeMatch =
           (startDate.value.isEmpty || endDate.value.isEmpty) ||
-              (order.date.compareTo(startDate.value) >= 0 &&
-                  order.date.compareTo(endDate.value) <= 0);
+              (order.date!.compareTo(startDate.value) >= 0 &&
+                  order.date!.compareTo(endDate.value) <= 0);
       return isShopMatch && isOrderNoMatch && isStatusMatch && isDateRangeMatch;
     }).toList();
   }
 
   // Convert filtered rows to a list of maps
   List<Map<String, dynamic>> get filteredRowsAsMapList {
-    return filteredRows.map((order) {
+    return filteredRowsMaster.map((order) {
       return {
-        'Order No': order.orderNo,
-        'Date': order.date,
-        'Shop': order.shop,
-        'Status': order.status,
-        'Amount': order.amount
+        'Order No': order.order_master_id,
+        'Date': order.order_master_date,
+        'Shop': order.shop_name,
+        'Status': order.order_status,
+        'Amount': order.total
       };
     }).toList();
   }

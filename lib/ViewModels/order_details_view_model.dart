@@ -32,7 +32,7 @@ class OrderDetailsViewModel extends GetxController {
   void onInit() {
     super.onInit();
     fetchAllReConfirmOrder();
-    _initializeProductData();
+    initializeProductData();
     _loadCounter();
   }
   Future<void> _loadCounter() async {
@@ -77,7 +77,7 @@ class OrderDetailsViewModel extends GetxController {
     return orderId;
   }
 
-  Future<void> _initializeProductData() async {
+  Future<void> initializeProductData() async {
     try {
       // Fetching products
       List<ProductsModel> products = productsViewModel.allProducts;

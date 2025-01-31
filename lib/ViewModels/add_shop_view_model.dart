@@ -22,7 +22,7 @@ class AddShopViewModel extends GetxController {
   String currentuser_id = '';
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
     fetchAndSaveShop();
     fetchCities();

@@ -65,12 +65,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return  GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: isAuthenticated ? '/home' : '/login',
+        // initialRoute: isAuthenticated ? '/home' : '/login',
+        initialRoute: '/',
         getPages: [
-          GetPage(name: '/', page: () => SplashScreen()),
+          GetPage(name: '/', page: () => const SplashScreen()),
           // GetPage(name: '/policy', page: () => PolicyDialog()),
-          GetPage(name: '/login', page: () => LoginScreen()),
-          GetPage(name: '/home', page: () =>  HomeScreen()),
+          GetPage(name: '/login', page: () => const LoginScreen()),
+          GetPage(name: '/home', page: () =>  const HomeScreen()),
           // GetPage(name: '/development', page: () =>  DevelopmentPage()),
           // GetPage(name: '/materialShifting', page: () =>  const MaterialShiftingPage()),
           // GetPage(name: '/newMaterial', page: () => NewMaterial()),

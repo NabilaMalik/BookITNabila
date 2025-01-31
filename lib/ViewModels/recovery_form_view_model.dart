@@ -4,12 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:order_booking_app/Models/returnform_details_model.dart';
+import 'package:order_booking_app/ViewModels/order_master_view_model.dart';
 import 'package:order_booking_app/ViewModels/return_form_details_view_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Databases/util.dart';
 import '../Models/ScreenModels/recovery_form_models.dart';
+import '../Models/order_master_model.dart';
 import '../Models/recovery_form_model.dart';
 import '../Repositories/recovery_form_repository.dart';
+import '../Screens/home_screen.dart';
+import '../Screens/recovery_form_2nd_page.dart';
 
 class RecoveryFormViewModel extends GetxController{
   var selectedShop = ''.obs;
@@ -20,8 +24,10 @@ class RecoveryFormViewModel extends GetxController{
   var cash_recovery = 0.0.obs; // Amount entered by the user for recovery
   var net_balance = 0.0.obs; // Updated balance after cash recovery
   var areFieldsEnabled = false.obs; // Add this line
+  var recovery_id ="".obs;
   var allRecoveryForm = <RecoveryFormModel>[].obs;
   RecoveryFormRepository recoveryformRepository = RecoveryFormRepository();
+  OrderMasterViewModel orderMasterViewModel = Get.put(OrderMasterViewModel());
   int recoverySerialCounter = 1;
   String recoveryCurrentMonth = DateFormat('MMM').format(DateTime.now());
   String currentuser_id = '';
@@ -37,13 +43,41 @@ class RecoveryFormViewModel extends GetxController{
   }
 
   void _initializeData() {
-    // Initialize shops
-    shops.value = [
-      Shop(name: "Shop 1", current_balance: 1000.0),
-      Shop(name: "Shop 2", current_balance: 2000.0),
-      Shop(name: "Shop 3", current_balance: 3000.0),
-      Shop(name: "Shop 4", current_balance: 4000.0),
-    ];
+    // Initialize shops dynamically based on OrderMasterViewModel data
+    Map<String, double> shopBalances = {};
+
+    // Filter orders with status "Pending"
+    List<OrderMasterModel> dispatchedOrders = orderMasterViewModel.allOrderMaster
+        .where((order) => order.order_status == "Pending")
+        .toList();
+
+    // Debug: Print the filtered orders
+    print("Filtered Orders (Pending): $dispatchedOrders");
+
+    // Aggregate data by shop name
+    for (var order in dispatchedOrders) {
+      String shopName = order.shop_name ?? "Unknown Shop"; // Default to "Unknown Shop" if null
+      double orderAmount = double.tryParse(order.total ?? '0') ?? 0.0; // Parse total to double
+
+      // Debug: Print each shop and its amount
+      print("Processing Shop: $shopName, Amount: $orderAmount");
+
+      // Add or update the balance for the shop
+      shopBalances[shopName] = (shopBalances[shopName] ?? 0.0) + orderAmount;
+    }
+
+    // Convert the aggregated data into a list of Shop objects
+    shops.value = shopBalances.entries.map((entry) {
+      return Shop(
+        name: entry.key, // Shop name
+        current_balance: entry.value, // Total balance for the shop
+      );
+    }).toList();
+
+    // Refresh the observable list to update the UI
+    shops.refresh();
+    // Debug: Print the final list of shops
+    print("Final Shops List: ${shops.value}");
 
     // Initialize payment history
     paymentHistory.value = [
@@ -54,7 +88,6 @@ class RecoveryFormViewModel extends GetxController{
 
     filteredRows.value = paymentHistory.value;
   }
-
   void filterData(String query) {
     final lowerCaseQuery = query.toLowerCase();
 
@@ -114,9 +147,9 @@ class RecoveryFormViewModel extends GetxController{
 
   Future<void> submitForm() async {
     final recoverySerial = generateNewOrderId(user_id);
-    // shop_visit_master_id = orderSerial;
+     recovery_id.value = recoverySerial;
    await  addRecoveryForm(RecoveryFormModel(
-      recovery_id: recoverySerial,
+      recovery_id: recovery_id.value,
       shop_name: selectedShop.value,
       current_balance: current_balance.value!.toString(),
       cash_recovery: cash_recovery.value,
@@ -125,6 +158,8 @@ class RecoveryFormViewModel extends GetxController{
     await recoveryformRepository.postDataFromDatabaseToAPI();
     // Implement your form submission logic here
     Get.snackbar("Success", "Form submitted successfully!");
+     Get.to(()=>   RecoveryForm_2ndPage());
+    // Get.to(() => const HomeScreen());
   }
 
 

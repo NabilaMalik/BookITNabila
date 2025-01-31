@@ -38,7 +38,7 @@ class ShopVisitDetailsViewModel extends GetxController {
     // Initialize shopVisitViewModel here after initial dependencies are ready
     shopVisitViewModel = Get.find<ShopVisitViewModel>();
     super.onInit();
-   _initializeProductData();
+   initializeProductData();
     fetchAllShopVisitDetails();
     _loadCounter();
   }
@@ -83,7 +83,7 @@ class ShopVisitDetailsViewModel extends GetxController {
     _saveCounter();
     return orderId;
   }
-  Future<void> _initializeProductData() async {
+  Future<void> initializeProductData() async {
     try {
       // // Fetch all products before accessing them
       // await productsViewModel.fetchAllProductsModel();

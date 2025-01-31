@@ -56,6 +56,7 @@ class OrderMasterModel{
       'brand':brand,
       'total':total,
       'credit_limit':credit_limit,
+      'order_status':order_status,
       'required_delivery_date':required_delivery_date,
       'order_master_date': DateFormat('dd-MMM-yyyy')
           .format(order_master_date ?? DateTime.now()), // Always set live date

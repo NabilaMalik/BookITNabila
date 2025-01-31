@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:order_booking_app/ViewModels/ProductsViewModel.dart';
+import 'package:order_booking_app/ViewModels/shop_visit_details_view_model.dart';
 import 'package:order_booking_app/screens/add_shop_screen.dart';
 import 'package:order_booking_app/screens/order_booking_status_screen.dart';
 import 'package:order_booking_app/screens/recovery_form_screen.dart';
@@ -24,6 +26,8 @@ class HomeScreen extends StatefulWidget {
 
 class _RiveAppHomeState extends State<HomeScreen>
     with TickerProviderStateMixin {
+  // ShopVisitDetailsViewModel shopVisitDetailsViewModel = Get.put(ShopVisitDetailsViewModel());
+  // ProductsViewModel productsViewModel = Get.put(ProductsViewModel());
   late AnimationController? _animationController;
   late AnimationController? _onBoardingAnimController;
   late Animation<double> _onBoardingAnim;
@@ -83,6 +87,7 @@ class _RiveAppHomeState extends State<HomeScreen>
   // ];
   @override
   void initState() {
+
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 200),
       upperBound: 1,
@@ -106,6 +111,9 @@ class _RiveAppHomeState extends State<HomeScreen>
 
     // _tabBody = _screens.first;
     super.initState();
+    // productsViewModel.fetchAndSaveProducts();
+    //
+    // shopVisitDetailsViewModel.initializeProductData();
   }
 
   @override

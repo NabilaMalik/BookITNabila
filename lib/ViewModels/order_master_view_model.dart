@@ -30,6 +30,7 @@ class OrderMasterViewModel extends GetxController {
   int orderMasterSerialCounter = 1;
   String orderMasterCurrentMonth = DateFormat('MMM').format(DateTime.now());
   String currentuser_id = '';
+  var order_status= 'Pending'.obs;
 
   var credit_limit = ''.obs;
   var required_delivery_date = ''.obs;
@@ -114,12 +115,12 @@ class OrderMasterViewModel extends GetxController {
           brand: shopVisitViewModel.selectedBrand.value,
           total: orderDetailsViewModel.total.value.toString(),
           credit_limit: credit_limit.value,
-          order_status: "Pending",
+          order_status: order_status.value,
           required_delivery_date: required_delivery_date.value,
           order_master_id: order_master_id.toString()
       );
       // await orderMasterRepository.postDataFromDatabaseToAPI();
-
+      print(orderMasterModel);
       print("Submitting OrderMasterModel: ${orderMasterModel.toMap()}");
       await addConfirmOrder(orderMasterModel);
 

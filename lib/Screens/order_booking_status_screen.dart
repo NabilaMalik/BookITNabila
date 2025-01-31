@@ -10,6 +10,12 @@ import 'OrderBookingStatusScreenComponents/build_status_and_button_row.dart';
 class OrderBookingStatusScreen extends StatelessWidget {
   OrderBookingStatusScreen({super.key});
   final viewModel = Get.put(OrderBookingStatusViewModel());
+  // final viewModel = Get.put(OrderBookingStatusViewModel());
+  @override
+  // void initState() {
+  //   super.initState();
+  //   fetchOrders();
+  // }
   @override
   Widget build(BuildContext context) {
     // Fetch the orders as soon as the screen is displayed

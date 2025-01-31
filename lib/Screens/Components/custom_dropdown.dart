@@ -103,7 +103,8 @@ class _CustomDropdownState extends State<CustomDropdown> {
                         labelText: _selectedValue == null ? widget.label : null,
                         border: widget.inputBorder ?? InputBorder.none,
                         errorText: state.hasError ? state.errorText : null,
-                        contentPadding: EdgeInsets.symmetric(vertical: widget.contentPadding!),
+                        contentPadding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 6.0),
+                        // contentPadding: EdgeInsets.symmetric(vertical: widget.contentPadding!),
                         floatingLabelBehavior: FloatingLabelBehavior.auto,
                       ),
                       isEmpty: _selectedValue == null,
@@ -116,7 +117,8 @@ class _CustomDropdownState extends State<CustomDropdown> {
                           selectedItem: _selectedValue,
                           dropdownDecoratorProps: DropDownDecoratorProps(
                             dropdownSearchDecoration: InputDecoration(
-                              hintText: 'Select ${widget.label}',
+                              //hintText: 'Select ${widget.label}',
+                              labelText: 'Select ${widget.label}',
                               border: InputBorder.none,
                             ),
                           ),

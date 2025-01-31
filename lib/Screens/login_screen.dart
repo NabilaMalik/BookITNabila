@@ -104,6 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
         await addShopViewModel.fetchAndSaveShop();
         await productsViewModel.fetchAndSaveProducts();
+        await shopVisitDetailsViewModel.initializeProductData();
 
         // If the above operations complete successfully, navigate to the home screen
         Future.delayed(Duration(milliseconds: 300), () {

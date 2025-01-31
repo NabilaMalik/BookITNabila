@@ -1,11 +1,19 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:order_booking_app/ViewModels/order_details_view_model.dart';
 import 'package:order_booking_app/ViewModels/order_master_view_model.dart';
 import 'package:order_booking_app/ViewModels/shop_visit_view_model.dart';
+import 'package:path_provider/path_provider.dart';
 import '../Databases/util.dart';
 import 'Components/custom_button.dart';
-
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:share_plus/share_plus.dart';
 class ReconfirmOrderScreen extends StatefulWidget {
   final List<Map<String, dynamic>> rows;
 
@@ -18,6 +26,7 @@ class ReconfirmOrderScreen extends StatefulWidget {
 class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
   int _currentPage = 0;
   OrderMasterViewModel orderMasterViewModel = Get.put(OrderMasterViewModel());
+  OrderDetailsViewModel orderDetailsViewModel = Get.put(OrderDetailsViewModel());
   ShopVisitViewModel shopVisitViewModel =Get.put(ShopVisitViewModel());
 
   void _nextPage() {
@@ -44,7 +53,324 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
     }
     return widget.rows.sublist(startIndex, endIndex);
   }
+  Future<void> _generateAndSharePDF() async {
+    final pdf = pw.Document();
 
+    const baseColor = PdfColors.blueAccent;
+    const headerColor = PdfColors.black;
+    const alternateRowColor = PdfColors.grey200;
+    const tableBorderColor = PdfColors.blueGrey;
+
+    // Load the logo image
+    final ByteData logoData = await rootBundle.load('assets/images/1download.jpeg');
+    final Uint8List logoBytes = logoData.buffer.asUint8List();
+
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        build: (context) => [
+          // Logo and Title Section in Horizontal Layout
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.start,
+            children: [
+              pw.Image(
+                pw.MemoryImage(logoBytes),
+                width: 50,
+                height: 50,
+              ),
+              pw.SizedBox(width: 10),
+              pw.Text(
+                'Valor Trading',
+                style: pw.TextStyle(
+                  fontSize: 27,
+                  fontWeight: pw.FontWeight.bold,
+                  color: headerColor,
+                ),
+              ),
+              pw.Spacer(),
+              pw.Text(
+                'Order Invoice',
+                style: pw.TextStyle(
+                  fontSize: 24,
+                  fontWeight: pw.FontWeight.bold,
+                  color: headerColor,
+                ),
+              ),
+            ],
+          ),
+          pw.SizedBox(height: 16),
+
+          // Header Section
+          pw.Container(
+            padding: const pw.EdgeInsets.all(16),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                // First Row: Owner Name (Left) | Order ID (Right)
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.RichText(
+                      text: pw.TextSpan(
+                        children: [
+                          pw.TextSpan(
+                            text: 'Owner Name: ',
+                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                          ),
+                          pw.TextSpan(
+                            text: '${shopVisitViewModel.owner_name}',
+                          ),
+                        ],
+                      ),
+                    ),
+                    pw.RichText(
+                      text: pw.TextSpan(
+                        children: [
+                          pw.TextSpan(
+                            text: 'Order ID:      ',
+                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                          ),
+                          pw.TextSpan(
+                            text: '$order_master_id',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                pw.SizedBox(height: 5),
+
+                // Second Row: Shop Name (Left) | Phone Number (Right)
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.RichText(
+                      text: pw.TextSpan(
+                        children: [
+                          pw.TextSpan(
+                            text: 'Shop Name: ',
+                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                          ),
+                          pw.TextSpan(
+                            text: '${shopVisitViewModel.selectedBrand}',
+                          ),
+                        ],
+                      ),
+                    ),
+                    pw.RichText(
+                      text: pw.TextSpan(
+                        children: [
+                          pw.TextSpan(
+                            text: 'Phone Number: ',
+                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                          ),
+                          pw.TextSpan(
+                            text: '${shopVisitViewModel.phone_number}',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                pw.SizedBox(height: 5),
+
+                // Third Row: Booker Name (Left) | Date (Right)
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.RichText(
+                      text: pw.TextSpan(
+                        children: [
+                          pw.TextSpan(
+                            text: 'Booker Name: ',
+                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                          ),
+                          pw.TextSpan(
+                            text: '${shopVisitViewModel.booker_name}',
+                          ),
+                        ],
+                      ),
+                    ),
+                    pw.RichText(
+                      text: pw.TextSpan(
+                        children: [
+                          pw.TextSpan(
+                            text: 'Date:   ',
+                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                          ),
+                          pw.TextSpan(
+                            text: DateFormat('dd-MMM-yyyy : HH-mm-ss').format(DateTime.now()),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          pw.SizedBox(height: 10),
+          pw.Text('Order Summary',
+              style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold, color: baseColor)),
+          pw.SizedBox(height: 10),
+
+          // Table Section
+          pw.Table.fromTextArray(
+            headers: ['#', 'Product', 'Enter Qty', 'Amount'],
+            data: widget.rows.map((row) {
+              return [
+                widget.rows.indexOf(row) + 1,
+                row['Product'] ?? '-',
+                row['Enter Qty']?.toString() ?? '-',
+                row['Amount']?.toString() ?? '-',
+              ];
+            }).toList(),
+            headerStyle: pw.TextStyle(
+              fontWeight: pw.FontWeight.bold,
+              color: PdfColors.white,
+            ),
+            headerDecoration: const pw.BoxDecoration(
+              color: baseColor,
+            ),
+            cellDecoration: (index, row, column) => pw.BoxDecoration(
+              color: index % 2 == 0 ? alternateRowColor : PdfColors.white,
+            ),
+            cellAlignments: {
+              0: pw.Alignment.centerRight,
+              1: pw.Alignment.centerLeft,
+              2: pw.Alignment.centerRight,
+              3: pw.Alignment.centerRight,
+            },
+            border: const pw.TableBorder(
+              horizontalInside: pw.BorderSide(color: tableBorderColor, width: 0.5),
+              top: pw.BorderSide(color: tableBorderColor, width: 1),
+              bottom: pw.BorderSide(color: tableBorderColor, width: 1),
+            ),
+          ),
+          pw.SizedBox(height: 10),
+          // Footer Section
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.RichText(
+                    text: pw.TextSpan(
+                      children: [
+                        pw.TextSpan(
+                          text: 'Credit Limit: ',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                        ),
+                        pw.TextSpan(
+                          text: orderMasterViewModel.credit_limit.value,
+                        ),
+                      ],
+                    ),
+                  ),
+                  pw.RichText(
+                    text: pw.TextSpan(
+                      children: [
+                        pw.TextSpan(
+                          text: 'Required Date: ',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                        ),
+                        pw.TextSpan(
+                          text: orderMasterViewModel.required_delivery_date.value,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              pw.RichText(
+                text: pw.TextSpan(
+                  children: [
+                    pw.TextSpan(
+                      text: 'Total: ',
+                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 17),
+                    ),
+                    pw.TextSpan(
+                      text: orderDetailsViewModel.total.value,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+        ],
+
+        // Correctly placed footer
+        footer: (context) {
+          return pw.Container(
+            width: double.infinity,
+            padding: const pw.EdgeInsets.only(top: 10),
+            child: pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                // Left-aligned logo and text
+                pw.Row(
+                  children: [
+                    pw.Text(
+                      'Powered By ',
+                      style: pw.TextStyle(
+                        fontSize: 12,
+                        fontWeight: pw.FontWeight.bold,
+                        fontStyle: pw.FontStyle.italic,
+                        color: PdfColors.grey,
+                      ),
+                    ),
+                    pw.SizedBox(width: 8),
+                    pw.Container(
+                      width: 20,
+                      height: 20,
+                      decoration: pw.BoxDecoration(
+                        shape: pw.BoxShape.circle,
+                        image: pw.DecorationImage(
+                          image: pw.MemoryImage(logoBytes),
+                          fit: pw.BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    pw.SizedBox(width: 8),
+                    pw.Text(
+                      'MetaXperts',
+                      style: pw.TextStyle(
+                        fontSize: 16,
+                        fontWeight: pw.FontWeight.bold,
+                        color: PdfColors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+
+                // Right-aligned page number
+                pw.Text(
+                  'Page ${context.pageNumber} of ${context.pagesCount}',
+                  style: const pw.TextStyle(fontSize: 12, color: PdfColors.grey600),
+                ),
+              ],
+            ),
+          );
+        },
+
+      ),
+    );
+
+    try {
+      // Save the PDF file
+      final output = await getTemporaryDirectory();
+      final file = File('${output.path}/order_invoice.pdf');
+      await file.writeAsBytes(await pdf.save());
+
+      // Share the PDF
+      await Share.shareXFiles([XFile(file.path)], text: 'Order Invoice');
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to generate and share PDF: $e');
+    }
+    }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,6 +387,7 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
           IconButton(
             icon: Icon(Icons.share, color: Colors.white,),
             onPressed: () {
+              _generateAndSharePDF();
               // Add your share functionality here
             },
           ),

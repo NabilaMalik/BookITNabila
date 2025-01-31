@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:order_booking_app/ViewModels/order_details_view_model.dart';
 import 'package:order_booking_app/ViewModels/order_master_view_model.dart';
 import 'package:order_booking_app/ViewModels/shop_visit_view_model.dart';
-import 'package:order_booking_app/screens/reconfirm_order_screen.dart';
 import '../widgets/rounded_button.dart';
 import 'Components/custom_dropdown.dart';
 import 'Components/custom_editable_menu_option.dart';
@@ -22,6 +21,13 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
   final OrderDetailsViewModel orderDetailsViewModel = Get.put(OrderDetailsViewModel());
   final ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
   final _formKey = GlobalKey<FormState>();
+@override
+void initState() {
+  super.initState();
+  orderDetailsViewModel.initializeProductData();
+  // shopVisitViewModel.fetchShops();
+  // shopVisitDetailsViewModel.initializeProductData();
+}
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +107,8 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
                     label: "Credit Limit",
                     icon: Icons.payment,
                     items: orderMasterViewModel.credits,
-                    selectedValue: orderMasterViewModel.credit_limit.value,
+                    selectedValue: orderMasterViewModel.credit_limit.value.isNotEmpty
+                        ? orderMasterViewModel.credit_limit.value : "Credit Limit",
                     onChanged: (value) {
                       orderMasterViewModel.credit_limit.value = value!;
                       if (kDebugMode) {
@@ -123,11 +130,42 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
                   ),
 
                   const SizedBox(height: 10),
-                  _buildTextField(
-                    label: "Required Delivery",
-                    text: orderMasterViewModel.required_delivery_date.value,
-                    icon: Icons.calendar_today,
-                  ),
+                  // _buildTextField(
+                  //   label: "Required Delivery",
+                  //   text: orderMasterViewModel.required_delivery_date.value,
+                  //   icon: Icons.calendar_today,
+                  // ),
+                  const SizedBox(height: 10),
+                  Obx(() => Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10
+                          ), // Adjust padding as needed
+                          child: SizedBox(
+                            width: 353, // Adjust width as needed
+                            child: _buildTextFieldWithCalendar(
+
+                              label: "Required Delivery",
+                              text: orderMasterViewModel.required_delivery_date.isNotEmpty
+                                  ? orderMasterViewModel.required_delivery_date.value
+                                  : "Select a date", // Show selected date or placeholder
+
+                              context: context,
+                              onDateSelected: (selectedDate)
+                              {
+                                // Format the selected date
+                                String formattedDate =
+                                    "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
+                                // Update the ViewModel
+                                orderMasterViewModel.required_delivery_date.value = formattedDate;
+                              },
+                              icon: Icons.calendar_today,
+                            ),
+                          ),
+                        ),
+                      ],
+                      )),
                   const SizedBox(height: 30),
                   _buildSubmitButton(),
                   const SizedBox(height: 50),
@@ -139,7 +177,58 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
       ),
     );
   }
-
+  Widget _buildTextFieldWithCalendar({
+    required String label,
+    required String text,
+    required IconData icon,
+    required BuildContext context,
+    required ValueChanged<DateTime> onDateSelected,
+  }) {
+    return GestureDetector(
+        onTap: () async {
+          DateTime? selectedDate = await showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2100),
+          );
+          if (selectedDate != null) {
+            onDateSelected(selectedDate);
+          }
+        },
+        child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8), // Space between icon and text field
+                child: Icon(icon, color: Colors.blue, size: 24), // Adjust size if needed
+              ),
+              Expanded(
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    labelText: label,
+                    border: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue, width: 1.0),
+                    ),
+                  ),
+                  controller: TextEditingController(text: text),
+                  readOnly: true,
+                  onTap: () async { // Also open calendar when tapping on text field
+                    DateTime? selectedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2100),
+                    );
+                    if (selectedDate != null) {
+                      onDateSelected(selectedDate);
+                    }
+                  },
+                ),
+              ),
+            ],
+        ),
+        );
+    }
   Widget _buildTextField({
     required String label,
     required String text,

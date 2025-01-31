@@ -66,26 +66,33 @@ class RecoveryFormScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     const SizedBox(height: 10),
-                    Obx(() => DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(
-                        labelText: "Shop Name",
-                        labelStyle: TextStyle(fontSize: 15),
-                        border: UnderlineInputBorder(),
-                      ),
-                      value: viewModel.selectedShop.value.isEmpty
-                          ? null
-                          : viewModel.selectedShop.value,
-                      items: viewModel.shops.map((shop) {
-                        return DropdownMenuItem(
-                          value: shop.name,
-                          child: Text(shop.name),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        viewModel.selectedShop.value = value!;
-                        viewModel.updatecurrent_balance(value);
-                      },
-                    )),
+                    Obx(() {
+                      // Debug: Print the contents of viewModel.shops
+                      print("Shops in ViewModel: ${viewModel.shops}");
+
+                      return DropdownButtonFormField<String>(
+                        decoration: const InputDecoration(
+                          labelText: "Shop Name",
+                          labelStyle: TextStyle(fontSize: 15),
+                          border: UnderlineInputBorder(),
+                        ),
+                        value: viewModel.selectedShop.value.isEmpty
+                            ? null
+                            : viewModel.selectedShop.value,
+                        items: viewModel.shops.map((shop) {
+                          // Debug: Print each shop name being added to the dropdown
+                          print("Adding Shop to Dropdown: ${shop.name}");
+                          return DropdownMenuItem(
+                            value: shop.name,
+                            child: Text(shop.name),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          viewModel.selectedShop.value = value!;
+                          viewModel.updatecurrent_balance(value);
+                        },
+                      );
+                    }),
                     const SizedBox(height: 15),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
