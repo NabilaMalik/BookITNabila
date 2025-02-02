@@ -8,19 +8,20 @@ import '../Databases/util.dart';
 import '../Models/add_shop_model.dart';
 import '../Services/ApiServices/api_service.dart';
 import '../Services/FirebaseServices/firebase_remote_config.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class AddShopRepository extends GetxService {
   DBHelper dbHelper = Get.put(DBHelper());
 
   void onInit() {
     super.onInit();
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      if (result != ConnectivityResult.none) {
+    Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
+      if (results.isNotEmpty && results.contains(ConnectivityResult.none)) {
         postDataFromDatabaseToAPI();
       }
     });
   }
+
 
 
   Future<List<AddShopModel>> getAddShop() async {

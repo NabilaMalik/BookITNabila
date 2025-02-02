@@ -3,8 +3,8 @@ import 'dart:io';
 import 'dart:io' show Directory, InternetAddress, Platform, SocketException;
 
 import 'dart:ui';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart' show DeviceInfoPlugin;
-import 'package:connectivity/connectivity.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -124,17 +124,17 @@ Future<void> initializeServiceLocation() async {
       onForeground: onStart,
     ),
   );
-  monitorInternetConnection(); // Add this line to monitor connectivity changes
+ // monitorInternetConnection(); // Add this line to monitor connectivity changes
 
 }
-void monitorInternetConnection() {
-  Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-    if (result == ConnectivityResult.mobile ||
-        result == ConnectivityResult.wifi) {
-      // backgroundTask();
-    }
-  });
-}
+// void monitorInternetConnection() {
+//   Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+//     if (result == ConnectivityResult.mobile ||
+//         result == ConnectivityResult.wifi) {
+//       // backgroundTask();
+//     }
+//   });
+// }
 @pragma('vm:entry-point')
 void onStart1(ServiceInstance service1) async {
   DartPluginRegistrant.ensureInitialized();
@@ -196,7 +196,7 @@ void onStart(ServiceInstance service) async {
     //stopListeningLocation();
     FlutterLocalNotificationsPlugin().cancelAll();
   });
-  monitorInternetConnection(); // Add this line to monitor connectivity changes
+ // monitorInternetConnection(); // Add this line to monitor connectivity changes
 
   Timer.periodic(const Duration(minutes: 10), (timer) async {
     if (service is AndroidServiceInstance) {
