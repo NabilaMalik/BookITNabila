@@ -23,7 +23,6 @@ class AddShopRepository extends GetxService {
   }
 
 
-
   Future<List<AddShopModel>> getAddShop() async {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(addShopTableName, columns: [
@@ -130,8 +129,8 @@ class AddShopRepository extends GetxService {
       print(Config.getApiUrlShops1);
       //print('https://cloud.metaxperts.net:8443/erp/test1/shopget/get/');
     }
-    List<dynamic> data = await ApiService.getData(Config.getApiUrlShops1);
-    //List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/test1/shopget/get/');
+   // List<dynamic> data = await ApiService.getData(Config.getApiUrlShops1);
+    List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/test1/shopget/get/');
     var dbClient = await dbHelper.db;
 
     // Save data to database
