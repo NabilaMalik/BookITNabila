@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:order_booking_app/Screens/home_screen.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
@@ -145,6 +148,39 @@ class ShopVisitViewModel extends GetxController {
     _saveCounter();
     return orderId;
   }
+// Function to save an image
+  Future<void> saveImage() async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final filePath = '${directory.path}/captured_image.jpg';
+
+      // Compress the image
+      Uint8List? compressedImageBytes = await FlutterImageCompress.compressWithFile(
+        selectedImage.value!.path,
+        minWidth: 400,
+        minHeight: 600,
+        quality: 30,
+      );
+
+      if (compressedImageBytes != null) {
+        // Save the compressed image
+        await File(filePath).writeAsBytes(compressedImageBytes);
+        if (kDebugMode) {
+          print('Compressed image saved successfully at $filePath');
+        }
+      } else {
+        if (kDebugMode) {
+          print('Image compression failed.');
+        }
+
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error compressing and saving image: $e');
+      }
+
+    }
+  }
 
   Future<void> saveForm() async {
     if (validateForm()) {
@@ -172,7 +208,7 @@ class ShopVisitViewModel extends GetxController {
         planogram: checklistState[1],
         signage: checklistState[2],
         product_reviewed: checklistState[3],
-        addPhoto: compressedImageBytes,
+        body: compressedImageBytes,
         feedback: feedBack.value,
         shop_visit_master_id: shop_visit_master_id.toString(), // Add the generated serial here
       ));
@@ -194,39 +230,42 @@ class ShopVisitViewModel extends GetxController {
   Future<void> saveFormNoOrder() async {
     if (validateForm()) {
       print("Start Savinggggggggggggg");
-      Uint8List? compressedImageBytes;
+      String? imagePath;
+      Uint8List? imageBytes;
       if (selectedImage.value != null) {
-        compressedImageBytes = await FlutterImageCompress.compressWithFile(
-          selectedImage.value!.path,
-          minWidth: 400,
-          minHeight: 600,
-          quality: 40,
-        );
+         imagePath = selectedImage.value!.path;
+
+        List<int> imageBytesList = await File(imagePath).readAsBytes();
+      imageBytes = Uint8List.fromList(imageBytesList);
       }
 
+      List<int> imageBytesList = await File(imagePath!).readAsBytes();
+      imageBytes = Uint8List.fromList(imageBytesList);
       final orderSerial = generateNewOrderId(user_id);
       shop_visit_master_id = orderSerial;
 
       await addShopVisit(ShopVisitModel(
-        shop_name: selectedShop.value,
-        shop_address: shop_address.value,
-        owner_name: owner_name.value,
-        brand: selectedBrand.value,
-        booker_name: booker_name.value,
+        shop_name: selectedShop.value.toString(),
+        shop_address: shop_address.value.toString(),
+        owner_name: owner_name.value.toString(),
+        brand: selectedBrand.value.toString(),
+        booker_name: booker_name.value.toString(),
         walk_through: checklistState[0],
         planogram: checklistState[1],
         signage: checklistState[2],
         product_reviewed: checklistState[3],
-        addPhoto: compressedImageBytes,
+        body: imageBytes, // Store the file path
         feedback: feedBack.value,
-        shop_visit_master_id: shop_visit_master_id, // Add the generated serial here
+        shop_visit_master_id: shop_visit_master_id,
       ));
+
       await shopvisitRepository.getShopVisit();
       await shopVisitDetailsViewModel.saveFilteredProducts();
+      await shopvisitRepository.postDataFromDatabaseToAPI();
+
       Get.snackbar("Success", "Form submitted successfully!",
           snackPosition: SnackPosition.BOTTOM);
       await clearFilters();
-
       Get.to(() => const HomeScreen());
     }
   }
@@ -252,13 +291,15 @@ class ShopVisitViewModel extends GetxController {
   }
 
   Future<void> pickImage() async {
-    final image = await picker.pickImage(source: ImageSource.gallery);
+    final image = await picker.pickImage(source: ImageSource.gallery,imageQuality: 30);
     selectedImage.value = image;
+    await saveImage();
   }
 
   Future<void> takePicture() async {
-    final image = await picker.pickImage(source: ImageSource.camera);
+    final image = await picker.pickImage(source: ImageSource.camera, imageQuality: 30);
     selectedImage.value = image;
+    await saveImage();
   }
 
   clearFilters() {
@@ -271,3 +312,4 @@ class ShopVisitViewModel extends GetxController {
     return _formKey.currentState?.validate() ?? false;
   }
 }
+

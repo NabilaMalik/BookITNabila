@@ -7,7 +7,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 String globalselectedbrand="";
 String userBrand="";
-String user_id= "BO2";
+String user_id= "B02";
 String? shop_visit_master_id = "";
 String? returnMasterId = "";
 String? order_master_id = "";

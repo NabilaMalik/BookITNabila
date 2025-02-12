@@ -38,7 +38,7 @@ class OrderMasterViewModel extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchAllConfirmOrder();
+    fetchAllOrderMaster();
     _loadCounter();
   }
   Future<void> _loadCounter() async {
@@ -136,23 +136,23 @@ class OrderMasterViewModel extends GetxController {
     return _formKey.currentState?.validate() ?? false;
   }
 
-  fetchAllConfirmOrder() async {
+  fetchAllOrderMaster() async {
     var confirmorder = await orderMasterRepository.getConfirmOrder();
     allOrderMaster.value = confirmorder;
   }
 
   addConfirmOrder(OrderMasterModel orderMasterModel) {
     orderMasterRepository.add(orderMasterModel);
-    fetchAllConfirmOrder();
+    fetchAllOrderMaster();
   }
 
   updateConfirmOrder(OrderMasterModel orderMasterModel) {
     orderMasterRepository.update(orderMasterModel);
-    fetchAllConfirmOrder();
+    fetchAllOrderMaster();
   }
 
   deleteConfirmOrder(int id) {
     orderMasterRepository.delete(id);
-    fetchAllConfirmOrder();
+    fetchAllOrderMaster();
   }
 }

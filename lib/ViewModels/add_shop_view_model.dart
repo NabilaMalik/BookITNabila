@@ -24,7 +24,7 @@ class AddShopViewModel extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    fetchAndSaveShop();
+    // fetchAndSaveShop();
     fetchCities();
   }
 

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:intl/intl.dart';
@@ -13,7 +14,7 @@ class ShopVisitModel {
   bool? planogram;
   bool? signage;
   bool? product_reviewed;
-  Uint8List? addPhoto; // Store image as Uint8List
+  Uint8List? body;
   String? feedback;
   DateTime? shop_visit_date;
   DateTime? shop_visit_time;
@@ -31,7 +32,7 @@ class ShopVisitModel {
     this.planogram,
     this.signage,
     this.product_reviewed,
-    this.addPhoto,
+    this.body,
     this.feedback,
     this.shop_visit_date,
     this.shop_visit_time,
@@ -40,18 +41,19 @@ class ShopVisitModel {
 
   factory ShopVisitModel.fromMap(Map<dynamic, dynamic> json) {
     return ShopVisitModel(
-      shop_visit_master_id: json['shop_visit_master_id'],
-      brand: json['brand'],
-      shop_name: json['shop_name'],
-      shop_address: json['shop_address'],
-      owner_name: json['owner_name'],
-      booker_name: json['booker_name'],
-      walk_through: json['walk_through'] == 1,
-      planogram: json['planogram'] == 1,
-      signage: json['signage'] == 1,
-      product_reviewed: json['product_reviewed'] == 1,
-      addPhoto: json['body'] != null ? Uint8List.fromList(
-          List<int>.from(json['body'])) : null,
+      shop_visit_master_id: json['shop_visit_master_id'].toString(),
+      brand: json['brand'].toString(),
+      shop_name: json['shop_name'].toString(),
+      shop_address: json['shop_address'].toString(),
+      owner_name: json['owner_name'].toString(),
+      booker_name: json['booker_name'].toString(),
+      walk_through: json['walk_through'] == 1.toString(),
+      planogram: json['planogram'] == 1.toString(),
+      signage: json['signage'] == 1.toString(),
+      product_reviewed: json['product_reviewed'] == 1.toString(),
+      body: json['body'] != null && json['body'].toString().isNotEmpty
+          ? Uint8List.fromList(base64Decode(json['body'].toString()))
+          : null,
       feedback: json['feedback'],
       shop_visit_date: DateTime.now(),
       // Always set live date
@@ -74,7 +76,7 @@ class ShopVisitModel {
       'planogram': planogram == true ? 1 : 0,
       'signage': signage == true ? 1 : 0,
       'product_reviewed': product_reviewed == true ? 1 : 0,
-      'body': addPhoto,
+      'body':  body != null ? base64Encode(body!) : null,
       'feedback': feedback,
       'shop_visit_date': DateFormat('dd-MMM-yyyy')
           .format(shop_visit_date ?? DateTime.now()), // Always set live date

@@ -82,12 +82,12 @@ class TimerCard extends StatelessWidget {
           ElevatedButton(
             onPressed: () async {
               locationViewModel.saveCurrentLocation();
-              final service = FlutterBackgroundService();
+              // final service = FlutterBackgroundService();
               bool newIsClockedIn = locationViewModel.isClockedIn.value;
 
               if (newIsClockedIn) {
 
-                // service.invoke("stopService");
+                 // service.invoke("stopService");
                 locationViewModel.saveCurrentLocation();
                 attendanceOutViewModel.saveFormAttendanceOut();
 
@@ -103,12 +103,12 @@ class TimerCard extends StatelessWidget {
                 _themeMenuIcon[0].riveIcon.status!.value = false;
                 debugPrint("Timer stopped and animation set to inactive.");
               } else{
-                // await initializeServiceLocation();
-                // await location.enableBackgroundMode(enable: true);
-                // await location.changeSettings(
-                //     interval: 300, accuracy: loc.LocationAccuracy.high);
-                // locationBool = true;
-                // service.startService();
+               //  await initializeServiceLocation();
+               //  await location.enableBackgroundMode(enable: true);
+               //  await location.changeSettings(
+               //      interval: 300, accuracy: loc.LocationAccuracy.high);
+               // // locationBool = true;
+               //  service.startService();
                 locationViewModel.saveCurrentTime();
                 locationViewModel.saveClockStatus(true);
                 locationViewModel.clockRefresh();

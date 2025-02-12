@@ -2,7 +2,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/foundation.dart';
+import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:http_parser/http_parser.dart';
 import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Models/location_model.dart';
@@ -72,7 +75,7 @@ class LocationRepository {
       if (await isNetworkAvailable()) {
         for (var shop in unPostedShops) {
           try {
-            await postShopToAPI(shop);
+            await postShopToAPI(shop, shop.body!);
             shop.posted = 1;
             await update(shop);
             if (kDebugMode) {
@@ -96,32 +99,76 @@ class LocationRepository {
     }
   }
 
-  Future<void> postShopToAPI(LocationModel shop) async {
+
+  Future<void> postShopToAPI(LocationModel shop, Uint8List imageBytes) async {
     try {
       await Config.fetchLatestConfig();
       if (kDebugMode) {
         print('Updated Shop Post API: ${Config.postApiUrlLocation}');
       }
       var shopData = shop.toMap();
-      final response = await http.post(
+
+      var request = http.MultipartRequest(
+        'POST',
         Uri.parse(Config.postApiUrlLocation),
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: jsonEncode(shopData),
       );
 
+      request.headers['Content-Type'] = 'multipart/form-data';
+      request.headers['Accept'] = 'application/json';
+
+      request.fields.addAll(shopData.map((key, value) => MapEntry(key, value.toString())));
+
+      if (imageBytes != null) {
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'body',
+            imageBytes,
+            contentType: MediaType('body', 'jpeg'), // Adjust the content type based on your image type
+            // filename: 'upload.jpg',
+          ),
+        );
+      }
+
+      final response = await request.send();
+
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('Shop data posted successfully: $shopData');
+        print('Shop data posted successfully: ${shop.toMap()}');
       } else {
-        throw Exception('Server error: ${response.statusCode}, ${response.body}');
+        final responseBody = await response.stream.bytesToString();
+        throw Exception('Server error: ${response.statusCode}, $responseBody');
       }
     } catch (e) {
       print('Error posting shop data: $e');
       throw Exception('Failed to post data: $e');
     }
   }
+
+  // Future<void> postShopToAPI(LocationModel shop) async {
+  //   try {
+  //     await Config.fetchLatestConfig();
+  //     if (kDebugMode) {
+  //       print('Updated Shop Post API: ${Config.postApiUrlLocation}');
+  //     }
+  //     var shopData = shop.toMap();
+  //     final response = await http.post(
+  //       Uri.parse(Config.postApiUrlLocation),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Accept": "application/json",
+  //       },
+  //       body: jsonEncode(shopData),
+  //     );
+  //
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       print('Shop data posted successfully: $shopData');
+  //     } else {
+  //       throw Exception('Server error: ${response.statusCode}, ${response.body}');
+  //     }
+  //   } catch (e) {
+  //     print('Error posting shop data: $e');
+  //     throw Exception('Failed to post data: $e');
+  //   }
+  // }
   Future<int> add(LocationModel locationModel) async {
     var dbClient = await dbHelper.db;
     return await dbClient.insert(locationTableName, locationModel.toMap());

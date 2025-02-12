@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:order_booking_app/Screens/home_screen.dart';
 import 'package:order_booking_app/ViewModels/order_details_view_model.dart';
 import 'package:order_booking_app/ViewModels/order_master_view_model.dart';
 import 'package:order_booking_app/ViewModels/shop_visit_view_model.dart';
@@ -444,7 +444,9 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
                 height: 40,
                 width: 120,
                 buttonText: "Close",
-                onTap: orderMasterViewModel.confirmSubmitForm,
+                onTap: () {
+                  Get.to(const HomeScreen());
+                },                // onTap: orderMasterViewModel.confirmSubmitForm,
                 gradientColors: [Colors.red, Colors.red],
               ),
             ),

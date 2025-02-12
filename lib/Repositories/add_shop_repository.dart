@@ -13,6 +13,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 class AddShopRepository extends GetxService {
   DBHelper dbHelper = Get.put(DBHelper());
 
+  @override
   void onInit() {
     super.onInit();
     Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
