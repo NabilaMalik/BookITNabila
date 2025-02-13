@@ -48,36 +48,63 @@ class _StateShopVisitScreen extends State<ShopVisitScreen>{
                   child: Column(
                     children: [
                       Obx(() => CustomDropdown(
-                            label: "Brand",
-                            icon: Icons.branding_watermark,
-                            items: shopVisitViewModel.brands
-                                .where((brand) => brand != null)
-                                .cast<String>()
-                                .toList(),
-                            selectedValue: shopVisitViewModel.selectedBrand.value.isNotEmpty?
-                                shopVisitViewModel.selectedBrand.value : 'Select A Brand',
+
+                        label: "Brand",
+                        icon: Icons.branding_watermark,
+                        items: shopVisitViewModel.brands
+                            .where((brand) => brand != null)
+                            .cast<String>()
+                            .toList(),
+                        selectedValue: shopVisitViewModel.selectedBrand.value.isNotEmpty
+                            ? shopVisitViewModel.selectedBrand.value
+                            : 'Select a Brand',
                         onChanged: (value) async {
-                              await shopVisitDetailsViewModel.filteredRows
-                                  .refresh();
-                              shopVisitViewModel.selectedBrand.value = value!;
-                              shopVisitDetailsViewModel
-                                  .filterProductsByBrand(value);
-                            },
-                            useBoxShadow: false,
-                            validator: (value) => value == null || value.isEmpty
-                                ? 'Please select a brand'
-                                : null,
-                            inputBorder: const UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.blue, width: 1.0),
-                            ),
-                            maxHeight: 50.0,
-                            maxWidth: 385.0,
-                            // maxWidth: 355.0,
-                            iconSize: 23.0,
-                            // contentPadding: 6.0,
-                            contentPadding: 0.0,
-                            iconColor: Colors.blue,
+                          await shopVisitDetailsViewModel.filteredRows.refresh();
+                          shopVisitViewModel.selectedBrand.value = value!;
+                          shopVisitDetailsViewModel.filterProductsByBrand(value);
+                        },
+                        useBoxShadow: false,
+                        validator: (value) => value == null || value.isEmpty
+                            ? 'Please select a brand'
+                            : null,
+                        inputBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue, width: 1.0),
+                        ),
+                        // maxWidth: fieldWidth,  // ✅ Same width as _buildTextField
+                        // maxHeight: MediaQuery.of(context).size.height * 0.079,
+                        iconSize: 22.0,
+                        contentPadding: MediaQuery.of(context).size.height * 0.005,
+                        iconColor: Colors.blue,
+                        textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black),
+                      )),
+
+                      Obx(() => CustomDropdown(
+                          label: "Shop",
+                          icon: Icons.store,
+                          items: shopVisitViewModel.shops.value
+                              .where((shop) => shop != null)
+                              .cast<String>()
+                              .toList(),
+                          selectedValue: shopVisitViewModel.selectedShop.value.isNotEmpty
+                              ? shopVisitViewModel.selectedShop.value
+                              : "Select a Shop",
+                          onChanged: (value) async {
+                            shopVisitViewModel.selectedShop.value = value!;
+                            await shopVisitViewModel.updateShopDetails(value);
+                          },
+                          useBoxShadow: false,
+                          validator: (value) => value == null || value.isEmpty
+                              ? 'Please select a shop'
+                              : null,
+                          inputBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue, width: 1.0),
+                          ),
+                          // maxWidth: fieldWidth,  // ✅ Same width as _buildTextField
+                          // maxHeight: MediaQuery.of(context).size.height * 0.076,
+                          iconSize: 22.0,
+                          contentPadding: MediaQuery.of(context).size.height * 0.005,
+                          iconColor: Colors.blue,
+                          textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black),
                           )),
                       Obx(() => CustomDropdown(
                             label: "Shop",

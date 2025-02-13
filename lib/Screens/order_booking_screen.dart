@@ -103,31 +103,32 @@ void initState() {
                    // dynamicParameter: 'total',// Pass the orderMasterViewModel parameter
                       )),
                   const SizedBox(height: 10),
-                CustomDropdown(
-                    label: "Credit Limit",
-                    icon: Icons.payment,
-                    items: orderMasterViewModel.credits,
-                    selectedValue: orderMasterViewModel.credit_limit.value.isNotEmpty
-                        ? orderMasterViewModel.credit_limit.value : "Credit Limit",
-                    onChanged: (value) {
-                      orderMasterViewModel.credit_limit.value = value!;
-                      if (kDebugMode) {
-                        print("Selected: ${orderMasterViewModel.credit_limit.value}");
-                      }
-                    },
-                    useBoxShadow: false,
-                    validator: (value) => value == null || value.isEmpty
-                        ? 'Please select a credit limit'
-                        : null,
-                    inputBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 1.0),
-                    ),
-                    maxHeight: 40.0,
-                    maxWidth: 300.0,
-                    iconSize: 20.0,
-                    contentPadding: 10.0,
-                    iconColor: Colors.blue,
-                  ),
+                  CustomDropdown(
+                      label: "Credit Limit",
+                      icon: Icons.payment,
+                      items: orderMasterViewModel.credits,
+                      selectedValue: orderMasterViewModel.credit_limit.value.isNotEmpty
+                          ? orderMasterViewModel.credit_limit.value : "Credit Limit",
+                      onChanged: (value) {
+                        orderMasterViewModel.credit_limit.value = value!;
+                        if (kDebugMode) {
+                          print("Selected: ${orderMasterViewModel.credit_limit.value}");
+                        }
+                      },
+                      useBoxShadow: false,
+                      validator: (value) => value == null || value.isEmpty
+                          ? 'Please select a credit limit'
+                          : null,
+                      inputBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue, width: 1.0),
+                      ),
+                      maxHeight: 50.0,
+                      maxWidth: 360.0,
+                      iconSize: 23.0,
+                      contentPadding: 6.0,
+                      iconColor: Colors.blue,
+                      textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
 
                   const SizedBox(height: 10),
                   // _buildTextField(
@@ -140,10 +141,10 @@ void initState() {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 10
+                          padding: const EdgeInsets.only(left: 16,right: 18
                           ), // Adjust padding as needed
                           child: SizedBox(
-                            width: 353, // Adjust width as needed
+                            width: double.infinity , // Adjust width as needed
                             child: _buildTextFieldWithCalendar(
 
                               label: "Required Delivery",
@@ -165,7 +166,7 @@ void initState() {
                           ),
                         ),
                       ],
-                      )),
+                 )),
                   const SizedBox(height: 30),
                   _buildSubmitButton(),
                   const SizedBox(height: 50),

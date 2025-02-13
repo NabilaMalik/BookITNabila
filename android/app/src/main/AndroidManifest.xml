@@ -12,9 +12,10 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-<!--    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>-->
-<!--    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
-
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name= "android.permission.FOREGROUND_SERVICE_LOCATION"/>
 
     <application
         android:label="BookIT"
@@ -48,6 +49,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <service
+            android:name="id.flutter.flutter_background_service.BackgroundService"
+            android:foregroundServiceType="location"
+            />
         <!-- WorkManager Configuration -->
 <!--        <service-->
 <!--            android:name="com.metaxperts.order_booking_app.workmanager.TaskExecutor"-->

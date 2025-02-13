@@ -38,7 +38,7 @@ class ShopVisitViewModel extends GetxController {
   var shop_address = ''.obs;
   var owner_name = ''.obs;
   var booker_name = ''.obs;
-  var phone_number =''.obs;
+  var phone_number = ''.obs;
   var feedBack = ''.obs;
   var selectedBrand = ''.obs;
   var selectedShop = ''.obs;
@@ -74,7 +74,8 @@ class ShopVisitViewModel extends GetxController {
   Future<void> fetchBrands() async {
     try {
       var savedBrands = await productsRepository.getProductsModel();
-      brands.value = savedBrands.map((product) => product.brand).toSet().toList();
+      brands.value =
+          savedBrands.map((product) => product.brand).toSet().toList();
     } catch (e) {
       if (kDebugMode) {
         print('Failed to fetch Brands: $e');
@@ -99,11 +100,10 @@ class ShopVisitViewModel extends GetxController {
     var shop = shopDetails.firstWhere((shop) => shop.shop_name == shopName);
     shop_address.value = shop.shop_address!;
     owner_name.value = shop.owner_name!;
-    phone_number.value =shop.phone_no!;
+    phone_number.value = shop.phone_no!;
     shopAddressController.text = shop.shop_address!;
     ownerNameController.text = shop.owner_name!;
   }
-
 
   Future<void> _loadCounter() async {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
@@ -148,6 +148,7 @@ class ShopVisitViewModel extends GetxController {
     _saveCounter();
     return orderId;
   }
+
 // Function to save an image
   Future<void> saveImage() async {
     try {
@@ -155,7 +156,8 @@ class ShopVisitViewModel extends GetxController {
       final filePath = '${directory.path}/captured_image.jpg';
 
       // Compress the image
-      Uint8List? compressedImageBytes = await FlutterImageCompress.compressWithFile(
+      Uint8List? compressedImageBytes =
+          await FlutterImageCompress.compressWithFile(
         selectedImage.value!.path,
         minWidth: 400,
         minHeight: 600,
@@ -172,13 +174,11 @@ class ShopVisitViewModel extends GetxController {
         if (kDebugMode) {
           print('Image compression failed.');
         }
-
       }
     } catch (e) {
       if (kDebugMode) {
         print('Error compressing and saving image: $e');
       }
-
     }
   }
 
@@ -194,7 +194,7 @@ class ShopVisitViewModel extends GetxController {
           quality: 40,
         );
       }
-     await _loadCounter();
+      await _loadCounter();
       final orderSerial = generateNewOrderId(user_id);
       shop_visit_master_id = orderSerial;
 
@@ -210,14 +210,13 @@ class ShopVisitViewModel extends GetxController {
         product_reviewed: checklistState[3],
         body: compressedImageBytes,
         feedback: feedBack.value,
-        shop_visit_master_id: shop_visit_master_id.toString(), // Add the generated serial here
+        shop_visit_master_id:
+            shop_visit_master_id.toString(), // Add the generated serial here
       ));
       await shopvisitRepository.getShopVisit();
       await shopVisitDetailsViewModel.saveFilteredProducts();
       await shopvisitRepository.postDataFromDatabaseToAPI();
       await shopvisitRepository.getShopVisit();
-
-
 
       Get.snackbar("Success", "Form submitted successfully!",
           snackPosition: SnackPosition.BOTTOM);
@@ -233,10 +232,10 @@ class ShopVisitViewModel extends GetxController {
       String? imagePath;
       Uint8List? imageBytes;
       if (selectedImage.value != null) {
-         imagePath = selectedImage.value!.path;
+        imagePath = selectedImage.value!.path;
 
         List<int> imageBytesList = await File(imagePath).readAsBytes();
-      imageBytes = Uint8List.fromList(imageBytesList);
+        imageBytes = Uint8List.fromList(imageBytesList);
       }
 
       List<int> imageBytesList = await File(imagePath!).readAsBytes();
@@ -291,13 +290,15 @@ class ShopVisitViewModel extends GetxController {
   }
 
   Future<void> pickImage() async {
-    final image = await picker.pickImage(source: ImageSource.gallery,imageQuality: 30);
+    final image =
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 30);
     selectedImage.value = image;
     await saveImage();
   }
 
   Future<void> takePicture() async {
-    final image = await picker.pickImage(source: ImageSource.camera, imageQuality: 30);
+    final image =
+        await picker.pickImage(source: ImageSource.camera, imageQuality: 30);
     selectedImage.value = image;
     await saveImage();
   }
@@ -312,4 +313,3 @@ class ShopVisitViewModel extends GetxController {
     return _formKey.currentState?.validate() ?? false;
   }
 }
-

@@ -4,12 +4,13 @@ import 'package:get/get.dart';
 import 'package:order_booking_app/Screens/Components/custom_switch.dart';
 import 'package:order_booking_app/ViewModels/location_view_model.dart';
 import '../ViewModels/add_shop_view_model.dart';
+import '../components/custom_dropdown_second.dart';
 import 'Components/custom_button.dart';
 import 'Components/custom_dropdown.dart';
 
 class AddShopScreen extends StatelessWidget {
   final AddShopViewModel _viewModel = Get.put(AddShopViewModel());
-final LocationViewModel locationViewModel = Get.put(LocationViewModel());
+  final LocationViewModel locationViewModel = Get.put(LocationViewModel());
   AddShopScreen({super.key});
 
   @override
@@ -46,21 +47,27 @@ final LocationViewModel locationViewModel = Get.put(LocationViewModel());
                         ? "Please enter shop name"
                         : null,
                   ),
-                 Obx(()=> CustomDropdown(
-                    borderColor: Colors.black,
-                    iconColor: Colors.blue,
-                    label: "City",
-                    useBoxShadow: false,
-                    icon: Icons.location_city,
-                    items: _viewModel.cities,
-                    selectedValue: _viewModel.selectedCity.value,
-                    onChanged: (value) =>
-                        _viewModel.setShopField('city', value),
-                    validator: (value) => value == null || value.isEmpty
-                        ? "Please enter City name"
-                        : null,
-                    // showBorder: true,
-                  )),
+                  Obx(() => CustomDropdownSecond(
+                        borderColor: Colors.black,
+                        iconColor: Colors.blue,
+
+                        label: "City",
+                        useBoxShadow: false,
+                        icon: Icons.location_city,
+                        items: _viewModel.cities.value,
+                        selectedValue: _viewModel.selectedCity.value.isNotEmpty
+                            ? _viewModel.selectedCity.value
+                            : 'Select a City',
+                        onChanged: (value) =>
+                            _viewModel.setShopField('city', value),
+                        validator: (value) => value == null || value.isEmpty
+                            ? "Please enter City name"
+                            : null,
+                        textStyle: const TextStyle(
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black), // ✅ Adjust font size
+                      )),
                   _buildTextField(
                     label: "Shop Address",
                     icon: Icons.place,
@@ -119,15 +126,16 @@ final LocationViewModel locationViewModel = Get.put(LocationViewModel());
                   const SizedBox(height: 10),
                   // Use Obx to reactively update CustomSwitch
                   Obx(() => CustomSwitch(
-                    label: "GPS Enabled",
-                    value: locationViewModel.isGPSEnabled.value,
-                    onChanged: (value) async {
-                      locationViewModel.isGPSEnabled.value = value;
-                      if (value) {
-                        await locationViewModel.saveCurrentLocation(); // Save location when switch is turned on
-                      }
-                    },
-                  )),
+                        label: "GPS Enabled",
+                        value: locationViewModel.isGPSEnabled.value,
+                        onChanged: (value) async {
+                          locationViewModel.isGPSEnabled.value = value;
+                          if (value) {
+                            await locationViewModel
+                                .saveCurrentLocation(); // Save location when switch is turned on
+                          }
+                        },
+                      )),
                   const SizedBox(height: 10),
                   CustomButton(
                     buttonText: "Save",

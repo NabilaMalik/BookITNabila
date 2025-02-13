@@ -1,11 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../Components/WidgetsComponents/contect_widget.dart';
 import '../Components/WidgetsComponents/custom_button.dart';
 import '../Components/WidgetsComponents/header_widget.dart';
 
-import 'contact_screen.dart';
 
 class LocationScreen extends StatelessWidget {
   const LocationScreen({Key? key}) : super(key: key);
@@ -19,7 +20,7 @@ class LocationScreen extends StatelessWidget {
     const IconData icon = Icons.location_on;
     const String headerText = "Location Permission";
     const String descriptionText =
-        "Allow access to use location services for better experience.";
+        "This app collects location data to enable tracking and share your location to server even when the app is closed or not in use.";
 
     return Scaffold(
       body: Stack(
@@ -39,7 +40,7 @@ class LocationScreen extends StatelessWidget {
             top: screenHeight * 0.4,
             left: 0,
             right: 0,
-            child: ContentWidget(
+            child: const ContentWidget(
               headerText: headerText,
               descriptionText: descriptionText,
               highlightedIndex: 1,
@@ -53,21 +54,31 @@ class LocationScreen extends StatelessWidget {
               buttonText: 'ALLOW',
               onPressed: () async {
                 // Request location permission
-                PermissionStatus locationStatus =
-                await Permission.location.request();
-
-                if (locationStatus.isGranted) {
-                  // Navigate to ContactScreen
-                  Get.to(() => const ContactScreen());
-                } else {
-                  // Show snackbar if permission is denied
-                  Get.snackbar(
-                    'Permission Denied',
-                    'You need to allow location permission to continue.',
-                    snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: Colors.redAccent,
-                    colorText: Colors.white,
-                  );
+                // PermissionStatus locationStatus =
+                // await _requestPermissions();
+                if (await Permission.location.request().isDenied) {
+                  // Location permission not granted
+                  if (kDebugMode) {
+                    print('Location permission denied');
+                  }
+                  SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                } else if (await Permission.location.request().isGranted) {
+                  if (kDebugMode) {
+                    print('Location permission granted');
+                  }
+                  // Check and request background location permission if necessary
+                  if (await Permission.locationAlways.request().isDenied) {
+                    // Background location permission not granted
+                    if (kDebugMode) {
+                      print('Background location permission denied');
+                    }
+                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                  }
+                  else {
+                    if (kDebugMode) {
+                      print('All permissions granted');
+                    }
+                  }
                 }
               },
             ),
