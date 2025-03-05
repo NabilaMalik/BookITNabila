@@ -108,7 +108,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
         // If the above operations complete successfully, navigate to the home screen
         Future.delayed(Duration(milliseconds: 300), () {
-          Get.offNamed('/home');
+          // Navigate to appropriate homepage based on user designation
+
+              Get.offNamed('/home');
+
+
         });
       } catch (e) {
         Get.snackbar('Error', 'Failed to fetch products: $e', snackPosition: SnackPosition.BOTTOM);

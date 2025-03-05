@@ -12,7 +12,7 @@ class ProductsViewModel extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchAndSaveProducts();
+    // fetchAndSaveProducts();
     fetchAllProductsModel();
   }
 

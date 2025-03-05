@@ -26,8 +26,8 @@ class _StateShopVisitScreen extends State<ShopVisitScreen>{
   @override
   void initState() {
     super.initState();
-    shopVisitViewModel.fetchBrands();
-    shopVisitViewModel.fetchShops();
+    // shopVisitViewModel.fetchBrands();
+    // shopVisitViewModel.fetchShops();
     // shopVisitDetailsViewModel.initializeProductData();
   }
 
@@ -78,34 +78,7 @@ class _StateShopVisitScreen extends State<ShopVisitScreen>{
                         textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black),
                       )),
 
-                      Obx(() => CustomDropdown(
-                          label: "Shop",
-                          icon: Icons.store,
-                          items: shopVisitViewModel.shops.value
-                              .where((shop) => shop != null)
-                              .cast<String>()
-                              .toList(),
-                          selectedValue: shopVisitViewModel.selectedShop.value.isNotEmpty
-                              ? shopVisitViewModel.selectedShop.value
-                              : "Select a Shop",
-                          onChanged: (value) async {
-                            shopVisitViewModel.selectedShop.value = value!;
-                            await shopVisitViewModel.updateShopDetails(value);
-                          },
-                          useBoxShadow: false,
-                          validator: (value) => value == null || value.isEmpty
-                              ? 'Please select a shop'
-                              : null,
-                          inputBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue, width: 1.0),
-                          ),
-                          // maxWidth: fieldWidth,  // ✅ Same width as _buildTextField
-                          // maxHeight: MediaQuery.of(context).size.height * 0.076,
-                          iconSize: 22.0,
-                          contentPadding: MediaQuery.of(context).size.height * 0.005,
-                          iconColor: Colors.blue,
-                          textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black),
-                          )),
+
                       Obx(() => CustomDropdown(
                             label: "Shop",
                             icon: Icons.store,

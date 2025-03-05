@@ -2,10 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:order_booking_app/Screens/PermissionScreens/contact_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../Components/WidgetsComponents/contect_widget.dart';
 import '../Components/WidgetsComponents/custom_button.dart';
 import '../Components/WidgetsComponents/header_widget.dart';
+import 'notification_screen.dart';
 
 
 class LocationScreen extends StatelessWidget {
@@ -54,8 +56,6 @@ class LocationScreen extends StatelessWidget {
               buttonText: 'ALLOW',
               onPressed: () async {
                 // Request location permission
-                // PermissionStatus locationStatus =
-                // await _requestPermissions();
                 if (await Permission.location.request().isDenied) {
                   // Location permission not granted
                   if (kDebugMode) {
@@ -73,15 +73,17 @@ class LocationScreen extends StatelessWidget {
                       print('Background location permission denied');
                     }
                     SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-                  }
-                  else {
+                  } else {
+                    // All permissions granted
                     if (kDebugMode) {
                       print('All permissions granted');
                     }
+                    Get.to(() => const ContactScreen());
                   }
                 }
               },
-            ),
+            )
+
           ),
         ],
       ),

@@ -54,27 +54,43 @@ class StorageScreen extends StatelessWidget {
             child: CustomButton(
               buttonText: 'ALLOW',
               onPressed: () async {
-                   Get.to(() => const LoginScreen());
+                print("Requesting storage permission...");
+                PermissionStatus storageStatus = await Permission.mediaLibrary.request();
+                // PermissionStatus storageStatus = await Permission.manageExternalStorage.request();
+                // PermissionStatus storageStatus = await Permission.storage.request();
 
-                // Request storage permission
-                // PermissionStatus storageStatus =
-                // await Permission.storage.request();
-                //
-                // if (storageStatus.isGranted) {
-                //   // Navigate to the LoginScreen if permission is granted
-                //   Get.to(() => const LoginScreen());
-                // } else {
-                //   // Show a snackbar if permission is denied
-                //   Get.snackbar(
-                //     'Permission Denied',
-                //     'You need to allow storage permission to proceed.',
-                //     snackPosition: SnackPosition.BOTTOM,
-                //     backgroundColor: Colors.redAccent,
-                //     colorText: Colors.white,
-                //   );
-                // }
+                print("Permission status: $storageStatus");
+
+                if (storageStatus.isGranted) {
+                  print("Permission granted, navigating to LoginScreen");
+                  Get.to(() => const LoginScreen());
+                } else if (storageStatus.isDenied) {
+                  print("Permission permanently denied, opening app settings");
+                  Get.snackbar(
+                    'Permission Required',
+                    'Please enable storage permission in the app settings.',
+                    snackPosition: SnackPosition.BOTTOM,
+                    backgroundColor: Colors.redAccent,
+                    colorText: Colors.white,
+                    mainButton: TextButton(
+                      onPressed: () async {
+                        await openAppSettings();
+                      },
+                      child: Text('Open Settings'),
+                    ),
+                  );
+                } else {
+                  print("Permission denied, showing snackbar");
+                  Get.snackbar(
+                    'Permission Denied',
+                    'You need to allow storage permission to proceed.',
+                    snackPosition: SnackPosition.BOTTOM,
+                    backgroundColor: Colors.redAccent,
+                    colorText: Colors.white,
+                  );
+                }
               },
-            ),
+            )
           ),
         ],
       ),

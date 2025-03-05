@@ -62,7 +62,7 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
     const tableBorderColor = PdfColors.blueGrey;
 
     // Load the logo image
-    final ByteData logoData = await rootBundle.load('assets/images/1download.jpeg');
+    final ByteData logoData = await rootBundle.load('assets/images/logo.png');
     final Uint8List logoBytes = logoData.buffer.asUint8List();
 
     pdf.addPage(
@@ -445,7 +445,8 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
                 width: 120,
                 buttonText: "Close",
                 onTap: () {
-                  Get.to(const HomeScreen());
+                  // Get.to(const HomeScreen());
+                  Get.offNamed("/home");
                 },                // onTap: orderMasterViewModel.confirmSubmitForm,
                 gradientColors: [Colors.red, Colors.red],
               ),

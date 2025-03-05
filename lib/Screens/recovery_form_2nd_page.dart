@@ -159,7 +159,7 @@ class RecoveryForm_2ndPage extends StatelessWidget {
 
     // Load the logo image
     final Uint8List logoBytes =
-    (await rootBundle.load('assets/images/1download.jpeg')).buffer.asUint8List();
+    (await rootBundle.load('assets/images/logo.png')).buffer.asUint8List();
     final image = pw.MemoryImage(logoBytes);
 
     // Define a custom page format with margins

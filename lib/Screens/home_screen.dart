@@ -11,6 +11,7 @@ import 'package:order_booking_app/screens/shop_visit_screen.dart';
 import 'package:rive/rive.dart';
 import '../ViewModels/add_shop_view_model.dart';
 import '../ViewModels/return_form_view_model.dart';
+import '../ViewModels/shop_visit_details_view_model.dart';
 import 'HomeScreenComponents/action_box.dart';
 import 'HomeScreenComponents/assets.dart ';
 import 'HomeScreenComponents/navbar.dart';
@@ -34,6 +35,7 @@ class _RiveAppHomeState extends State<HomeScreen>
     with TickerProviderStateMixin {
   late final addShopViewModel = Get.put(AddShopViewModel());
   late final shopVisitViewModel = Get.put(ShopVisitViewModel());
+  late final shopVisitDetailsViewModel = Get.put(ShopVisitDetailsViewModel());
   late final orderMasterViewModel = Get.put(OrderMasterViewModel());
   late final recoveryFormViewModel = Get.put(RecoveryFormViewModel());
   late final returnFormViewModel = Get.put(ReturnFormViewModel());
@@ -128,6 +130,7 @@ class _RiveAppHomeState extends State<HomeScreen>
     //
     addShopViewModel.fetchAllAddShop();
     shopVisitViewModel.fetchAllShopVisit();
+    shopVisitDetailsViewModel.initializeProductData();
     orderMasterViewModel.fetchAllOrderMaster();
     recoveryFormViewModel.fetchAllRecoveryForm();
     returnFormViewModel.fetchAllReturnForm();
@@ -199,7 +202,8 @@ class _RiveAppHomeState extends State<HomeScreen>
               ActionBox(
                 imagePath: shop_visit,
                 label: 'Shop Visit',
-                onTap: () => Get.to(() => ShopVisitScreen()),
+                onTap: () => Get.offAllNamed("/ShopVisitScreen")
+                // onTap: () => Get.to(() => ShopVisitScreen()),
               ),
               ActionBox(
                 imagePath: return_form,

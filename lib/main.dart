@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:io' show Directory, InternetAddress, Platform, SocketException;
-
 import 'dart:ui';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart' show DeviceInfoPlugin;
@@ -9,12 +8,19 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:order_booking_app/Screens/PermissionScreens/camera_screen.dart';
 import 'package:order_booking_app/Screens/home_screen.dart';
 import 'package:order_booking_app/Screens/login_screen.dart';
+import 'package:order_booking_app/Screens/order_booking_screen.dart';
+import 'package:order_booking_app/Screens/order_booking_status_screen.dart';
+import 'package:order_booking_app/Screens/reconfirm_order_screen.dart';
+import 'package:order_booking_app/Screens/recovery_form_screen.dart';
+import 'package:order_booking_app/Screens/return_form_screen.dart';
 import 'package:order_booking_app/screens/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 import 'Databases/util.dart';
+import 'Screens/shop_visit_screen.dart';
 import 'Services/FirebaseServices/firebase_remote_config.dart';
 import 'Services/FirebaseServices/firebase_options.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -65,19 +71,24 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return  GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        // initialRoute: isAuthenticated ? '/home' : '/login',
-        initialRoute: '/',
+         initialRoute: isAuthenticated ? '/home' : '/cameraScreen',
+       // initialRoute: '/',
         getPages: [
           GetPage(name: '/', page: () => const SplashScreen()),
           // GetPage(name: '/policy', page: () => PolicyDialog()),
           GetPage(name: '/login', page: () => const LoginScreen()),
           GetPage(name: '/home', page: () =>  const HomeScreen()),
-          // GetPage(name: '/development', page: () =>  DevelopmentPage()),
-          // GetPage(name: '/materialShifting', page: () =>  const MaterialShiftingPage()),
-          // GetPage(name: '/newMaterial', page: () => NewMaterial()),
-          // GetPage(name: '/buildingWork', page: () => Building_Navigation_Page()),
+          GetPage(name: '/cameraScreen', page: () =>  const CameraScreen()),
+           GetPage(name: '/ShopVisitScreen', page: () =>  const ShopVisitScreen()),
+          GetPage(name: '/OrderBookingScreen', page: () => OrderBookingScreen()),
+          GetPage(name: '/RecoveryFormScreen', page: () => RecoveryFormScreen()),
+          GetPage(name: '/ReturnFormScreen', page: () => ReturnFormScreen()),
+          GetPage(name: '/OrderBookingStatusScreen', page: () => OrderBookingStatusScreen()),
+
+
         ],
-        home: SplashScreen());
+        // home: SplashScreen()
+    );
   }
 }
 

@@ -111,7 +111,7 @@ class OrderMasterViewModel extends GetxController {
       OrderMasterModel orderMasterModel = OrderMasterModel(
           shop_name: shopVisitViewModel.selectedShop.value,
           owner_name: shopVisitViewModel.selectedBrand.value,
-          phone_no: phone_no.value,
+          phone_no: shopVisitViewModel.phone_number.value,
           brand: shopVisitViewModel.selectedBrand.value,
           total: orderDetailsViewModel.total.value.toString(),
           credit_limit: credit_limit.value,

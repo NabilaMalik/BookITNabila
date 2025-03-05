@@ -161,7 +161,7 @@ class ShopVisitViewModel extends GetxController {
         selectedImage.value!.path,
         minWidth: 400,
         minHeight: 600,
-        quality: 30,
+        quality: 40,
       );
 
       if (compressedImageBytes != null) {
@@ -211,7 +211,7 @@ class ShopVisitViewModel extends GetxController {
         body: compressedImageBytes,
         feedback: feedBack.value,
         shop_visit_master_id:
-            shop_visit_master_id.toString(), // Add the generated serial here
+        shop_visit_master_id.toString(), // Add the generated serial here
       ));
       await shopvisitRepository.getShopVisit();
       await shopVisitDetailsViewModel.saveFilteredProducts();
@@ -221,8 +221,8 @@ class ShopVisitViewModel extends GetxController {
       Get.snackbar("Success", "Form submitted successfully!",
           snackPosition: SnackPosition.BOTTOM);
       await clearFilters();
-
-      Get.to(() => const OrderBookingScreen());
+           Get.offAllNamed("/OrderBookingScreen");
+      // Get.to(() => const OrderBookingScreen());
     }
   }
 
@@ -291,14 +291,14 @@ class ShopVisitViewModel extends GetxController {
 
   Future<void> pickImage() async {
     final image =
-        await picker.pickImage(source: ImageSource.gallery, imageQuality: 30);
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 40);
     selectedImage.value = image;
     await saveImage();
   }
 
   Future<void> takePicture() async {
     final image =
-        await picker.pickImage(source: ImageSource.camera, imageQuality: 30);
+        await picker.pickImage(source: ImageSource.camera, imageQuality: 40);
     selectedImage.value = image;
     await saveImage();
   }

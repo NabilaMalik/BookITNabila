@@ -74,6 +74,12 @@ dependencies:
   pdf: ^3.11.2
   http_parser: ^4.1.2
   printing: ^5.14.0
+#  background_locator_2: ^2.0.6
+  android_intent_plus: ^5.3.0
+  in_app_update: ^4.2.3
+  google_maps_flutter: ^2.10.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -99,24 +105,12 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-
-   - assets/images/2504839.png
    - assets/images/
-   - assets/images/fb.jpg
-   - assets/images/Google.jpg
-   - assets/images/download (1).png
-   - assets/images/camera-removebg-preview.png
-   - assets/samples/ui/rive_app/
    - assets/samples/ui/rive_app/rive/
    - assets/samples/ui/rive_app/images/
-   - assets/samples/ui/rive_app/images/backgrounds/
-   - assets/samples/ui/rive_app/images/avatars/avatar_2.png
    - assets/samples/ui/rive_app/images/avatars/
-   - assets/samples/ui/rive_app/images/avatars/avatar_1.png
-   - assets/samples/ui/rive_app/images/avatars/avatar_3.png
-   - assets/samples/ui/rive_app/images/avatars/avatar_4.png
-   - assets/samples/ui/rive_app/images/avatars/avatar_default.jpg
-   - assets/samples/ui/rive_app/images/avatars/addshop.png
+   - assets/samples/ui/rive_app/images/backgrounds/
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
