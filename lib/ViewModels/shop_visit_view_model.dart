@@ -78,7 +78,7 @@ class ShopVisitViewModel extends GetxController {
           savedBrands.map((product) => product.brand).toSet().toList();
     } catch (e) {
       if (kDebugMode) {
-        print('Failed to fetch Brands: $e');
+        debugPrint('Failed to fetch Brands: $e');
       }
     }
   }
@@ -91,7 +91,7 @@ class ShopVisitViewModel extends GetxController {
           savedShops; // Update this line to store full shop details
     } catch (e) {
       if (kDebugMode) {
-        print('Failed to fetch shops: $e');
+        debugPrint('Failed to fetch shops: $e');
       }
     }
   }
@@ -118,7 +118,7 @@ class ShopVisitViewModel extends GetxController {
       shopVisitCurrentMonth = currentMonth;
     }
     if (kDebugMode) {
-      print('SR: $shopVisitsSerialCounter');
+      debugPrint('SR: $shopVisitsSerialCounter');
     }
   }
 
@@ -168,23 +168,23 @@ class ShopVisitViewModel extends GetxController {
         // Save the compressed image
         await File(filePath).writeAsBytes(compressedImageBytes);
         if (kDebugMode) {
-          print('Compressed image saved successfully at $filePath');
+          debugPrint('Compressed image saved successfully at $filePath');
         }
       } else {
         if (kDebugMode) {
-          print('Image compression failed.');
+          debugPrint('Image compression failed.');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error compressing and saving image: $e');
+        debugPrint('Error compressing and saving image: $e');
       }
     }
   }
 
   Future<void> saveForm() async {
     if (validateForm()) {
-      print("Start Savinggggggggggggg");
+      debugPrint("Start Savinggggggggggggg");
       Uint8List? compressedImageBytes;
       if (selectedImage.value != null) {
         compressedImageBytes = await FlutterImageCompress.compressWithFile(
@@ -221,14 +221,14 @@ class ShopVisitViewModel extends GetxController {
       Get.snackbar("Success", "Form submitted successfully!",
           snackPosition: SnackPosition.BOTTOM);
       await clearFilters();
-           Get.offAllNamed("/OrderBookingScreen");
-      // Get.to(() => const OrderBookingScreen());
+     // Get.offAllNamed("/OrderBookingScreen");
+       Get.to(() => const OrderBookingScreen());
     }
   }
 
   Future<void> saveFormNoOrder() async {
     if (validateForm()) {
-      print("Start Savinggggggggggggg");
+      debugPrint("Start Savinggggggggggggg");
       String? imagePath;
       Uint8List? imageBytes;
       if (selectedImage.value != null) {

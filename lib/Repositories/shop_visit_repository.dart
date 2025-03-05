@@ -42,17 +42,17 @@ class ShopVisitRepository extends GetxService{
       shopvisit.add(ShopVisitModel.fromMap(maps[i]));
     }
     if (kDebugMode) {
-      print('Raw data from Shop Visit Table database:');
+      debugPrint('Raw data from Shop Visit Table database:');
     }
     for (var map in maps) {
       if (kDebugMode) {
-        print(map);
+        debugPrint("$map");
       }
     }
     return shopvisit;
   }
   Future<void> fetchAndSaveShopVisit() async {
-    print('${Config.getApiUrlShopVisit}$user_id');
+    debugPrint('${Config.getApiUrlShopVisit}$user_id');
     List<dynamic> data = await ApiService.getData('${Config.getApiUrlShopVisit}$user_id');
     var dbClient = await dbHelper.db;
 
@@ -87,22 +87,22 @@ class ShopVisitRepository extends GetxService{
             shop.posted = 1;
             await update(shop);
             if (kDebugMode) {
-              print('Shop with id ${shop.shop_visit_master_id} posted and updated in local database.');
+              debugPrint('Shop with id ${shop.shop_visit_master_id} posted and updated in local database.');
             }
           } catch (e) {
             if (kDebugMode) {
-              print('Failed to post shop with id ${shop.shop_visit_master_id}: $e');
+              debugPrint('Failed to post shop with id ${shop.shop_visit_master_id}: $e');
             }
           }
         }
       } else {
         if (kDebugMode) {
-          print('Network not available. Unposted shops will remain local.');
+          debugPrint('Network not available. Unposted shops will remain local.');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error fetching unposted shops: $e');
+        debugPrint('Error fetching unposted shops: $e');
       }
     }
   }
@@ -115,7 +115,7 @@ class ShopVisitRepository extends GetxService{
     try {
       await Config.fetchLatestConfig();
       if (kDebugMode) {
-        print('Updated Shop Post API: ${Config.postApiUrlShopVisit}');
+        debugPrint('Updated Shop Post API: ${Config.postApiUrlShopVisit}');
       }
       var shopData = shop.toMap();
 
@@ -143,13 +143,13 @@ class ShopVisitRepository extends GetxService{
       final response = await request.send();
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('Shop data posted successfully: ${shop.toMap()}');
+        debugPrint('Shop data posted successfully: ${shop.toMap()}');
       } else {
         final responseBody = await response.stream.bytesToString();
         throw Exception('Server error: ${response.statusCode}, $responseBody');
       }
     } catch (e) {
-      print('Error posting shop data: $e');
+      debugPrint('Error posting shop data: $e');
       throw Exception('Failed to post data: $e');
     }
   }

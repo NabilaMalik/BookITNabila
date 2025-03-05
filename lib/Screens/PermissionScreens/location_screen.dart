@@ -59,24 +59,24 @@ class LocationScreen extends StatelessWidget {
                 if (await Permission.location.request().isDenied) {
                   // Location permission not granted
                   if (kDebugMode) {
-                    print('Location permission denied');
+                    debugPrint('Location permission denied');
                   }
                   SystemChannels.platform.invokeMethod('SystemNavigator.pop');
                 } else if (await Permission.location.request().isGranted) {
                   if (kDebugMode) {
-                    print('Location permission granted');
+                    debugPrint('Location permission granted');
                   }
                   // Check and request background location permission if necessary
                   if (await Permission.locationAlways.request().isDenied) {
                     // Background location permission not granted
                     if (kDebugMode) {
-                      print('Background location permission denied');
+                      debugPrint('Background location permission denied');
                     }
                     SystemChannels.platform.invokeMethod('SystemNavigator.pop');
                   } else {
                     // All permissions granted
                     if (kDebugMode) {
-                      print('All permissions granted');
+                      debugPrint('All permissions granted');
                     }
                     Get.to(() => const ContactScreen());
                   }

@@ -24,6 +24,7 @@ class _OrderBookingScreenState extends State<OrderBookingScreen> {
 @override
 void initState() {
   super.initState();
+  // shopVisitViewModel.allShopVisit;
   orderDetailsViewModel.initializeProductData();
   // shopVisitViewModel.fetchShops();
   // shopVisitDetailsViewModel.initializeProductData();
@@ -112,7 +113,7 @@ void initState() {
                       onChanged: (value) {
                         orderMasterViewModel.credit_limit.value = value!;
                         if (kDebugMode) {
-                          print("Selected: ${orderMasterViewModel.credit_limit.value}");
+                          debugPrint("Selected: ${orderMasterViewModel.credit_limit.value}");
                         }
                       },
                       useBoxShadow: false,

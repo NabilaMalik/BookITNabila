@@ -25,30 +25,70 @@ import 'Services/FirebaseServices/firebase_remote_config.dart';
 import 'Services/FirebaseServices/firebase_options.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_background_service_android/flutter_background_service_android.dart' show AndroidServiceInstance;
-import 'package:flutter_background_service/flutter_background_service.dart' show AndroidConfiguration, FlutterBackgroundService, IosConfiguration, ServiceInstance;
-import 'package:flutter_local_notifications/flutter_local_notifications.dart' show AndroidFlutterLocalNotificationsPlugin, AndroidInitializationSettings, AndroidNotificationChannel, AndroidNotificationDetails, DarwinInitializationSettings, FlutterLocalNotificationsPlugin, Importance, InitializationSettings, NotificationDetails;
+import 'package:flutter_background_service_android/flutter_background_service_android.dart'
+    show AndroidServiceInstance;
+import 'package:flutter_background_service/flutter_background_service.dart'
+    show
+        AndroidConfiguration,
+        FlutterBackgroundService,
+        IosConfiguration,
+        ServiceInstance;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    show
+        AndroidFlutterLocalNotificationsPlugin,
+        AndroidInitializationSettings,
+        AndroidNotificationChannel,
+        AndroidNotificationDetails,
+        DarwinInitializationSettings,
+        FlutterLocalNotificationsPlugin,
+        Importance,
+        InitializationSettings,
+        NotificationDetails;
 import 'Tracker/location00.dart';
 import 'Tracker/trac.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  await Config.initialize();
-  final prefs = await SharedPreferences.getInstance();
-  bool isAuthenticated = prefs.getBool('isAuthenticated') ?? false;
+    debugPrint("Initializing Firebase...");
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    debugPrint("Firebase initialized.");
 
-  // await FirebaseAppCheck.instance
-  //     .activate(androidProvider: AndroidProvider.debug);
-  Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
+    debugPrint("Initializing Config...");
+    await Config.initialize();
+    debugPrint("Config initialized.");
 
-  runApp(MyApp(isAuthenticated));
+    debugPrint("Initializing SharedPreferences...");
+    final prefs = await SharedPreferences.getInstance();
+    prefs.reload();
+    bool isAuthenticated = prefs.getBool('isAuthenticated') ?? false;
+     // bool isAuthenticated = true;
+    debugPrint("SharedPreferences initialized. isAuthenticated: $isAuthenticated");
+
+    debugPrint("Initializing Workmanager...");
+    Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
+    debugPrint("Workmanager initialized.");
+
+    // Initialize background service only if needed
+    if (isAuthenticated) {
+      debugPrint("Initializing Background Service...");
+      await initializeServiceLocation();
+      debugPrint("Background Service initialized.");
+    }
+
+    debugPrint("Running the app...");
+    runApp(MyApp(isAuthenticated));
+    debugPrint("App is running.");
+  }, (error, stackTrace) {
+    print('Error: $error');
+    print('Stack Trace: $stackTrace');
+  });
 }
-void callbackDispatcher(){
+
+void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     if (kDebugMode) {
       print("WorkManager MMM ");
@@ -56,12 +96,14 @@ void callbackDispatcher(){
     return Future.value(true);
   });
 }
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   if (kDebugMode) {
     print("Handling a background message: ${message.messageId}");
   }
 }
+
 class MyApp extends StatelessWidget {
   final bool isAuthenticated;
 
@@ -69,25 +111,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-         initialRoute: isAuthenticated ? '/home' : '/cameraScreen',
-       // initialRoute: '/',
-        getPages: [
-          GetPage(name: '/', page: () => const SplashScreen()),
-          // GetPage(name: '/policy', page: () => PolicyDialog()),
-          GetPage(name: '/login', page: () => const LoginScreen()),
-          GetPage(name: '/home', page: () =>  const HomeScreen()),
-          GetPage(name: '/cameraScreen', page: () =>  const CameraScreen()),
-           GetPage(name: '/ShopVisitScreen', page: () =>  const ShopVisitScreen()),
-          GetPage(name: '/OrderBookingScreen', page: () => OrderBookingScreen()),
-          GetPage(name: '/RecoveryFormScreen', page: () => RecoveryFormScreen()),
-          GetPage(name: '/ReturnFormScreen', page: () => ReturnFormScreen()),
-          GetPage(name: '/OrderBookingStatusScreen', page: () => OrderBookingStatusScreen()),
-
-
-        ],
-        // home: SplashScreen()
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      initialRoute: isAuthenticated ? '/home' : '/cameraScreen',
+      // initialRoute: '/',
+      getPages: [
+        GetPage(name: '/', page: () => const SplashScreen()),
+        // GetPage(name: '/policy', page: () => PolicyDialog()),
+        GetPage(name: '/login', page: () => const LoginScreen()),
+        GetPage(name: '/home', page: () => const HomeScreen()),
+        GetPage(name: '/cameraScreen', page: () => const CameraScreen()),
+        GetPage(name: '/ShopVisitScreen', page: () => const ShopVisitScreen()),
+        GetPage(name: '/OrderBookingScreen', page: () => OrderBookingScreen()),
+        GetPage(name: '/RecoveryFormScreen', page: () => RecoveryFormScreen()),
+        GetPage(name: '/ReturnFormScreen', page: () => ReturnFormScreen()),
+        GetPage(
+            name: '/OrderBookingStatusScreen',
+            page: () => OrderBookingStatusScreen()),
+      ],
+      // home: SplashScreen()
     );
   }
 }
@@ -103,7 +145,7 @@ Future<void> initializeServiceLocation() async {
   );
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   if (Platform.isIOS || Platform.isAndroid) {
     await flutterLocalNotificationsPlugin.initialize(
@@ -116,7 +158,7 @@ Future<void> initializeServiceLocation() async {
 
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
   await service.configure(
@@ -135,9 +177,9 @@ Future<void> initializeServiceLocation() async {
       onForeground: onStart,
     ),
   );
- // monitorInternetConnection(); // Add this line to monitor connectivity changes
-
+  // monitorInternetConnection(); // Add this line to monitor connectivity changes
 }
+
 // void monitorInternetConnection() {
 //   Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
 //     if (result == ConnectivityResult.mobile ||
@@ -172,8 +214,7 @@ void onStart1(ServiceInstance service1) async {
         "device": device1,
       },
     );
-  }
-  );
+  });
 }
 
 ///background foreground services for location
@@ -184,7 +225,7 @@ void onStart(ServiceInstance service) async {
   await preferences.setString("hello", "world");
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   LocationService locationService = LocationService();
   if (service is AndroidServiceInstance) {
@@ -207,7 +248,7 @@ void onStart(ServiceInstance service) async {
     //stopListeningLocation();
     FlutterLocalNotificationsPlugin().cancelAll();
   });
- // monitorInternetConnection(); // Add this line to monitor connectivity changes
+  // monitorInternetConnection(); // Add this line to monitor connectivity changes
 
   Timer.periodic(const Duration(minutes: 10), (timer) async {
     if (service is AndroidServiceInstance) {
@@ -235,20 +276,20 @@ void onStart(ServiceInstance service) async {
         "device": device1,
       },
     );
-  }
-  );
+  });
 
-  Workmanager().registerPeriodicTask("1", "simpleTask", frequency: const Duration(minutes: 15));
+  Workmanager().registerPeriodicTask("1", "simpleTask",
+      frequency: const Duration(minutes: 15));
 
-  if(locationViewModel.isClockedIn.value == false){
+  if (locationViewModel.isClockedIn.value == false) {
     startTimer();
     locationService.listenLocation();
   }
+
   ///background timer
   Timer.periodic(const Duration(seconds: 1), (timer) async {
     if (service is AndroidServiceInstance) {
       if (await service.isForegroundService()) {
-
         // flutterLocalNotificationsPlugin.show(
         //   888,
         //   'COOL SERVICE',
@@ -280,12 +321,11 @@ void onStart(ServiceInstance service) async {
 
         service.setForegroundNotificationInfo(
           title: "ClockIn",
-          content: "Timer ${_formatDuration(locationViewModel.secondsPassed.toString())}",
+          content:
+              "Timer ${_formatDuration(locationViewModel.secondsPassed.toString())}",
         );
       }
     }
-
-
 
     final deviceInfo = DeviceInfoPlugin();
     String? device;
@@ -309,6 +349,7 @@ void onStart(ServiceInstance service) async {
     );
   });
 }
+
 String _formatDuration(String secondsString) {
   int seconds = int.parse(secondsString);
   Duration duration = Duration(seconds: seconds);

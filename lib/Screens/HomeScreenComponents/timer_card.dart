@@ -11,13 +11,15 @@ import 'assets.dart ';
 import 'menu_item.dart';
 
 class TimerCard extends StatelessWidget {
- final locationViewModel = Get.put(LocationViewModel());
+  final locationViewModel = Get.put(LocationViewModel());
   final attendanceViewModel = Get.put(AttendanceViewModel());
   final attendanceOutViewModel = Get.put(AttendanceOutViewModel());
   final loc.Location location = loc.Location();
+
   void onThemeToggle(bool value) {
     _themeMenuIcon[0].riveIcon.status!.change(value);
   }
+
   void onThemeRiveIconInit(Artboard artboard) {
     final controller = StateMachineController.fromArtboard(
         artboard, _themeMenuIcon[0].riveIcon.stateMachine);
@@ -26,11 +28,12 @@ class TimerCard extends StatelessWidget {
       _themeMenuIcon[0].riveIcon.status =
       controller.findInput<bool>("active") as SMIBool?;
     } else {
-      debugPrint("StateMachineController not found!");
+     debugPrint("StateMachineController not found!");
     }
   }
 
   final List<MenuItemModel> _themeMenuIcon = MenuItemModel.menuItems3;
+
   @override
   Widget build(BuildContext context) {
     // final Stopwatch stopwatch = useMemoized(() => Stopwatch());
@@ -71,81 +74,86 @@ class TimerCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-         Obx(()=> Text(
-            _formatDuration(locationViewModel.newsecondpassed.value.toString()),
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-          )),
-          ElevatedButton(
-            onPressed: () async {
-              locationViewModel.saveCurrentLocation();
-              final service = FlutterBackgroundService();
-              bool newIsClockedIn = locationViewModel.isClockedIn.value;
+          Obx(() =>
+              Text(
+                _formatDuration(
+                    locationViewModel.newsecondpassed.value.toString()),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              )),
+          Obx(() {
+            return ElevatedButton(
+              onPressed: () async {
+                try {
+                  locationViewModel.saveCurrentLocation();
+                  final service = FlutterBackgroundService();
+                  bool newIsClockedIn = locationViewModel.isClockedIn.value;
 
-              if (newIsClockedIn) {
+                  if (newIsClockedIn) {
+                    // await Future(() => service.invoke("stopService"));
+                    service.invoke("stopService");
+                    // await Future.delayed(const Duration(seconds: 4));
 
-                 service.invoke("stopService");
-                locationViewModel.saveCurrentLocation();
-                attendanceOutViewModel.saveFormAttendanceOut();
+                    // await locationViewModel.saveCurrentLocation();
+                    await attendanceOutViewModel.saveFormAttendanceOut();
 
-                locationViewModel.isClockedIn.value = false;
-                await locationViewModel.saveClockStatus(false);
-                await locationViewModel.stopTimer();
-                await locationViewModel.clockRefresh();
-                await locationViewModel.saveLocation();
-                await location.enableBackgroundMode(enable: false);
+                    await locationViewModel.stopTimer();
+                    await locationViewModel.clockRefresh();
 
-                // stopwatch.stop();
-                // timerValue.value = Duration.zero;
-                _themeMenuIcon[0].riveIcon.status!.value = false;
-                debugPrint("Timer stopped and animation set to inactive.");
-              } else{
-                await initializeServiceLocation();
-                await location.enableBackgroundMode(enable: true);
-                await location.changeSettings(
-                    interval: 300, accuracy: loc.LocationAccuracy.high);
-               // locationBool = true;
-                service.startService();
-                locationViewModel.saveCurrentTime();
-                locationViewModel.saveClockStatus(true);
-                locationViewModel.clockRefresh();
-                locationViewModel.isClockedIn.value = true;
-                await attendanceViewModel.saveFormAttendanceIn();
+                    await locationViewModel.saveLocation();
+                    // await Future.delayed(const Duration(seconds: 10));
+                    await locationViewModel.saveClockStatus(false);
+                    debugPrint("Timer stopped and animation set to inactive.");
+                    //locationViewModel.isClockedIn.value = false;
+                    _themeMenuIcon[0].riveIcon.status!.value = false;
+                    await location.enableBackgroundMode(enable: false);
+                  } else {
+                    await initializeServiceLocation();
+                    await location.enableBackgroundMode(enable: true);
+                    await location.changeSettings(
+                        interval: 300, accuracy: loc.LocationAccuracy.high);
+                    await service.startService();
+                    locationViewModel.saveCurrentTime();
+                    await locationViewModel.saveClockStatus(true);
+                    await locationViewModel.clockRefresh();
+                    locationViewModel.isClockedIn.value = true;
+                    await attendanceViewModel.saveFormAttendanceIn();
 
-                // timerValue.value = Duration.zero;
-                 _themeMenuIcon[0].riveIcon.status!.value = true;
-                debugPrint("Timer started and animation set to active.");
-              }
-              // Update state and close the loading indicator dialog
+                    _themeMenuIcon[0].riveIcon.status!.value = true;
+                    debugPrint("Timer started and animation set to active.");
+                  }
+                } catch (e) {
+                  debugPrint("Error: $e");
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: locationViewModel.isClockedIn.value ? Colors
+                    .redAccent : Colors.green,
+                minimumSize: Size(30, 30),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
 
-            },
-
-            style: ElevatedButton.styleFrom(
-              backgroundColor: locationViewModel.isClockedIn.value ? Colors.redAccent : Colors.green,
-              minimumSize: Size(30, 30),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                padding: EdgeInsets.zero,
               ),
-
-              padding: EdgeInsets.zero,
-            ),
-            child: SizedBox(
-              width: 35,
-              height: 35,
-              child:RiveAnimation.asset(
-                iconsRiv,
-                stateMachines: [
-                  _themeMenuIcon[0].riveIcon.stateMachine
-                ],
-                artboard: _themeMenuIcon[0].riveIcon.artboard,
-                onInit: onThemeRiveIconInit,
-                fit: BoxFit.cover,
+              child: SizedBox(
+                width: 35,
+                height: 35,
+                child: RiveAnimation.asset(
+                  iconsRiv,
+                  stateMachines: [
+                    _themeMenuIcon[0].riveIcon.stateMachine
+                  ],
+                  artboard: _themeMenuIcon[0].riveIcon.artboard,
+                  onInit: onThemeRiveIconInit,
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-          ),
+            );
+          }),
         ],
       ),
     );

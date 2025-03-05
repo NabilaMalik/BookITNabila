@@ -109,7 +109,7 @@ class CustomBottomSheet extends StatelessWidget {
 //           gradientColors: [ Colors.white54, Colors.white54],
 //           // Custom gradient
 //           onTap: () {
-//             debugPrint("Navigating to Past Promo Page");
+//             debugdebugPrint("Navigating to Past Promo Page");
 //             Get.offNamed('/viewProfile');
 //           },
 //           borderRadius: 15.0,
@@ -147,7 +147,7 @@ class CustomBottomSheet extends StatelessWidget {
 //           gradientColors: const [buttonColorGreen, buttonColorGreen],
 //           // Custom gradient
 //           onTap: () {
-//             debugPrint("Navigating to Past Promo Page");
+//             debugdebugPrint("Navigating to Past Promo Page");
 //             Get.offNamed('/viewProfile');
 //           },
 //           borderRadius: 15.0,

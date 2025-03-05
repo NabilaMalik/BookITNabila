@@ -72,6 +72,7 @@ class LoginViewModel extends GetxController {
       isAuthenticated.value = true; // Set login status to true
 
       // Save authentication state
+      debugPrint("Initializing SharedPreferences...");
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isAuthenticated', true);
 

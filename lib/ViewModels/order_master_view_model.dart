@@ -53,7 +53,7 @@ class OrderMasterViewModel extends GetxController {
       orderMasterCurrentMonth = currentMonth;
     }
     if (kDebugMode) {
-      print('SR: $orderMasterSerialCounter');
+      debugPrint('SR: $orderMasterSerialCounter');
     }
   }
 
@@ -97,7 +97,7 @@ class OrderMasterViewModel extends GetxController {
       final orderSerial = generateNewOrderId(
           user_id); // Sirf serial generate hoga
       order_master_id = orderSerial;
-      print("Saving filtered products...");
+      debugPrint("Saving filtered products...");
       await orderDetailsViewModel.saveFilteredProducts();
     }
   }
@@ -120,14 +120,14 @@ class OrderMasterViewModel extends GetxController {
           order_master_id: order_master_id.toString()
       );
       // await orderMasterRepository.postDataFromDatabaseToAPI();
-      print(orderMasterModel);
-      print("Submitting OrderMasterModel: ${orderMasterModel.toMap()}");
+      //debugPrint(orderMasterModel);
+      debugPrint("Submitting OrderMasterModel: ${orderMasterModel.toMap()}");
       await addConfirmOrder(orderMasterModel);
 
-      print("Saving filtered products...");
+      debugPrint("Saving filtered products...");
       await orderDetailsViewModel.confirmFilteredProducts();
 
-      print("Fetching all re-confirmed orders...");
+      debugPrint("Fetching all re-confirmed orders...");
       await orderDetailsViewModel.fetchAllReConfirmOrder();
       await orderMasterRepository.postDataFromDatabaseToAPI();
     }

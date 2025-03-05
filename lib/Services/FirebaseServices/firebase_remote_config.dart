@@ -19,16 +19,16 @@ class Config {
       bool updated = await remoteConfig.fetchAndActivate();
       if (updated) {
         if (kDebugMode) {
-          print('Remote config updated');
+          debugPrint('Remote config updated');
         }
       } else {
         if (kDebugMode) {
-          print('No changes in remote config');
+          debugPrint('No changes in remote config');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Failed to fetch remote config: $e');
+        debugPrint('Failed to fetch remote config: $e');
       }
     }
   }

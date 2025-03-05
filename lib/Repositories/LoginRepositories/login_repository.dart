@@ -65,8 +65,9 @@ class LoginRepository extends GetxService{
   Future<void> fetchAndSaveLogin() async {
     await Config.fetchLatestConfig();
    // List<dynamic> data = await ApiService.getData(Config.getApiUrlLogin);
-    //List<dynamic> data = await ApiService.getData("http://103.149.32.30:8080/ords/valor_trading/login1/get");
-    List<dynamic> data = await ApiService.getData("http://103.149.32.30:8080/ords/alnoor_town/login/get/");
+   // List<dynamic> data = await ApiService.getData("http://103.149.32.30:8080/ords/valor_trading/login1/get");
+   //  List<dynamic> data = await ApiService.getData("http://103.149.32.30:8080/ords/alnoor_town/login/get/");
+    List<dynamic> data = await ApiService.getData("https://cloud.metaxperts.net:8443/erp/alnoor_town/login/get/");
     var dbClient = await dbHelper.db;
 
     // Save data to local database

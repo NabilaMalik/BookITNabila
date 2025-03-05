@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/Models/return_form_model.dart';
 import 'package:order_booking_app/Models/returnform_details_model.dart';
+import 'package:order_booking_app/Screens/home_screen.dart';
 import 'package:order_booking_app/ViewModels/ProductsViewModel.dart';
 import 'package:order_booking_app/ViewModels/add_shop_view_model.dart';
 import 'package:order_booking_app/ViewModels/attendance_out_view_model.dart';
@@ -110,7 +111,8 @@ class _LoginScreenState extends State<LoginScreen> {
         Future.delayed(Duration(milliseconds: 300), () {
           // Navigate to appropriate homepage based on user designation
 
-              Get.offNamed('/home');
+           //   Get.offNamed('/home');
+              Get.to(() => HomeScreen());
 
 
         });
@@ -140,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } else {
         if (kDebugMode) {
-          print('Login successful: Email: $_emailController, Password: $_passwordController');
+          debugPrint('Login successful: Email: $_emailController, Password: $_passwordController');
         }
         // Navigate to the next screen or home page
       }

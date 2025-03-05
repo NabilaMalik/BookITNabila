@@ -45,8 +45,8 @@ class ApiService extends GetxService {
 
   dynamic _processResponse(http.Response response) {
     if (kDebugMode) {
-      print('Response status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      debugPrint('Response status code: ${response.statusCode}');
+      debugPrint('Response body: ${response.body}');
     }
 
     switch (response.statusCode) {

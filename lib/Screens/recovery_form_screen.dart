@@ -68,7 +68,7 @@ class RecoveryFormScreen extends StatelessWidget {
                     const SizedBox(height: 10),
                     Obx(() {
                       // Debug: Print the contents of viewModel.shops
-                      print("Shops in ViewModel: ${viewModel.shops}");
+                      debugPrint("Shops in ViewModel: ${viewModel.shops}");
 
                       return DropdownButtonFormField<String>(
                         decoration: const InputDecoration(
@@ -81,7 +81,7 @@ class RecoveryFormScreen extends StatelessWidget {
                             : viewModel.selectedShop.value,
                         items: viewModel.shops.map((shop) {
                           // Debug: Print each shop name being added to the dropdown
-                          print("Adding Shop to Dropdown: ${shop.name}");
+                          debugPrint("Adding Shop to Dropdown: ${shop.name}");
                           return DropdownMenuItem(
                             value: shop.name,
                             child: Text(shop.name),

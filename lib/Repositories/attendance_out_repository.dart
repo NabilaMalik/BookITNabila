@@ -31,16 +31,16 @@ class AttendanceOutRepository extends GetxService {
       attendanceout.add(AttendanceOutModel.fromMap(maps[i]));
     }
     if (kDebugMode) {
-      print('Raw data from AttendanceOut database:');
+      debugPrint('Raw data from AttendanceOut database:');
     }
     for (var map in maps) {
       if (kDebugMode) {
-        print(map);
+        debugPrint("$map");
       }
     }
     return attendanceout;
   }Future<void> fetchAndSaveAttendanceOut() async {
-    print('${Config.getApiUrlAttendanceOut}$user_id');
+    debugPrint('${Config.getApiUrlAttendanceOut}$user_id');
     List<dynamic> data = await ApiService.getData('${Config.getApiUrlAttendanceOut}$user_id');
     var dbClient = await dbHelper.db;
 
@@ -75,22 +75,22 @@ class AttendanceOutRepository extends GetxService {
             shop.posted = 1;
             await update(shop);
             if (kDebugMode) {
-              print('Shop with id ${shop.attendance_out_id} posted and updated in local database.');
+              debugPrint('Shop with id ${shop.attendance_out_id} posted and updated in local database.');
             }
           } catch (e) {
             if (kDebugMode) {
-              print('Failed to post shop with id ${shop.attendance_out_id}: $e');
+              debugPrint('Failed to post shop with id ${shop.attendance_out_id}: $e');
             }
           }
         }
       } else {
         if (kDebugMode) {
-          print('Network not available. Unposted shops will remain local.');
+          debugPrint('Network not available. Unposted shops will remain local.');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error fetching unposted shops: $e');
+        debugPrint('Error fetching unposted shops: $e');
       }
     }
   }
@@ -99,7 +99,7 @@ class AttendanceOutRepository extends GetxService {
     try {
       await Config.fetchLatestConfig();
       if (kDebugMode) {
-        print('Updated Shop Post API: ${Config.postApiUrlAttendanceOut}');
+        debugPrint('Updated Shop Post API: ${Config.postApiUrlAttendanceOut}');
       }
       var shopData = shop.toMap();
       final response = await http.post(
@@ -112,12 +112,12 @@ class AttendanceOutRepository extends GetxService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('Shop data posted successfully: $shopData');
+        debugPrint('Shop data posted successfully: $shopData');
       } else {
         throw Exception('Server error: ${response.statusCode}, ${response.body}');
       }
     } catch (e) {
-      print('Error posting shop data: $e');
+      debugPrint('Error posting shop data: $e');
       throw Exception('Failed to post data: $e');
     }
   }

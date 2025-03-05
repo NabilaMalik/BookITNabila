@@ -196,7 +196,7 @@ class SignUpScreen extends StatelessWidget {
 
   void _handleRegistration() {
     if (controller.validateForm()) {
-      print("Registration Successful: \${controller.userModel}");
+      debugPrint("Registration Successful: \${controller.userModel}");
     }
   }
 }

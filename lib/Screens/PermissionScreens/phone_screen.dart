@@ -53,6 +53,7 @@ class PhoneScreen extends StatelessWidget {
               buttonText: 'ALLOW',
               onPressed: () async {
                 // Request phone permission
+                Get.to(() => const RecordAudioScreen());
                 PermissionStatus phoneStatus = await Permission.phone.request();
 
                 if (phoneStatus.isGranted) {

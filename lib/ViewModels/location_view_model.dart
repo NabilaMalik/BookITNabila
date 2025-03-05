@@ -40,7 +40,11 @@ class LocationViewModel extends GetxController {
     loadClockStatus();
     clockRefresh();
   }
-
+  @override
+  void dispose() {
+    _timer?.cancel(); // Cancel the timer to avoid memory leaks
+    super.dispose();
+  }
   Future<void> _loadCounter() async {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -59,6 +63,7 @@ class LocationViewModel extends GetxController {
   }
 
   Future<void> _saveCounter() async {
+    print("Initializing SharedPreferences _saveCounter...");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('locationSerialCounter', locationSerialCounter);
     await prefs.setString('locationCurrentMonth', locationCurrentMonth);
@@ -114,7 +119,9 @@ class LocationViewModel extends GetxController {
   }
   // Function to load clock status from SharedPreferences
   loadClockStatus() async {
+    print("Initializing SharedPreferences loadClockStatus...");
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    // prefs.reload();
     isClockedIn.value = prefs.getBool('isClockedIn') ?? false;
     if (isClockedIn.value == true) {
       startTimerFromSavedTime();
@@ -139,9 +146,10 @@ class LocationViewModel extends GetxController {
   // Function to refresh the clock timer
  clockRefresh() async {
       newsecondpassed.value = 0;
-    _timer = Timer.periodic(const Duration(seconds: 0), (timer) async {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+      // print("Initializing SharedPreferences clockRefresh...");
       SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.reload();
+         prefs.reload();
         newsecondpassed.value = prefs.getInt('secondsPassed')!;
       });
 
@@ -160,6 +168,7 @@ class LocationViewModel extends GetxController {
   Future<String> stopTimer() async {
     _timer?.cancel();
     String totalTime = _formatDuration(newsecondpassed.value.toString());
+    print("Initializing SharedPreferences stopTimer...");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt('secondsPassed', 0);
 
@@ -174,8 +183,10 @@ class LocationViewModel extends GetxController {
   }
 // Function to save clock status to SharedPreferences
   saveClockStatus(bool clockedIn) async {
+    print("Initializing SharedPreferences saveClockStatus...");
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isClockedIn', clockedIn);
+   await prefs.reload();
+   await prefs.setBool('isClockedIn', clockedIn);
     isClockedIn.value = clockedIn;
   }
 

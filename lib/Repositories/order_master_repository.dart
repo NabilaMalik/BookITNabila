@@ -36,17 +36,17 @@ OrderDetailsViewModel orderDetailsViewModel =Get.put(OrderDetailsViewModel());
       confirmorder.add(OrderMasterModel.fromMap(maps[i]));
     }
     if (kDebugMode) {
-      print('Raw data from database:');
+      debugPrint('Raw data from database:');
     }
     for (var map in maps) {
       if (kDebugMode) {
-        print(map);
+        debugPrint("$map");
       }
     }
     return confirmorder;
   }
   Future<void> fetchAndSaveOrderMaster() async {
-    print('${Config.getApiUrlOrderMaster}$user_id');
+    debugPrint('${Config.getApiUrlOrderMaster}$user_id');
     List<dynamic> data = await ApiService.getData('${Config.getApiUrlOrderMaster}$user_id');
     var dbClient = await dbHelper.db;
 
@@ -81,22 +81,22 @@ OrderDetailsViewModel orderDetailsViewModel =Get.put(OrderDetailsViewModel());
             shop.posted = 1;
             await update(shop);
             if (kDebugMode) {
-              print('Shop with id ${shop.order_master_id} posted and updated in local database.');
+              debugPrint('Shop with id ${shop.order_master_id} posted and updated in local database.');
             }
           } catch (e) {
             if (kDebugMode) {
-              print('Failed to post shop with id ${shop.order_master_id}: $e');
+              debugPrint('Failed to post shop with id ${shop.order_master_id}: $e');
             }
           }
         }
       } else {
         if (kDebugMode) {
-          print('Network not available. Unposted shops will remain local.');
+          debugPrint('Network not available. Unposted shops will remain local.');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error fetching unposted shops: $e');
+        debugPrint('Error fetching unposted shops: $e');
       }
     }
   }
@@ -105,7 +105,7 @@ OrderDetailsViewModel orderDetailsViewModel =Get.put(OrderDetailsViewModel());
     try {
       await Config.fetchLatestConfig();
       if (kDebugMode) {
-        print('Updated Shop Post API: ${Config.postApiUrlOrderMaster}');
+        debugPrint('Updated Shop Post API: ${Config.postApiUrlOrderMaster}');
       }
       var shopData = shop.toMap();
       final response = await http.post(
@@ -118,12 +118,12 @@ OrderDetailsViewModel orderDetailsViewModel =Get.put(OrderDetailsViewModel());
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('Shop data posted successfully: $shopData');
+        debugPrint('Shop data posted successfully: $shopData');
       } else {
         throw Exception('Server error: ${response.statusCode}, ${response.body}');
       }
     } catch (e) {
-      print('Error posting shop data: $e');
+      debugPrint('Error posting shop data: $e');
       throw Exception('Failed to post data: $e');
     }
   }

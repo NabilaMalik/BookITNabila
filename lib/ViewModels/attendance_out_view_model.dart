@@ -39,7 +39,7 @@ class AttendanceOutViewModel extends GetxController{
       attendanceOutCurrentMonth = currentMonth;
     }
     if (kDebugMode) {
-      print('SR: $attendanceOutSerialCounter');
+      debugPrint('SR: $attendanceOutSerialCounter');
     }
   }
 

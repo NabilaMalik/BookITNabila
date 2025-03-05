@@ -26,8 +26,8 @@ class _StateShopVisitScreen extends State<ShopVisitScreen>{
   @override
   void initState() {
     super.initState();
-    // shopVisitViewModel.fetchBrands();
-    // shopVisitViewModel.fetchShops();
+    shopVisitViewModel.fetchBrands();
+    shopVisitViewModel.fetchShops();
     // shopVisitDetailsViewModel.initializeProductData();
   }
 
@@ -93,7 +93,7 @@ class _StateShopVisitScreen extends State<ShopVisitScreen>{
                               await shopVisitViewModel.updateShopDetails(value);
                               shopVisitViewModel.selectedShop.value =
                                   value; // Pehle assignment thi, ab baad mein
-                              print(shopVisitViewModel.shop_address.value);
+                              debugPrint(shopVisitViewModel.shop_address.value);
                             },
                             validator: (value) => value == null || value.isEmpty
                                 ? 'Please select a shop'
@@ -231,12 +231,32 @@ class _StateShopVisitScreen extends State<ShopVisitScreen>{
 
   AppBar _buildAppBar() {
     return AppBar(
-      title: const Text('Shop Visit',
-          style: TextStyle(color: Colors.white, fontSize: 24)),
+      title: const Text(
+        'Shop Visit',
+        style: TextStyle(color: Colors.white, fontSize: 24),
+      ),
       centerTitle: true,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: Colors.white),
+        onPressed: () {
+          // Add your back navigation logic here
+          // For example, you can pop the current screen
+          Get.offAllNamed("/home");
+          // Navigator.pop(context);
+        },
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.refresh, color: Colors.white),
+          onPressed: () {
+            shopVisitViewModel.fetchAllShopVisit();
+          },
+        ),
+      ],
       backgroundColor: Colors.blue,
     );
   }
+
 
   Widget _buildTextField({
     required String label,

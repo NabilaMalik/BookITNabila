@@ -54,18 +54,18 @@ class StorageScreen extends StatelessWidget {
             child: CustomButton(
               buttonText: 'ALLOW',
               onPressed: () async {
-                print("Requesting storage permission...");
+                debugPrint("Requesting storage permission...");
                 PermissionStatus storageStatus = await Permission.mediaLibrary.request();
                 // PermissionStatus storageStatus = await Permission.manageExternalStorage.request();
                 // PermissionStatus storageStatus = await Permission.storage.request();
 
-                print("Permission status: $storageStatus");
+                debugPrint("Permission status: $storageStatus");
 
                 if (storageStatus.isGranted) {
-                  print("Permission granted, navigating to LoginScreen");
+                  debugPrint("Permission granted, navigating to LoginScreen");
                   Get.to(() => const LoginScreen());
                 } else if (storageStatus.isDenied) {
-                  print("Permission permanently denied, opening app settings");
+                  debugPrint("Permission permanently denied, opening app settings");
                   Get.snackbar(
                     'Permission Required',
                     'Please enable storage permission in the app settings.',
@@ -80,7 +80,7 @@ class StorageScreen extends StatelessWidget {
                     ),
                   );
                 } else {
-                  print("Permission denied, showing snackbar");
+                  debugPrint("Permission denied, showing snackbar");
                   Get.snackbar(
                     'Permission Denied',
                     'You need to allow storage permission to proceed.',
