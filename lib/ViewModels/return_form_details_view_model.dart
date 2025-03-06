@@ -18,7 +18,7 @@ class ReturnFormDetailsViewModel extends GetxController{
 
 
 
-  var items = <Item>[Item('Item 1'), Item('Item 2'), Item('Item 3')].obs;
+  var items = <Item>[].obs; // Observable list of items
   var reasons = <String>["Reason 1", "Reason 2", "Reason 3"].obs;
 
   var formRows = <ReturnForm>[ReturnForm(quantity: '', reason: '', items: '')]

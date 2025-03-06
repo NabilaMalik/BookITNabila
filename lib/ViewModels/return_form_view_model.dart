@@ -9,66 +9,63 @@ import '../Models/ScreenModels/recovery_form_models.dart';
 import '../Models/order_master_model.dart';
 import '../Models/return_form_model.dart';
 import '../Repositories/return_form_repository.dart';
+import 'order_details_view_model.dart';
 import 'order_master_view_model.dart';
 
 class ReturnFormViewModel extends GetxController {
   var allReturnForm = <ReturnFormModel>[].obs;
-  var selectedShop = ''.obs;  // Ensure this is initialized as an RxString
+  var selectedShop = ''.obs;
   var shops = <Shop>[].obs;
   OrderMasterViewModel orderMasterViewModel = Get.put(OrderMasterViewModel());
-
-  ReturnFormDetailsViewModel returnFormDetailsViewModel =Get.put(ReturnFormDetailsViewModel());
+  OrderDetailsViewModel orderDetailsViewModel = Get.put(OrderDetailsViewModel());
+  ReturnFormDetailsViewModel returnFormDetailsViewModel = Get.put(ReturnFormDetailsViewModel());
   ReturnFormRepository returnFormRepository = ReturnFormRepository();
   int returnFormSerialCounter = 1;
   String returnFormCurrentMonth = DateFormat('MMM').format(DateTime.now());
   String currentuser_id = '';
+
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
     _loadCounter();
     fetchAllReturnForm();
     initializeData();
+    orderMasterViewModel.fetchAllOrderMaster();
+    orderDetailsViewModel.fetchAllReConfirmOrder();
   }
+
   Future<void> initializeData() async {
-    await Future.delayed(Duration.zero); // Ensure this runs after the build phase
+    await Future.delayed(Duration.zero);
 
-    // Initialize shops dynamically based on OrderMasterViewModel data
+    Map<String, double> shopBalances = {};
 
-
-    // Filter orders with status "Pending"
     List<OrderMasterModel> dispatchedOrders = orderMasterViewModel.allOrderMaster
         .where((order) => order.order_status == "DISPATCHED")
         .toList();
 
-    // Debug: Print the filtered orders
-    debugPrint("Filtered Orders (DISPATCHED): $dispatchedOrders");
-
-    // Aggregate data by shop name
     for (var order in dispatchedOrders) {
-      String shopName = order.shop_name ?? "Unknown Shop"; // Default to "Unknown Shop" if null
-      double orderAmount = double.tryParse(order.total ?? '0') ?? 0.0; // Parse total to double
+      String shopName = order.shop_name ?? "Unknown Shop";
+      double orderAmount = double.tryParse(order.total ?? '0') ?? 0.0;
 
-      // Debug: debugPrint each shop and its amount
-      debugPrint("Processing Shop: $shopName, Amount: $orderAmount");
-
-      // Add or update the balance for the shop
+      shopBalances[shopName] = (shopBalances[shopName] ?? 0.0) + orderAmount;
     }
 
-    // Convert the aggregated data into a list of Shop objects
-    // Refresh the observable list to update the UI
-    shops.refresh();
-    // Debug: Print the final list of shops
-    debugPrint("Final Shops List: ${shops.value}");
+    shops.value = shopBalances.entries.map((entry) {
+      return Shop(
+        name: entry.key,
+      );
+    }).toList();
 
+    shops.refresh();
   }
+
   Future<void> submitForm() async {
     bool isValid = true;
 
-      if (selectedShop.value.isEmpty) {
-        isValid = false;
-
+    if (selectedShop.value.isEmpty) {
+      isValid = false;
     }
+
     if (isValid) {
       final returnFormSerial = generateNewOrderId(user_id);
       returnMasterId = returnFormSerial;
@@ -76,10 +73,9 @@ class ReturnFormViewModel extends GetxController {
         return_master_id: returnMasterId,
         select_shop: selectedShop.value,
       ));
-      // fetchAllReturnForm();
-     await returnFormDetailsViewModel.submitForm();
-     await returnFormDetailsViewModel.fetchAllReturnFormDetails();
-     await returnFormRepository.postDataFromDatabaseToAPI();
+      await returnFormDetailsViewModel.submitForm();
+      await returnFormDetailsViewModel.fetchAllReturnFormDetails();
+      await returnFormRepository.postDataFromDatabaseToAPI();
       Get.snackbar("Success", "Form Submitted!",
           snackPosition: SnackPosition.BOTTOM);
     } else {
@@ -94,8 +90,7 @@ class ReturnFormViewModel extends GetxController {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
     SharedPreferences prefs = await SharedPreferences.getInstance();
     returnFormSerialCounter = (prefs.getInt('returnFormSerialCounter') ?? 1);
-    returnFormCurrentMonth =
-        prefs.getString('returnFormCurrentMonth') ?? currentMonth;
+    returnFormCurrentMonth = prefs.getString('returnFormCurrentMonth') ?? currentMonth;
     currentuser_id = prefs.getString('currentuser_id') ?? '';
 
     if (returnFormCurrentMonth != currentMonth) {
@@ -127,8 +122,7 @@ class ReturnFormViewModel extends GetxController {
       returnFormCurrentMonth = currentMonth;
     }
 
-    String orderId =
-        "RF-$user_id-$currentMonth-${returnFormSerialCounter.toString().padLeft(3, '0')}";
+    String orderId = "RF-$user_id-$currentMonth-${returnFormSerialCounter.toString().padLeft(3, '0')}";
     returnFormSerialCounter++;
     _saveCounter();
     return orderId;

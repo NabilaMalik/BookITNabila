@@ -211,7 +211,6 @@ class OrderDetailsViewModel extends GetxController {
           amount: product['Amount'].toString(),
           product: product['Product'],
           user_id: user_id.toString(),
-
           quantity: product['Enter Qty'].toString(),
           order_master_id: order_master_id
       );

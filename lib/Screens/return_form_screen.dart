@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:order_booking_app/Models/returnform_details_model.dart';
+import 'package:order_booking_app/ViewModels/order_details_view_model.dart';
 import '../Models/ScreenModels/return_form_model.dart';
+import '../Models/order_master_model.dart';
 import '../ViewModels/ScreenViewModels/return_form_view_model.dart';
+import '../ViewModels/order_master_view_model.dart';
 import '../ViewModels/return_form_details_view_model.dart';
 import '../ViewModels/return_form_view_model.dart';
 import 'ReturnFormScreenComponents/form_row.dart';
@@ -12,6 +15,9 @@ import 'ReturnFormScreenComponents/return_appbar.dart';
 class ReturnFormScreen extends StatelessWidget {
  ReturnFormScreen({super.key});
   final ReturnFormViewModel viewModel = Get.put(ReturnFormViewModel());
+  OrderDetailsViewModel orderDetailsViewModel = Get.put(OrderDetailsViewModel());
+ final OrderMasterViewModel orderMasterViewModel = Get.put(OrderMasterViewModel());
+
  final ReturnFormDetailsViewModel returnFormDetailsViewModel =
  Get.put(ReturnFormDetailsViewModel());
   @override
@@ -54,6 +60,29 @@ class ReturnFormScreen extends StatelessWidget {
                     onChanged: (value) {
                       viewModel.selectedShop.value = value!;
 
+                      // Find the order_master_id for the selected shop
+                      OrderMasterModel? selectedOrder;
+                      try {
+                        selectedOrder = orderMasterViewModel.allOrderMaster.firstWhere(
+                              (order) => order.shop_name == value,
+                        );
+                      } catch (e) {
+                        debugPrint("No order found for the selected shop: $value");
+                        selectedOrder = null; // Set to null if no match is found
+                      }
+
+                      if (selectedOrder != null) {
+                        // Proceed with filtering items
+                        var filteredItems = orderDetailsViewModel.allReConfirmOrder
+                            .where((detail) => detail.order_master_id == selectedOrder!.order_master_id)
+                            .map((detail) => Item(detail.product!))
+                            .toList();
+
+                        returnFormDetailsViewModel.items.value = filteredItems;
+                      } else {
+                        debugPrint("No order found for the selected shop: $value");
+                        returnFormDetailsViewModel.items.value = [];
+                      }
                     },
                   );
                 }),
@@ -86,39 +115,6 @@ class ReturnFormScreen extends StatelessWidget {
   }
 }
 
-class ShopDropdown extends StatelessWidget {
-  final Size size;
-  final ReturnFormViewModel viewModel;
-
-  ShopDropdown({required this.size, required this.viewModel, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    viewModel.initializeData();
-    return Obx(() => SizedBox(
-      width: size.width * 0.8,
-      child: DropdownButtonFormField<String>(
-        decoration: const InputDecoration(
-          labelText: "Select Shop *",
-          labelStyle: TextStyle(fontSize: 18),
-          border: UnderlineInputBorder(),
-        ),
-        value: viewModel.selectedShop.value.isEmpty
-            ? null
-            : viewModel.selectedShop.value,
-        items: viewModel.shops.map((shop) {
-          return DropdownMenuItem<String>(
-            value: shop.name,
-            child: Text(shop.name),
-          );
-        }).toList(),
-        onChanged: (value) {
-          viewModel.selectedShop.value = value!;
-        },
-      ),
-    ));
-  }
-}
 
 class AddRowButton extends StatelessWidget {
   AddRowButton({super.key});

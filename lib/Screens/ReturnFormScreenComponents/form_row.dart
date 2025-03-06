@@ -22,23 +22,25 @@ class FormRow extends StatelessWidget {
         SizedBox(
           width: size.width * 0.2,
           height: 50,
-          child: Obx(() => DropdownButtonFormField<Item>(
-            decoration: const InputDecoration(
-              hintText: "Item *",
-              hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-              border: UnderlineInputBorder(),
-            ),
-            value: row.selectedItem,
-            items: returnFormDetailsViewModel.items.map((item) {
-              return DropdownMenuItem<Item>(
-                value: item,
-                child: Text(item.name),
-              );
-            }).toList(),
-            onChanged: (item) {
-              row.selectedItem = item;
-            },
-          )),
+          child: Obx(() {
+            return DropdownButtonFormField<Item>(
+              decoration: InputDecoration(
+                labelText: "Item",
+                labelStyle: TextStyle(fontSize: 15),
+                border: UnderlineInputBorder(),
+              ),
+              value: row.selectedItem,
+              items: returnFormDetailsViewModel.items.map((item) {
+                return DropdownMenuItem(
+                  value: item,
+                  child: Text(item.name),
+                );
+              }).toList(),
+              onChanged: (value) {
+                row.selectedItem = value;
+              },
+            );
+          }),
         ),
         _buildTextField(
           label: "Qty *",
