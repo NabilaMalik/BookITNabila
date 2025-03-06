@@ -135,11 +135,11 @@ Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
         ? '${orderBookingStatusViewModel.startDate.value}${orderBookingStatusViewModel.endDate.value}'
         : 'Date Not Selected';
     // String ordersDate = startDateController.text.isNotEmpty ? startDateController.text : 'Date Not Selected';
-    print("Generating PDF for Date: $ordersDate");
+    debugPrint("Generating PDF for Date: $ordersDate");
     final Database? db = await DBHelper().db;
     if (db == null) {
       if (kDebugMode) {
-        print("Database is not initialized!");
+        debugPrint("Database is not initialized!");
       }
       return;
     }
@@ -276,7 +276,7 @@ Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
       await Share.shareXFiles([xfile], text: 'PDF Document');
     } catch (e) {
       if (kDebugMode) {
-        print("Error saving or sharing PDF: $e");
+        debugPrint("Error saving or sharing PDF: $e");
       }
     }
   }

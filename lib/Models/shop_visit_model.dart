@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 class ShopVisitModel {
   String? shop_visit_master_id;
   String? brand;
+  String? user_id;
   String? shop_name;
   String? shop_address;
   String? owner_name;
@@ -24,6 +25,7 @@ class ShopVisitModel {
   ShopVisitModel({
     this.shop_visit_master_id,
     this.brand,
+    this.user_id,
     this.shop_name,
     this.shop_address,
     this.owner_name,
@@ -50,6 +52,7 @@ class ShopVisitModel {
       walk_through: json['walk_through'] == 1.toString(),
       planogram: json['planogram'] == 1.toString(),
       signage: json['signage'] == 1.toString(),
+      user_id: json['user_id'].toString(),
       product_reviewed: json['product_reviewed'] == 1.toString(),
       body: json['body'] != null && json['body'].toString().isNotEmpty
           ? Uint8List.fromList(base64Decode(json['body'].toString()))
@@ -72,6 +75,7 @@ class ShopVisitModel {
       'shop_address': shop_address,
       'owner_name': owner_name,
       'booker_name': booker_name,
+      'user_id': user_id,
       'walk_through': walk_through == true ? 1 : 0,
       'planogram': planogram == true ? 1 : 0,
       'signage': signage == true ? 1 : 0,

@@ -54,7 +54,7 @@ class ShopVisitDetailsViewModel extends GetxController {
       shopVisitDetailsCurrentMonth = currentMonth;
     }
     if (kDebugMode) {
-      print('shopVisitDetailsSerialCounter: $shopVisitDetailsSerialCounter');
+      debugPrint('shopVisitDetailsSerialCounter: $shopVisitDetailsSerialCounter');
     }
   }
 
@@ -103,9 +103,9 @@ class ShopVisitDetailsViewModel extends GetxController {
       rowsNotifier.value = productData;
       // Apply brand filter initially
       filterProductsByBrand(shopVisitViewModel.selectedBrand.value);
-      print("Initialized Product Data: $productData");
+      debugPrint("Initialized Product Data: $productData");
     } catch (e) {
-      print("Error initializing product data: $e");
+      debugPrint("Error initializing product data: $e");
     }
   }
 
@@ -160,6 +160,7 @@ class ShopVisitDetailsViewModel extends GetxController {
       final shopVisitDetailsModel = ShopVisitDetailsModel(
         shop_visit_details_id: orderSerial.toString(),
         product: product['Product'].toString(),
+        user_id: user_id.toString(),
         quantity: product['Quantity'].toString(), // Convert quantity to string
         shop_visit_master_id: shop_visit_master_id.toString(),
       );
@@ -172,8 +173,8 @@ class ShopVisitDetailsViewModel extends GetxController {
           .toList();
       if (products.isNotEmpty) {
         products[0].in_stock = product['Quantity'].toString();
-        // Debugging print statement
-        print("Updated ${products[0].product_name} quantity to: ${products[0].in_stock}");
+        // Debugging debugPrint statement
+        debugPrint("Updated ${products[0].product_name} quantity to: ${products[0].in_stock}");
       }
 
     }

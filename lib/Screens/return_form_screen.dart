@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 import 'package:order_booking_app/Models/returnform_details_model.dart';
 import '../Models/ScreenModels/return_form_model.dart';
@@ -9,13 +10,13 @@ import 'ReturnFormScreenComponents/form_row.dart';
 import 'ReturnFormScreenComponents/return_appbar.dart';
 
 class ReturnFormScreen extends StatelessWidget {
-  const ReturnFormScreen({super.key});
-
+ ReturnFormScreen({super.key});
+  final ReturnFormViewModel viewModel = Get.put(ReturnFormViewModel());
+ final ReturnFormDetailsViewModel returnFormDetailsViewModel =
+ Get.put(ReturnFormDetailsViewModel());
   @override
   Widget build(BuildContext context) {
-    final ReturnFormViewModel viewModel = Get.put(ReturnFormViewModel());
-    final ReturnFormDetailsViewModel returnFormDetailsViewModel =
-        Get.put(ReturnFormDetailsViewModel());
+    viewModel.initializeData();
     Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
@@ -29,10 +30,33 @@ class ReturnFormScreen extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 50),
-                ShopDropdown(
-                  size: size,
-                  viewModel: viewModel,
-                ),
+
+                Obx(() {
+                  // Debug: Print the contents of viewModel.shops
+                  debugPrint("Shops in ViewModel: ${viewModel.shops}");
+                  return DropdownButtonFormField<String>(
+                    decoration: const InputDecoration(
+                      labelText: "Shop Name",
+                      labelStyle: TextStyle(fontSize: 15),
+                      border: UnderlineInputBorder(),
+                    ),
+                    value: viewModel.selectedShop.value.isEmpty
+                        ? null
+                        : viewModel.selectedShop.value,
+                    items: viewModel.shops.map((shop) {
+                      // Debug: Print each shop name being added to the dropdown
+                      debugPrint("Adding Shop to Dropdown: ${shop.name}");
+                      return DropdownMenuItem(
+                        value: shop.name,
+                        child: Text(shop.name),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      viewModel.selectedShop.value = value!;
+
+                    },
+                  );
+                }),
                 const SizedBox(height: 30),
                 Obx(() => Column(
                       children: returnFormDetailsViewModel.formRows
@@ -66,33 +90,33 @@ class ShopDropdown extends StatelessWidget {
   final Size size;
   final ReturnFormViewModel viewModel;
 
-  // final ReturnFormDetailsViewModel returnFormDetailsViewModel ;
   ShopDropdown({required this.size, required this.viewModel, super.key});
 
   @override
   Widget build(BuildContext context) {
+    viewModel.initializeData();
     return Obx(() => SizedBox(
-          width: size.width * 0.8,
-          child: DropdownButtonFormField<String>(
-            decoration: const InputDecoration(
-              labelText: "Select Shop *",
-              labelStyle: TextStyle(fontSize: 18),
-              border: UnderlineInputBorder(),
-            ),
-            value: viewModel.selectedShop.value.isEmpty
-                ? null
-                : viewModel.selectedShop.value,
-            items: viewModel.shops.map((shop) {
-              return DropdownMenuItem(
-                value: shop,
-                child: Text(shop),
-              );
-            }).toList(),
-            onChanged: (value) {
-              viewModel.selectedShop.value = value!;
-            },
-          ),
-        ));
+      width: size.width * 0.8,
+      child: DropdownButtonFormField<String>(
+        decoration: const InputDecoration(
+          labelText: "Select Shop *",
+          labelStyle: TextStyle(fontSize: 18),
+          border: UnderlineInputBorder(),
+        ),
+        value: viewModel.selectedShop.value.isEmpty
+            ? null
+            : viewModel.selectedShop.value,
+        items: viewModel.shops.map((shop) {
+          return DropdownMenuItem<String>(
+            value: shop.name,
+            child: Text(shop.name),
+          );
+        }).toList(),
+        onChanged: (value) {
+          viewModel.selectedShop.value = value!;
+        },
+      ),
+    ));
   }
 }
 

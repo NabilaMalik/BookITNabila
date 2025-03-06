@@ -1,4 +1,6 @@
 
+import 'dart:ffi';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,6 +16,8 @@ import '../Models/recovery_form_model.dart';
 import '../Repositories/recovery_form_repository.dart';
 import '../Screens/home_screen.dart';
 import '../Screens/recovery_form_2nd_page.dart';
+import '../Services/ApiServices/api_service.dart';
+import '../Services/FirebaseServices/firebase_remote_config.dart';
 
 class RecoveryFormViewModel extends GetxController{
   var selectedShop = ''.obs;
@@ -37,30 +41,62 @@ class RecoveryFormViewModel extends GetxController{
   @override
   void onInit() {
     super.onInit();
-    _initializeData();
+    initializeData();
     _loadCounter();
     fetchAllRecoveryForm();
   }
+  Future<void> fetchAndSaveCurrentBalance(String shop_name) async {
+    try {
+      // Print the API URL for debugging
+      debugPrint('https://cloud.metaxperts.net:8443/erp/test1/currentbalance/get/$shop_name/$user_id');
 
-  void _initializeData() {
-    // Initialize shops dynamically based on OrderMasterViewModel data
+      // Fetch data from the API
+      List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/test1/currentbalance/get/$shop_name/$user_id');
+
+      // Check if data is not empty and assign the value to current_balance.value
+      if (data.isNotEmpty) {
+        // Assuming the API returns a list of maps and the balance is in the first item
+        var balance = data[0]['balance'];
+        // Handle cases where balance might be an int or double
+        if (balance is int) {
+          current_balance.value = balance.toDouble(); // Convert int to double
+        }// Replace 'balance' with the actual key in the API response
+        if (kDebugMode) {
+          debugPrint('Current balance fetched and updated: $balance');
+        }
+      } else {
+        if (kDebugMode) {
+          debugPrint('No data received from the API.');
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('Error fetching current balance: $e');
+      }
+      throw Exception('Failed to fetch current balance: $e');
+    }
+  }
+  Future<void> initializeData() async {
+   await Future.delayed(Duration.zero); // Ensure this runs after the build phase
+
+   // Initialize shops dynamically based on OrderMasterViewModel data
     Map<String, double> shopBalances = {};
 
     // Filter orders with status "Pending"
     List<OrderMasterModel> dispatchedOrders = orderMasterViewModel.allOrderMaster
-        .where((order) => order.order_status == "Pending")
+        .where((order) => order.order_status == "DISPATCHED")
         .toList();
 
     // Debug: Print the filtered orders
-    print("Filtered Orders (Pending): $dispatchedOrders");
+    debugPrint("Filtered Orders (DISPATCHED): $dispatchedOrders");
 
     // Aggregate data by shop name
     for (var order in dispatchedOrders) {
       String shopName = order.shop_name ?? "Unknown Shop"; // Default to "Unknown Shop" if null
       double orderAmount = double.tryParse(order.total ?? '0') ?? 0.0; // Parse total to double
 
-      // Debug: Print each shop and its amount
-      print("Processing Shop: $shopName, Amount: $orderAmount");
+      // Debug: debugPrint each shop and its amount
+      debugPrint("Processing Shop: $shopName, Amount: $orderAmount");
 
       // Add or update the balance for the shop
       shopBalances[shopName] = (shopBalances[shopName] ?? 0.0) + orderAmount;
@@ -77,7 +113,7 @@ class RecoveryFormViewModel extends GetxController{
     // Refresh the observable list to update the UI
     shops.refresh();
     // Debug: Print the final list of shops
-    print("Final Shops List: ${shops.value}");
+    debugPrint("Final Shops List: ${shops.value}");
 
     // Initialize payment history
     paymentHistory.value = [
@@ -110,11 +146,17 @@ class RecoveryFormViewModel extends GetxController{
     }
   }
 
-
+  resetForm() {
+    selectedShop.value = '';
+    current_balance.value = 0.0;
+    cash_recovery.value = 0.0;
+    net_balance.value = 0.0;
+    areFieldsEnabled.value = true;
+    // Clear any other fields or state as needed
+  }
   void updatecurrent_balance(String shop_name) {
-    final selectedShop = shops.firstWhere((shop) => shop.name == shop_name);
-    current_balance.value = selectedShop.current_balance;
-    net_balance.value = selectedShop.current_balance - cash_recovery.value;
+
+    net_balance.value = current_balance.value - cash_recovery.value;
     areFieldsEnabled.value = true;
 
     // Filter payment history based on selected shop
@@ -154,8 +196,10 @@ class RecoveryFormViewModel extends GetxController{
       current_balance: current_balance.value!.toString(),
       cash_recovery: cash_recovery.value,
       net_balance: net_balance.value,
-    ));
+     user_id: user_id.toString(),
+   ));
     await recoveryformRepository.postDataFromDatabaseToAPI();
+
     // Implement your form submission logic here
     Get.snackbar("Success", "Form submitted successfully!");
      Get.to(()=>   RecoveryForm_2ndPage());
@@ -177,7 +221,7 @@ class RecoveryFormViewModel extends GetxController{
     currentuser_id = prefs.getString('currentuser_id') ?? '';
 
     if (kDebugMode) {
-      print('SR: $recoverySerialCounter');
+      debugPrint('SR: $recoverySerialCounter');
     }
   }
 

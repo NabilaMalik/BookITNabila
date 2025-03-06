@@ -31,13 +31,14 @@ class DBHelper extends GetxService {
     List<String> tableQueries = [
       "CREATE TABLE IF NOT EXISTS $tableNameLogin(id INTEGER ,user_name TEXT,contact TEXT,cnic TEXT,image TEXT,address TEXT,user_id TEXT,city TEXT,password TEXT)",
       "CREATE TABLE IF NOT EXISTS $addShopTableName(shop_id TEXT PRIMARY KEY, shop_date TEXT, shop_time TEXT, shop_name TEXT,city TEXT,shop_address TEXT,owner_name TEXT,owner_cnic TEXT,phone_no TEXT, alternative_phone_no TEXT, user_id TEXT, posted INTEGER DEFAULT 0 )",
-      "CREATE TABLE IF NOT EXISTS $shopVisitMasterTableName(shop_visit_master_id TEXT PRIMARY KEY, shop_visit_date TEXT, shop_visit_time TEXT, brand TEXT, shop_name TEXT, shop_address TEXT, owner_name TEXT,posted INTEGER DEFAULT 0, booker_name TEXT,walk_through TEXT,planogram TEXT,signage TEXT,product_reviewed TEXT,feedback TEXT,body BLOB)",
-      "CREATE TABLE IF NOT EXISTS $shopVisitDetailsTableName(shop_visit_details_id TEXT PRIMARY KEY, shop_visit_details_date TEXT, shop_visit_details_time TEXT, shop_visit_master_id TEXT, product TEXT, quantity TEXT,posted INTEGER DEFAULT 0, FOREIGN KEY(shop_visit_master_id) REFERENCES $shopVisitMasterTableName(shop_visit_master_id))",
-      "CREATE TABLE IF NOT EXISTS $orderMasterTableName(order_master_id TEXT PRIMARY KEY,order_status TEXT, order_master_date TEXT, order_master_time TEXT,shop_name TEXT,owner_name TEXT, phone_no TEXT,brand TEXT,total TEXT, credit_limit TEXT, posted INTEGER DEFAULT 0,required_delivery_date TEXT)",
-      "CREATE TABLE IF NOT EXISTS $orderDetailsTableName (order_details_id TEXT PRIMARY KEY, order_details_date TEXT, order_details_time TEXT, order_master_id TEXT, product TEXT, quantity TEXT, in_stock TEXT, rate TEXT,posted INTEGER DEFAULT 0, amount TEXT, FOREIGN KEY(order_master_id) REFERENCES $orderMasterTableName(order_master_id))",
-      "CREATE TABLE IF NOT EXISTS $returnFormMasterTableName(return_master_id TEXT PRIMARY KEY, return_master_date TEXT, return_master_time TEXT, posted INTEGER DEFAULT 0,select_shop TEXT)",
-      "CREATE TABLE IF NOT EXISTS $returnFormDetailsTableName(return_details_id TEXT PRIMARY KEY, return_details_date TEXT, return_details_time TEXT, return_master_id TEXT, item TEXT, quantity TEXT, reason TEXT,posted INTEGER DEFAULT 0, FOREIGN KEY(return_master_id) REFERENCES $returnFormMasterTableName(return_master_id))",
-      "CREATE TABLE IF NOT EXISTS $recoveryFormTableName(recovery_id TEXT PRIMARY KEY, recovery_date TEXT, recovery_time TEXT, shop_name TEXT,current_balance TEXT,cash_recovery TEXT,net_balance TEXT,posted INTEGER DEFAULT 0)",
+      "CREATE TABLE IF NOT EXISTS $shopVisitMasterTableName(shop_visit_master_id TEXT PRIMARY KEY, shop_visit_date TEXT, shop_visit_time TEXT, brand TEXT,user_id TEXT, shop_name TEXT, shop_address TEXT, owner_name TEXT,posted INTEGER DEFAULT 0, booker_name TEXT,walk_through TEXT,planogram TEXT,signage TEXT,product_reviewed TEXT,feedback TEXT,body BLOB)",
+      "CREATE TABLE IF NOT EXISTS $shopVisitDetailsTableName(shop_visit_details_id TEXT PRIMARY KEY, shop_visit_details_date TEXT, shop_visit_details_time TEXT,user_id TEXT, shop_visit_master_id TEXT, product TEXT, quantity TEXT,posted INTEGER DEFAULT 0, FOREIGN KEY(shop_visit_master_id) REFERENCES $shopVisitMasterTableName(shop_visit_master_id))",
+      "CREATE TABLE IF NOT EXISTS $orderMasterTableName(order_master_id TEXT PRIMARY KEY,order_status TEXT, order_master_date TEXT, order_master_time TEXT,user_id TEXT,shop_name TEXT,owner_name TEXT, phone_no TEXT,brand TEXT,total TEXT, credit_limit TEXT, posted INTEGER DEFAULT 0,required_delivery_date TEXT)",
+      "CREATE TABLE IF NOT EXISTS $orderMasterStatusTableName(order_master_id TEXT PRIMARY KEY,order_status TEXT, order_master_date TEXT, order_master_time TEXT,user_id TEXT,shop_name TEXT,owner_name TEXT, phone_no TEXT,brand TEXT,total TEXT, credit_limit TEXT, posted INTEGER DEFAULT 0,required_delivery_date TEXT)",
+      "CREATE TABLE IF NOT EXISTS $orderDetailsTableName (order_details_id TEXT PRIMARY KEY, order_details_date TEXT, order_details_time TEXT,user_id TEXT, order_master_id TEXT, product TEXT, quantity TEXT, in_stock TEXT, rate TEXT,posted INTEGER DEFAULT 0, amount TEXT, FOREIGN KEY(order_master_id) REFERENCES $orderMasterTableName(order_master_id))",
+      "CREATE TABLE IF NOT EXISTS $returnFormMasterTableName(return_master_id TEXT PRIMARY KEY, return_master_date TEXT,user_id TEXT, return_master_time TEXT, posted INTEGER DEFAULT 0,select_shop TEXT)",
+      "CREATE TABLE IF NOT EXISTS $returnFormDetailsTableName(return_details_id TEXT PRIMARY KEY, return_details_date TEXT, return_details_time TEXT,user_id TEXT, return_master_id TEXT, item TEXT, quantity TEXT, reason TEXT,posted INTEGER DEFAULT 0, FOREIGN KEY(return_master_id) REFERENCES $returnFormMasterTableName(return_master_id))",
+      "CREATE TABLE IF NOT EXISTS $recoveryFormTableName(recovery_id TEXT PRIMARY KEY, recovery_date TEXT, recovery_time TEXT, shop_name TEXT,user_id TEXT,current_balance TEXT,cash_recovery TEXT,net_balance TEXT,posted INTEGER DEFAULT 0)",
       "CREATE TABLE IF NOT EXISTS $attendanceTableName(attendance_in_id TEXT PRIMARY KEY, attendance_in_date TEXT, attendance_in_time TEXT,user_id TEXT, lat_in TEXT, lng_in TEXT, booker_name TEXT,designation, city TEXT,posted INTEGER DEFAULT 0, address TEXT)",
       "CREATE TABLE IF NOT EXISTS $attendanceOutTableName(attendance_out_id TEXT PRIMARY KEY, attendance_out_date TEXT, attendance_out_time TEXT,  total_time TEXT, user_id TEXT, lat_out TEXT, lng_out TEXT, total_distance TEXT,posted INTEGER DEFAULT 0, address TEXT)",
       "CREATE TABLE IF NOT EXISTS $locationTableName(location_id TEXT PRIMARY KEY, location_date TEXT, location_time TEXT, file_name TEXT, user_id TEXT, total_distance TEXT, booker_name TEXT, posted INTEGER DEFAULT 0, body BLOB)",
@@ -52,7 +53,8 @@ class DBHelper extends GetxService {
 
     // List of all table names to clear data
     List<String> tableNames = [
-      tableNameLogin,
+      // tableNameLogin,
+      productsTableName
     ];
 
     for (var tableName in tableNames) {

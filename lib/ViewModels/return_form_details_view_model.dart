@@ -57,7 +57,9 @@ class ReturnFormDetailsViewModel extends GetxController{
             return_details_id: returnFormSerial,
             item: row.selectedItem?.name,   // Use the selectedItem of the row
             reason: row.reason,   // Use the reason of the row
-            quantity: row.quantity,   // Use the quantity of the row
+            quantity: row.quantity,
+            user_id: user_id.toString(),
+// Use the quantity of the row
             return_master_id: returnMasterId
         ));
         await returnformdetailsRepository.postDataFromDatabaseToAPI();
@@ -86,7 +88,7 @@ class ReturnFormDetailsViewModel extends GetxController{
       returnFormDetailsCurrentMonth = currentMonth;
     }
     if (kDebugMode) {
-      print('returnFormDetailsSerialCounter: $returnFormDetailsSerialCounter');
+      debugPrint('returnFormDetailsSerialCounter: $returnFormDetailsSerialCounter');
     }
   }
 

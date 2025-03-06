@@ -22,6 +22,7 @@ class RecoveryFormRepository {
       'net_balance',
       'recovery_date',
       'recovery_time',
+      'user_id',
       'posted'
     ]);
     List<RecoveryFormModel> recoveryform = [];
@@ -29,17 +30,17 @@ class RecoveryFormRepository {
       recoveryform.add(RecoveryFormModel.fromMap(maps[i]));
     }
     if (kDebugMode) {
-      print('Recovery form Raw data from database:');
+      debugPrint('Recovery form Raw data from database:');
     }
     for (var map in maps) {
       if (kDebugMode) {
-        print(map);
+        debugPrint("map");
       }
     }
     return recoveryform;
   }
   Future<void> fetchAndSaveRecovery() async {
-    print('${Config.getApiUrlRecoveryForm}$user_id');
+    debugPrint('${Config.getApiUrlRecoveryForm}$user_id');
     List<dynamic> data = await ApiService.getData('${Config.getApiUrlRecoveryForm}$user_id');
     var dbClient = await dbHelper.db;
 
@@ -50,6 +51,7 @@ class RecoveryFormRepository {
       await dbClient.insert(recoveryFormTableName, model.toMap());
     }
   }
+
   Future<void> getRecoveryHighestSerialNo() async {
     int serial;
     String month='';
@@ -88,12 +90,12 @@ class RecoveryFormRepository {
         recoverySavedMonthCounter = month; // Save the month part to savedMonth variable
       } else {
         if (kDebugMode) {
-          print('No valid recovery_id numbers found for this user');
+          debugPrint('No valid recovery_id numbers found for this user');
         }
       }
     } else {
       if (kDebugMode) {
-        print('No orders found for this user');
+        debugPrint('No orders found for this user');
       }
     }
   }
@@ -122,22 +124,22 @@ class RecoveryFormRepository {
             shop.posted = 1;
             await update(shop);
             if (kDebugMode) {
-              print('Shop with id ${shop.recovery_id} posted and updated in local database.');
+              debugPrint('Shop with id ${shop.recovery_id} posted and updated in local database.');
             }
           } catch (e) {
             if (kDebugMode) {
-              print('Failed to post shop with id ${shop.recovery_id}: $e');
+              debugPrint('Failed to post shop with id ${shop.recovery_id}: $e');
             }
           }
         }
       } else {
         if (kDebugMode) {
-          print('Network not available. Unposted shops will remain local.');
+          debugPrint('Network not available. Unposted shops will remain local.');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error fetching unposted shops: $e');
+        debugPrint('Error fetching unposted shops: $e');
       }
     }
   }
@@ -146,8 +148,8 @@ class RecoveryFormRepository {
     try {
       await Config.fetchLatestConfig();
       if (kDebugMode) {
-        print('Updated Shop Post API: ${Config.postApiUrlRecoveryForm}');
-        print('Updated Shop Post API: ${Config.postApiUrlRecoveryForm}');
+        debugPrint('Updated Shop Post API: ${Config.postApiUrlRecoveryForm}');
+        // debugPrint('Updated Shop Post API: ${Config.postApiUrlRecoveryForm}');
       }
       var shopData = shop.toMap();
       final response = await http.post(
@@ -160,12 +162,12 @@ class RecoveryFormRepository {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('Shop data posted successfully: $shopData');
+        debugPrint('Shop data posted successfully: $shopData');
       } else {
         throw Exception('Server error: ${response.statusCode}, ${response.body}');
       }
     } catch (e) {
-      print('Error posting shop data: $e');
+      debugPrint('Error posting shop data: $e');
       throw Exception('Failed to post data: $e');
     }
   }

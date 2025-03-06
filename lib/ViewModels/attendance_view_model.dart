@@ -43,7 +43,7 @@ LocationViewModel locationViewModel = Get.put(LocationViewModel());
       attendanceInCurrentMonth = currentMonth;
     }
     if (kDebugMode) {
-      print('SR: $attendanceInSerialCounter');
+      debugPrint('SR: $attendanceInSerialCounter');
     }
   }
 
@@ -104,7 +104,7 @@ LocationViewModel locationViewModel = Get.put(LocationViewModel());
     fetchAllAttendance();
   }
 
-  deleteAttendance(int id){
+  deleteAttendance(String id){
     attendanceRepository.delete(id);
     fetchAllAttendance();
   }

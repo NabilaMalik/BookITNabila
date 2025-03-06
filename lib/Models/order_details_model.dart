@@ -8,6 +8,7 @@ class OrderDetailsModel{
   String? in_stock;
   String? rate;
   String? amount;
+  String? user_id;
   String? order_master_id;
   DateTime? order_details_date;
   DateTime? order_details_time;
@@ -18,6 +19,7 @@ class OrderDetailsModel{
     this.quantity,
     this.in_stock,
     this.rate,
+    this.user_id,
     this.amount,
     this.order_details_date,
     this.order_details_time,
@@ -31,6 +33,7 @@ class OrderDetailsModel{
       quantity: json['quantity'],
       in_stock: json['in_stock'],
       rate:json['rate'],
+      user_id: json['user_id'],
       amount:json['amount'],
         order_details_date: DateTime.now(),
         // Always set live date
@@ -47,6 +50,7 @@ class OrderDetailsModel{
       'quantity':quantity,
       'in_stock':in_stock,
       'rate':rate,
+      'user_id':user_id,
       'amount':amount,
       'posted': posted,
       'order_details_date': DateFormat('dd-MMM-yyyy').format(order_details_date ?? DateTime.now()), // Always set live date

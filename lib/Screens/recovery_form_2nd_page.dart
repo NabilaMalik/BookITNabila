@@ -82,7 +82,8 @@ class RecoveryForm_2ndPage extends StatelessWidget {
                       height: 30,
                       margin: const EdgeInsets.only(right: 16, bottom: 16),
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
+                        await  recoveryFormViewModel.resetForm();
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => const HomeScreen(),

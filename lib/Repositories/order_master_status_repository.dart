@@ -3,71 +3,74 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:order_booking_app/Models/shop_visit_model.dart';
-
 import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
-import '../Models/shop_visit_details_model.dart';
+import '../Models/order_master_status_model.dart';
 import '../Services/ApiServices/api_service.dart';
 import '../Services/FirebaseServices/firebase_remote_config.dart';
 
-
-class ShopVisitDetailsRepository extends GetxService{
-  DBHelper dbHelper = DBHelper();
-  Future<List<ShopVisitDetailsModel>> getShopVisitDetails() async {
+class OrderMasterStatusRepository extends GetxService {
+  DBHelper dbHelper = Get.put(DBHelper());
+  Future<List<OrderMasterStatusModel>> getOrderMasterStatus() async {
     var dbClient = await dbHelper.db;
-    List<Map> maps = await dbClient.query(shopVisitDetailsTableName, columns: [
-      'shop_visit_details_id',
-      'shop_visit_details_date',
-      'shop_visit_details_time',
-      'product',
-      'quantity',
+    List<Map> maps = await dbClient.query(orderMasterTableName, columns: [
+      'order_master_id',
+      'order_master_date',
+      'order_master_time',
+      'shop_name',
+      'owner_name',
+      'phone_no',
+      'owner_name',
+      'order_status',
+      'total',
       'user_id',
-      'shop_visit_master_id',
+      'credit_limit',
+      'required_delivery_date',
       'posted'
     ]);
-    List<ShopVisitDetailsModel> shopvisitdetails = [];
+    List<OrderMasterStatusModel> confirmorder = [];
     for (int i = 0; i < maps.length; i++) {
-      shopvisitdetails.add(ShopVisitDetailsModel.fromMap(maps[i]));
+      confirmorder.add(OrderMasterStatusModel.fromMap(maps[i]));
     }
     if (kDebugMode) {
-      debugPrint(' Raw data from Shop Visit Details database:');
+      debugPrint('Raw data from database:');
     }
     for (var map in maps) {
       if (kDebugMode) {
-        debugPrint("map");
+        debugPrint("$map");
       }
     }
-    return shopvisitdetails;
+    return confirmorder;
   }
-  Future<void> fetchAndSaveShopVisitDetails() async {
-    debugPrint('${Config.getApiUrlShopVisitDetails}$user_id');
-    List<dynamic> data = await ApiService.getData('${Config.getApiUrlShopVisitDetails}$user_id');
+  Future<void> fetchAndSaveOrderMaster() async {
+    debugPrint('${Config.getApiUrlOrderMaster}$user_id');
+    // List<dynamic> data = await ApiService.getData('${Config.getApiUrlOrderMaster}$user_id');
+    List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/test1/ordermasterget/get/$user_id');
     var dbClient = await dbHelper.db;
 
     // Save data to database
     for (var item in data) {
       item['posted'] = 1; // Set posted to 1
-      ShopVisitDetailsModel model = ShopVisitDetailsModel.fromMap(item);
-      await dbClient.insert(shopVisitDetailsTableName, model.toMap());
+      OrderMasterStatusModel model = OrderMasterStatusModel.fromMap(item);
+      await dbClient.insert(orderMasterTableName, model.toMap());
     }
   }
 
-  Future<List<ShopVisitDetailsModel>> getUnPostedShopVisitDetails() async {
+  Future<List<OrderMasterStatusModel>> getUnPostedOrderMaster() async {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(
-      shopVisitDetailsTableName,
+      orderMasterTableName,
       where: 'posted = ?',
       whereArgs: [0],  // Fetch machines that have not been posted
     );
 
-    List<ShopVisitDetailsModel> attendanceIn = maps.map((map) => ShopVisitDetailsModel.fromMap(map)).toList();
+    List<OrderMasterStatusModel> attendanceIn = maps.map((map) => OrderMasterStatusModel.fromMap(map)).toList();
     return attendanceIn;
   }
 
   Future<void> postDataFromDatabaseToAPI() async {
     try {
-      var unPostedShops = await getUnPostedShopVisitDetails();
+      var unPostedShops = await getUnPostedOrderMaster();
 
       if (await isNetworkAvailable()) {
         for (var shop in unPostedShops) {
@@ -76,11 +79,11 @@ class ShopVisitDetailsRepository extends GetxService{
             shop.posted = 1;
             await update(shop);
             if (kDebugMode) {
-              debugPrint('Shop with id ${shop.shop_visit_details_id} posted and updated in local database.');
+              debugPrint('Shop with id ${shop.order_master_id} posted and updated in local database.');
             }
           } catch (e) {
             if (kDebugMode) {
-              debugPrint('Failed to post shop with id ${shop.shop_visit_details_id}: $e');
+              debugPrint('Failed to post shop with id ${shop.order_master_id}: $e');
             }
           }
         }
@@ -96,15 +99,15 @@ class ShopVisitDetailsRepository extends GetxService{
     }
   }
 
-  Future<void> postShopToAPI(ShopVisitDetailsModel shop) async {
+  Future<void> postShopToAPI(OrderMasterStatusModel shop) async {
     try {
       await Config.fetchLatestConfig();
       if (kDebugMode) {
-        debugPrint('Updated Shop Post API: ${Config.postApiUrlShopVisitDetails}');
+        debugPrint('Updated Shop Post API: ${Config.postApiUrlOrderMaster}');
       }
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse(Config.postApiUrlShopVisitDetails),
+        Uri.parse(Config.postApiUrlOrderMaster),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -122,24 +125,20 @@ class ShopVisitDetailsRepository extends GetxService{
       throw Exception('Failed to post data: $e');
     }
   }
-  Future<int> add(ShopVisitDetailsModel shopvisitdetailsModel) async {
+  Future<int> add(OrderMasterStatusModel confirmorderModel) async {
     var dbClient = await dbHelper.db;
-    return await dbClient.insert(
-        shopVisitDetailsTableName, shopvisitdetailsModel.toMap());
+    return await dbClient.insert(orderMasterTableName, confirmorderModel.toMap());
   }
 
-  Future<int> update(ShopVisitDetailsModel shopvisitdetailsModel) async {
+  Future<int> update(OrderMasterStatusModel confirmorderModel) async {
     var dbClient = await dbHelper.db;
-    return await dbClient.update(
-        shopVisitDetailsTableName, shopvisitdetailsModel.toMap(),
-        where: 'shop_visit_details_id = ?',
-        whereArgs: [shopvisitdetailsModel.shop_visit_details_id]);
+    return await dbClient.update(orderMasterTableName, confirmorderModel.toMap(),
+        where: 'order_master_id = ?', whereArgs: [confirmorderModel.order_master_id]);
   }
 
   Future<int> delete(int id) async {
     var dbClient = await dbHelper.db;
-    return await dbClient
-        .delete(shopVisitDetailsTableName, where: 'shop_visit_details_id = ?', whereArgs: [id]);
+    return await dbClient.delete(orderMasterTableName, where: 'order_master_id = ?', whereArgs: [id]);
   }
 
 }

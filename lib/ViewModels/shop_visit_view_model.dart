@@ -210,6 +210,7 @@ class ShopVisitViewModel extends GetxController {
         product_reviewed: checklistState[3],
         body: compressedImageBytes,
         feedback: feedBack.value,
+        user_id: user_id.toString(),
         shop_visit_master_id:
         shop_visit_master_id.toString(), // Add the generated serial here
       ));
@@ -284,7 +285,7 @@ class ShopVisitViewModel extends GetxController {
     fetchAllShopVisit();
   }
 
-  deleteShopVisit(int id) {
+  deleteShopVisit(String id) {
     shopvisitRepository.delete(id);
     fetchAllShopVisit();
   }

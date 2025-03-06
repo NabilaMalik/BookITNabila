@@ -47,7 +47,7 @@ class OrderDetailsViewModel extends GetxController {
       orderDetailsCurrentMonth = currentMonth;
     }
     if (kDebugMode) {
-      print('orderDetailsSerialCounter: $orderDetailsSerialCounter');
+      debugPrint('orderDetailsSerialCounter: $orderDetailsSerialCounter');
     }
   }
 
@@ -76,6 +76,10 @@ class OrderDetailsViewModel extends GetxController {
     _saveCounter();
     return orderId;
   }
+  fetchAndSaveOrderDetails() async {
+    await orderDetailsRepository.fetchAndSaveOrderDetails();
+    await fetchAllReConfirmOrder();
+  }
 
   Future<void> initializeProductData() async {
     try {
@@ -84,7 +88,7 @@ class OrderDetailsViewModel extends GetxController {
 
       // Ensure products are available
       if (products.isEmpty) {
-        print("No products available");
+        debugPrint("No products available");
         return;
       }
 
@@ -102,8 +106,8 @@ class OrderDetailsViewModel extends GetxController {
         };
       }).toList();
 
-      // Print fetched product data
-      // print("Fetched Product Data: $productData");
+      // debugPrint fetched product data
+      // debugPrint("Fetched Product Data: $productData");
 
       // Filter by selected brand
       filteredRows.value = productData.where((row) {
@@ -111,15 +115,15 @@ class OrderDetailsViewModel extends GetxController {
             shopVisitViewModel.selectedBrand.value.toLowerCase();
       }).toList();
 
-      // Print filtered rows
-      print("Filtered Rows After Initialization: ${filteredRows.value}");
+      // debugPrint filtered rows
+      debugPrint("Filtered Rows After Initialization: ${filteredRows.value}");
 
       rowsNotifier.value = filteredRows.value; // Show only filtered products
 
       // Debugging output to verify the initialization
       filteredRows.forEach((row) {
         if (kDebugMode) {
-          print(
+          debugPrint(
               "Product: ${row['Product']}, In Stock: ${row['In Stock']}, Rate: ${row['Rate']}, Amount: ${row['Amount']}, Brand: ${row['Brand']}");
         }
       });
@@ -127,7 +131,7 @@ class OrderDetailsViewModel extends GetxController {
       updateTotalAmount(); // Update total after initializing product data
     } catch (e) {
       if (kDebugMode) {
-        print("Error initializing product data: $e");
+        debugPrint("Error initializing product data: $e");
       }
     }
   }
@@ -154,7 +158,7 @@ class OrderDetailsViewModel extends GetxController {
   }
 
   Future<void> saveFilteredProducts() async {
-    print("Running saveFilteredProducts...");
+    debugPrint("Running saveFilteredProducts...");
     final productsToSave = filteredRows.where((row) {
       final quantity = row['Enter Qty'];
       return quantity != null && quantity != 0;
@@ -162,7 +166,7 @@ class OrderDetailsViewModel extends GetxController {
 
     // Check if there are any products to save
     if (productsToSave.isEmpty) {
-      print("No products to save. Navigation not performed.");
+      debugPrint("No products to save. Navigation not performed.");
       Get.snackbar(
         "Error",
         "No products to save. Please enter quantities.",
@@ -177,7 +181,7 @@ class OrderDetailsViewModel extends GetxController {
   }
 
   Future<void> confirmFilteredProducts() async {
-    print("Running saveFilteredProducts...");
+    debugPrint("Running saveFilteredProducts...");
     final productsToSave = filteredRows.where((row) {
       final quantity = row['Enter Qty'];
       return quantity != null && quantity != 0;
@@ -185,7 +189,7 @@ class OrderDetailsViewModel extends GetxController {
 
     // Check if there are any products to save
     if (productsToSave.isEmpty) {
-      print("No products to save. Navigation not performed.");
+      debugPrint("No products to save. Navigation not performed.");
       Get.snackbar(
         "Error",
         "No products to save. Please enter quantities.",
@@ -206,6 +210,8 @@ class OrderDetailsViewModel extends GetxController {
           in_stock: product['In Stock'].toString(),
           amount: product['Amount'].toString(),
           product: product['Product'],
+          user_id: user_id.toString(),
+
           quantity: product['Enter Qty'].toString(),
           order_master_id: order_master_id
       );
@@ -218,7 +224,7 @@ class OrderDetailsViewModel extends GetxController {
           snackPosition: SnackPosition.BOTTOM,
         );
       } catch (e) {
-        print("Error saving OrderDetailsModel: $e");
+        debugPrint("Error saving OrderDetailsModel: $e");
       }
     }
 

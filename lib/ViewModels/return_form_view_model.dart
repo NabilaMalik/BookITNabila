@@ -5,13 +5,18 @@ import 'package:intl/intl.dart';
 import 'package:order_booking_app/ViewModels/return_form_details_view_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Databases/util.dart';
+import '../Models/ScreenModels/recovery_form_models.dart';
+import '../Models/order_master_model.dart';
 import '../Models/return_form_model.dart';
 import '../Repositories/return_form_repository.dart';
+import 'order_master_view_model.dart';
 
 class ReturnFormViewModel extends GetxController {
   var allReturnForm = <ReturnFormModel>[].obs;
   var selectedShop = ''.obs;  // Ensure this is initialized as an RxString
-  final List<String> shops = ["Shop 1", "Shop 2", "Shop 3", "Shop 4"];
+  var shops = <Shop>[].obs;
+  OrderMasterViewModel orderMasterViewModel = Get.put(OrderMasterViewModel());
+
   ReturnFormDetailsViewModel returnFormDetailsViewModel =Get.put(ReturnFormDetailsViewModel());
   ReturnFormRepository returnFormRepository = ReturnFormRepository();
   int returnFormSerialCounter = 1;
@@ -23,8 +28,40 @@ class ReturnFormViewModel extends GetxController {
     super.onInit();
     _loadCounter();
     fetchAllReturnForm();
+    initializeData();
   }
+  Future<void> initializeData() async {
+    await Future.delayed(Duration.zero); // Ensure this runs after the build phase
 
+    // Initialize shops dynamically based on OrderMasterViewModel data
+
+
+    // Filter orders with status "Pending"
+    List<OrderMasterModel> dispatchedOrders = orderMasterViewModel.allOrderMaster
+        .where((order) => order.order_status == "DISPATCHED")
+        .toList();
+
+    // Debug: Print the filtered orders
+    debugPrint("Filtered Orders (DISPATCHED): $dispatchedOrders");
+
+    // Aggregate data by shop name
+    for (var order in dispatchedOrders) {
+      String shopName = order.shop_name ?? "Unknown Shop"; // Default to "Unknown Shop" if null
+      double orderAmount = double.tryParse(order.total ?? '0') ?? 0.0; // Parse total to double
+
+      // Debug: debugPrint each shop and its amount
+      debugPrint("Processing Shop: $shopName, Amount: $orderAmount");
+
+      // Add or update the balance for the shop
+    }
+
+    // Convert the aggregated data into a list of Shop objects
+    // Refresh the observable list to update the UI
+    shops.refresh();
+    // Debug: Print the final list of shops
+    debugPrint("Final Shops List: ${shops.value}");
+
+  }
   Future<void> submitForm() async {
     bool isValid = true;
 
@@ -66,7 +103,7 @@ class ReturnFormViewModel extends GetxController {
       returnFormCurrentMonth = currentMonth;
     }
     if (kDebugMode) {
-      print('SR: $returnFormSerialCounter');
+      debugPrint('SR: $returnFormSerialCounter');
     }
   }
 

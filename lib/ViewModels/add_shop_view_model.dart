@@ -34,7 +34,7 @@ class AddShopViewModel extends GetxController {
       cities.value = fetchedCities;
     } catch (e) {
       if (kDebugMode) {
-        print('Failed to fetch cities: $e');
+        debugPrint('Failed to fetch cities: $e');
       }
     }
   }
@@ -101,7 +101,7 @@ class AddShopViewModel extends GetxController {
       shopCurrentMonth = currentMonth;
     }
     if (kDebugMode) {
-      print('SR: $shopSerialCounter');
+      debugPrint('SR: $shopSerialCounter');
     }
   }
 
@@ -156,6 +156,7 @@ class AddShopViewModel extends GetxController {
         phone_no: _shop.value.phone_no,
         alternative_phone_no: _shop.value.alternative_phone_no,
         city: _shop.value.city,
+        user_id: user_id.toString(),
         isGPSEnabled: _shop.value.isGPSEnabled,
       ), allAddShop);
 

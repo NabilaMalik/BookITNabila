@@ -21,13 +21,13 @@ class ProductsRepository extends GetxService{
       'quantity',
       'in_stock'
     ]);
-    // // Print the raw data retrieved from the database
+    // // debugPrint the raw data retrieved from the database
     // if (kDebugMode) {
-    //   print('Raw data from database:');
+    //   debugPrint('Raw data from database:');
     // }
     // for (var map in maps) {
     //   if (kDebugMode) {
-    //     print(map);
+    //     debugPrint("map");
     //   }
     // }
     List<ProductsModel> products = [];
@@ -78,12 +78,12 @@ class ProductsRepository extends GetxService{
 
   Future<void> fetchAndSaveProducts() async {
     if (kDebugMode) {
-      // print(Config.getApiUrlShops1);
-      print('http://103.149.32.30:8080/ords/valor_trading/products/get/');
+      // debugPrint(Config.getApiUrlShops1);
+      debugPrint('https://cloud.metaxperts.net:8443/erp/valor_trading/products/get/');
     }
     try {
      // List<dynamic> data = await ApiService.getData(Config.getApiUrlProducts);
-      List<dynamic> data = await ApiService.getData('http://103.149.32.30:8080/ords/valor_trading/products/get/');
+      List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/valor_trading/products/get/');
       var dbClient = await dbHelperProducts.db;
 
       // Save data to database
@@ -94,7 +94,7 @@ class ProductsRepository extends GetxService{
       }
       getProductsModel();
     } catch (e) {
-      print("Error fetching and saving products: $e");
+      debugPrint("Error fetching and saving products: $e");
     }
   }
 }

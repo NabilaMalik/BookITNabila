@@ -105,7 +105,7 @@ class AttendanceOutViewModel extends GetxController{
     fetchAllAttendanceOut();
   }
 
-  deleteAttendanceOut(int id){
+  deleteAttendanceOut(String id){
     attendanceOutRepository.delete(id);
     fetchAllAttendanceOut();
   }

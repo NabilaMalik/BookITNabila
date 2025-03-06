@@ -7,6 +7,7 @@ class ReturnFormDetailsModel{
   String? item;
   String? quantity;
   String? reason;
+  String? user_id;
   String? return_master_id;
   DateTime? return_details_date;
   DateTime? return_details_time;
@@ -15,6 +16,7 @@ class ReturnFormDetailsModel{
   ReturnFormDetailsModel({
     this.return_details_id,
     this.item,
+    this.user_id,
     this.quantity,
     this.reason,
     this.return_master_id,
@@ -28,6 +30,7 @@ class ReturnFormDetailsModel{
     return ReturnFormDetailsModel(
       return_details_id: json['return_details_id'],
       item: json['item'],
+      user_id: json['user_id'],
       quantity: json['quantity'],
       reason: json['reason'],
       return_master_id: json['return_master_id'],
@@ -44,6 +47,7 @@ class ReturnFormDetailsModel{
     return{
       'return_details_id':return_details_id,
       'item':item,
+      'user_id':user_id,
       'quantity':quantity,
       'reason':reason,
       'return_master_id':return_master_id,

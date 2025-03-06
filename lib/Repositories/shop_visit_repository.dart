@@ -34,6 +34,7 @@ class ShopVisitRepository extends GetxService{
       'signage',
       'product_reviewed',
       'feedback',
+      'user_id',
       'posted'
 ,      'body'
     ]);
@@ -144,6 +145,12 @@ class ShopVisitRepository extends GetxService{
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         debugPrint('Shop data posted successfully: ${shop.toMap()}');
+
+        // Delete the shop visit data from the local database after successful post
+        await delete(shop.shop_visit_master_id!);
+        if (kDebugMode) {
+          debugPrint('Shop with id ${shop.shop_visit_master_id} deleted from local database.');
+        }
       } else {
         final responseBody = await response.stream.bytesToString();
         throw Exception('Server error: ${response.statusCode}, $responseBody');
@@ -153,7 +160,6 @@ class ShopVisitRepository extends GetxService{
       throw Exception('Failed to post data: $e');
     }
   }
-
   Future<int> add(ShopVisitModel shopvisitModel) async {
     var dbClient = await dbHelper.db;
     return await dbClient.insert(
@@ -168,7 +174,7 @@ class ShopVisitRepository extends GetxService{
         whereArgs: [shopvisitModel.shop_visit_master_id]);
   }
 
-  Future<int> delete(int id) async {
+  Future<int> delete(String id) async {
     var dbClient = await dbHelper.db;
     return await dbClient
         .delete(shopVisitMasterTableName, where: 'shop_visit_master_id = ?', whereArgs: [id]);

@@ -33,18 +33,18 @@ class LocationRepository {
       location.add(LocationModel.fromMap(maps[i]));
     }
     if (kDebugMode) {
-      print('Raw data from Location database:');
+      debugPrint('Raw data from Location database:');
     }
     for (var map in maps) {
       if (kDebugMode) {
-        print(map);
+        debugPrint("map");
       }
     }
     return location;
   }
 
   Future<void> fetchAndSaveLocation() async {
-    print('${Config.getApiUrlLocation}$user_id');
+    debugPrint('${Config.getApiUrlLocation}$user_id');
     List<dynamic> data = await ApiService.getData('${Config.getApiUrlLocation}$user_id');
     var dbClient = await dbHelper.db;
 
@@ -79,22 +79,22 @@ class LocationRepository {
             shop.posted = 1;
             await update(shop);
             if (kDebugMode) {
-              print('Shop with id ${shop.location_id} posted and updated in local database.');
+              debugPrint('Shop with id ${shop.location_id} posted and updated in local database.');
             }
           } catch (e) {
             if (kDebugMode) {
-              print('Failed to post shop with id ${shop.location_id}: $e');
+              debugPrint('Failed to post shop with id ${shop.location_id}: $e');
             }
           }
         }
       } else {
         if (kDebugMode) {
-          print('Network not available. Unposted shops will remain local.');
+          debugPrint('Network not available. Unposted shops will remain local.');
         }
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Error fetching unposted shops: $e');
+        debugPrint('Error fetching unposted shops: $e');
       }
     }
   }
@@ -104,7 +104,7 @@ class LocationRepository {
     try {
       await Config.fetchLatestConfig();
       if (kDebugMode) {
-        print('Updated Shop Post API: ${Config.postApiUrlLocation}');
+        debugPrint('Updated Shop Post API: ${Config.postApiUrlLocation}');
       }
       var shopData = shop.toMap();
 
@@ -132,7 +132,11 @@ class LocationRepository {
       final response = await request.send();
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('Shop data posted successfully: ${shop.toMap()}');
+        debugPrint('Shop data posted successfully: ${shop.toMap()}');
+        await delete(shop.location_id!);
+        if (kDebugMode) {
+          debugPrint('location_id with id ${shop.location_id} deleted from local database.');
+        }
       } else {
         final responseBody = await response.stream.bytesToString();
         throw Exception('Server error: ${response.statusCode}, $responseBody');
@@ -180,7 +184,7 @@ class LocationRepository {
         where: 'location_id = ?', whereArgs: [locationModel.location_id]);
   }
 
-  Future<int> delete(int id) async {
+  Future<int> delete(String id) async {
     var dbClient = await dbHelper.db;
     return await dbClient
         .delete(locationTableName, where: 'location_id = ?', whereArgs: [id]);

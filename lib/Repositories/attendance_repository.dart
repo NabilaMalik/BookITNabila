@@ -31,17 +31,17 @@ class AttendanceRepository {
       attendance.add(AttendanceModel.fromMap(maps[i]));
     }
     if (kDebugMode) {
-      print('Raw data from Attendance database:');
+      debugPrint('Raw data from Attendance database:');
     }
     for (var map in maps) {
       if (kDebugMode) {
-        print(map);
+        debugPrint("map");
       }
     }
     return attendance;
   }
   Future<void> fetchAndSaveAttendance() async {
-    print('${Config.getApiUrlAttendanceIn}$user_id');
+    debugPrint('${Config.getApiUrlAttendanceIn}$user_id');
     List<dynamic> data = await ApiService.getData('${Config.getApiUrlAttendanceIn}$user_id');
     var dbClient = await dbHelper.db;
 
@@ -74,7 +74,7 @@ class AttendanceRepository {
             shop.posted = 1;
             await update(shop);
             if (kDebugMode) {
-              print('Shop with id ${shop.attendance_in_id} posted and updated in local database.');
+              debugPrint('Shop with id ${shop.attendance_in_id} posted and updated in local database.');
             }
           } catch (e) {
             if (kDebugMode) {
@@ -111,7 +111,12 @@ class AttendanceRepository {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('Shop data posted successfully: $shopData');
+        debugPrint('attendance_in_id data posted successfully: $shopData');
+        // Delete the shop visit data from the local database after successful post
+        await delete(shop.attendance_in_id!);
+        if (kDebugMode) {
+          debugPrint('attendance_in_id with id ${shop.attendance_in_id} deleted from local database.');
+        }
       } else {
         throw Exception('Server error: ${response.statusCode}, ${response.body}');
       }
@@ -131,7 +136,7 @@ class AttendanceRepository {
         where: 'attendance_in_id = ?', whereArgs: [attendanceModel.attendance_in_id]);
   }
 
-  Future<int> delete(int id) async {
+  Future<int> delete(String id) async {
     var dbClient = await dbHelper.db;
     return await dbClient
         .delete(attendanceTableName, where: 'id = ?', whereArgs: [id]);

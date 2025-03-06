@@ -40,11 +40,11 @@ class LoginRepository extends GetxService{
 
     // Print the raw data retrieved from the database
     if (kDebugMode) {
-      print('Raw data from database:');
+      debugPrint('Raw data from database:');
     }
     for (var map in maps) {
       if (kDebugMode) {
-        print(map);
+        debugPrint("map");
       }
     }
 
@@ -56,7 +56,7 @@ class LoginRepository extends GetxService{
 
     // Print the list of
     if (kDebugMode) {
-      print('Parsed LoginModels objects:');
+      debugPrint('Parsed LoginModels objects:');
     }
 
     return login;

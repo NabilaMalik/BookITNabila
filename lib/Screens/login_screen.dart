@@ -5,6 +5,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:order_booking_app/Databases/dp_helper.dart';
 import 'package:order_booking_app/Models/return_form_model.dart';
 import 'package:order_booking_app/Models/returnform_details_model.dart';
 import 'package:order_booking_app/Screens/home_screen.dart';
@@ -43,6 +44,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final _formKey = GlobalKey<FormState>();
   bool isChecked = true;
+  bool isLoading = false;
+
   bool isPasswordVisible = false;
   // String? email;
   // String? password;
@@ -89,6 +92,9 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (success) {
+      setState(() {
+        isLoading = true; // Start loading
+      });
       try {
         AddShopViewModel addShopViewModel = Get.put(AddShopViewModel());
         ProductsViewModel productsViewModel = Get.put(ProductsViewModel());
@@ -102,10 +108,12 @@ class _LoginScreenState extends State<LoginScreen> {
         AttendanceViewModel attendanceViewModel = Get.put(AttendanceViewModel());
         AttendanceOutViewModel attendanceOutViewModel = Get.put(AttendanceOutViewModel());
         LocationViewModel locationViewModel = Get.put(LocationViewModel());
-
+         // await DBHelper.clearData();
         await addShopViewModel.fetchAndSaveShop();
         await productsViewModel.fetchAndSaveProducts();
         await shopVisitDetailsViewModel.initializeProductData();
+        await orderMasterViewModel.fetchAndSaveOrderMaster();
+        await orderDetailsViewModel.fetchAndSaveOrderDetails();
 
         // If the above operations complete successfully, navigate to the home screen
         Future.delayed(Duration(milliseconds: 300), () {
@@ -121,12 +129,16 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } else {
       Get.snackbar('Error', 'Invalid user ID or password', snackPosition: SnackPosition.BOTTOM);
-    }
+      setState(() {
+        isLoading = false;
+      });
 
-    // setState(() {
-    //   _isLoading = false;
-    //   _loadingMessage = '';
-    // });
+    }
+    setState(() {
+      isLoading = false;
+      _loadingMessage = '';
+    });
+    return;
   }
 
  _handleSignIn() async {
@@ -278,7 +290,7 @@ class _LoginScreenState extends State<LoginScreen> {
                  height: size.height*0.065,
                  width: size.width*0.45,
                  onTap: _login,
-                 buttonText: "Sign In",
+                 buttonText: isLoading ? 'Please wait...':'Sign in',
                  padding: EdgeInsets.symmetric(horizontal: size.width * 0.01) ,
                  gradientColors: const [Colors.blue,Colors.blue,],
                ),

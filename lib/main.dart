@@ -83,15 +83,15 @@ Future<void> main() async {
     runApp(MyApp(isAuthenticated));
     debugPrint("App is running.");
   }, (error, stackTrace) {
-    print('Error: $error');
-    print('Stack Trace: $stackTrace');
+    debugPrint('Error: $error');
+    debugPrint('Stack Trace: $stackTrace');
   });
 }
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     if (kDebugMode) {
-      print("WorkManager MMM ");
+      debugPrint("WorkManager MMM ");
     }
     return Future.value(true);
   });
@@ -100,7 +100,7 @@ void callbackDispatcher() {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   if (kDebugMode) {
-    print("Handling a background message: ${message.messageId}");
+    debugPrint("Handling a background message: ${message.messageId}");
   }
 }
 

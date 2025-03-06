@@ -42,6 +42,7 @@ class RecoveryFormScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    viewModel.initializeData();
     final TextEditingController cash_recoveryController = TextEditingController();
 
     return SafeArea(
@@ -69,7 +70,6 @@ class RecoveryFormScreen extends StatelessWidget {
                     Obx(() {
                       // Debug: Print the contents of viewModel.shops
                       debugPrint("Shops in ViewModel: ${viewModel.shops}");
-
                       return DropdownButtonFormField<String>(
                         decoration: const InputDecoration(
                           labelText: "Shop Name",
@@ -89,6 +89,7 @@ class RecoveryFormScreen extends StatelessWidget {
                         }).toList(),
                         onChanged: (value) {
                           viewModel.selectedShop.value = value!;
+                          viewModel.fetchAndSaveCurrentBalance(value);
                           viewModel.updatecurrent_balance(value);
                         },
                       );

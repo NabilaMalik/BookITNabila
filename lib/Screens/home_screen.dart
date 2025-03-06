@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:order_booking_app/Databases/util.dart';
 import 'package:order_booking_app/ViewModels/shop_visit_view_model.dart';
 import 'package:order_booking_app/screens/add_shop_screen.dart';
 import 'package:order_booking_app/screens/order_booking_status_screen.dart';
@@ -9,6 +10,7 @@ import 'package:order_booking_app/screens/recovery_form_screen.dart';
 import 'package:order_booking_app/screens/return_form_screen.dart';
 import 'package:order_booking_app/screens/shop_visit_screen.dart';
 import 'package:rive/rive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../ViewModels/add_shop_view_model.dart';
 import '../ViewModels/return_form_view_model.dart';
 import '../ViewModels/shop_visit_details_view_model.dart';
@@ -48,7 +50,7 @@ class _RiveAppHomeState extends State<HomeScreen>
   late Animation<double> _sidebarAnim;
   late SMIBool _menuBtn;
   Widget _tabBody = Container(color: RiveAppTheme.backgroundLight);
-
+  bool clocked= false;
   final springDesc = const SpringDescription(
     mass: 0.1,
     stiffness: 40,
@@ -94,6 +96,23 @@ class _RiveAppHomeState extends State<HomeScreen>
         : SystemUiOverlayStyle.light);
   }
 
+// Function to retrieve saved values from SharedPreferences
+  _retrieveSavedValues() async {
+    // Get instance of SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Update state with retrieved values
+    setState(() {
+      // user_id = prefs.getString('userId') ?? '';
+      user_id = 'B02';
+      // userNames = prefs.getString('userNames') ?? '';
+      // userCitys = prefs.getString('userCitys') ?? '';
+      // userDesignation = prefs.getString('userDesignation') ?? '';
+      // userBrand = prefs.getString('userBrand') ?? '';
+    });
+    debugPrint(user_id);
+  }
+
   // final List<Widget> _screens = [
   //   const HomeTabView(),
   //   commonTabScene("User"),
@@ -128,6 +147,7 @@ class _RiveAppHomeState extends State<HomeScreen>
     super.initState();
     // productsViewModel.fetchAndSaveProducts();
     //
+    _retrieveSavedValues();
     addShopViewModel.fetchAllAddShop();
     shopVisitViewModel.fetchAllShopVisit();
     shopVisitDetailsViewModel.initializeProductData();
@@ -200,21 +220,29 @@ class _RiveAppHomeState extends State<HomeScreen>
                 onTap: () => Get.to(() => AddShopScreen()),
               ),
               ActionBox(
-                imagePath: shop_visit,
-                label: 'Shop Visit',
-                onTap: () => Get.offAllNamed("/ShopVisitScreen")
-                // onTap: () => Get.to(() => ShopVisitScreen()),
-              ),
+                  imagePath: shop_visit,
+                  label: 'Shop Visit',
+                  onTap: () => Get.offAllNamed("/ShopVisitScreen")
+                  // onTap: () => Get.to(() => ShopVisitScreen()),
+                  ),
               ActionBox(
                 imagePath: return_form,
                 label: 'Return Form',
-                onTap: () => Get.to(() => const ReturnFormScreen()),
+                onTap: () => Get.to(() =>  ReturnFormScreen()),
               ),
               ActionBox(
-                imagePath: recovery2,
-                label: 'Recovery',
-                onTap: () => Get.to(() => RecoveryFormScreen()),
-              ),
+                  imagePath: recovery2,
+                  label: 'Recovery',
+                  onTap: () async {
+                    // if(clocked==false){
+                    //   Get.snackbar('Please clock In', 'Please start timer first', snackPosition: SnackPosition.BOTTOM);
+                    // }else {
+                      await orderMasterViewModel.fetchAndSaveOrderMaster();
+                      Get.to(() => RecoveryFormScreen());
+                    }
+  // }
+                  // onTap: () => Get.to(() => RecoveryFormScreen()),
+                  ),
               ActionBox(
                 imagePath: order_booking_status,
                 label: 'Booking Status',

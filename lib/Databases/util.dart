@@ -2,12 +2,13 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // import 'package:connectivity/connectivity.dart';
 
 String globalselectedbrand="";
 String userBrand="";
-String user_id= "B02";
+String user_id= "";
 String? shop_visit_master_id = "";
 String? returnMasterId = "";
 String? order_master_id = "";
@@ -33,6 +34,7 @@ const addShopTableName = "addShop";
 const shopVisitMasterTableName = "shopMasterVisit";
 const shopVisitDetailsTableName = "shopVisitDetails";
 const orderMasterTableName = "orderMaster";
+const orderMasterStatusTableName = "orderMasterStatus";
 const orderDetailsTableName = "orderDetails";
 const returnFormMasterTableName = "reConfirmOrder";
 const returnFormDetailsTableName = "returnFormDetails";

@@ -10,21 +10,22 @@ import 'package:order_booking_app/ViewModels/shop_visit_view_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
-import '../Models/order_master_model.dart';
+import '../Models/order_master_status_model.dart';
 import '../Repositories/order_master_repository.dart';
+import '../Repositories/order_master_status_repository.dart';
 import 'ProductsViewModel.dart';
 
-class OrderMasterViewModel extends GetxController {
+class OrderMasterStatusViewModel extends GetxController {
   DBHelper dbHelper = Get.put(DBHelper());
   final ImagePicker picker = ImagePicker();
   ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
-  var allOrderMaster = <OrderMasterModel>[].obs;
-  ProductsRepository productsRepository = Get.put(ProductsRepository());
-  ProductsViewModel productsViewModel = Get.put(ProductsViewModel());
+  var allOrderMaster = <OrderMasterStatusModel>[].obs;
+  // ProductsRepository productsRepository = Get.put(ProductsRepository());
+  // ProductsViewModel productsViewModel = Get.put(ProductsViewModel());
   OrderDetailsViewModel orderDetailsViewModel =
-      Get.put(OrderDetailsViewModel());
-  OrderMasterRepository orderMasterRepository =
-      Get.put(OrderMasterRepository());
+  Get.put(OrderDetailsViewModel());
+  OrderMasterStatusRepository orderMasterRepository =
+  Get.put(OrderMasterStatusRepository());
   var phone_no = ''.obs;
   GlobalKey<FormState> get formKey => _formKey;
   final _formKey = GlobalKey<FormState>();
@@ -99,7 +100,7 @@ class OrderMasterViewModel extends GetxController {
   Future<void> submitForm(GlobalKey<FormState> formKey) async {
     if (formKey.currentState!.validate()) {
       final orderSerial =
-          generateNewOrderId(user_id); // Sirf serial generate hoga
+      generateNewOrderId(user_id); // Sirf serial generate hoga
       order_master_id = orderSerial;
       debugPrint("Saving filtered products...");
       await orderDetailsViewModel.saveFilteredProducts();
@@ -110,9 +111,9 @@ class OrderMasterViewModel extends GetxController {
     // if (validateForm()) {
     if (shopVisitViewModel.selectedShop.value.isNotEmpty) {
       final orderSerial =
-          await generateAndSaveOrderId(user_id); // Generate aur save dono yahan
+      await generateAndSaveOrderId(user_id); // Generate aur save dono yahan
       order_master_id = orderSerial;
-      OrderMasterModel orderMasterModel = OrderMasterModel(
+      OrderMasterStatusModel orderMasterModel = OrderMasterStatusModel(
           shop_name: shopVisitViewModel.selectedShop.value,
           owner_name: shopVisitViewModel.selectedBrand.value,
           phone_no: shopVisitViewModel.phone_number.value,
@@ -125,7 +126,7 @@ class OrderMasterViewModel extends GetxController {
           order_master_id: order_master_id.toString());
       // await orderMasterRepository.postDataFromDatabaseToAPI();
       //debugPrint(orderMasterModel);
-      debugPrint("Submitting OrderMasterModel: ${orderMasterModel.toMap()}");
+      debugPrint("Submitting OrderMasterStatusModel: ${orderMasterModel.toMap()}");
       await addConfirmOrder(orderMasterModel);
 
       debugPrint("Saving filtered products...");
@@ -142,7 +143,7 @@ class OrderMasterViewModel extends GetxController {
   }
 
   fetchAllOrderMaster() async {
-    var confirmorder = await orderMasterRepository.getConfirmOrder();
+    var confirmorder = await orderMasterRepository.getOrderMasterStatus();
     allOrderMaster.value = confirmorder;
   }
 
@@ -151,12 +152,12 @@ class OrderMasterViewModel extends GetxController {
     await fetchAllOrderMaster();
   }
 
-  addConfirmOrder(OrderMasterModel orderMasterModel) {
+  addConfirmOrder(OrderMasterStatusModel orderMasterModel) {
     orderMasterRepository.add(orderMasterModel);
     fetchAllOrderMaster();
   }
 
-  updateConfirmOrder(OrderMasterModel orderMasterModel) {
+  updateConfirmOrder(OrderMasterStatusModel orderMasterModel) {
     orderMasterRepository.update(orderMasterModel);
     fetchAllOrderMaster();
   }

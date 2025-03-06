@@ -112,7 +112,12 @@ class AttendanceOutRepository extends GetxService {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        debugPrint('Shop data posted successfully: $shopData');
+        debugPrint('attendance_out_id data posted successfully: $shopData');
+        // Delete the shop visit data from the local database after successful post
+        await delete(shop.attendance_out_id!);
+        if (kDebugMode) {
+          debugPrint('attendance_out_id with id ${shop.attendance_out_id} deleted from local database.');
+        }
       } else {
         throw Exception('Server error: ${response.statusCode}, ${response.body}');
       }
@@ -134,7 +139,7 @@ class AttendanceOutRepository extends GetxService {
         where: 'attendance_out_id = ?', whereArgs: [attendanceoutModel.attendance_out_id]);
   }
 
-  Future<int> delete(int id) async {
+  Future<int> delete(String id) async {
     var dbClient = await dbHelper.db;
     return await dbClient
         .delete(attendanceOutTableName, where: 'attendance_out_id = ?', whereArgs: [id]);

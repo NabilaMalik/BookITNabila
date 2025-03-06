@@ -27,6 +27,7 @@ OrderDetailsViewModel orderDetailsViewModel =Get.put(OrderDetailsViewModel());
       'owner_name',
       'order_status',
       'total',
+      'user_id',
       'credit_limit',
       'required_delivery_date',
       'posted'
@@ -47,17 +48,40 @@ OrderDetailsViewModel orderDetailsViewModel =Get.put(OrderDetailsViewModel());
   }
   Future<void> fetchAndSaveOrderMaster() async {
     debugPrint('${Config.getApiUrlOrderMaster}$user_id');
-    List<dynamic> data = await ApiService.getData('${Config.getApiUrlOrderMaster}$user_id');
+    List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/test1/ordermasterget/get/$user_id');
     var dbClient = await dbHelper.db;
 
     // Save data to database
     for (var item in data) {
       item['posted'] = 1; // Set posted to 1
       OrderMasterModel model = OrderMasterModel.fromMap(item);
+
+      // Check if the order_master_id already exists in the local database
+      List<Map> existingRecords = await dbClient.query(
+        orderMasterTableName,
+        where: 'order_master_id = ?',
+        whereArgs: [model.order_master_id],
+      );
+
+      // If a record with the same order_master_id exists, delete it
+      if (existingRecords.isNotEmpty) {
+        await dbClient.delete(
+          orderMasterTableName,
+          where: 'order_master_id = ?',
+          whereArgs: [model.order_master_id],
+        );
+        if (kDebugMode) {
+          debugPrint('Deleted existing record with order_master_id: ${model.order_master_id}');
+        }
+      }
+
+      // Insert the new record from the API
       await dbClient.insert(orderMasterTableName, model.toMap());
+      if (kDebugMode) {
+        debugPrint('Inserted new record with order_master_id: ${model.order_master_id}');
+      }
     }
   }
-
   Future<List<OrderMasterModel>> getUnPostedOrderMaster() async {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(

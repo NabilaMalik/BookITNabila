@@ -31,6 +31,7 @@ class AddShopRepository extends GetxService {
       'shop_name',
       'city',
       'shop_date',
+      'user_id',
       'shop_time',
       'shop_address',
       'owner_name',

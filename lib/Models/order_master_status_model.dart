@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-class OrderMasterModel{
+class OrderMasterStatusModel{
   String? order_master_id;
   String? order_status;
   String? shop_name;
@@ -14,8 +14,8 @@ class OrderMasterModel{
   DateTime? order_master_date;
   DateTime? order_master_time;
   int posted;
-  
-  OrderMasterModel({
+
+  OrderMasterStatusModel({
     this.order_master_id,
     this.shop_name,
     this.order_status,
@@ -30,8 +30,8 @@ class OrderMasterModel{
     this.order_master_time,
     this.posted = 0,
   });
-  factory OrderMasterModel.fromMap(Map<dynamic,dynamic> json){
-    return OrderMasterModel(
+  factory OrderMasterStatusModel.fromMap(Map<dynamic,dynamic> json){
+    return OrderMasterStatusModel(
       order_master_id: json['order_master_id'],
       shop_name: json['shop_name'],
       owner_name: json['owner_name'],

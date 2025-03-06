@@ -58,12 +58,12 @@ class LocationViewModel extends GetxController {
       locationCurrentMonth = currentMonth;
     }
     if (kDebugMode) {
-      print('SR: $locationSerialCounter');
+      debugPrint('SR: $locationSerialCounter');
     }
   }
 
   Future<void> _saveCounter() async {
-    print("Initializing SharedPreferences _saveCounter...");
+    debugPrint("Initializing SharedPreferences _saveCounter...");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('locationSerialCounter', locationSerialCounter);
     await prefs.setString('locationCurrentMonth', locationCurrentMonth);
@@ -109,8 +109,8 @@ class LocationViewModel extends GetxController {
           shopAddress.value = address.trim().isEmpty ? "Not Verified" : address;
         }
 
-        print('Latitude: ${globalLatitude1.value}, Longitude: ${globalLongitude1.value}');
-        print('Address is: ${shopAddress.value}');
+        debugPrint('Latitude: ${globalLatitude1.value}, Longitude: ${globalLongitude1.value}');
+        debugPrint('Address is: ${shopAddress.value}');
 
       } catch (e) {
       //  Get.snackbar('Error getting location: $e',backgroundColor: Colors.red);
@@ -119,7 +119,7 @@ class LocationViewModel extends GetxController {
   }
   // Function to load clock status from SharedPreferences
   loadClockStatus() async {
-    print("Initializing SharedPreferences loadClockStatus...");
+    debugPrint("Initializing SharedPreferences loadClockStatus...");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // prefs.reload();
     isClockedIn.value = prefs.getBool('isClockedIn') ?? false;
@@ -140,14 +140,14 @@ class LocationViewModel extends GetxController {
     String formattedTime = _formatDateTime(currentTime);
     prefs.setString('savedTime', formattedTime);
     if (kDebugMode) {
-      print("Save Current Time");
+      debugPrint("Save Current Time");
     }
   }
   // Function to refresh the clock timer
  clockRefresh() async {
       newsecondpassed.value = 0;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
-      // print("Initializing SharedPreferences clockRefresh...");
+      // debugPrint("Initializing SharedPreferences clockRefresh...");
       SharedPreferences prefs = await SharedPreferences.getInstance();
          prefs.reload();
         newsecondpassed.value = prefs.getInt('secondsPassed')!;
@@ -168,7 +168,7 @@ class LocationViewModel extends GetxController {
   Future<String> stopTimer() async {
     _timer?.cancel();
     String totalTime = _formatDuration(newsecondpassed.value.toString());
-    print("Initializing SharedPreferences stopTimer...");
+    debugPrint("Initializing SharedPreferences stopTimer...");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt('secondsPassed', 0);
 
@@ -183,7 +183,7 @@ class LocationViewModel extends GetxController {
   }
 // Function to save clock status to SharedPreferences
   saveClockStatus(bool clockedIn) async {
-    print("Initializing SharedPreferences saveClockStatus...");
+    debugPrint("Initializing SharedPreferences saveClockStatus...");
     SharedPreferences prefs = await SharedPreferences.getInstance();
    await prefs.reload();
    await prefs.setBool('isClockedIn', clockedIn);
@@ -208,7 +208,7 @@ class LocationViewModel extends GetxController {
       gpx = GpxReader().fromString(gpxContent);
     } catch (e) {
       if (kDebugMode) {
-        print("Error parsing GPX content: $e");
+        debugPrint("Error parsing GPX content: $e");
       }
       return 0.0;
     }
@@ -230,7 +230,7 @@ class LocationViewModel extends GetxController {
     }
 
     if (kDebugMode) {
-      print("CUT: $totalDistance");
+      debugPrint("CUT: $totalDistance");
     }
 
     return totalDistance;
@@ -247,7 +247,7 @@ saveLocation() async {
   double totalDistance = await calculateTotalDistance("${downloadDirectory?.path}/track$date.gpx");
   if (!maingpxFile.existsSync()) {
     if (kDebugMode) {
-      print('GPX file does not exist');
+      debugPrint('GPX file does not exist');
     }
     return;
   }
@@ -257,7 +257,7 @@ saveLocation() async {
   final orderSerial = generateNewOrderId(user_id);
  await addLocation(LocationModel(
     location_id:  orderSerial.toString(),
-    user_id: user_id,
+   user_id: user_id.toString(),
      total_distance: totalDistance.toString(),
      file_name: "$date.gpx",
     booker_name: user_id,
@@ -269,40 +269,40 @@ saveLocation() async {
   Future<void> requestPermissions() async {
 
     if (kDebugMode) {
-      print('Requesting notification permission...');
+      debugPrint('Requesting notification permission...');
     }
     if (await Permission.notification.request().isDenied) {
       // Notification permission not granted
       if (kDebugMode) {
-        print('Notification permission denied');
+        debugPrint('Notification permission denied');
       }
       SystemChannels.platform.invokeMethod('SystemNavigator.pop');
       return;
     }
 
     if (kDebugMode) {
-      print('Requesting location permission...');
+      debugPrint('Requesting location permission...');
     }
     if (await Permission.location.request().isDenied) {
       // Location permission not granted
       if (kDebugMode) {
-        print('Location permission denied');
+        debugPrint('Location permission denied');
       }
       SystemChannels.platform.invokeMethod('SystemNavigator.pop');
     } else if (await Permission.location.request().isGranted) {
       if (kDebugMode) {
-        print('Location permission granted');
+        debugPrint('Location permission granted');
       }
       // Check and request background location permission if necessary
       if (await Permission.locationAlways.request().isDenied) {
         // Background location permission not granted
         if (kDebugMode) {
-          print('Background location permission denied');
+          debugPrint('Background location permission denied');
         }
         SystemChannels.platform.invokeMethod('SystemNavigator.pop');
       } else {
         if (kDebugMode) {
-          print('All permissions granted');
+          debugPrint('All permissions granted');
         }
         // Navigator.of(context).push(
         //   MaterialPageRoute(
@@ -328,7 +328,7 @@ saveLocation() async {
     fetchAllLocation();
   }
 
-  void deleteLocation(int id) {
+  void deleteLocation(String id) {
     locationRepository.delete(id);
     fetchAllLocation();
   }
