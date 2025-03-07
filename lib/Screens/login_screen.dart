@@ -100,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final addShopViewModel = Get.put(AddShopViewModel());
       final productsViewModel = Get.put(ProductsViewModel());
-     final  shopVisitViewModel = Get.put(ShopVisitViewModel());
+      final  shopVisitViewModel = Get.put(ShopVisitViewModel());
       final shopVisitDetailsViewModel = Get.put(ShopVisitDetailsViewModel());
       final orderMasterViewModel = Get.put(OrderMasterViewModel());
       final orderDetailsViewModel = Get.put(OrderDetailsViewModel());
@@ -112,11 +112,11 @@ class _LoginScreenState extends State<LoginScreen> {
       final locationViewModel = Get.put(LocationViewModel());
       // Explicitly define the type for Future.wait
       await Future.wait<void>([
-        addShopViewModel.fetchAndSaveShop(),
-        productsViewModel.fetchAndSaveProducts(),
-        orderMasterViewModel.fetchAndSaveOrderMaster(),
-        orderDetailsViewModel.fetchAndSaveOrderDetails(),
-        shopVisitDetailsViewModel.initializeProductData(),
+        await addShopViewModel.fetchAndSaveShop(),
+        await productsViewModel.fetchAndSaveProducts(),
+        await orderMasterViewModel.fetchAndSaveOrderMaster(),
+        await orderDetailsViewModel.fetchAndSaveOrderDetails(),
+         await shopVisitDetailsViewModel.initializeProductData(),
       ]);
 
       Get.off(() => HomeScreen());

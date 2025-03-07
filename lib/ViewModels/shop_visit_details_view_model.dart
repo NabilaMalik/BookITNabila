@@ -83,7 +83,7 @@ class ShopVisitDetailsViewModel extends GetxController {
     _saveCounter();
     return orderId;
   }
-  Future<void> initializeProductData() async {
+initializeProductData() async {
     try {
       // // Fetch all products before accessing them
       // await productsViewModel.fetchAllProductsModel();

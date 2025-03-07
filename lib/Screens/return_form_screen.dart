@@ -9,6 +9,8 @@ import '../ViewModels/ScreenViewModels/return_form_view_model.dart';
 import '../ViewModels/order_master_view_model.dart';
 import '../ViewModels/return_form_details_view_model.dart';
 import '../ViewModels/return_form_view_model.dart';
+import 'Components/custom_button.dart';
+import 'Components/custom_editable_menu_option.dart';
 import 'ReturnFormScreenComponents/form_row.dart';
 import 'ReturnFormScreenComponents/return_appbar.dart';
 
@@ -102,9 +104,10 @@ class ReturnFormScreen extends StatelessWidget {
                             index: index);
                       }).toList(),
                     )),
-                const SizedBox(height: 30),
+                const SizedBox(height: 10),
                  AddRowButton(),
                 const SizedBox(height: 40),
+
                 const SubmitButton(),
               ],
             ),
@@ -124,19 +127,17 @@ class AddRowButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ReturnFormViewModel viewModel = Get.find();
-    return ElevatedButton(
-      onPressed: returnFormDetailsViewModel.addRow,
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 15),
-        backgroundColor: Colors.red,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-      ),
-      child: const Text(
-        'Add Row',
-        style: TextStyle(fontSize: 20, color: Colors.white),
-      ),
+    return CustomButton(
+      buttonText: "Add Row",
+      textStyle: TextStyle(color: Colors.red, fontSize: 16),
+      onTap: returnFormDetailsViewModel.addRow,
+      gradientColors: [Colors.yellow, Colors.yellow],
+      padding:const EdgeInsets.symmetric(horizontal: 45, vertical: 15) ,
+      width: 200,
+      height: 50,
+      icon: Icons.add_circle_outlined,
+      iconColor: Colors.red,
+      iconPosition: IconPosition.right,
     );
   }
 }
@@ -147,19 +148,25 @@ class SubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ReturnFormViewModel viewModel = Get.find();
-    return ElevatedButton(
-      onPressed: viewModel.submitForm,
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-        backgroundColor: Colors.blue,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-      ),
-      child: const Text(
-        'Submit',
-        style: TextStyle(fontSize: 20, color: Colors.white),
-      ),
-    );
+    return
+      CustomButton(
+        buttonText: "Submit",
+        onTap: viewModel.submitForm,
+        gradientColors: [Colors.blue, Colors.blue],
+      );
+    //   ElevatedButton(
+    //   onPressed: viewModel.submitForm,
+    //   style: ElevatedButton.styleFrom(
+    //     padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+    //     backgroundColor: Colors.blue,
+    //     shape: RoundedRectangleBorder(
+    //       borderRadius: BorderRadius.circular(20),
+    //     ),
+    //   ),
+    //   child: const Text(
+    //     'Submit',
+    //     style: TextStyle(fontSize: 20, color: Colors.white),
+    //   ),
+    // );
   }
 }

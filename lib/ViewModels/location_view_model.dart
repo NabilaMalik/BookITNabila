@@ -121,7 +121,7 @@ class LocationViewModel extends GetxController {
   loadClockStatus() async {
     debugPrint("Initializing SharedPreferences loadClockStatus...");
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // prefs.reload();
+    await prefs.reload();
     isClockedIn.value = prefs.getBool('isClockedIn') ?? false;
     if (isClockedIn.value == true) {
       startTimerFromSavedTime();
@@ -144,15 +144,30 @@ class LocationViewModel extends GetxController {
     }
   }
   // Function to refresh the clock timer
- clockRefresh() async {
-      newsecondpassed.value = 0;
+ // clockRefresh() async {
+ //      newsecondpassed.value = 0;
+ //    _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+ //      // debugPrint("Initializing SharedPreferences clockRefresh...");
+ //      SharedPreferences prefs = await SharedPreferences.getInstance();
+ //         prefs.reload();
+ //        newsecondpassed.value = prefs.getInt('secondsPassed');
+ //      });
+ //
+ //  }
+  clockRefresh() async {
+    newsecondpassed.value = 0;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       // debugPrint("Initializing SharedPreferences clockRefresh...");
       SharedPreferences prefs = await SharedPreferences.getInstance();
-         prefs.reload();
-        newsecondpassed.value = prefs.getInt('secondsPassed')!;
-      });
-
+      await prefs.reload();
+      int? secondsPassed = prefs.getInt('secondsPassed');
+      if (secondsPassed != null) {
+        newsecondpassed.value = secondsPassed;
+      } else {
+        // Handle the case where 'secondsPassed' is null, e.g., set a default value
+        newsecondpassed.value = 0;
+      }
+    });
   }
   String _formatDuration(String secondsString) {
     int seconds = int.parse(secondsString);

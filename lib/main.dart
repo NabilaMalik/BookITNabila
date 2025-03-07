@@ -61,7 +61,7 @@ Future<void> main() async {
     await Config.initialize();
     debugPrint("Config initialized.");
 
-    debugPrint("Initializing SharedPreferences...");
+    debugPrint("Initializing SharedPreferences main...");
     final prefs = await SharedPreferences.getInstance();
     prefs.reload();
     bool isAuthenticated = prefs.getBool('isAuthenticated') ?? false;

@@ -35,10 +35,10 @@ class OrderDetailsRepository extends GetxService {
     if (kDebugMode) {
       debugPrint('OrderDetails Raw data from database:');
     }
-    // ignore: unused_local_variable
+
     for (var map in maps) {
       if (kDebugMode) {
-        debugPrint("map");
+        debugPrint("OrderDetails: $map");
       }
     }
     return reconfirmorder;

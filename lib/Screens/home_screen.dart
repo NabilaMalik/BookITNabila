@@ -12,6 +12,7 @@ import 'package:order_booking_app/screens/shop_visit_screen.dart';
 import 'package:rive/rive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../ViewModels/add_shop_view_model.dart';
+import '../ViewModels/order_details_view_model.dart';
 import '../ViewModels/return_form_view_model.dart';
 import '../ViewModels/shop_visit_details_view_model.dart';
 import 'HomeScreenComponents/action_box.dart';
@@ -39,6 +40,7 @@ class _RiveAppHomeState extends State<HomeScreen>
   late final shopVisitViewModel = Get.put(ShopVisitViewModel());
   late final shopVisitDetailsViewModel = Get.put(ShopVisitDetailsViewModel());
   late final orderMasterViewModel = Get.put(OrderMasterViewModel());
+  late final orderDetailsViewModel = Get.put(OrderDetailsViewModel());
   late final recoveryFormViewModel = Get.put(RecoveryFormViewModel());
   late final returnFormViewModel = Get.put(ReturnFormViewModel());
   late final attendanceViewModel = Get.put(AttendanceViewModel());
@@ -228,7 +230,14 @@ class _RiveAppHomeState extends State<HomeScreen>
               ActionBox(
                 imagePath: return_form,
                 label: 'Return Form',
-                onTap: () => Get.to(() =>  ReturnFormScreen()),
+                onTap: () async {
+                  // if(clocked==false){
+                  //   Get.snackbar('Please clock In', 'Please start timer first', snackPosition: SnackPosition.BOTTOM);
+                  // }else {
+                  // await orderDetailsViewModel.fetchAndSaveOrderDetails();
+                  Get.to(() => ReturnFormScreen());
+              }
+                // onTap: () => Get.to(() =>  ReturnFormScreen()),
               ),
               ActionBox(
                   imagePath: recovery2,

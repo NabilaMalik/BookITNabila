@@ -34,7 +34,7 @@ class OrderDetailsModel{
       in_stock: json['in_stock'],
       rate:json['rate'],
       user_id: json['user_id'],
-      amount:json['amount'],
+      amount:json['amount'].toString(),
         order_details_date: DateTime.now(),
         // Always set live date
         order_details_time: DateTime.now(),
