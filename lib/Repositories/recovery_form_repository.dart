@@ -32,6 +32,7 @@ class RecoveryFormRepository {
     if (kDebugMode) {
       debugPrint('Recovery form Raw data from database:');
     }
+    // ignore: unused_local_variable
     for (var map in maps) {
       if (kDebugMode) {
         debugPrint("map");
@@ -57,7 +58,7 @@ class RecoveryFormRepository {
     String month='';
 
     final db = await dbHelper.db;
-    final result = await db!.rawQuery('''
+    final result = await db.rawQuery('''
     SELECT recovery_id 
     FROM $recoveryFormTableName
     WHERE user_id = ? AND recovery_id IS NOT NULL

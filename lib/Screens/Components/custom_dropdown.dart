@@ -87,6 +87,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
             ),
             child: Row(
               children: [
+                // ignore: unnecessary_null_comparison
                 if (widget.icon != null)
                   Container(
                     decoration: BoxDecoration(

@@ -72,6 +72,8 @@ class ReturnFormViewModel extends GetxController {
       await addReturnForm(ReturnFormModel(
         return_master_id: returnMasterId,
         select_shop: selectedShop.value,
+        user_id: user_id,
+        // return_amount:
       ));
       await returnFormDetailsViewModel.submitForm();
       await returnFormDetailsViewModel.fetchAllReturnFormDetails();
@@ -101,6 +103,7 @@ class ReturnFormViewModel extends GetxController {
       debugPrint('SR: $returnFormSerialCounter');
     }
   }
+
 
   Future<void> _saveCounter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -143,7 +146,7 @@ class ReturnFormViewModel extends GetxController {
     fetchAllReturnForm();
   }
 
-  deleteReturnForm(int id) {
+  deleteReturnForm(String id) {
     returnFormRepository.delete(id);
     fetchAllReturnForm();
   }

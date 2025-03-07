@@ -35,6 +35,7 @@ class OrderDetailsRepository extends GetxService {
     if (kDebugMode) {
       debugPrint('OrderDetails Raw data from database:');
     }
+    // ignore: unused_local_variable
     for (var map in maps) {
       if (kDebugMode) {
         debugPrint("map");
@@ -44,7 +45,8 @@ class OrderDetailsRepository extends GetxService {
   }
   Future<void> fetchAndSaveOrderDetails() async {
     debugPrint('${Config.getApiUrlOrderDetails}$user_id');
-    List<dynamic> data = await ApiService.getData('${Config.getApiUrlOrderDetails}$user_id');
+    //List<dynamic> data = await ApiService.getData('${Config.getApiUrlOrderDetails}$user_id');
+    List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/test1/orderdetailsget/get/$user_id');
     var dbClient = await dbHelper.db;
 
     // Save data to database

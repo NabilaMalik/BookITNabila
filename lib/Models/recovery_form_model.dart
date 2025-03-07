@@ -3,9 +3,9 @@ import 'package:intl/intl.dart';
 class RecoveryFormModel {
   String? recovery_id;
   String? shop_name;
-  dynamic? current_balance;
-  dynamic? cash_recovery;
-  dynamic? net_balance;
+  dynamic current_balance;
+  dynamic cash_recovery;
+  dynamic net_balance;
   DateTime? recovery_date;
   DateTime? recovery_time;
   String? user_id;

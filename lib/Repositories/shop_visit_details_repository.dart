@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+// ignore: unused_import
 import 'package:order_booking_app/Models/shop_visit_model.dart';
 
 import '../Databases/dp_helper.dart';
@@ -33,6 +34,7 @@ class ShopVisitDetailsRepository extends GetxService{
     if (kDebugMode) {
       debugPrint(' Raw data from Shop Visit Details database:');
     }
+    // ignore: unused_local_variable
     for (var map in maps) {
       if (kDebugMode) {
         debugPrint("map");

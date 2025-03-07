@@ -42,6 +42,7 @@ class LoginRepository extends GetxService{
     if (kDebugMode) {
       debugPrint('Raw data from database:');
     }
+    // ignore: unused_local_variable
     for (var map in maps) {
       if (kDebugMode) {
         debugPrint("map");

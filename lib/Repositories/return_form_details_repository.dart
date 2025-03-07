@@ -31,6 +31,7 @@ class ReturnFormDetailsRepository {
     if (kDebugMode) {
       debugPrint('Return Form Details Raw data from database:');
     }
+    // ignore: unused_local_variable
     for (var map in maps) {
       if (kDebugMode) {
         debugPrint("map");

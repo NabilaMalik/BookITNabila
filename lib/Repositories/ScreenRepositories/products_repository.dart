@@ -4,7 +4,6 @@ import '../../Databases/dp_helper.dart';
 import '../../Databases/util.dart';
 import '../../Models/ScreenModels/products_model.dart';
 import '../../Services/ApiServices/api_service.dart';
-import '../../Services/FirebaseServices/firebase_remote_config.dart';
 
 class ProductsRepository extends GetxService{
 

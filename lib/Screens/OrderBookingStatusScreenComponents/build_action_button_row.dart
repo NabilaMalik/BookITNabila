@@ -48,11 +48,13 @@ Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
   // Generate Order PDF
   Future<void> generateOrderPDF() async {
     final pdf = pw.Document();
+    // ignore: unused_local_variable
     const baseColor = PdfColors.blue;
+    // ignore: unused_local_variable
     const headerColor = PdfColors.black;
     String currentDate = _getFormattedDate();
-    String ordersDate = (orderBookingStatusViewModel.startDate.value != null &&
-            orderBookingStatusViewModel.endDate.value != null)
+    // ignore: unnecessary_null_comparison
+    String ordersDate = (orderBookingStatusViewModel.endDate.value != null)
         ? '${orderBookingStatusViewModel.startDate.value} - ${orderBookingStatusViewModel.endDate.value}'
         : 'Date Not Selected';
 
@@ -130,8 +132,7 @@ Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
   generateProductsPDF() async {
     final pdf = pw.Document();
     String currentDate = _getFormattedDate();
-    String ordersDate = (orderBookingStatusViewModel.startDate.value != null &&
-            orderBookingStatusViewModel.endDate.value != null)
+    String ordersDate = (orderBookingStatusViewModel.endDate.value != null)
         ? '${orderBookingStatusViewModel.startDate.value}${orderBookingStatusViewModel.endDate.value}'
         : 'Date Not Selected';
     // String ordersDate = startDateController.text.isNotEmpty ? startDateController.text : 'Date Not Selected';

@@ -33,6 +33,7 @@ class AttendanceRepository {
     if (kDebugMode) {
       debugPrint('Raw data from Attendance database:');
     }
+    // ignore: unused_local_variable
     for (var map in maps) {
       if (kDebugMode) {
         debugPrint("map");

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+// ignore: unused_import
 import 'package:order_booking_app/ViewModels/ScreenViewModels/recovery_form_view_model.dart';
 
 import '../../ViewModels/recovery_form_view_model.dart';
@@ -154,7 +155,7 @@ class RecoveryPaymentHistoryCard extends StatelessWidget {
                           ],
                           rows: rowsToShow.map((row) {
                             final amountController = TextEditingController(
-                              text: (row.amount ?? '').toString(),
+                              text: (row.amount).toString(),
                             );
 
                             return DataRow(

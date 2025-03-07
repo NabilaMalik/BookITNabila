@@ -1,13 +1,8 @@
-import 'dart:convert';
-import 'dart:io';
 // import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'dart:typed_data';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http_parser/http_parser.dart';
 import '../Databases/dp_helper.dart';

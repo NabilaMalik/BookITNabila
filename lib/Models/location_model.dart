@@ -5,13 +5,13 @@ import 'dart:typed_data';
 import 'package:intl/intl.dart';
 
 class LocationModel {
-  dynamic? location_id;
+  dynamic location_id;
   int posted;
   String? file_name;
   String? user_id;
   Uint8List? body;
-  dynamic? booker_name;
-  dynamic? total_distance;
+  dynamic booker_name;
+  dynamic total_distance;
   DateTime? location_date;
   DateTime? location_time;
 

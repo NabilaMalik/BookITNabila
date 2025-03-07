@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/foundation.dart';
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:http_parser/http_parser.dart';
@@ -35,6 +33,7 @@ class LocationRepository {
     if (kDebugMode) {
       debugPrint('Raw data from Location database:');
     }
+    // ignore: unused_local_variable
     for (var map in maps) {
       if (kDebugMode) {
         debugPrint("map");
@@ -118,6 +117,7 @@ class LocationRepository {
 
       request.fields.addAll(shopData.map((key, value) => MapEntry(key, value.toString())));
 
+      // ignore: unnecessary_null_comparison
       if (imageBytes != null) {
         request.files.add(
           http.MultipartFile.fromBytes(

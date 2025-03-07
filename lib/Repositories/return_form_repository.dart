@@ -15,7 +15,7 @@ class ReturnFormRepository {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(returnFormMasterTableName,
         columns: ['return_master_id', 'select_shop',
-          'return_master_date', 'user_id','return_master_time', 'posted']);
+          'return_master_date', 'user_id','return_amount','return_master_time', 'posted']);
     List<ReturnFormModel> returnform = [];
     for (int i = 0; i < maps.length; i++) {
       returnform.add(ReturnFormModel.fromMap(maps[i]));
@@ -23,6 +23,7 @@ class ReturnFormRepository {
     if (kDebugMode) {
       debugPrint('Return form Raw data from database:');
     }
+    // ignore: unused_local_variable
     for (var map in maps) {
       if (kDebugMode) {
         debugPrint("map");
@@ -125,7 +126,7 @@ class ReturnFormRepository {
         where: 'return_master_id = ?', whereArgs: [returnformModel.return_master_id]);
   }
 
-  Future<int> delete(int id) async {
+  Future<int> delete(String id) async {
     var dbClient = await dbHelper.db;
     return await dbClient
         .delete(returnFormMasterTableName, where: 'return_master_id = ?', whereArgs: [id]);

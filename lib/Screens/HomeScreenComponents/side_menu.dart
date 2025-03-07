@@ -1,12 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:order_booking_app/screens/HomeScreenComponents/theme.dart';
 import 'package:order_booking_app/screens/HomeScreenComponents/assets.dart' as app_assets;
 import 'package:rive/rive.dart'  show Artboard, RiveAnimation, SMIBool, StateMachineController;
 
 import 'menu_button_section.dart';
 import 'menu_item.dart';
-import 'menu_row.dart';
 
 class SideMenu extends StatefulWidget {
   const SideMenu({Key? key}) : super(key: key);
@@ -21,6 +19,7 @@ class _SideMenuState extends State<SideMenu>  with SingleTickerProviderStateMixi
   String _selectedMenu = MenuItemModel.menuItems[0].title;
   bool _isDarkMode = false;
 
+  // ignore: unused_field
   late Animation<LinearGradient> _gradientAnimation;
   void onThemeRiveIconInit(Artboard artboard) {
     final controller = StateMachineController.fromArtboard(

@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-// import 'package:connectivity/connectivity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,7 +28,7 @@ import '../constants.dart';
 import '../widgets/rounded_button.dart';
 import '../widgets/rounded_icon.dart';
 import 'components/custom_editable_menu_option.dart';
-//padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -40,131 +39,99 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  LoginViewModel loginViewModel =Get.put(LoginViewModel());
-
+  final LoginViewModel loginViewModel = Get.put(LoginViewModel());
   final _formKey = GlobalKey<FormState>();
   bool isChecked = true;
   bool isLoading = false;
-
   bool isPasswordVisible = false;
-  // String? email;
-  // String? password;
-  bool _isLoading = false;
-  String _loadingMessage = '';
-  // // Mocked registered users
-  // final List<String> _registeredUsers = ['B02', 'hamid2'];
 
-  // Future<bool> _checkIfUserExists(String email) async {
-  //   await Future.delayed(const Duration(seconds: 1));
-  //   return _registeredUsers.contains(email);
-  // }
-  _login() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<void> _login() async {
+    if (!_formKey.currentState!.validate()) return;
 
-    bool isConnected = false;
-    for (int i = 0; i < 20; i++) {
-      var connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult != ConnectivityResult.none) {
-        try {
-          final result = await InternetAddress.lookup('example.com');
-          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-            isConnected = true;
-            break;
-          }
-        } catch (_) {
-          // Internet is not working
-        }
-      }
-      await Future.delayed(Duration(seconds: 1));
-    }
+    setState(() {
+      isLoading = true;
+    });
 
-    if (!isConnected) {
+    final prefs = await SharedPreferences.getInstance();
+    final connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.none) {
       Get.snackbar('Error', 'No internet connection', snackPosition: SnackPosition.BOTTOM);
+      setState(() {
+        isLoading = false;
+      });
       return;
     }
 
-    await prefs.setString('userId', _emailController.text.trim());
-    user_id = prefs.getString('userId')!;
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isEmpty || result[0].rawAddress.isEmpty) {
+        Get.snackbar('Error', 'No internet connection', snackPosition: SnackPosition.BOTTOM);
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+    } catch (_) {
+      Get.snackbar('Error', 'No internet connection', snackPosition: SnackPosition.BOTTOM);
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
 
-    bool success = await loginViewModel.login(
-      _emailController.text,
-      _passwordController.text,
+    final success = await loginViewModel.login(
+      _emailController.text.trim(),
+      _passwordController.text.trim(),
     );
 
-    if (success) {
-      setState(() {
-        isLoading = true; // Start loading
-      });
-      try {
-        AddShopViewModel addShopViewModel = Get.put(AddShopViewModel());
-        ProductsViewModel productsViewModel = Get.put(ProductsViewModel());
-        ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
-        ShopVisitDetailsViewModel shopVisitDetailsViewModel = Get.put(ShopVisitDetailsViewModel());
-        OrderMasterViewModel orderMasterViewModel = Get.put(OrderMasterViewModel());
-        OrderDetailsViewModel orderDetailsViewModel = Get.put(OrderDetailsViewModel());
-        RecoveryFormViewModel recoveryFormViewModel = Get.put(RecoveryFormViewModel());
-        ReturnFormModel returnFormModel = Get.put(ReturnFormModel());
-        ReturnFormDetailsModel returnFormDetailsModel = Get.put(ReturnFormDetailsModel());
-        AttendanceViewModel attendanceViewModel = Get.put(AttendanceViewModel());
-        AttendanceOutViewModel attendanceOutViewModel = Get.put(AttendanceOutViewModel());
-        LocationViewModel locationViewModel = Get.put(LocationViewModel());
-         // await DBHelper.clearData();
-        await addShopViewModel.fetchAndSaveShop();
-        await productsViewModel.fetchAndSaveProducts();
-        await shopVisitDetailsViewModel.initializeProductData();
-        await orderMasterViewModel.fetchAndSaveOrderMaster();
-        await orderDetailsViewModel.fetchAndSaveOrderDetails();
-
-        // If the above operations complete successfully, navigate to the home screen
-        Future.delayed(Duration(milliseconds: 300), () {
-          // Navigate to appropriate homepage based on user designation
-
-           //   Get.offNamed('/home');
-              Get.to(() => HomeScreen());
-
-
-        });
-      } catch (e) {
-        Get.snackbar('Error', 'Failed to fetch products: $e', snackPosition: SnackPosition.BOTTOM);
-      }
-    } else {
+    if (!success) {
       Get.snackbar('Error', 'Invalid user ID or password', snackPosition: SnackPosition.BOTTOM);
       setState(() {
         isLoading = false;
       });
-
+      return;
     }
-    setState(() {
-      isLoading = false;
-      _loadingMessage = '';
-    });
-    return;
-  }
 
- _handleSignIn() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      bool userExists =  _login();
-      if (!userExists) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Account does not exist. Please sign up first..'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      } else {
-        if (kDebugMode) {
-          debugPrint('Login successful: Email: $_emailController, Password: $_passwordController');
-        }
-        // Navigate to the next screen or home page
-      }
+    await prefs.setString('userId', _emailController.text.trim());
+    prefs.reload();
+    user_id = prefs.getString('userId')!;
+
+    try {
+      final addShopViewModel = Get.put(AddShopViewModel());
+      final productsViewModel = Get.put(ProductsViewModel());
+     final  shopVisitViewModel = Get.put(ShopVisitViewModel());
+      final shopVisitDetailsViewModel = Get.put(ShopVisitDetailsViewModel());
+      final orderMasterViewModel = Get.put(OrderMasterViewModel());
+      final orderDetailsViewModel = Get.put(OrderDetailsViewModel());
+      final recoveryFormViewModel = Get.put(RecoveryFormViewModel());
+      final returnFormModel = Get.put(ReturnFormModel());
+      final returnFormDetailsModel = Get.put(ReturnFormDetailsModel());
+      final attendanceViewModel = Get.put(AttendanceViewModel());
+      final attendanceOutViewModel = Get.put(AttendanceOutViewModel());
+      final locationViewModel = Get.put(LocationViewModel());
+      // Explicitly define the type for Future.wait
+      await Future.wait<void>([
+        addShopViewModel.fetchAndSaveShop(),
+        productsViewModel.fetchAndSaveProducts(),
+        orderMasterViewModel.fetchAndSaveOrderMaster(),
+        orderDetailsViewModel.fetchAndSaveOrderDetails(),
+        shopVisitDetailsViewModel.initializeProductData(),
+      ]);
+
+      Get.off(() => HomeScreen());
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to fetch data: $e', snackPosition: SnackPosition.BOTTOM);
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
-    Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
         body: SizedBox(
@@ -173,10 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: SingleChildScrollView(
             child: Stack(
               children: [
-                // Background Header
                 _buildHeader(size.height * 0.5),
-
-                // Login Form
                 Padding(
                   padding: EdgeInsets.only(top: size.height * 0.4),
                   child: _buildLoginForm(size),
@@ -194,15 +158,14 @@ class _LoginScreenState extends State<LoginScreen> {
       height: height,
       width: double.infinity,
       color: Colors.blue,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Text(
               'Welcome Back',
-              textAlign: TextAlign.left,
               style: TextStyle(
                 fontSize: 32,
                 fontFamily: "Poppins",
@@ -213,7 +176,6 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(height: 5),
             Text(
               'Sign in to Continue',
-              textAlign: TextAlign.left,
               style: TextStyle(
                 fontSize: 20,
                 fontFamily: "Poppins",
@@ -227,7 +189,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildLoginForm(Size size) {
-    Size size = MediaQuery.of(context).size;
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
@@ -242,75 +203,67 @@ class _LoginScreenState extends State<LoginScreen> {
         children: [
           Form(
             key: _formKey,
-            child: Padding(padding:  EdgeInsets.symmetric(horizontal: size.width * 0.05),
-            child:  Column(
-
-              children: [
-                SizedBox(height: size.height * 0.01),
-                CustomEditableMenuOption(
-                  width: size.width*1.0,
-
-                // height: size.height*0.1,
-                 // bottom: size.height*0.9,
-                 // bottom: size.height*0.1,
-                  label: 'Email',
-                  initialValue: _emailController.text,
-                  onChanged: (value) {
-                    _emailController.text = value;
-                  },
-                  useBoxShadow: false,
-                  icon: Icons.email,
-
-                  iconColor: Colors.blue,
-                  textAlign: TextAlign.left,
-                  inputBorder: const UnderlineInputBorder(
-                 //   borderSide: BorderSide(color: Colors.grey, width: 1.0),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+              child: Column(
+                children: [
+                  SizedBox(height: size.height * 0.01),
+                  CustomEditableMenuOption(
+                    width: size.width * 1.0,
+                    label: 'Email',
+                    initialValue: _emailController.text,
+                    onChanged: (value) {
+                      _emailController.text = value;
+                    },
+                    useBoxShadow: false,
+                    icon: Icons.email,
+                    iconColor: Colors.blue,
+                    textAlign: TextAlign.left,
+                    inputBorder: const UnderlineInputBorder(),
                   ),
-                ),
-                // SizedBox(height: size.height * 0.02),
-                CustomEditableMenuOption(
-                  width: size.width*1.0,
-                  label: 'Password',
-                  initialValue: _passwordController.text,
-                  onChanged: (value) {
-                    _passwordController.text = value;
-                  },
-                  useBoxShadow: false,
-                  icon: Icons.lock,
-                  iconColor: Colors.blue,
-                  textAlign: TextAlign.left,
-                  obscureText: !isPasswordVisible,
-                  inputBorder: const UnderlineInputBorder(
-                  //  borderSide: BorderSide(color: Colors.grey, width: 2.0),
+                  CustomEditableMenuOption(
+                    width: size.width * 1.0,
+                    label: 'Password',
+                    initialValue: _passwordController.text,
+                    onChanged: (value) {
+                      _passwordController.text = value;
+                    },
+                    useBoxShadow: false,
+                    icon: Icons.lock,
+                    iconColor: Colors.blue,
+                    textAlign: TextAlign.left,
+                    obscureText: !isPasswordVisible,
+                    inputBorder: const UnderlineInputBorder(),
                   ),
-                ),SizedBox(height: size.height * 0.02),
-                _buildRememberMeRow(),
-                SizedBox(height: size.height * 0.02),
-               CustomButton(
-                 height: size.height*0.065,
-                 width: size.width*0.45,
-                 onTap: _login,
-                 buttonText: isLoading ? 'Please wait...':'Sign in',
-                 padding: EdgeInsets.symmetric(horizontal: size.width * 0.01) ,
-                 gradientColors: const [Colors.blue,Colors.blue,],
-               ),
-                SizedBox(height: size.height * 0.03),
-                UnderPart(
-                  title: "Don't have an account?",
-                  navigatorText: "Sign up here",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SignUpScreen()),
-                    );
-                  },
-                ),
-                SizedBox(height: size.height * 0.03),
-                _buildSocialIcons(),
-                SizedBox(height: size.height * 0.1),
-              ],
+                  SizedBox(height: size.height * 0.02),
+                  _buildRememberMeRow(),
+                  SizedBox(height: size.height * 0.02),
+                  CustomButton(
+                    height: size.height * 0.065,
+                    width: size.width * 0.45,
+                    onTap: _login,
+                    buttonText: isLoading ? 'Please wait...' : 'Sign in',
+                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.01),
+                    gradientColors: const [Colors.blue, Colors.blue],
+                  ),
+                  SizedBox(height: size.height * 0.03),
+                  UnderPart(
+                    title: "Don't have an account?",
+                    navigatorText: "Sign up here",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignUpScreen()),
+                      );
+                    },
+                  ),
+                  SizedBox(height: size.height * 0.03),
+                  _buildSocialIcons(),
+                  SizedBox(height: size.height * 0.1),
+                ],
+              ),
             ),
-          ),)
+          ),
         ],
       ),
     );
@@ -358,10 +311,8 @@ class _LoginScreenState extends State<LoginScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         RoundedIcon(imageUrl: "assets/images/Google.jpg"),
-
         SizedBox(width: 35),
         RoundedIcon(imageUrl: "assets/images/fb.jpg"),
-
         SizedBox(width: 35),
         RoundedIcon(imageUrl: "assets/images/2504839.png"),
       ],
