@@ -39,7 +39,7 @@ class ReturnFormDetailsViewModel extends GetxController{
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    _loadCounter();
+
     fetchAllReturnFormDetails();
   }
   Future<void>submitForm() async {
@@ -52,6 +52,7 @@ class ReturnFormDetailsViewModel extends GetxController{
     }
     if (isValid) {
       for (var row in formRows) {
+        await _loadCounter();
         final returnFormSerial = generateNewOrderId(user_id);
         await addReturnFormDetails(ReturnFormDetailsModel(
             return_details_id: returnFormSerial,
@@ -87,9 +88,9 @@ class ReturnFormDetailsViewModel extends GetxController{
       returnFormDetailsSerialCounter = 1;
       returnFormDetailsCurrentMonth = currentMonth;
     }
-    if (kDebugMode) {
+
       debugPrint('returnFormDetailsSerialCounter: $returnFormDetailsSerialCounter');
-    }
+
   }
 
   Future<void> _saveCounter() async {

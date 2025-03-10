@@ -29,7 +29,7 @@ class DBHelper extends GetxService {
   _onCreate(Database db, int version) async {
     // Database Table
     List<String> tableQueries = [
-      "CREATE TABLE IF NOT EXISTS $tableNameLogin(id INTEGER ,user_name TEXT,contact TEXT,cnic TEXT,image TEXT,address TEXT,user_id TEXT,city TEXT,password TEXT)",
+      "CREATE TABLE IF NOT EXISTS $tableNameLogin(user_id TEXT , password TEXT ,user_name TEXT, city TEXT, designation TEXT,brand TEXT,RSM TEXT,SM TEXT,NSM TEXT,RSM_ID TEXT,SM_ID TEXT,NSM_ID TEXT,images BLOB)",
       "CREATE TABLE IF NOT EXISTS $addShopTableName(shop_id TEXT PRIMARY KEY, shop_date TEXT, shop_time TEXT, shop_name TEXT,city TEXT,shop_address TEXT,owner_name TEXT,owner_cnic TEXT,phone_no TEXT, alternative_phone_no TEXT, user_id TEXT, posted INTEGER DEFAULT 0 )",
       "CREATE TABLE IF NOT EXISTS $shopVisitMasterTableName(shop_visit_master_id TEXT PRIMARY KEY, shop_visit_date TEXT, shop_visit_time TEXT, brand TEXT,user_id TEXT, shop_name TEXT, shop_address TEXT, owner_name TEXT,posted INTEGER DEFAULT 0, booker_name TEXT,walk_through TEXT,planogram TEXT,signage TEXT,product_reviewed TEXT,feedback TEXT,body BLOB)",
       "CREATE TABLE IF NOT EXISTS $shopVisitDetailsTableName(shop_visit_details_id TEXT PRIMARY KEY, shop_visit_details_date TEXT, shop_visit_details_time TEXT,user_id TEXT, shop_visit_master_id TEXT, product TEXT, quantity TEXT,posted INTEGER DEFAULT 0, FOREIGN KEY(shop_visit_master_id) REFERENCES $shopVisitMasterTableName(shop_visit_master_id))",

@@ -57,9 +57,9 @@ class LocationViewModel extends GetxController {
       locationSerialCounter = 1;
       locationCurrentMonth = currentMonth;
     }
-    if (kDebugMode) {
+
       debugPrint('SR: $locationSerialCounter');
-    }
+
   }
 
   Future<void> _saveCounter() async {
@@ -139,36 +139,36 @@ class LocationViewModel extends GetxController {
     DateTime currentTime = DateTime.now();
     String formattedTime = _formatDateTime(currentTime);
     prefs.setString('savedTime', formattedTime);
-    if (kDebugMode) {
+
       debugPrint("Save Current Time");
-    }
+
   }
   // Function to refresh the clock timer
- // clockRefresh() async {
- //      newsecondpassed.value = 0;
- //    _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
- //      // debugPrint("Initializing SharedPreferences clockRefresh...");
- //      SharedPreferences prefs = await SharedPreferences.getInstance();
- //         prefs.reload();
- //        newsecondpassed.value = prefs.getInt('secondsPassed');
- //      });
- //
- //  }
-  clockRefresh() async {
-    newsecondpassed.value = 0;
+ clockRefresh() async {
+      newsecondpassed.value = 0;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       // debugPrint("Initializing SharedPreferences clockRefresh...");
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.reload();
-      int? secondsPassed = prefs.getInt('secondsPassed');
-      if (secondsPassed != null) {
-        newsecondpassed.value = secondsPassed;
-      } else {
-        // Handle the case where 'secondsPassed' is null, e.g., set a default value
-        newsecondpassed.value = 0;
-      }
-    });
+         prefs.reload();
+        newsecondpassed.value = prefs.getInt('secondsPassed')!;
+      });
+
   }
+  // clockRefresh() async {
+  //   newsecondpassed.value = 0;
+  //   _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+  //     // debugPrint("Initializing SharedPreferences clockRefresh...");
+  //     SharedPreferences prefs = await SharedPreferences.getInstance();
+  //     await prefs.reload();
+  //     int? secondsPassed = prefs.getInt('secondsPassed');
+  //     if (secondsPassed != null) {
+  //       newsecondpassed.value = secondsPassed;
+  //     } else {
+  //       // Handle the case where 'secondsPassed' is null, e.g., set a default value
+  //       newsecondpassed.value = 0;
+  //     }
+  //   });
+  // }
   String _formatDuration(String secondsString) {
     int seconds = int.parse(secondsString);
     Duration duration = Duration(seconds: seconds);
@@ -222,9 +222,9 @@ class LocationViewModel extends GetxController {
     try {
       gpx = GpxReader().fromString(gpxContent);
     } catch (e) {
-      if (kDebugMode) {
+
         debugPrint("Error parsing GPX content: $e");
-      }
+
       return 0.0;
     }
 
@@ -244,9 +244,9 @@ class LocationViewModel extends GetxController {
       }
     }
 
-    if (kDebugMode) {
+
       debugPrint("CUT: $totalDistance");
-    }
+
 
     return totalDistance;
   }
@@ -261,9 +261,9 @@ saveLocation() async {
   final maingpxFile = File(gpxFilePath);
   double totalDistance = await calculateTotalDistance("${downloadDirectory?.path}/track$date.gpx");
   if (!maingpxFile.existsSync()) {
-    if (kDebugMode) {
+
       debugPrint('GPX file does not exist');
-    }
+
     return;
   }
   // Read the GPX file
@@ -283,42 +283,42 @@ saveLocation() async {
 }
   Future<void> requestPermissions() async {
 
-    if (kDebugMode) {
+
       debugPrint('Requesting notification permission...');
-    }
+
     if (await Permission.notification.request().isDenied) {
       // Notification permission not granted
-      if (kDebugMode) {
+
         debugPrint('Notification permission denied');
-      }
+
       SystemChannels.platform.invokeMethod('SystemNavigator.pop');
       return;
     }
 
-    if (kDebugMode) {
+
       debugPrint('Requesting location permission...');
-    }
+
     if (await Permission.location.request().isDenied) {
       // Location permission not granted
-      if (kDebugMode) {
+
         debugPrint('Location permission denied');
-      }
+
       SystemChannels.platform.invokeMethod('SystemNavigator.pop');
     } else if (await Permission.location.request().isGranted) {
-      if (kDebugMode) {
+
         debugPrint('Location permission granted');
-      }
+
       // Check and request background location permission if necessary
       if (await Permission.locationAlways.request().isDenied) {
         // Background location permission not granted
-        if (kDebugMode) {
+
           debugPrint('Background location permission denied');
-        }
+
         SystemChannels.platform.invokeMethod('SystemNavigator.pop');
       } else {
-        if (kDebugMode) {
+
           debugPrint('All permissions granted');
-        }
+
         // Navigator.of(context).push(
         //   MaterialPageRoute(
         //     builder: (context) => const LoginForm(),

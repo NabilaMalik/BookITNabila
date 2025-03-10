@@ -30,14 +30,14 @@ class LocationRepository {
     for (int i = 0; i < maps.length; i++) {
       location.add(LocationModel.fromMap(maps[i]));
     }
-    if (kDebugMode) {
+
       debugPrint('Raw data from Location database:');
-    }
+
     // ignore: unused_local_variable
     for (var map in maps) {
-      if (kDebugMode) {
-        debugPrint("map");
-      }
+
+        debugPrint("$map");
+
     }
     return location;
   }
@@ -77,24 +77,24 @@ class LocationRepository {
             await postShopToAPI(shop, shop.body!);
             shop.posted = 1;
             await update(shop);
-            if (kDebugMode) {
+
               debugPrint('Shop with id ${shop.location_id} posted and updated in local database.');
-            }
+
           } catch (e) {
-            if (kDebugMode) {
+
               debugPrint('Failed to post shop with id ${shop.location_id}: $e');
-            }
+
           }
         }
       } else {
-        if (kDebugMode) {
+
           debugPrint('Network not available. Unposted shops will remain local.');
-        }
+
       }
     } catch (e) {
-      if (kDebugMode) {
+
         debugPrint('Error fetching unposted shops: $e');
-      }
+
     }
   }
 
@@ -102,9 +102,9 @@ class LocationRepository {
   Future<void> postShopToAPI(LocationModel shop, Uint8List imageBytes) async {
     try {
       await Config.fetchLatestConfig();
-      if (kDebugMode) {
+
         debugPrint('Updated Shop Post API: ${Config.postApiUrlLocation}');
-      }
+
       var shopData = shop.toMap();
 
       var request = http.MultipartRequest(
@@ -134,9 +134,9 @@ class LocationRepository {
       if (response.statusCode == 200 || response.statusCode == 201) {
         debugPrint('Shop data posted successfully: ${shop.toMap()}');
         await delete(shop.location_id!);
-        if (kDebugMode) {
+
           debugPrint('location_id with id ${shop.location_id} deleted from local database.');
-        }
+
       } else {
         final responseBody = await response.stream.bytesToString();
         throw Exception('Server error: ${response.statusCode}, $responseBody');

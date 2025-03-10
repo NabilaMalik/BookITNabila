@@ -105,8 +105,7 @@ class _RiveAppHomeState extends State<HomeScreen>
 
     // Update state with retrieved values
     setState(() {
-      // user_id = prefs.getString('userId') ?? '';
-      user_id = 'B02';
+      user_id = prefs.getString('userId') ?? '';
       // userNames = prefs.getString('userNames') ?? '';
       // userCitys = prefs.getString('userCitys') ?? '';
       // userDesignation = prefs.getString('userDesignation') ?? '';
@@ -158,6 +157,7 @@ class _RiveAppHomeState extends State<HomeScreen>
     returnFormViewModel.fetchAllReturnForm();
     attendanceViewModel.fetchAllAttendance();
     attendanceOutViewModel.fetchAllAttendanceOut();
+    // orderMasterViewModel.orderMasterSerial();
   }
 
   @override

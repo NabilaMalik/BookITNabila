@@ -30,18 +30,19 @@ class AttendanceOutRepository extends GetxService {
     for (int i = 0; i < maps.length; i++) {
       attendanceout.add(AttendanceOutModel.fromMap(maps[i]));
     }
-    if (kDebugMode) {
-      debugPrint('Raw data from AttendanceOut database:');
-    }
+
+    debugPrint('Raw data from AttendanceOut database:');
+
     for (var map in maps) {
-      if (kDebugMode) {
-        debugPrint("$map");
-      }
+      debugPrint("$map");
     }
     return attendanceout;
-  }Future<void> fetchAndSaveAttendanceOut() async {
+  }
+
+  Future<void> fetchAndSaveAttendanceOut() async {
     debugPrint('${Config.getApiUrlAttendanceOut}$user_id');
-    List<dynamic> data = await ApiService.getData('${Config.getApiUrlAttendanceOut}$user_id');
+    List<dynamic> data =
+        await ApiService.getData('${Config.getApiUrlAttendanceOut}$user_id');
     var dbClient = await dbHelper.db;
 
     // Save data to database
@@ -57,10 +58,11 @@ class AttendanceOutRepository extends GetxService {
     List<Map> maps = await dbClient.query(
       attendanceOutTableName,
       where: 'posted = ?',
-      whereArgs: [0],  // Fetch machines that have not been posted
+      whereArgs: [0], // Fetch machines that have not been posted
     );
 
-    List<AttendanceOutModel> attendanceOutModel = maps.map((map) => AttendanceOutModel.fromMap(map)).toList();
+    List<AttendanceOutModel> attendanceOutModel =
+        maps.map((map) => AttendanceOutModel.fromMap(map)).toList();
     return attendanceOutModel;
   }
 
@@ -74,33 +76,28 @@ class AttendanceOutRepository extends GetxService {
             await postShopToAPI(shop);
             shop.posted = 1;
             await update(shop);
-            if (kDebugMode) {
-              debugPrint('Shop with id ${shop.attendance_out_id} posted and updated in local database.');
-            }
+
+            debugPrint(
+                'Shop with id ${shop.attendance_out_id} posted and updated in local database.');
           } catch (e) {
-            if (kDebugMode) {
-              debugPrint('Failed to post shop with id ${shop.attendance_out_id}: $e');
-            }
+            debugPrint(
+                'Failed to post shop with id ${shop.attendance_out_id}: $e');
           }
         }
       } else {
-        if (kDebugMode) {
-          debugPrint('Network not available. Unposted shops will remain local.');
-        }
+        debugPrint('Network not available. Unposted shops will remain local.');
       }
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Error fetching unposted shops: $e');
-      }
+      debugPrint('Error fetching unposted shops: $e');
     }
   }
 
   Future<void> postShopToAPI(AttendanceOutModel shop) async {
     try {
       await Config.fetchLatestConfig();
-      if (kDebugMode) {
-        debugPrint('Updated Shop Post API: ${Config.postApiUrlAttendanceOut}');
-      }
+
+      debugPrint('Updated Shop Post API: ${Config.postApiUrlAttendanceOut}');
+
       var shopData = shop.toMap();
       final response = await http.post(
         Uri.parse(Config.postApiUrlAttendanceOut),
@@ -115,17 +112,19 @@ class AttendanceOutRepository extends GetxService {
         debugPrint('attendance_out_id data posted successfully: $shopData');
         // Delete the shop visit data from the local database after successful post
         await delete(shop.attendance_out_id!);
-        if (kDebugMode) {
-          debugPrint('attendance_out_id with id ${shop.attendance_out_id} deleted from local database.');
-        }
+
+        debugPrint(
+            'attendance_out_id with id ${shop.attendance_out_id} deleted from local database.');
       } else {
-        throw Exception('Server error: ${response.statusCode}, ${response.body}');
+        throw Exception(
+            'Server error: ${response.statusCode}, ${response.body}');
       }
     } catch (e) {
       debugPrint('Error posting shop data: $e');
       throw Exception('Failed to post data: $e');
     }
   }
+
   Future<int> add(AttendanceOutModel attendanceoutModel) async {
     var dbClient = await dbHelper.db;
     return await dbClient.insert(
@@ -136,12 +135,13 @@ class AttendanceOutRepository extends GetxService {
     var dbClient = await dbHelper.db;
     return await dbClient.update(
         attendanceOutTableName, attendanceoutModel.toMap(),
-        where: 'attendance_out_id = ?', whereArgs: [attendanceoutModel.attendance_out_id]);
+        where: 'attendance_out_id = ?',
+        whereArgs: [attendanceoutModel.attendance_out_id]);
   }
 
   Future<int> delete(String id) async {
     var dbClient = await dbHelper.db;
-    return await dbClient
-        .delete(attendanceOutTableName, where: 'attendance_out_id = ?', whereArgs: [id]);
+    return await dbClient.delete(attendanceOutTableName,
+        where: 'attendance_out_id = ?', whereArgs: [id]);
   }
 }

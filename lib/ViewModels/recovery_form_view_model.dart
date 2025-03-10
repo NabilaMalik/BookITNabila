@@ -42,7 +42,7 @@ class RecoveryFormViewModel extends GetxController{
   void onInit() {
     super.onInit();
     initializeData();
-    _loadCounter();
+
     fetchAllRecoveryForm();
   }
   Future<void> fetchAndSaveCurrentBalance(String shop_name) async {
@@ -61,18 +61,18 @@ class RecoveryFormViewModel extends GetxController{
         if (balance is int) {
           current_balance.value = balance.toDouble(); // Convert int to double
         }// Replace 'balance' with the actual key in the API response
-        if (kDebugMode) {
+
           debugPrint('Current balance fetched and updated: $balance');
-        }
+
       } else {
-        if (kDebugMode) {
+
           debugPrint('No data received from the API.');
-        }
+
       }
     } catch (e) {
-      if (kDebugMode) {
+
         debugPrint('Error fetching current balance: $e');
-      }
+
       throw Exception('Failed to fetch current balance: $e');
     }
   }
@@ -188,6 +188,7 @@ class RecoveryFormViewModel extends GetxController{
   }
 
   Future<void> submitForm() async {
+    await     _loadCounter();
     final recoverySerial = generateNewOrderId(user_id);
      recovery_id.value = recoverySerial;
    await  addRecoveryForm(RecoveryFormModel(
@@ -220,9 +221,9 @@ class RecoveryFormViewModel extends GetxController{
     recoveryCurrentMonth = prefs.getString('recoveryCurrentMonth') ?? currentMonth;
     currentuser_id = prefs.getString('currentuser_id') ?? '';
 
-    if (kDebugMode) {
+
       debugPrint('SR: $recoverySerialCounter');
-    }
+
   }
 
   Future<void> _saveCounter() async {

@@ -21,10 +21,8 @@ class OrderMasterViewModel extends GetxController {
   var allOrderMaster = <OrderMasterModel>[].obs;
   ProductsRepository productsRepository = Get.put(ProductsRepository());
   ProductsViewModel productsViewModel = Get.put(ProductsViewModel());
-  OrderDetailsViewModel orderDetailsViewModel =
-      Get.put(OrderDetailsViewModel());
-  OrderMasterRepository orderMasterRepository =
-      Get.put(OrderMasterRepository());
+  OrderDetailsViewModel orderDetailsViewModel = Get.put(OrderDetailsViewModel());
+  OrderMasterRepository orderMasterRepository = Get.put(OrderMasterRepository());
   var phone_no = ''.obs;
   GlobalKey<FormState> get formKey => _formKey;
   final _formKey = GlobalKey<FormState>();
@@ -37,28 +35,26 @@ class OrderMasterViewModel extends GetxController {
   var credit_limit = ''.obs;
   var required_delivery_date = ''.obs;
   final List<String> credits = ['7 days', '15 days', 'On Cash'];
+
   @override
-  void onInit() {
-    super.onInit();
-    fetchAllOrderMaster();
-    _loadCounter();
+  Future<void> onInit() async {
+  super.onInit();
+    await fetchAllOrderMaster();
   }
 
   Future<void> _loadCounter() async {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    orderMasterSerialCounter = (prefs.getInt('orderMasterSerialCounter') ?? 1);
-    orderMasterCurrentMonth =
-        prefs.getString('orderMasterCurrentMonth') ?? currentMonth;
+    orderMasterSerialCounter = (prefs.getInt('orderMasterSerialCounter')  ?? orderMasterHighestSerial ?? 1);
+    orderMasterCurrentMonth = prefs.getString('orderMasterCurrentMonth') ?? currentMonth;
     currentuser_id = prefs.getString('currentuser_id') ?? '';
 
     if (orderMasterCurrentMonth != currentMonth) {
       orderMasterSerialCounter = 1;
       orderMasterCurrentMonth = currentMonth;
     }
-    if (kDebugMode) {
-      debugPrint('SR: $orderMasterSerialCounter');
-    }
+
+    debugPrint('SR: $orderMasterSerialCounter');
   }
 
   Future<void> _saveCounter() async {
@@ -72,7 +68,7 @@ class OrderMasterViewModel extends GetxController {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
 
     if (currentuser_id != user_id) {
-      orderMasterSerialCounter = 1;
+      orderMasterSerialCounter = orderMasterHighestSerial ?? 1;
       currentuser_id = user_id;
     }
 
@@ -81,16 +77,15 @@ class OrderMasterViewModel extends GetxController {
       orderMasterCurrentMonth = currentMonth;
     }
 
-    String orderId =
-        "OM-$user_id-$currentMonth-${orderMasterSerialCounter.toString().padLeft(3, '0')}";
-    return orderId; // Increment yahan nahi ho raha
+    String orderId = "OM-$user_id-$currentMonth-${orderMasterSerialCounter.toString().padLeft(3, '0')}";
+    return orderId;
   }
 
   Future<String> generateAndSaveOrderId(String user_id) async {
     await _loadCounter(); // Load last saved value
     String orderId = generateNewOrderId(user_id);
 
-    // Increment aur save ka kaam yahan ho raha hai
+    // Increment and save
     orderMasterSerialCounter++;
     await _saveCounter();
     return orderId;
@@ -98,8 +93,7 @@ class OrderMasterViewModel extends GetxController {
 
   Future<void> submitForm(GlobalKey<FormState> formKey) async {
     if (formKey.currentState!.validate()) {
-      final orderSerial =
-          generateNewOrderId(user_id); // Sirf serial generate hoga
+      final orderSerial = generateNewOrderId(user_id); // Generate serial
       order_master_id = orderSerial;
       debugPrint("Saving filtered products...");
       await orderDetailsViewModel.saveFilteredProducts();
@@ -107,24 +101,23 @@ class OrderMasterViewModel extends GetxController {
   }
 
   Future<void> confirmSubmitForm() async {
-    // if (validateForm()) {
     if (shopVisitViewModel.selectedShop.value.isNotEmpty) {
-      final orderSerial =
-          await generateAndSaveOrderId(user_id); // Generate aur save dono yahan
+      await orderMasterSerial();
+      await _loadCounter();
+      final orderSerial = await generateAndSaveOrderId(user_id); // Generate and save
       order_master_id = orderSerial;
       OrderMasterModel orderMasterModel = OrderMasterModel(
-          shop_name: shopVisitViewModel.selectedShop.value,
-          owner_name: shopVisitViewModel.selectedBrand.value,
-          phone_no: shopVisitViewModel.phone_number.value,
-          brand: shopVisitViewModel.selectedBrand.value,
-          total: orderDetailsViewModel.total.value.toString(),
-          credit_limit: credit_limit.value,
-          order_status: order_status.value,
-          user_id: user_id.toString(),
-          required_delivery_date: required_delivery_date.value,
-          order_master_id: order_master_id.toString());
-      // await orderMasterRepository.postDataFromDatabaseToAPI();
-      //debugPrint(orderMasterModel);
+        shop_name: shopVisitViewModel.selectedShop.value,
+        owner_name: shopVisitViewModel.selectedBrand.value,
+        phone_no: shopVisitViewModel.phone_number.value,
+        brand: shopVisitViewModel.selectedBrand.value,
+        total: orderDetailsViewModel.total.value.toString(),
+        credit_limit: credit_limit.value,
+        order_status: order_status.value,
+        user_id: user_id.toString(),
+        required_delivery_date: required_delivery_date.value,
+        order_master_id: order_master_id.toString(),
+      );
       debugPrint("Submitting OrderMasterModel: ${orderMasterModel.toMap()}");
       await addConfirmOrder(orderMasterModel);
 
@@ -141,28 +134,31 @@ class OrderMasterViewModel extends GetxController {
     return _formKey.currentState?.validate() ?? false;
   }
 
-  fetchAllOrderMaster() async {
+  Future<void> fetchAllOrderMaster() async {
     var confirmorder = await orderMasterRepository.getConfirmOrder();
     allOrderMaster.value = confirmorder;
   }
 
-  fetchAndSaveOrderMaster() async {
+ fetchAndSaveOrderMaster() async {
     await orderMasterRepository.fetchAndSaveOrderMaster();
     await fetchAllOrderMaster();
   }
 
-  addConfirmOrder(OrderMasterModel orderMasterModel) {
-    orderMasterRepository.add(orderMasterModel);
-    fetchAllOrderMaster();
+  Future<void> addConfirmOrder(OrderMasterModel orderMasterModel) async {
+    await orderMasterRepository.add(orderMasterModel);
+    await fetchAllOrderMaster();
   }
 
-  updateConfirmOrder(OrderMasterModel orderMasterModel) {
-    orderMasterRepository.update(orderMasterModel);
-    fetchAllOrderMaster();
+  Future<void> updateConfirmOrder(OrderMasterModel orderMasterModel) async {
+    await orderMasterRepository.update(orderMasterModel);
+    await fetchAllOrderMaster();
   }
 
-  deleteConfirmOrder(int id) {
-    orderMasterRepository.delete(id);
-    fetchAllOrderMaster();
+  Future<void> deleteConfirmOrder(int id) async {
+    await orderMasterRepository.delete(id);
+    await fetchAllOrderMaster();
+  }
+  Future<void>orderMasterSerial()async{
+    await orderMasterRepository.getHighestSerialNo();
   }
 }

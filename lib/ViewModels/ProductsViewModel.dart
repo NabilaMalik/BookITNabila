@@ -51,9 +51,9 @@ class ProductsViewModel extends GetxController {
       // Set the products in the allProducts list
       allProducts.value = products;
     } catch (e) {
-      if (kDebugMode) {
+
         debugPrint("Error fetching products by brand: $e");
-      }
+
     }
   }
 }

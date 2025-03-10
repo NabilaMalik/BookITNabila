@@ -37,13 +37,13 @@ class ShopVisitRepository extends GetxService{
     for (int i = 0; i < maps.length; i++) {
       shopvisit.add(ShopVisitModel.fromMap(maps[i]));
     }
-    if (kDebugMode) {
+
       debugPrint('Raw data from Shop Visit Table database:');
-    }
+
     for (var map in maps) {
-      if (kDebugMode) {
+
         debugPrint("$map");
-      }
+
     }
     return shopvisit;
   }
@@ -82,24 +82,24 @@ class ShopVisitRepository extends GetxService{
             await postShopToAPI(shop, shop.body!);
             shop.posted = 1;
             await update(shop);
-            if (kDebugMode) {
+
               debugPrint('Shop with id ${shop.shop_visit_master_id} posted and updated in local database.');
-            }
+
           } catch (e) {
-            if (kDebugMode) {
+
               debugPrint('Failed to post shop with id ${shop.shop_visit_master_id}: $e');
-            }
+
           }
         }
       } else {
-        if (kDebugMode) {
+
           debugPrint('Network not available. Unposted shops will remain local.');
-        }
+
       }
     } catch (e) {
-      if (kDebugMode) {
+
         debugPrint('Error fetching unposted shops: $e');
-      }
+
     }
   }
 
@@ -110,9 +110,9 @@ class ShopVisitRepository extends GetxService{
   Future<void> postShopToAPI(ShopVisitModel shop, Uint8List imageBytes) async {
     try {
       await Config.fetchLatestConfig();
-      if (kDebugMode) {
+
         debugPrint('Updated Shop Post API: ${Config.postApiUrlShopVisit}');
-      }
+
       var shopData = shop.toMap();
 
       var request = http.MultipartRequest(
@@ -143,9 +143,9 @@ class ShopVisitRepository extends GetxService{
 
         // Delete the shop visit data from the local database after successful post
         await delete(shop.shop_visit_master_id!);
-        if (kDebugMode) {
+
           debugPrint('Shop with id ${shop.shop_visit_master_id} deleted from local database.');
-        }
+
       } else {
         final responseBody = await response.stream.bytesToString();
         throw Exception('Server error: ${response.statusCode}, $responseBody');

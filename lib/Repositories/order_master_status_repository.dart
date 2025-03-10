@@ -32,9 +32,9 @@ class OrderMasterStatusRepository extends GetxService {
     for (int i = 0; i < maps.length; i++) {
       confirmorder.add(OrderMasterStatusModel.fromMap(maps[i]));
     }
-    if (kDebugMode) {
+
       debugPrint('Raw data from database:');
-    }
+
     for (var map in maps) {
       if (kDebugMode) {
         debugPrint("$map");

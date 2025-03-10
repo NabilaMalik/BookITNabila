@@ -30,14 +30,14 @@ class AttendanceRepository {
     for (int i = 0; i < maps.length; i++) {
       attendance.add(AttendanceModel.fromMap(maps[i]));
     }
-    if (kDebugMode) {
+
       debugPrint('Raw data from Attendance database:');
-    }
+
     // ignore: unused_local_variable
     for (var map in maps) {
-      if (kDebugMode) {
-        debugPrint("map");
-      }
+
+        debugPrint("$map");
+
     }
     return attendance;
   }
@@ -74,9 +74,9 @@ class AttendanceRepository {
             await postShopToAPI(shop);
             shop.posted = 1;
             await update(shop);
-            if (kDebugMode) {
+
               debugPrint('Shop with id ${shop.attendance_in_id} posted and updated in local database.');
-            }
+
           } catch (e) {
             if (kDebugMode) {
               print('Failed to post shop with id ${shop.attendance_in_id}: $e');

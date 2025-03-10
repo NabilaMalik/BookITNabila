@@ -33,9 +33,9 @@ class AddShopViewModel extends GetxController {
       var fetchedCities = await _shopRepository.fetchCities();
       cities.value = fetchedCities;
     } catch (e) {
-      if (kDebugMode) {
+
         debugPrint('Failed to fetch cities: $e');
-      }
+
     }
   }
 
@@ -100,9 +100,9 @@ class AddShopViewModel extends GetxController {
       shopSerialCounter = 1;
       shopCurrentMonth = currentMonth;
     }
-    if (kDebugMode) {
+
       debugPrint('SR: $shopSerialCounter');
-    }
+
   }
 
   Future<void> _saveCounter() async {
@@ -173,7 +173,7 @@ class AddShopViewModel extends GetxController {
   }
   fetchAndSaveShop() async {
     await _shopRepository.fetchAndSaveShops();
-    await fetchAllAddShop();
+    // await fetchAllAddShop();
   }
 
   addAddShop(AddShopModel addShopModel) async {

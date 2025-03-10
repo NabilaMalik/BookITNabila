@@ -1,53 +1,69 @@
 class LoginModels{
-  int? id;
-  dynamic user_id;
-  dynamic user_name;
-  dynamic contact;
-  dynamic cnic;
-  dynamic image;
-  dynamic address;
-  dynamic city;
-  dynamic password;
+  String? user_id;
+  String? password;
+  String? user_name;
+  String? city;
+  dynamic designation;
+  dynamic brand;
+  dynamic images;
+  dynamic RSM;
+  dynamic SM;
+  dynamic NSM;
+  dynamic RSM_ID;
+  dynamic SM_ID;
+  dynamic NSM_ID;
 
   LoginModels({
-    this.id,
     this.user_id,
-    this.user_name,
-    this.contact,
-    this.cnic,
-    this.image,
-    this.address,
-    this.city,
     this.password,
-  });
+    this.user_name,
+    this.city,
+    this.designation,
+    this.brand,
+    this.images,
+    this.NSM,
+    this.NSM_ID,
+    this.RSM,
+    this.RSM_ID,
+    this.SM,
+    this.SM_ID
 
-  factory LoginModels.fromMap(Map<dynamic,dynamic>json)
-  {
+  });
+  factory
+  LoginModels.fromMap(Map<dynamic,dynamic>json){
     return LoginModels(
-      id: json['id'],
       user_id: json['user_id'],
+      password: json['password'],
       user_name: json['user_name'],
-      contact:  json['contact'],
-      cnic:  json['cnic'],
-      image:  json['image'],
-      address:  json['address'],
-      city:  json['city'],
-      password:  json['password'],
+      city: json['city'],
+      RSM_ID: json['RSM_ID'],
+      RSM: json['RSM'],
+      NSM_ID: json['NSM_ID'],
+      NSM: json['NSM'],
+      SM_ID: json['SM_ID'],
+      SM: json['SM'],
+      designation: json['designation'],
+      brand: json['brand'],
+      images: json['images'],
 
     );
   }
-
-  Map<String, dynamic> toMap(){
-    return {
-      'id':id,
+  Map<String,dynamic>toMap(){
+    return{
       'user_id':user_id,
-      'user_name':user_name,
-      'contact':contact,
-      'cnic':cnic,
-      'image':image,
-      'address':address,
-      'city':city,
       'password':password,
+      'user_name':user_name,
+      'city': city,
+      'brand': brand,
+      'designation': designation,
+      'images': images,
+      'NSM': NSM,
+      'NSM_ID': NSM_ID,
+      'RSM': RSM,
+      'RSM_ID': RSM_ID,
+      'SM': SM,
+      'SM_ID': SM_ID,
     };
+
   }
 }

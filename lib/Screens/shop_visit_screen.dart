@@ -250,6 +250,8 @@ class _StateShopVisitScreen extends State<ShopVisitScreen>{
           icon: const Icon(Icons.refresh, color: Colors.white),
           onPressed: () {
             shopVisitViewModel.fetchAllShopVisit();
+           //productsViewModel.fetchAndSaveProducts();
+           productsViewModel.fetchAllProductsModel();
           },
         ),
       ],

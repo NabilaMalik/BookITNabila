@@ -28,14 +28,14 @@ class ReturnFormDetailsRepository {
     for (int i = 0; i < maps.length; i++) {
       returnformdetails.add(ReturnFormDetailsModel.fromMap(maps[i]));
     }
-    if (kDebugMode) {
+
       debugPrint('Return Form Details Raw data from database:');
-    }
+
     // ignore: unused_local_variable
     for (var map in maps) {
-      if (kDebugMode) {
-        debugPrint("map");
-      }
+
+        debugPrint("$map");
+
     }
     return returnformdetails;
   }
@@ -74,24 +74,24 @@ class ReturnFormDetailsRepository {
             await postShopToAPI(shop);
             shop.posted = 1;
             await update(shop);
-            if (kDebugMode) {
+
               debugPrint('Shop with id ${shop.return_details_id} posted and updated in local database.');
-            }
+
           } catch (e) {
-            if (kDebugMode) {
+
               debugPrint('Failed to post shop with id ${shop.return_details_id}: $e');
-            }
+
           }
         }
       } else {
-        if (kDebugMode) {
+
           debugPrint('Network not available. Unposted shops will remain local.');
-        }
+
       }
     } catch (e) {
-      if (kDebugMode) {
+
         debugPrint('Error fetching unposted shops: $e');
-      }
+
     }
   }
 

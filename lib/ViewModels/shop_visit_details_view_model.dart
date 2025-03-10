@@ -53,9 +53,9 @@ class ShopVisitDetailsViewModel extends GetxController {
       shopVisitDetailsSerialCounter = 1;
       shopVisitDetailsCurrentMonth = currentMonth;
     }
-    if (kDebugMode) {
+
       debugPrint('shopVisitDetailsSerialCounter: $shopVisitDetailsSerialCounter');
-    }
+
   }
 
   Future<void> _saveCounter() async {

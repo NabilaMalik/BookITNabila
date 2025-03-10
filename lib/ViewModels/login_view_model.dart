@@ -25,7 +25,7 @@ class LoginViewModel extends GetxController {
   }
   // Method to check the internet connection before navigating to the login page
   Future<void> _checkInternetBeforeNavigation() async {
-    bool hasInternet = await checkInternetConnection();
+    bool hasInternet = await isNetworkAvailable();
 
     if (!hasInternet) {
 

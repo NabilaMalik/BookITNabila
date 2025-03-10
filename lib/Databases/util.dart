@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-
+import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 // import 'package:connectivity/connectivity.dart';
@@ -44,27 +44,59 @@ const locationTableName = "location";
 const productsTableName = "products";
 const tableNameLogin ='login';
 
-Future<bool> isNetworkAvailable() async {
-  var connectivityResult = await (Connectivity().checkConnectivity());
-  return connectivityResult != ConnectivityResult.none;
-}
+// Future<bool> isNetworkAvailable() async {
+//   var connectivityResult = await (Connectivity().checkConnectivity());
+//   return connectivityResult != ConnectivityResult.none;
+// }
 
 // Function to check internet connection
-Future<bool> checkInternetConnection() async {
+// Future<bool> isNetworkAvailable() async {
+//   var connectivityResult = await (Connectivity().checkConnectivity());
+//
+//   if (connectivityResult == ConnectivityResult.none) {
+//     return false; // No internet connection
+//   } else {
+//     try {
+//       // Test a network request to verify if internet access is available
+//       // final result = await InternetAddress.lookup('google.com');
+//       final result = await InternetAddress.lookup('https://cloud.metaxperts.net:8443/erp/test1/ordermasterget/get/B02');
+//       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+//         return true; // Internet connection is working
+//       }
+//     } catch (e) {
+//       return false; // No internet connection
+//     }
+//   }
+//   return false;
+// }
+
+
+
+Future<bool> isNetworkAvailable() async {
   var connectivityResult = await (Connectivity().checkConnectivity());
 
   if (connectivityResult == ConnectivityResult.none) {
     return false; // No internet connection
   } else {
     try {
-      // Test a network request to verify if internet access is available
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        return true; // Internet connection is working
+      // Replace with your server URL
+      final url = Uri.parse('https://cloud.metaxperts.net:8443/erp/test1/ordermasterget/get/B02');
+
+      // Make an HTTP GET request to your server
+      final response = await http.get(url).timeout(Duration(seconds: 5));
+
+      // Check if the response status code is 200 (OK)
+      if (response.statusCode == 200) {
+        return true; // Server is reachable
+      } else {
+        return false; // Server returned an error
       }
+    } on SocketException catch (_) {
+      return false; // No internet connection or server unreachable
+    } on TimeoutException catch (_) {
+      return false; // Request timed out
     } catch (e) {
-      return false; // No internet connection
+      return false; // Other errors
     }
   }
-  return false;
 }

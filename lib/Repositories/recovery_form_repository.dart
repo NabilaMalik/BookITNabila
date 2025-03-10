@@ -29,14 +29,14 @@ class RecoveryFormRepository {
     for (int i = 0; i < maps.length; i++) {
       recoveryform.add(RecoveryFormModel.fromMap(maps[i]));
     }
-    if (kDebugMode) {
+
       debugPrint('Recovery form Raw data from database:');
-    }
+
     // ignore: unused_local_variable
     for (var map in maps) {
-      if (kDebugMode) {
-        debugPrint("map");
-      }
+
+        debugPrint("$map");
+
     }
     return recoveryform;
   }
@@ -90,14 +90,14 @@ class RecoveryFormRepository {
         recoveryHighestSerial = serial;
         recoverySavedMonthCounter = month; // Save the month part to savedMonth variable
       } else {
-        if (kDebugMode) {
+
           debugPrint('No valid recovery_id numbers found for this user');
-        }
+
       }
     } else {
-      if (kDebugMode) {
+
         debugPrint('No orders found for this user');
-      }
+
     }
   }
 
@@ -124,34 +124,34 @@ class RecoveryFormRepository {
             await postShopToAPI(shop);
             shop.posted = 1;
             await update(shop);
-            if (kDebugMode) {
+
               debugPrint('Shop with id ${shop.recovery_id} posted and updated in local database.');
-            }
+
           } catch (e) {
-            if (kDebugMode) {
+
               debugPrint('Failed to post shop with id ${shop.recovery_id}: $e');
-            }
+
           }
         }
       } else {
-        if (kDebugMode) {
+
           debugPrint('Network not available. Unposted shops will remain local.');
-        }
+
       }
     } catch (e) {
-      if (kDebugMode) {
+
         debugPrint('Error fetching unposted shops: $e');
-      }
+
     }
   }
 
   Future<void> postShopToAPI(RecoveryFormModel shop) async {
     try {
       await Config.fetchLatestConfig();
-      if (kDebugMode) {
+
         debugPrint('Updated Shop Post API: ${Config.postApiUrlRecoveryForm}');
         // debugPrint('Updated Shop Post API: ${Config.postApiUrlRecoveryForm}');
-      }
+
       var shopData = shop.toMap();
       final response = await http.post(
         Uri.parse(Config.postApiUrlRecoveryForm),

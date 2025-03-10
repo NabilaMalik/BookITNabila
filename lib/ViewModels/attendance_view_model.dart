@@ -42,9 +42,9 @@ LocationViewModel locationViewModel = Get.put(LocationViewModel());
       attendanceInSerialCounter = 1;
       attendanceInCurrentMonth = currentMonth;
     }
-    if (kDebugMode) {
+
       debugPrint('SR: $attendanceInSerialCounter');
-    }
+
   }
 
   Future<void> _saveCounter() async {

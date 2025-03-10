@@ -31,14 +31,14 @@ class ShopVisitDetailsRepository extends GetxService{
     for (int i = 0; i < maps.length; i++) {
       shopvisitdetails.add(ShopVisitDetailsModel.fromMap(maps[i]));
     }
-    if (kDebugMode) {
+
       debugPrint(' Raw data from Shop Visit Details database:');
-    }
+
     // ignore: unused_local_variable
     for (var map in maps) {
-      if (kDebugMode) {
-        debugPrint("map");
-      }
+
+        debugPrint("$map");
+
     }
     return shopvisitdetails;
   }
@@ -77,33 +77,33 @@ class ShopVisitDetailsRepository extends GetxService{
             await postShopToAPI(shop);
             shop.posted = 1;
             await update(shop);
-            if (kDebugMode) {
+
               debugPrint('Shop with id ${shop.shop_visit_details_id} posted and updated in local database.');
-            }
+
           } catch (e) {
-            if (kDebugMode) {
+
               debugPrint('Failed to post shop with id ${shop.shop_visit_details_id}: $e');
-            }
+
           }
         }
       } else {
-        if (kDebugMode) {
+
           debugPrint('Network not available. Unposted shops will remain local.');
-        }
+
       }
     } catch (e) {
-      if (kDebugMode) {
+
         debugPrint('Error fetching unposted shops: $e');
-      }
+
     }
   }
 
   Future<void> postShopToAPI(ShopVisitDetailsModel shop) async {
     try {
       await Config.fetchLatestConfig();
-      if (kDebugMode) {
+
         debugPrint('Updated Shop Post API: ${Config.postApiUrlShopVisitDetails}');
-      }
+
       var shopData = shop.toMap();
       final response = await http.post(
         Uri.parse(Config.postApiUrlShopVisitDetails),

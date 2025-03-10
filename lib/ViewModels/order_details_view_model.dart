@@ -27,18 +27,17 @@ class OrderDetailsViewModel extends GetxController {
   int orderDetailsSerialCounter = 1;
   String orderDetailsCurrentMonth = DateFormat('MMM').format(DateTime.now());
   String currentuser_id = '';
-
+  //
   @override
   void onInit() {
     super.onInit();
     fetchAllReConfirmOrder();
     initializeProductData();
-    _loadCounter();
   }
-  Future<void> _loadCounter() async {
+_loadCounter() async {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    orderDetailsSerialCounter = (prefs.getInt('orderDetailsSerialCounter') ?? 1);
+    orderDetailsSerialCounter = (prefs.getInt('orderDetailsSerialCounter')?? orderDetailsHighestSerial ?? 1);
     orderDetailsCurrentMonth = prefs.getString('orderDetailsCurrentMonth') ?? currentMonth;
     currentuser_id = prefs.getString('currentuser_id') ?? '';
 
@@ -46,12 +45,12 @@ class OrderDetailsViewModel extends GetxController {
       orderDetailsSerialCounter = 1;
       orderDetailsCurrentMonth = currentMonth;
     }
-    if (kDebugMode) {
+
       debugPrint('orderDetailsSerialCounter: $orderDetailsSerialCounter');
-    }
+
   }
 
-  Future<void> _saveCounter() async {
+ _saveCounter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('orderDetailsSerialCounter', orderDetailsSerialCounter);
     await prefs.setString('orderDetailsCurrentMonth', orderDetailsCurrentMonth);
@@ -62,7 +61,7 @@ class OrderDetailsViewModel extends GetxController {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
 
     if (currentuser_id != user_id) {
-      orderDetailsSerialCounter = 1;
+      orderDetailsSerialCounter = orderDetailsHighestSerial ?? 1;
       currentuser_id = user_id;
     }
 
@@ -81,7 +80,7 @@ class OrderDetailsViewModel extends GetxController {
     await fetchAllReConfirmOrder();
   }
 
-  Future<void> initializeProductData() async {
+  initializeProductData() async {
     try {
       // Fetching products
       List<ProductsModel> products = productsViewModel.allProducts;
@@ -122,17 +121,17 @@ class OrderDetailsViewModel extends GetxController {
 
       // Debugging output to verify the initialization
       filteredRows.forEach((row) {
-        if (kDebugMode) {
+
           debugPrint(
               "Product: ${row['Product']}, In Stock: ${row['In Stock']}, Rate: ${row['Rate']}, Amount: ${row['Amount']}, Brand: ${row['Brand']}");
-        }
+
       });
 
       updateTotalAmount(); // Update total after initializing product data
     } catch (e) {
-      if (kDebugMode) {
+
         debugPrint("Error initializing product data: $e");
-      }
+
     }
   }
 
@@ -202,6 +201,7 @@ class OrderDetailsViewModel extends GetxController {
     }
 
     for (var product in productsToSave) {
+      await orderDetailsSerial();
       await _loadCounter();
       dynamic orderSerial = await generateNewOrderId(user_id);
       final orderDetailsModel = OrderDetailsModel(
@@ -226,8 +226,6 @@ class OrderDetailsViewModel extends GetxController {
         debugPrint("Error saving OrderDetailsModel: $e");
       }
     }
-
-
   }
 
 
@@ -249,5 +247,8 @@ class OrderDetailsViewModel extends GetxController {
   void deleteReConfirmOrder(int id) {
     orderDetailsRepository.delete(id);
     fetchAllReConfirmOrder();
+  }
+  Future<void>orderDetailsSerial()async{
+    await orderDetailsRepository.getHighestSerialNo();
   }
 }

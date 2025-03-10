@@ -1,5 +1,7 @@
 import 'dart:io';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -77,9 +79,7 @@ class ShopVisitViewModel extends GetxController {
       brands.value =
           savedBrands.map((product) => product.brand).toSet().toList();
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Failed to fetch Brands: $e');
-      }
+      debugPrint('Failed to fetch Brands: $e');
     }
   }
 
@@ -90,9 +90,7 @@ class ShopVisitViewModel extends GetxController {
       shopDetails.value =
           savedShops; // Update this line to store full shop details
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Failed to fetch shops: $e');
-      }
+      debugPrint('Failed to fetch shops: $e');
     }
   }
 
@@ -108,7 +106,9 @@ class ShopVisitViewModel extends GetxController {
   Future<void> _loadCounter() async {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    shopVisitsSerialCounter = (prefs.getInt('shopVisitsSerialCounter') ?? 1);
+    shopVisitsSerialCounter = (prefs.getInt('shopVisitsSerialCounter') ??
+        shopVisitHighestSerial ??
+        1);
     shopVisitCurrentMonth =
         prefs.getString('shopVisitCurrentMonth') ?? currentMonth;
     currentuser_id = prefs.getString('currentuser_id') ?? '';
@@ -117,9 +117,8 @@ class ShopVisitViewModel extends GetxController {
       shopVisitsSerialCounter = 1;
       shopVisitCurrentMonth = currentMonth;
     }
-    if (kDebugMode) {
-      debugPrint('SR: $shopVisitsSerialCounter');
-    }
+
+    debugPrint('SR: $shopVisitsSerialCounter');
   }
 
   Future<void> _saveCounter() async {
@@ -133,7 +132,7 @@ class ShopVisitViewModel extends GetxController {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
 
     if (currentuser_id != user_id) {
-      shopVisitsSerialCounter = 1;
+      shopVisitsSerialCounter = shopVisitHighestSerial ?? 1;
       currentuser_id = user_id;
     }
 
@@ -167,23 +166,19 @@ class ShopVisitViewModel extends GetxController {
       if (compressedImageBytes != null) {
         // Save the compressed image
         await File(filePath).writeAsBytes(compressedImageBytes);
-        if (kDebugMode) {
-          debugPrint('Compressed image saved successfully at $filePath');
-        }
+
+        debugPrint('Compressed image saved successfully at $filePath');
       } else {
-        if (kDebugMode) {
-          debugPrint('Image compression failed.');
-        }
+        debugPrint('Image compression failed.');
       }
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Error compressing and saving image: $e');
-      }
+      debugPrint('Error compressing and saving image: $e');
     }
   }
 
   Future<void> saveForm() async {
     if (validateForm()) {
+      await  getAndIncrementSerialNumber();
       debugPrint("Start Savinggggggggggggg");
       Uint8List? compressedImageBytes;
       if (selectedImage.value != null) {
@@ -193,42 +188,44 @@ class ShopVisitViewModel extends GetxController {
           minHeight: 600,
           quality: 40,
         );
+
+        await _loadCounter();
+        final orderSerial = generateNewOrderId(user_id);
+        shop_visit_master_id = orderSerial;
+
+        await addShopVisit(ShopVisitModel(
+          shop_name: selectedShop.value,
+          shop_address: shop_address.value,
+          owner_name: owner_name.value,
+          brand: selectedBrand.value,
+          booker_name: booker_name.value,
+          walk_through: checklistState[0],
+          planogram: checklistState[1],
+          signage: checklistState[2],
+          product_reviewed: checklistState[3],
+          body: compressedImageBytes,
+          feedback: feedBack.value,
+          user_id: user_id.toString(),
+          shop_visit_master_id:
+          shop_visit_master_id.toString(), // Add the generated serial here
+        ));
+        await shopvisitRepository.getShopVisit();
+        await shopVisitDetailsViewModel.saveFilteredProducts();
+        await shopvisitRepository.postDataFromDatabaseToAPI();
+        await shopvisitRepository.getShopVisit();
+
+        Get.snackbar("Success", "Form submitted successfully!",
+            snackPosition: SnackPosition.BOTTOM);
+        await clearFilters();
+        // Get.offAllNamed("/OrderBookingScreen");
+        Get.to(() => const OrderBookingScreen());
       }
-      await _loadCounter();
-      final orderSerial = generateNewOrderId(user_id);
-      shop_visit_master_id = orderSerial;
-
-      await addShopVisit(ShopVisitModel(
-        shop_name: selectedShop.value,
-        shop_address: shop_address.value,
-        owner_name: owner_name.value,
-        brand: selectedBrand.value,
-        booker_name: booker_name.value,
-        walk_through: checklistState[0],
-        planogram: checklistState[1],
-        signage: checklistState[2],
-        product_reviewed: checklistState[3],
-        body: compressedImageBytes,
-        feedback: feedBack.value,
-        user_id: user_id.toString(),
-        shop_visit_master_id:
-        shop_visit_master_id.toString(), // Add the generated serial here
-      ));
-      await shopvisitRepository.getShopVisit();
-      await shopVisitDetailsViewModel.saveFilteredProducts();
-      await shopvisitRepository.postDataFromDatabaseToAPI();
-      await shopvisitRepository.getShopVisit();
-
-      Get.snackbar("Success", "Form submitted successfully!",
-          snackPosition: SnackPosition.BOTTOM);
-      await clearFilters();
-     // Get.offAllNamed("/OrderBookingScreen");
-       Get.to(() => const OrderBookingScreen());
     }
   }
 
   Future<void> saveFormNoOrder() async {
     if (validateForm()) {
+    await  getAndIncrementSerialNumber();
       debugPrint("Start Savinggggggggggggg");
       String? imagePath;
       Uint8List? imageBytes;
@@ -313,4 +310,84 @@ class ShopVisitViewModel extends GetxController {
   bool validateForm() {
     return _formKey.currentState?.validate() ?? false;
   }
+
+  // Function to fetch the latest shop_visit_master_id from the server
+  Future<String> fetchLatestShopVisitIdFromServer() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'https://cloud.metaxperts.net:8443/erp/test1/shopvisitserial/get/$user_id'),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final items = data['items'] as List<dynamic>?;
+
+        if (items != null && items.isNotEmpty) {
+          final latestId = items[0]['max(shop_visit_master_id)'] as String?;
+          if (latestId != null) {
+            return latestId;
+          } else {
+            throw Exception('No shop_visit_master_id found in the response');
+          }
+        } else {
+          throw Exception('No items found in the response');
+        }
+      } else {
+        throw Exception(
+            'Failed to fetch latest shop_visit_master_id: ${response.statusCode}');
+      }
+    } catch (e) {
+      debugPrint('Error fetching latest shop_visit_master_id: $e');
+      throw Exception('Failed to fetch latest shop_visit_master_id: $e');
+    }
+  }
+
+  // Function to extract and increment the serial number
+  Future<void> getAndIncrementSerialNumber() async {
+    try {
+      // Fetch the latest shop_visit_master_id from the server
+      final latestShopVisitId = await fetchLatestShopVisitIdFromServer();
+
+      // Extract the serial number from the shop_visit_master_id
+      final parts = latestShopVisitId.split('-');
+      if (parts.length > 2) {
+        final serialNoPart = parts.last;
+        final serialNumber = int.tryParse(serialNoPart);
+
+        if (serialNumber != null) {
+          // Increment the serial number
+          shopVisitHighestSerial = serialNumber + 1;
+          debugPrint(
+              'Latest serial number incremented to: $shopVisitHighestSerial');
+        } else {
+          throw Exception(
+              'Failed to parse serial number from shop_visit_master_id');
+        }
+      } else {
+        throw Exception('Invalid shop_visit_master_id format');
+      }
+    } catch (e) {
+      debugPrint('Error in getAndIncrementSerialNumber: $e');
+      throw Exception('Failed to increment serial number: $e');
+    }
+  }
+
+  // // Function to generate the next shop_visit_master_id
+  // Future<String> generateNextShopVisitId() async {
+  // await getAndIncrementSerialNumber(); // Fetch and increment the serial number
+  //
+  // // Define the prefix (e.g., "SV-VT0068-Mar")
+  // const prefix = "SV-VT0068-Mar";
+  //
+  // // Format the serial number with leading zeros (e.g., 001, 002)
+  // final serialNumber = highestSerial.toString().padLeft(3, '0');
+  //
+  // // Combine prefix and serial number
+  // return '$prefix-$serialNumber';
+  // }
 }

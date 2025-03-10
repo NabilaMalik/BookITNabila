@@ -1,6 +1,6 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:http/http.dart' as http;
-
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/Repositories/order_details_repository.dart';
@@ -14,7 +14,9 @@ import '../Services/FirebaseServices/firebase_remote_config.dart';
 class OrderMasterRepository extends GetxService {
   DBHelper dbHelper = Get.put(DBHelper());
   OrderDetailsRepository orderDetailsRepository = Get.put(OrderDetailsRepository());
-OrderDetailsViewModel orderDetailsViewModel =Get.put(OrderDetailsViewModel());
+  OrderDetailsViewModel orderDetailsViewModel = Get.put(OrderDetailsViewModel());
+
+
   Future<List<OrderMasterModel>> getConfirmOrder() async {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(orderMasterTableName, columns: [
@@ -36,16 +38,14 @@ OrderDetailsViewModel orderDetailsViewModel =Get.put(OrderDetailsViewModel());
     for (int i = 0; i < maps.length; i++) {
       confirmorder.add(OrderMasterModel.fromMap(maps[i]));
     }
-    if (kDebugMode) {
-      debugPrint('Raw data from database:');
-    }
+
+    debugPrint('Raw data from database:');
     for (var map in maps) {
-      if (kDebugMode) {
-        debugPrint("$map");
-      }
+      debugPrint("$map");
     }
     return confirmorder;
   }
+
   Future<void> fetchAndSaveOrderMaster() async {
     debugPrint('${Config.getApiUrlOrderMaster}$user_id');
     List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/test1/ordermasterget/get/$user_id');
@@ -70,18 +70,17 @@ OrderDetailsViewModel orderDetailsViewModel =Get.put(OrderDetailsViewModel());
           where: 'order_master_id = ?',
           whereArgs: [model.order_master_id],
         );
-        if (kDebugMode) {
-          debugPrint('Deleted existing record with order_master_id: ${model.order_master_id}');
-        }
+
+        debugPrint('Deleted existing record with order_master_id: ${model.order_master_id}');
       }
 
       // Insert the new record from the API
       await dbClient.insert(orderMasterTableName, model.toMap());
-      if (kDebugMode) {
-        debugPrint('Inserted new record with order_master_id: ${model.order_master_id}');
-      }
+
+      debugPrint('Inserted new record with order_master_id: ${model.order_master_id}');
     }
   }
+
   Future<List<OrderMasterModel>> getUnPostedOrderMaster() async {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(
@@ -104,33 +103,26 @@ OrderDetailsViewModel orderDetailsViewModel =Get.put(OrderDetailsViewModel());
             await postShopToAPI(shop);
             shop.posted = 1;
             await update(shop);
-            if (kDebugMode) {
-              debugPrint('Shop with id ${shop.order_master_id} posted and updated in local database.');
-            }
+
+            debugPrint('Shop with id ${shop.order_master_id} posted and updated in local database.');
           } catch (e) {
-            if (kDebugMode) {
-              debugPrint('Failed to post shop with id ${shop.order_master_id}: $e');
-            }
+            debugPrint('Failed to post shop with id ${shop.order_master_id}: $e');
           }
         }
       } else {
-        if (kDebugMode) {
-          debugPrint('Network not available. Unposted shops will remain local.');
-        }
+        debugPrint('Network not available. Unposted shops will remain local.');
       }
     } catch (e) {
-      if (kDebugMode) {
-        debugPrint('Error fetching unposted shops: $e');
-      }
+      debugPrint('Error fetching unposted shops: $e');
     }
   }
 
   Future<void> postShopToAPI(OrderMasterModel shop) async {
     try {
       await Config.fetchLatestConfig();
-      if (kDebugMode) {
-        debugPrint('Updated Shop Post API: ${Config.postApiUrlOrderMaster}');
-      }
+
+      debugPrint('Updated Shop Post API: ${Config.postApiUrlOrderMaster}');
+
       var shopData = shop.toMap();
       final response = await http.post(
         Uri.parse(Config.postApiUrlOrderMaster),
@@ -151,6 +143,7 @@ OrderDetailsViewModel orderDetailsViewModel =Get.put(OrderDetailsViewModel());
       throw Exception('Failed to post data: $e');
     }
   }
+
   Future<int> add(OrderMasterModel confirmorderModel) async {
     var dbClient = await dbHelper.db;
     return await dbClient.insert(orderMasterTableName, confirmorderModel.toMap());
@@ -167,4 +160,50 @@ OrderDetailsViewModel orderDetailsViewModel =Get.put(OrderDetailsViewModel());
     return await dbClient.delete(orderMasterTableName, where: 'order_master_id = ?', whereArgs: [id]);
   }
 
+  Future<void> getHighestSerialNo() async {
+    int serial;
+
+    final db = await dbHelper.db;
+    final result = await db!.rawQuery('''
+    SELECT order_master_id 
+    FROM $orderMasterTableName
+    WHERE user_id = ? AND order_master_id IS NOT NULL
+  ''', [user_id]);
+
+    if (result.isNotEmpty) {
+      // Extract the serial numbers from the order_master_id strings
+      final serialNos = result.map((row) {
+        final orderNo = row['order_master_id'] as String?;
+        if (orderNo != null) {
+          final parts = orderNo.split('-');
+          if (parts.length > 2) {
+            final serialNoPart = parts.last;
+            if (serialNoPart.isNotEmpty) {
+              return int.tryParse(serialNoPart);
+            }
+          }
+        }
+        return null;
+      }).where((serialNo) => serialNo != null).cast<int>().toList();
+
+      // Find and set the maximum serial number
+      if (serialNos.isNotEmpty) {
+        serial = serialNos.reduce(max);
+        serial++;
+        // Increment the highest serial number
+        orderMasterHighestSerial = serial;
+        if (kDebugMode) {
+          print('Highest serial number orderMasterHighestSerial incremented to: $orderMasterHighestSerial');
+        }
+      } else {
+        if (kDebugMode) {
+          print('No valid order numbers found for this user');
+        }
+      }
+    } else {
+      if (kDebugMode) {
+        print('No orders found for this user');
+      }
+    }
+  }
 }

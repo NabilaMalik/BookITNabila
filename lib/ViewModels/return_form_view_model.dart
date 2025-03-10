@@ -27,7 +27,7 @@ class ReturnFormViewModel extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _loadCounter();
+
     fetchAllReturnForm();
     initializeData();
     orderMasterViewModel.fetchAllOrderMaster();
@@ -67,6 +67,7 @@ class ReturnFormViewModel extends GetxController {
     }
 
     if (isValid) {
+      await _loadCounter();
       final returnFormSerial = generateNewOrderId(user_id);
       returnMasterId = returnFormSerial;
       await addReturnForm(ReturnFormModel(
@@ -99,9 +100,9 @@ class ReturnFormViewModel extends GetxController {
       returnFormSerialCounter = 1;
       returnFormCurrentMonth = currentMonth;
     }
-    if (kDebugMode) {
+
       debugPrint('SR: $returnFormSerialCounter');
-    }
+
   }
 
 

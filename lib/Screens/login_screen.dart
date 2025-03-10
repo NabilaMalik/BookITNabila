@@ -4,10 +4,10 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:order_booking_app/Databases/dp_helper.dart';
-import 'package:order_booking_app/Models/return_form_model.dart';
-import 'package:order_booking_app/Models/returnform_details_model.dart';
-import 'package:order_booking_app/Screens/home_screen.dart';
+// import 'package:order_booking_app/Databases/dp_helper.dart';
+// import 'package:order_booking_app/Models/return_form_model.dart';
+// import 'package:order_booking_app/Models/returnform_details_model.dart';
+// import 'package:order_booking_app/Screens/home_screen.dart';
 import 'package:order_booking_app/ViewModels/ProductsViewModel.dart';
 import 'package:order_booking_app/ViewModels/add_shop_view_model.dart';
 import 'package:order_booking_app/ViewModels/attendance_out_view_model.dart';
@@ -23,6 +23,7 @@ import 'package:order_booking_app/screens/Components/custom_button.dart';
 import 'package:order_booking_app/screens/signup_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Databases/util.dart';
+import '../ViewModels/return_form_view_model.dart';
 import '../components/under_part.dart';
 import '../constants.dart';
 import '../widgets/rounded_button.dart';
@@ -35,11 +36,24 @@ class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
-
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  late final addShopViewModel = Get.put(AddShopViewModel());
+  late final productsViewModel = Get.put(ProductsViewModel());
+  late final shopVisitViewModel = Get.put(ShopVisitViewModel());
+  late final shopVisitDetailsViewModel = Get.put(ShopVisitDetailsViewModel());
+  late final orderMasterViewModel = Get.put(OrderMasterViewModel());
+  late final orderDetailsViewModel = Get.put(OrderDetailsViewModel());
+  late final recoveryFormViewModel = Get.put(RecoveryFormViewModel());
+  late final returnFormViewModel = Get.put(ReturnFormViewModel());
+  late final attendanceViewModel = Get.put(AttendanceViewModel());
+  late final attendanceOutViewModel = Get.put(AttendanceOutViewModel());
+  final LocationViewModel locationViewModel = Get.put(LocationViewModel());
+  // final orderMasterViewModel = Get.put(OrderMasterViewModel());
+  // final orderDetailsViewModel = Get.put(OrderDetailsViewModel());
   final LoginViewModel loginViewModel = Get.put(LoginViewModel());
+
   final _formKey = GlobalKey<FormState>();
   bool isChecked = true;
   bool isLoading = false;
@@ -94,34 +108,47 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     await prefs.setString('userId', _emailController.text.trim());
-    prefs.reload();
+    await prefs.reload();
     user_id = prefs.getString('userId')!;
+    debugPrint("User ID: $user_id");
 
     try {
-      final addShopViewModel = Get.put(AddShopViewModel());
-      final productsViewModel = Get.put(ProductsViewModel());
-      final  shopVisitViewModel = Get.put(ShopVisitViewModel());
-      final shopVisitDetailsViewModel = Get.put(ShopVisitDetailsViewModel());
-      final orderMasterViewModel = Get.put(OrderMasterViewModel());
-      final orderDetailsViewModel = Get.put(OrderDetailsViewModel());
-      final recoveryFormViewModel = Get.put(RecoveryFormViewModel());
-      final returnFormModel = Get.put(ReturnFormModel());
-      final returnFormDetailsModel = Get.put(ReturnFormDetailsModel());
-      final attendanceViewModel = Get.put(AttendanceViewModel());
-      final attendanceOutViewModel = Get.put(AttendanceOutViewModel());
-      final locationViewModel = Get.put(LocationViewModel());
+      // final OrderMasterViewModel orderMasterViewModel = Get.put(OrderMasterViewModel());
+      // final OrderDetailsViewModel orderDetailsViewModel = Get.put(OrderDetailsViewModel());
+      // final AddShopViewModel addShopViewModel = Get.put(AddShopViewModel());
+      // final ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
+      // final ShopVisitDetailsViewModel shopVisitDetailsViewModel = Get.put(ShopVisitDetailsViewModel());
+      // final RecoveryFormViewModel recoveryFormViewModel = Get.put(RecoveryFormViewModel());
+      // final ReturnFormModel returnFormModel = Get.put(ReturnFormModel());
+      // final ReturnFormDetailsModel returnFormDetailsModel = Get.put(ReturnFormDetailsModel());
+      // final AttendanceViewModel attendanceViewModel = Get.put(AttendanceViewModel());
+      // final AttendanceOutViewModel attendanceOutViewModel = Get.put(AttendanceOutViewModel());
+      // final LocationViewModel locationViewModel = Get.put(LocationViewModel());
+
+
+      // await addShopViewModel.fetchAndSaveShop();
+      // await productsViewModel.fetchAndSaveProducts();
+      // await orderMasterViewModel.fetchAndSaveOrderMaster();
+      // await orderDetailsViewModel.fetchAndSaveOrderDetails();
+      // await shopVisitViewModel.fetchAllShopVisit();
+      // await shopVisitDetailsViewModel.initializeProductData();
+
+
       // Explicitly define the type for Future.wait
       await Future.wait<void>([
-        await addShopViewModel.fetchAndSaveShop(),
-        await productsViewModel.fetchAndSaveProducts(),
-        await orderMasterViewModel.fetchAndSaveOrderMaster(),
-        await orderDetailsViewModel.fetchAndSaveOrderDetails(),
-         await shopVisitDetailsViewModel.initializeProductData(),
+       addShopViewModel.fetchAndSaveShop(),
+        productsViewModel.fetchAndSaveProducts(),
+       orderMasterViewModel.fetchAndSaveOrderMaster(),
+        orderDetailsViewModel.fetchAndSaveOrderDetails(),
+        shopVisitDetailsViewModel.initializeProductData(),
+        orderMasterViewModel.orderMasterSerial(),
+        orderDetailsViewModel.orderDetailsSerial()
       ]);
-
-      Get.off(() => HomeScreen());
+      Get.offNamed("/home");
+      // Get.off(() => HomeScreen());
     } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch data: $e', snackPosition: SnackPosition.BOTTOM);
+      debugPrint('Error fetching data: $e');
+      Get.snackbar('Error', 'Failed to fetch data: $e', snackPosition: SnackPosition.BOTTOM,);
     } finally {
       setState(() {
         isLoading = false;

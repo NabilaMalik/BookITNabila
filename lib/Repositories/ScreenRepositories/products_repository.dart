@@ -4,6 +4,7 @@ import '../../Databases/dp_helper.dart';
 import '../../Databases/util.dart';
 import '../../Models/ScreenModels/products_model.dart';
 import '../../Services/ApiServices/api_service.dart';
+import '../../Services/FirebaseServices/firebase_remote_config.dart';
 
 class ProductsRepository extends GetxService{
 
@@ -26,7 +27,7 @@ class ProductsRepository extends GetxService{
     // }
     // for (var map in maps) {
     //   if (kDebugMode) {
-    //     debugPrint("map");
+    //     debugPrint("$map");
     //   }
     // }
     List<ProductsModel> products = [];
@@ -76,10 +77,8 @@ class ProductsRepository extends GetxService{
   }
 
   Future<void> fetchAndSaveProducts() async {
-    if (kDebugMode) {
-      // debugPrint(Config.getApiUrlShops1);
+       debugPrint(Config.getApiUrlProducts);
       debugPrint('https://cloud.metaxperts.net:8443/erp/valor_trading/products/get/');
-    }
     try {
      // List<dynamic> data = await ApiService.getData(Config.getApiUrlProducts);
       List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/valor_trading/products/get/');

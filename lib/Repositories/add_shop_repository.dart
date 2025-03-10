@@ -48,9 +48,7 @@ class AddShopRepository extends GetxService {
       print('Shop Raw data from database:');
     }
     for (var map in maps) {
-      if (kDebugMode) {
-        print(map);
-      }
+        // debugPrint("$map");
     }
     return addShop;
   }
@@ -71,25 +69,25 @@ class AddShopRepository extends GetxService {
     return await dbClient.delete(addShopTableName, where: 'shop_id = ?', whereArgs: [id]);
   }
 
-  Future<void> fetchAllAddShop(RxList<AddShopModel> allAddShop) async {
-    var addShop = await getAddShop();
-    allAddShop.value = addShop;
-  }
+  // Future<void> fetchAllAddShop(RxList<AddShopModel> allAddShop) async {
+  //   var addShop = await getAddShop();
+  //   allAddShop.value = addShop;
+  // }
 
   Future<void> addAddShop(AddShopModel addShopModel, RxList<AddShopModel> allAddShop) async {
     await add(addShopModel);
-    await fetchAllAddShop(allAddShop);
+    // await fetchAllAddShop(allAddShop);
     await postDataFromDatabaseToAPI();
   }
 
   Future<void> updateAddShop(AddShopModel addShopModel, RxList<AddShopModel> allAddShop) async {
     await update(addShopModel);
-    await fetchAllAddShop(allAddShop);
+    // await fetchAllAddShop(allAddShop);
   }
 
   Future<void> deleteAddShop(String? id, RxList<AddShopModel> allAddShop) async {
     await delete(id);
-    await fetchAllAddShop(allAddShop);
+    // await fetchAllAddShop(allAddShop);
   }
 
   Future<List<String>> fetchCitiesFromApi() async {
@@ -129,10 +127,10 @@ class AddShopRepository extends GetxService {
   Future<void> fetchAndSaveShops() async {
     if (kDebugMode) {
       print(Config.getApiUrlShops1);
-      //print('https://cloud.metaxperts.net:8443/erp/test1/shopget/get/');
+      print('https://cloud.metaxperts.net:8443/erp/test1/shopget/get/');
     }
    // List<dynamic> data = await ApiService.getData(Config.getApiUrlShops1);
-    List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/test1/shopget/get/');
+    List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/test1/shopgetid/get/$user_id');
     var dbClient = await dbHelper.db;
 
     // Save data to database
@@ -141,7 +139,7 @@ class AddShopRepository extends GetxService {
       AddShopModel model = AddShopModel.fromMap(item);
       await dbClient.insert(addShopTableName, model.toMap());
     }
-    await getAddShop();
+    // await getAddShop();
   }
 
   // Fetch all unposted shops (posted = 0)
