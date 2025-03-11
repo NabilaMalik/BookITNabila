@@ -127,7 +127,7 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
                       text: pw.TextSpan(
                         children: [
                           pw.TextSpan(
-                            text: 'Order ID:      ',
+                            text: 'Order ID:    ',
                             style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           ),
                           pw.TextSpan(
@@ -161,7 +161,7 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
                       text: pw.TextSpan(
                         children: [
                           pw.TextSpan(
-                            text: 'Phone Number: ',
+                            text: 'Phone Number:  ',
                             style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           ),
                           pw.TextSpan(
@@ -195,7 +195,7 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
                       text: pw.TextSpan(
                         children: [
                           pw.TextSpan(
-                            text: 'Date:   ',
+                            text: 'Date: ',
                             style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           ),
                           pw.TextSpan(

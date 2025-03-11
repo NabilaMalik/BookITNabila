@@ -26,96 +26,121 @@ class ReturnFormScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     viewModel.initializeData();
     Size size = MediaQuery.of(context).size;
+
     return SafeArea(
-      child: Scaffold(
+      child: Scaffold(backgroundColor: Colors.white,
         appBar: const CustomAppBar(),
-        body: Container(
-          color: Colors.white,
-          width: size.width,
-          height: size.height,
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const SizedBox(height: 50),
+        body: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 50),
+                      // Dropdown for Shop Selection
+                      Obx(() {
+                        debugPrint("Shops in ViewModel: ${viewModel.shops}");
+                        return DropdownButtonFormField<String>(
+                          decoration: const InputDecoration(
+                            labelText: "Shop Name",
+                            labelStyle: TextStyle(fontSize: 15),
+                            border: UnderlineInputBorder(),
+                          ),
+                          value: viewModel.selectedShop.value.isEmpty
+                              ? null
+                              : viewModel.selectedShop.value,
+                          items: viewModel.shops.map((shop) {
+                            debugPrint("Adding Shop to Dropdown: ${shop.name}");
+                            return DropdownMenuItem(
+                              value: shop.name,
+                              child: Text(shop.name),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            viewModel.selectedShop.value = value!;
+                            OrderMasterModel? selectedOrder;
+                            try {
+                              selectedOrder =
+                                  orderMasterViewModel.allOrderMaster.firstWhere(
+                                        (order) => order.shop_name == value,
+                                  );
+                            } catch (e) {
+                              debugPrint("No order found for shop: $value");
+                              selectedOrder = null;
+                            }
 
-                Obx(() {
-                  // Debug: Print the contents of viewModel.shops
-                  debugPrint("Shops in ViewModel: ${viewModel.shops}");
-                  return DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(
-                      labelText: "Shop Name",
-                      labelStyle: TextStyle(fontSize: 15),
-                      border: UnderlineInputBorder(),
-                    ),
-                    value: viewModel.selectedShop.value.isEmpty
-                        ? null
-                        : viewModel.selectedShop.value,
-                    items: viewModel.shops.map((shop) {
-                      // Debug: Print each shop name being added to the dropdown
-                      debugPrint("Adding Shop to Dropdown: ${shop.name}");
-                      return DropdownMenuItem(
-                        value: shop.name,
-                        child: Text(shop.name),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      viewModel.selectedShop.value = value!;
+                            if (selectedOrder != null) {
+                              var filteredItems =
+                              orderDetailsViewModel.allReConfirmOrder
+                                  .where((detail) =>
+                              detail.order_master_id ==
+                                  selectedOrder!.order_master_id)
+                                  .map((detail) => Item(detail.product!))
+                                  .toList();
 
-                      // Find the order_master_id for the selected shop
-                      OrderMasterModel? selectedOrder;
-                      try {
-                        selectedOrder = orderMasterViewModel.allOrderMaster.firstWhere(
-                              (order) => order.shop_name == value,
+                              returnFormDetailsViewModel.items.value =
+                                  filteredItems;
+                            } else {
+                              returnFormDetailsViewModel.items.value = [];
+                            }
+                          },
                         );
-                      } catch (e) {
-                        debugPrint("No order found for the selected shop: $value");
-                        selectedOrder = null; // Set to null if no match is found
-                      }
+                      }),
+                      const SizedBox(height: 30),
 
-                      if (selectedOrder != null) {
-                        // Proceed with filtering items
-                        var filteredItems = orderDetailsViewModel.allReConfirmOrder
-                            .where((detail) => detail.order_master_id == selectedOrder!.order_master_id)
-                            .map((detail) => Item(detail.product!))
-                            .toList();
-
-                        returnFormDetailsViewModel.items.value = filteredItems;
-                      } else {
-                        debugPrint("No order found for the selected shop: $value");
-                        returnFormDetailsViewModel.items.value = [];
-                      }
-                    },
-                  );
-                }),
-                const SizedBox(height: 30),
-                Obx(() => Column(
-                      children: returnFormDetailsViewModel.formRows
-                          .asMap()
-                          .entries
-                          .map((entry) {
-                        int index = entry.key;
-                        ReturnForm row = entry.value;
-                        return FormRow(
-                            size: size,
-                            returnFormDetailsViewModel:
-                                returnFormDetailsViewModel,
-                            row: row,
-                            index: index);
-                      }).toList(),
-                    )),
-                const SizedBox(height: 10),
-                 AddRowButton(),
-                const SizedBox(height: 40),
-
-                const SubmitButton(),
-              ],
+                      // List of Form Rows
+                      Obx(
+                            () => Column(
+                          children: returnFormDetailsViewModel.formRows
+                              .asMap()
+                              .entries
+                              .map((entry) {
+                            int index = entry.key;
+                            ReturnForm row = entry.value;
+                            return FormRow(
+                              size: size,
+                              returnFormDetailsViewModel:
+                              returnFormDetailsViewModel,
+                              row: row,
+                              index: index,
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
+
+            // Fixed Bottom Buttons
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  top: BorderSide(color: Colors.grey.shade300, width: 1),
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  AddRowButton(),
+                  const SizedBox(height: 20),
+                  SubmitButton(),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
+
 }
 
 
@@ -129,14 +154,14 @@ class AddRowButton extends StatelessWidget {
     final ReturnFormViewModel viewModel = Get.find();
     return CustomButton(
       buttonText: "Add Row",
-      textStyle: TextStyle(color: Colors.red, fontSize: 16),
+      textStyle: TextStyle(color: Colors.blue.shade900, fontSize: 16,fontWeight: FontWeight.bold),
       onTap: returnFormDetailsViewModel.addRow,
-      gradientColors: [Colors.yellow, Colors.yellow],
+      gradientColors: [Colors.yellow, Colors.yellow.shade200],
       padding:const EdgeInsets.symmetric(horizontal: 45, vertical: 15) ,
       width: 200,
       height: 50,
       icon: Icons.add_circle_outlined,
-      iconColor: Colors.red,
+      iconColor: Colors.blue.shade900,
       iconPosition: IconPosition.right,
     );
   }

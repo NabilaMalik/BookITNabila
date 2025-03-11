@@ -14,6 +14,44 @@ import '../Repositories/attendance_repository.dart';
 import '../Services/FirebaseServices/firebase_remote_config.dart';
 class AttendanceViewModel extends GetxController{
 
+  //
+  // var clockedIn = false.obs;
+  // var clockedOut = false.obs;
+  //
+  // void setClockIn(bool value) {
+  //   clockedIn.value = value;
+  //   clockedOut.value = !value;
+  // }
+  //
+  // void setClockOut(bool value) {
+  //   clockedOut.value = value;
+  //   clockedIn.value = !value;
+  // }
+  //
+ //
+ //  var clockedIn = false.obs;
+ //
+ //  void setClockIn(bool value) {
+ //    clockedIn.value = value;
+ //    debugPrint("ClockedIn State Updated: $value");
+ //  }
+ // // RxBool clockedIn = false.obs;
+ //  RxBool clockedOut = false.obs;
+
+  // void setClockIn(bool value) {
+  //   clockedIn.value = value;
+  //   clockedOut.value = !value;
+  //   print("Clocked In: ${clockedIn.value}, Clocked Out: ${clockedOut.value}");
+  // }
+
+
+
+  // void setClockOut(bool value) {
+  //   clockedOut.value = value;
+  //   clockedIn.value = !value;
+  //   print("Clocked In: ${clockedIn.value}, Clocked Out: ${clockedOut.value}");
+  // }
+
   var allAttendance = <AttendanceModel>[].obs;
   AttendanceRepository attendanceRepository = Get.put(AttendanceRepository());
 LocationViewModel locationViewModel = Get.put(LocationViewModel());

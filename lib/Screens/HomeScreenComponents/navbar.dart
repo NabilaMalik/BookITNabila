@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/screens/HomeScreenComponents/side_menu.dart';
 
-/// Navbar widget.
 class Navbar extends StatelessWidget {
   const Navbar({super.key});
 
@@ -27,7 +26,7 @@ class Navbar extends StatelessWidget {
           Row(
             children: [
               InkWell(
-                onTap:() => Get.to(() => SideMenu(),
+                onTap:() => Get.to(() => const SideMenu(),
                   transition: Transition.fade, // Add fade transition
                 ),
 
@@ -44,8 +43,8 @@ class Navbar extends StatelessWidget {
               ),
             ],
           ),
-          Row(
-            children: const [
+          const Row(
+            children: [
               Icon(Icons.search, color: Colors.white, size: 28),
               SizedBox(width: 20),
               Icon(Icons.notifications, color: Colors.white, size: 28),

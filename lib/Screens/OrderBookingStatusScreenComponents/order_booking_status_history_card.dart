@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';
-
 import '../../Databases/dp_helper.dart';
 import '../../Models/ScreenModels/order_status_models.dart';
 import '../../ViewModels/ScreenViewModels/order_booking_status_view_model.dart';
@@ -249,46 +248,42 @@ class OrderBookingStatusHistoryCard extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return  AlertDialog(
+                    return AlertDialog(
                       title: const Text('Order Details'),
-                      content: ListView.builder(
-                        itemCount: queryRows.length,
-                        itemBuilder: (context, index) {
-                          return RichText(
-                            text: TextSpan(
-                              style: DefaultTextStyle
-                                  .of(context)
-                                  .style,
-                              children: <TextSpan>[
-                                const TextSpan(text: 'Sr. No: ',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                                TextSpan(text: '${index + 1}\n'),
-                                // Add serial number here
-                                const TextSpan(text: 'Product Name: ',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                                TextSpan(
-                                    text: '${queryRows[index]['product']}\n'),
-                                const TextSpan(text: 'Quantity: ',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                                TextSpan(
-                                    text: '${queryRows[index]['quantity']}\n'),
-                                const TextSpan(text: 'Unit Price: ',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                                TextSpan(
-                                    text: '${queryRows[index]['rate']}\n'),
-                              ],
-                            ),
-                          );
-                        },
+                      content: SizedBox(
+                        height: 300,
+                        width: 300,
+                        child: Scrollbar(
+                          thumbVisibility: true, // Show scrollbar for better UX
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: queryRows.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 4.0), // Add spacing between items
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: DefaultTextStyle.of(context).style,
+                                    children: <TextSpan>[
+                                      const TextSpan(text: 'Sr. No: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${index + 1}\n'),
+                                      const TextSpan(text: 'Product Name: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${queryRows[index]['product']}\n'),
+                                      const TextSpan(text: 'Quantity: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${queryRows[index]['quantity']}\n'),
+                                      const TextSpan(text: 'Unit Price: ', style: TextStyle(fontWeight: FontWeight.bold)),
+                                      TextSpan(text: '${queryRows[index]['rate']}\n'),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                       ),
                       actions: <Widget>[
                         TextButton(
                           onPressed: () {
-                            // Get.to(const HomePage());
                             Navigator.of(context).pop();
                           },
                           child: const Text('Close'),
@@ -296,6 +291,7 @@ class OrderBookingStatusHistoryCard extends StatelessWidget {
                       ],
                     );
                   },
+
                 );
               },
               child: Text(

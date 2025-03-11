@@ -85,118 +85,127 @@ class _SideMenuState extends State<SideMenu>  with SingleTickerProviderStateMixi
   }
   @override
 
-  @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
-        return Container(
-          padding: EdgeInsets.only(
-            top: MediaQuery.of(context).padding.top,
-            bottom: MediaQuery.of(context).padding.bottom - 60 >= 0
-                ? MediaQuery.of(context).padding.bottom - 60
-                : 0,
-          ),
-          constraints: const BoxConstraints(maxWidth: 288),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [_color1Animation.value!, _color2Animation.value!],
-              begin: _beginAnimation.value,
-              end: _endAnimation.value,
-            ),
-            borderRadius: BorderRadius.circular(30),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: Colors.white.withOpacity(0.2),
-                      foregroundColor: Colors.white,
-                      child: const Icon(Icons.person_outline),
-                    ),
-                    const SizedBox(width: 8),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: FractionallySizedBox(
+            widthFactor: 0.64,
+            heightFactor: 1,
+            child: Container(
+              padding: EdgeInsets.only(
+                top: MediaQuery.of(context).padding.top,
+                bottom: MediaQuery.of(context).padding.bottom - 60 >= 0 ? MediaQuery.of(context).padding.bottom - 60 : 0,
+              ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                   colors: [_color1Animation.value!, _color2Animation.value!],
+                  // colors: const [Colors.orange, Colors.blue],
+                  begin: _beginAnimation.value,
+                  end: _endAnimation.value,
+                ),
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(10), // Rounded right side
+                  bottomRight: Radius.circular(10),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
                       children: [
-                        const Text(
-                          "MetaXperts",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 17,
-                              fontFamily: "Inter"),
+                        CircleAvatar(
+                          backgroundColor: Colors.white.withOpacity(0.2),
+                          foregroundColor: Colors.white,
+                          child: const Icon(Icons.person_outline),
                         ),
-                        const SizedBox(height: 2),
-                        Text(
-                          "Software Engineer",
-                          style: TextStyle(
-                              color: Colors.white.withOpacity(0.7),
-                              fontSize: 15,
-                              fontFamily: "Inter"),
-                        )
+                        const SizedBox(width: 8),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "MetaXperts",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  fontFamily: "Inter"),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              "Software Engineer",
+                              style: TextStyle(
+                                  color: Colors.white.withOpacity(0.7),
+                                  fontSize: 15,
+                                  fontFamily: "Inter"),
+                            )
+                          ],
+                        ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      MenuButtonSection(
-                        title: "BROWSE",
-                        selectedMenu: _selectedMenu,
-                        menuIcons: _browseMenuIcons,
-                        onMenuPress: onMenuPress,
-                      ),
-                    ],
                   ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 32,
-                      height: 32,
-                      child: Opacity(
-                        opacity: 0.99,
-                        child: RiveAnimation.asset(
-                          app_assets.iconsRiv,
-                          stateMachines: [
-                            _themeMenuIcon[0].riveIcon.stateMachine
-                          ],
-                          artboard: _themeMenuIcon[0].riveIcon.artboard,
-                          onInit: onThemeRiveIconInit,
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          MenuButtonSection(
+                            title: "BROWSE",
+                            selectedMenu: _selectedMenu,
+                            menuIcons: _browseMenuIcons,
+                            onMenuPress: onMenuPress,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: Opacity(
+                            opacity: 0.99,
+                            child: RiveAnimation.asset(
+                              app_assets.iconsRiv,
+                              stateMachines: [
+                                _themeMenuIcon[0].riveIcon.stateMachine
+                              ],
+                              artboard: _themeMenuIcon[0].riveIcon.artboard,
+                              onInit: onThemeRiveIconInit,
+                            ),
+                          ),
                         ),
-                      ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Text(
+                            _themeMenuIcon[0].title,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 17,
+                                fontFamily: "Inter",
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        CupertinoSwitch(value: _isDarkMode, onChanged: onThemeToggle),
+                      ],
                     ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Text(
-                        _themeMenuIcon[0].title,
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 17,
-                            fontFamily: "Inter",
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                    CupertinoSwitch(value: _isDarkMode, onChanged: onThemeToggle),
-                  ],
-                ),
-              )
-            ],
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       },
     );
   }
+
+
 }
 
 

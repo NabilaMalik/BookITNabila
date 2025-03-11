@@ -35,7 +35,7 @@ class LocationViewModel extends GetxController {
     super.onInit();
     _loadCounter();
     // requestPermissions();
-  //  saveCurrentLocation();  // Ensure this function is called
+    //  saveCurrentLocation();  // Ensure this function is called
     fetchAllLocation();
     loadClockStatus();
     clockRefresh();
@@ -113,7 +113,7 @@ class LocationViewModel extends GetxController {
         debugPrint('Address is: ${shopAddress.value}');
 
       } catch (e) {
-      //  Get.snackbar('Error getting location: $e',backgroundColor: Colors.red);
+        //  Get.snackbar('Error getting location: $e',backgroundColor: Colors.red);
       }
     }
   }

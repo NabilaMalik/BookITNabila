@@ -38,11 +38,11 @@ class MenuRow extends StatelessWidget {
       children: [
         AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          width: selectedMenu == menu.title ? 288 - 16 : 0,
+          width: selectedMenu == menu.title ? 418 - 16 : 0,
           height: 56,
           curve: const Cubic(0.2, 0.8, 0.2, 1),
           decoration: BoxDecoration(
-           color: RiveAppTheme.purple,
+           color: RiveAppTheme.orange,
             borderRadius: BorderRadius.circular(10),
           ),
         ),

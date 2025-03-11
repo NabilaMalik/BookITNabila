@@ -45,7 +45,7 @@ class MenuItemModel {
     ),
   ];
 
-  static List<MenuItemModel> menuItems3 = [
+   static List<MenuItemModel> menuItems3 = [
     MenuItemModel(
       title: "Clock in",
       riveIcon:

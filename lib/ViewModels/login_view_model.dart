@@ -82,7 +82,7 @@ class LoginViewModel extends GetxController {
     isAuthenticated.value = false; // Set login status to false
     return false; // Login failed
   }
-   logout() async {
+  logout() async {
     isAuthenticated.value = false; // Set login status to false
 
     // Clear authentication state

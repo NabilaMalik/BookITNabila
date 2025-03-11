@@ -11,6 +11,18 @@ import '../Services/FirebaseServices/firebase_remote_config.dart';
 import 'location_view_model.dart';
 class AttendanceOutViewModel extends GetxController{
 
+  // var clockedIn = false.obs;
+  // var clockedOut = false.obs;
+  //
+  // void setClockIn(bool value) {
+  //   clockedIn.value = value;
+  //   clockedOut.value = !value;
+  // }
+  //
+  // void setClockOut(bool value) {
+  //   clockedOut.value = value;
+  //   clockedIn.value = !value;
+  // }
   var allAttendanceOut = <AttendanceOutModel>[].obs;
   AttendanceOutRepository attendanceOutRepository = AttendanceOutRepository();
   LocationViewModel locationViewModel = Get.put(LocationViewModel());

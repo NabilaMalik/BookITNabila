@@ -144,140 +144,77 @@ Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
       }
       return;
     }
-    List<Map<String, dynamic>> queryRows = await db.query(
-      'orderDetails',
-      where: 'order_details_date = ?',
-      whereArgs: [],
-    );
+
+    List<Map<String, dynamic>> queryRows = await db.query('orderDetails');
     List<List<String>> productTableData = queryRows.map((order) {
-      String productName =
-          order['product'] ?? 'N/A'; // Adjust key as per your data structure
-      String quantity = order['quantity']?.toString() ??
-          '0'; // Adjust key as per your data structure
-      return [
-        productName,
-        quantity
-      ]; // Return product name and quantity as a list
+      String productName = order['product'] ?? 'N/A';
+      String quantity = order['quantity']?.toString() ?? '0';
+      return [productName, quantity];
     }).toList();
 
-    // Calculate total orders
-    int totalOrders = productTableData.length;
-
-    int itemsPerPage = 20;
-    int pageCount = (totalOrders / itemsPerPage).ceil();
-
-    for (int pageIndex = 0; pageIndex < pageCount; pageIndex++) {
-      int startIndex = pageIndex * itemsPerPage;
-      int endIndex = (startIndex + itemsPerPage).clamp(0, totalOrders);
-      List<List> currentPageData =
-          productTableData.sublist(startIndex, endIndex);
-
-      pdf.addPage(
-        pw.Page(
-          build: (pw.Context context) {
-            return pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                pw.Center(
-                  child: pw.Text(
-                    'Valor Trading Products Details - Page ${pageIndex + 1}',
-                    style: pw.TextStyle(
-                        fontSize: 20, fontWeight: pw.FontWeight.bold),
-                  ),
-                ),
-                pw.SizedBox(height: 10),
-                pw.Container(
-                  padding: const pw.EdgeInsets.all(8),
-                  decoration: pw.BoxDecoration(
-                    borderRadius: pw.BorderRadius.circular(4),
-                    color: PdfColors.grey300,
-                  ),
-                  child: pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    children: [
-                      pw.Text(
-                          'Booker ID: ${orderDetailsViewModel.currentuser_id}',
-                          style: pw.TextStyle(
-                              fontSize: 12, fontWeight: pw.FontWeight.bold)),
-                      pw.Text('Booker Name: ${shopVisitViewModel.booker_name}',
-                          style: pw.TextStyle(
-                              fontSize: 12, fontWeight: pw.FontWeight.bold)),
-                      pw.Text('Print Date: $currentDate',
-                          style: pw.TextStyle(
-                              fontSize: 12, fontWeight: pw.FontWeight.bold)),
-                      pw.Text('Orders/Products Date: $ordersDate',
-                          style: const pw.TextStyle(fontSize: 16)),
-                      // pw.Text('Booker ID: LG473-33G',
-                      //     style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold)),
-                      // pw.Text('Booker Name: NABILA',
-                      //     style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold)),
-                      // pw.Text('Print Date: 10-02-2025',
-                      //     style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold)),
-                      // pw.Text('Orders/Products Date: 02-02-2024',
-                      //     style: const pw.TextStyle(fontSize: 16)),
-                    ],
-                  ),
-                ),
-                pw.SizedBox(height: 20),
-                pw.Text(
-                  'Product Details:',
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text('Valor Trading Products Details',
                   style: pw.TextStyle(
-                      fontSize: 16, fontWeight: pw.FontWeight.bold),
+                      fontSize: 20, fontWeight: pw.FontWeight.bold)),
+              pw.SizedBox(height: 10),
+              pw.Text('Print Date: $currentDate'),
+              pw.SizedBox(height: 10),
+              pw.Table.fromTextArray(
+                headers: ['Product Name', 'Quantity'],
+                data: productTableData.isNotEmpty
+                    ? productTableData
+                    : [
+                  ['No Products Found', '0']
+                ],
+                headerStyle: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 12,
+                  color: PdfColors.white,
                 ),
-                pw.SizedBox(height: 10),
-                pw.Table.fromTextArray(
-                  headers: ['Product Name', 'Quantity'],
-                  data: currentPageData.isNotEmpty
-                      ? currentPageData
-                      : [
-                          ['No Products Found', '0']
-                        ],
-                  headerStyle: pw.TextStyle(
-                    fontWeight: pw.FontWeight.bold,
-                    fontSize: 12,
-                    color: PdfColors.white,
-                  ),
-                  headerDecoration:
-                      const pw.BoxDecoration(color: PdfColors.black),
-                  cellStyle: const pw.TextStyle(fontSize: 10),
-                  cellAlignment: pw.Alignment.centerLeft,
-                  oddRowDecoration:
-                      const pw.BoxDecoration(color: PdfColors.grey200),
-                  border: const pw.TableBorder(
-                    horizontalInside:
-                        pw.BorderSide(width: 0.5, color: PdfColors.grey),
-                    bottom: pw.BorderSide(width: 0.5, color: PdfColors.black),
-                  ),
-                  cellPadding: const pw.EdgeInsets.all(6),
+                headerDecoration:
+                const pw.BoxDecoration(color: PdfColors.black),
+                cellStyle: const pw.TextStyle(fontSize: 10),
+                cellAlignment: pw.Alignment.centerLeft,
+                oddRowDecoration:
+                const pw.BoxDecoration(color: PdfColors.grey200),
+                border: null,
+                cellPadding: const pw.EdgeInsets.all(6),
+              ),
+              pw.Divider(),
+              pw.Container(
+                padding: const pw.EdgeInsets.all(8),
+                decoration: pw.BoxDecoration(
+                  borderRadius: pw.BorderRadius.circular(4),
+                  color: PdfColors.grey300,
                 ),
-                pw.SizedBox(height: 20),
-                pw.Divider(),
-                pw.Container(
-                  padding: const pw.EdgeInsets.all(8),
-                  decoration: pw.BoxDecoration(
-                    borderRadius: pw.BorderRadius.circular(4),
-                    color: PdfColors.grey300,
-                  ),
-                  child: pw.Text('Total Orders: $totalOrders',
-                      style: pw.TextStyle(
-                          fontSize: 14, fontWeight: pw.FontWeight.bold)),
-                ),
-              ],
-            );
-          },
-        ),
-      );
-    }
+                child: pw.Text('Total Products: ${productTableData.length}',
+                    style: pw.TextStyle(
+                        fontSize: 14, fontWeight: pw.FontWeight.bold)),
+              ),
+            ],
+          );
+        },
+      ),
+    );
 
     try {
       final directory = await getTemporaryDirectory();
-      final output = File('${directory.path} Products PDF.pdf');
-      await output.writeAsBytes(await pdf.save());
-      final xfile = XFile(output.path);
-      await Share.shareXFiles([xfile], text: 'PDF Document');
+      final filePath = '${directory.path}/Products_Details.pdf';
+      final file = File(filePath);
+      await file.writeAsBytes(await pdf.save());
+
+      // Share the PDF
+      final xfile = XFile(filePath);
+      await Share.shareXFiles([xfile], text: 'Products PDF Document');
     } catch (e) {
       if (kDebugMode) {
         debugPrint("Error saving or sharing PDF: $e");
+        print("Error saving or sharing Products PDF: $e");
       }
     }
   }
@@ -295,15 +232,15 @@ Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
     mainAxisAlignment: MainAxisAlignment.spaceAround,
     children: [
       ElevatedButton(
-        onPressed: () => handleButtonAction('Order PDF'),
+        onPressed: generateOrderPDF,
         style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
         child: const Text('Order PDF'),
       ),
       ElevatedButton(
-        onPressed: () => handleButtonAction('Products PDF'),
+        onPressed: generateProductsPDF,
         style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
         child: const Text('Products PDF'),
-      )
+      ),
     ],
   );
 }

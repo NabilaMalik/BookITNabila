@@ -73,7 +73,8 @@ class RiveAppTheme {
 
 const lightColorScheme = ColorScheme(
   brightness: Brightness.light,
-  primary: Color(0xFF416FDF), // Blue
+  primary: Color(0xFF416FDF
+  ), // Blue
   onPrimary: Color(0xFFFFFFFF), // White
   secondary: Color(0xFF6EAEE7), // Light Blue
   onSecondary: Color(0xFFFFFFFF), // White

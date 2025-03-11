@@ -6,9 +6,7 @@ import 'package:order_booking_app/Databases/util.dart';
 import 'package:order_booking_app/ViewModels/shop_visit_view_model.dart';
 import 'package:order_booking_app/screens/add_shop_screen.dart';
 import 'package:order_booking_app/screens/order_booking_status_screen.dart';
-import 'package:order_booking_app/screens/recovery_form_screen.dart';
 import 'package:order_booking_app/screens/return_form_screen.dart';
-import 'package:order_booking_app/screens/shop_visit_screen.dart';
 import 'package:rive/rive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../ViewModels/add_shop_view_model.dart';
@@ -51,14 +49,19 @@ class _RiveAppHomeState extends State<HomeScreen>
   late Animation<double> _onBoardingAnim;
   late Animation<double> _sidebarAnim;
   late SMIBool _menuBtn;
-  Widget _tabBody = Container(color: RiveAppTheme.backgroundLight);
-  bool clocked= false;
+  final Widget _tabBody = Container(color: RiveAppTheme.backgroundLight);
+  // bool clocked= false;
+  // bool clocked = false; // Ensure it's reactive
+  // bool clockedIn = false; // Ensure it's reactive
+
   final springDesc = const SpringDescription(
     mass: 0.1,
     stiffness: 40,
     damping: 5,
   );
   bool _showOnBoarding = false;
+   // Ensure it's reactive
+
 
   void _onMenuIconInit(Artboard artboard) {
     final controller =
@@ -98,7 +101,6 @@ class _RiveAppHomeState extends State<HomeScreen>
         : SystemUiOverlayStyle.light);
   }
 
-// Function to retrieve saved values from SharedPreferences
   _retrieveSavedValues() async {
     // Get instance of SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -210,7 +212,7 @@ class _RiveAppHomeState extends State<HomeScreen>
   /// Builds the section with action buttons.
   Widget _buildActionButtons(double screenWidth) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
         children: [
           Row(
@@ -239,19 +241,32 @@ class _RiveAppHomeState extends State<HomeScreen>
               }
                 // onTap: () => Get.to(() =>  ReturnFormScreen()),
               ),
-              ActionBox(
-                  imagePath: recovery2,
-                  label: 'Recovery',
-                  onTap: () async {
-                    // if(clocked==false){
-                    //   Get.snackbar('Please clock In', 'Please start timer first', snackPosition: SnackPosition.BOTTOM);
-                    // }else {
-                      await orderMasterViewModel.fetchAndSaveOrderMaster();
-                      Get.to(() => RecoveryFormScreen());
-                    }
-  // }
-                  // onTap: () => Get.to(() => RecoveryFormScreen()),
-                  ),
+              // ActionBox(
+              //   imagePath: recovery2,
+              //   label: 'Recovery',
+              //   onTap: () async {
+              //     attendanceViewModel.setClockIn(false);
+              //     await Future.delayed(const Duration(milliseconds: 100)); // Small delay to allow state to update
+              //     debugPrint("ClockedIn State After Update: ${attendanceViewModel.clockedIn.value}");
+              //
+              //     if (!attendanceViewModel.clockedIn.value) {
+              //       debugPrint("Clock-in not successful.");
+              //       Get.snackbar(
+              //         'Please Clock In',
+              //         'You need to start the timer first',
+              //         backgroundColor: Colors.redAccent,
+              //         colorText: Colors.white,
+              //       );
+              //     }
+              //     else {
+              //       debugPrint("Fetching orders...");
+              //       await orderMasterViewModel.fetchAndSaveOrderMaster();
+              //       debugPrint("Navigating to RecoveryFormScreen...");
+              //       Get.to(() => RecoveryFormScreen());
+              //     }
+              //   },
+              // ),
+
               ActionBox(
                 imagePath: order_booking_status,
                 label: 'Booking Status',
@@ -349,12 +364,12 @@ class _RiveAppHomeState extends State<HomeScreen>
                     ],
                   ),
                   const SizedBox(height: 20),
-                  OverviewRow(
-                    numbers: const [
+                  const OverviewRow(
+                    numbers: [
                       "910",
                       "112",
                     ],
-                    labels: const ["Total Orders", "Dispatched"],
+                    labels: ["Total Orders", "Dispatched"],
                   ),
                 ],
               ),
