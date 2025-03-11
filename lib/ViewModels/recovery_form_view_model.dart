@@ -237,7 +237,7 @@ class RecoveryFormViewModel extends GetxController{
     String currentMonth = DateFormat('MMM').format(DateTime.now());
 
     if (currentuser_id != user_id) {
-      recoverySerialCounter = 1;
+      recoverySerialCounter = recoveryHighestSerial ?? 1;
       currentuser_id = user_id;
     }
 
@@ -272,5 +272,7 @@ class RecoveryFormViewModel extends GetxController{
     recoveryformRepository.delete(id);
     fetchAllRecoveryForm();
   }
-
+  serialCounterGet()async{
+    await recoveryformRepository.serialNumberGeneratorApi();
+  }
 }

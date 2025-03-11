@@ -6,6 +6,7 @@ import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Models/attendance_Model.dart';
 import '../Services/ApiServices/api_service.dart';
+import '../Services/ApiServices/serial_number_genterator.dart';
 import '../Services/FirebaseServices/firebase_remote_config.dart';
 
 class AttendanceRepository {
@@ -140,6 +141,14 @@ class AttendanceRepository {
   Future<int> delete(String id) async {
     var dbClient = await dbHelper.db;
     return await dbClient
-        .delete(attendanceTableName, where: 'id = ?', whereArgs: [id]);
+        .delete(attendanceTableName, where: 'attendance_in_id = ?', whereArgs: [id]);
+  }
+  Future<void> serialNumberGeneratorApi() async {
+     final orderDetailsGenerator = SerialNumberGenerator(
+      apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/attendanceinserial/get/$user_id',
+      maxColumnName: 'max(attendance_in_id)',
+      serialType: attendanceInHighestSerial, // Unique identifier for shop visit serials
+    );
+     await orderDetailsGenerator.getAndIncrementSerialNumber();
   }
 }

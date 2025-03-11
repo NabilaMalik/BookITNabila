@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../Models/add_shop_model.dart';
 import '../../Repositories/add_shop_repository.dart';
 import '../Databases/util.dart';
+import '../Services/ApiServices/serial_number_genterator.dart';
 
 class AddShopViewModel extends GetxController {
   final AddShopRepository _shopRepository = Get.put(AddShopRepository());
@@ -92,7 +93,7 @@ class AddShopViewModel extends GetxController {
   Future<void> _loadCounter() async {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    shopSerialCounter = (prefs.getInt('shopSerialCounter') ?? 1);
+    shopSerialCounter = (prefs.getInt('shopSerialCounter') ??shopHighestSerial?? 1);
     shopCurrentMonth = prefs.getString('shopCurrentMonth') ?? currentMonth;
     currentuser_id = prefs.getString('currentuser_id') ?? '';
 
@@ -116,7 +117,7 @@ class AddShopViewModel extends GetxController {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
 
     if (currentuser_id != user_id) {
-      shopSerialCounter = 1;
+      shopSerialCounter = shopHighestSerial??1;
       currentuser_id = user_id;
     }
 
@@ -186,5 +187,8 @@ class AddShopViewModel extends GetxController {
 
   deleteAddShop(String? id) async {
     await _shopRepository.deleteAddShop(id, allAddShop);
+  }
+  serialCounterGet()async{
+    await _shopRepository.serialNumberGeneratorApi();
   }
 }

@@ -64,14 +64,14 @@ LocationViewModel locationViewModel = Get.put(LocationViewModel());
     // TODO: implement onInit
     super.onInit();
     fetchAllAttendance();
-    _loadCounter();
+
   }
 
 
   Future<void> _loadCounter() async {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    attendanceInSerialCounter = (prefs.getInt('attendanceInSerialCounter') ?? 1);
+    attendanceInSerialCounter = (prefs.getInt('attendanceInSerialCounter') ??attendanceInHighestSerial?? 1);
     attendanceInCurrentMonth =
         prefs.getString('attendanceInCurrentMonth') ?? currentMonth;
     currentuser_id = prefs.getString('currentuser_id') ?? '';
@@ -96,7 +96,7 @@ LocationViewModel locationViewModel = Get.put(LocationViewModel());
     String currentMonth = DateFormat('MMM').format(DateTime.now());
 
     if (currentuser_id != user_id) {
-      attendanceInSerialCounter = 1;
+      attendanceInSerialCounter = attendanceInHighestSerial??1;
       currentuser_id = user_id;
     }
 
@@ -112,6 +112,7 @@ LocationViewModel locationViewModel = Get.put(LocationViewModel());
     return orderId;
   }
   saveFormAttendanceIn() async {
+    await   _loadCounter();
     final orderSerial = generateNewOrderId(user_id);
    // shop_visit_master_id = orderSerial;
    await addAttendance(AttendanceModel(
@@ -146,5 +147,7 @@ LocationViewModel locationViewModel = Get.put(LocationViewModel());
     attendanceRepository.delete(id);
     fetchAllAttendance();
   }
-
+  serialCounterGet()async{
+    await attendanceRepository.serialNumberGeneratorApi();
+  }
 }

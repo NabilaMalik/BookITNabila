@@ -23,6 +23,8 @@ import 'package:order_booking_app/screens/Components/custom_button.dart';
 import 'package:order_booking_app/screens/signup_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Databases/util.dart';
+import '../Models/returnform_details_model.dart';
+import '../ViewModels/return_form_details_view_model.dart';
 import '../ViewModels/return_form_view_model.dart';
 import '../components/under_part.dart';
 import '../constants.dart';
@@ -47,6 +49,8 @@ class _LoginScreenState extends State<LoginScreen> {
   late final orderDetailsViewModel = Get.put(OrderDetailsViewModel());
   late final recoveryFormViewModel = Get.put(RecoveryFormViewModel());
   late final returnFormViewModel = Get.put(ReturnFormViewModel());
+  late final ReturnFormDetailsViewModel returnFormDetailsViewModel = Get.put(ReturnFormDetailsViewModel());
+
   late final attendanceViewModel = Get.put(AttendanceViewModel());
   late final attendanceOutViewModel = Get.put(AttendanceOutViewModel());
   final LocationViewModel locationViewModel = Get.put(LocationViewModel());
@@ -120,7 +124,6 @@ class _LoginScreenState extends State<LoginScreen> {
       // final ShopVisitDetailsViewModel shopVisitDetailsViewModel = Get.put(ShopVisitDetailsViewModel());
       // final RecoveryFormViewModel recoveryFormViewModel = Get.put(RecoveryFormViewModel());
       // final ReturnFormModel returnFormModel = Get.put(ReturnFormModel());
-      // final ReturnFormDetailsModel returnFormDetailsModel = Get.put(ReturnFormDetailsModel());
       // final AttendanceViewModel attendanceViewModel = Get.put(AttendanceViewModel());
       // final AttendanceOutViewModel attendanceOutViewModel = Get.put(AttendanceOutViewModel());
       // final LocationViewModel locationViewModel = Get.put(LocationViewModel());
@@ -136,13 +139,27 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // Explicitly define the type for Future.wait
       await Future.wait<void>([
-       addShopViewModel.fetchAndSaveShop(),
+        shopVisitViewModel.serialCounterGet(),
+        shopVisitDetailsViewModel.serialCounterGet(),
+        recoveryFormViewModel.serialCounterGet(),
+        returnFormViewModel.serialCounterGet(),
+        returnFormDetailsViewModel.serialCounterGet(),
+        attendanceViewModel.serialCounterGet(),
+        attendanceOutViewModel.serialCounterGet(),
+        locationViewModel.serialCounterGet(),
+        addShopViewModel.serialCounterGet(),
+
+        addShopViewModel.fetchAndSaveShop(),
         productsViewModel.fetchAndSaveProducts(),
-       orderMasterViewModel.fetchAndSaveOrderMaster(),
+        orderMasterViewModel.fetchAndSaveOrderMaster(),
         orderDetailsViewModel.fetchAndSaveOrderDetails(),
         shopVisitDetailsViewModel.initializeProductData(),
         orderMasterViewModel.orderMasterSerial(),
-        orderDetailsViewModel.orderDetailsSerial()
+        orderDetailsViewModel.orderDetailsSerial(),
+
+        // productsViewModel.serialCounterGet(),
+        // orderMasterViewModel.serialCounterGet(),
+        // orderDetailsViewModel.serialCounterGet(),
       ]);
       Get.offNamed("/home");
       // Get.off(() => HomeScreen());

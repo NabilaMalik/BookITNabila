@@ -34,14 +34,14 @@ class AttendanceOutViewModel extends GetxController{
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    _loadCounter();
+
     fetchAllAttendanceOut();
   }
 
   Future<void> _loadCounter() async {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    attendanceOutSerialCounter = (prefs.getInt('attendanceOutSerialCounter') ?? 1);
+    attendanceOutSerialCounter = (prefs.getInt('attendanceOutSerialCounter') ?? attendanceOutHighestSerial?? 1);
     attendanceOutCurrentMonth =
         prefs.getString('attendanceOutCurrentMonth') ?? currentMonth;
     currentuser_id = prefs.getString('currentuser_id') ?? '';
@@ -66,7 +66,7 @@ class AttendanceOutViewModel extends GetxController{
     String currentMonth = DateFormat('MMM').format(DateTime.now());
 
     if (currentuser_id != user_id) {
-      attendanceOutSerialCounter = 1;
+      attendanceOutSerialCounter = attendanceOutHighestSerial??1;
       currentuser_id = user_id;
     }
 
@@ -85,6 +85,7 @@ class AttendanceOutViewModel extends GetxController{
 
   
   saveFormAttendanceOut() async {
+     await  _loadCounter();
     final orderSerial = generateNewOrderId(user_id);
     // shop_visit_master_id = orderSerial;
     addAttendanceOut (AttendanceOutModel(
@@ -121,5 +122,7 @@ class AttendanceOutViewModel extends GetxController{
     attendanceOutRepository.delete(id);
     fetchAllAttendanceOut();
   }
-
+  serialCounterGet()async{
+    await attendanceOutRepository.serialNumberGeneratorApi();
+  }
 }

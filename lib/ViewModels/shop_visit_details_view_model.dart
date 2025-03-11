@@ -40,12 +40,12 @@ class ShopVisitDetailsViewModel extends GetxController {
     super.onInit();
    initializeProductData();
     fetchAllShopVisitDetails();
-    _loadCounter();
+
   }
   Future<void> _loadCounter() async {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    shopVisitDetailsSerialCounter = (prefs.getInt('shopVisitDetailsSerialCounter') ?? 1);
+    shopVisitDetailsSerialCounter = (prefs.getInt('shopVisitDetailsSerialCounter') ?? shopVisitDetailsHighestSerial ??1);
     shopVisitDetailsCurrentMonth = prefs.getString('shopVisitDetailsCurrentMonth') ?? currentMonth;
     currentuser_id = prefs.getString('currentuser_id') ?? '';
 
@@ -69,7 +69,7 @@ class ShopVisitDetailsViewModel extends GetxController {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
 
     if (currentuser_id != user_id) {
-      shopVisitDetailsSerialCounter = 1;
+      shopVisitDetailsSerialCounter = shopVisitDetailsHighestSerial ?? 1;
       currentuser_id = user_id;
     }
 
@@ -198,5 +198,8 @@ initializeProductData() async {
   deleteShopVisitDetails(int id) {
     shopvisitDetailsRepository.delete(id);
     fetchAllShopVisitDetails();
+  }
+  serialCounterGet()async{
+    await shopvisitDetailsRepository.serialNumberGeneratorApi();
   }
 }

@@ -6,6 +6,7 @@ import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Models/attendanceOut_model.dart';
 import '../Services/ApiServices/api_service.dart';
+import '../Services/ApiServices/serial_number_genterator.dart';
 import '../Services/FirebaseServices/firebase_remote_config.dart';
 
 class AttendanceOutRepository extends GetxService {
@@ -143,5 +144,13 @@ class AttendanceOutRepository extends GetxService {
     var dbClient = await dbHelper.db;
     return await dbClient.delete(attendanceOutTableName,
         where: 'attendance_out_id = ?', whereArgs: [id]);
+  }
+  Future<void> serialNumberGeneratorApi() async {
+     final orderDetailsGenerator = SerialNumberGenerator(
+      apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/attendanceoutserial/get/$user_id',
+      maxColumnName: 'max(attendance_out_id)',
+      serialType: attendanceOutHighestSerial, // Unique identifier for shop visit serials
+    );
+     await orderDetailsGenerator.getAndIncrementSerialNumber();
   }
 }

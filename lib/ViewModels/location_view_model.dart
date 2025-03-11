@@ -33,7 +33,6 @@ class LocationViewModel extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _loadCounter();
     // requestPermissions();
     //  saveCurrentLocation();  // Ensure this function is called
     fetchAllLocation();
@@ -48,7 +47,7 @@ class LocationViewModel extends GetxController {
   Future<void> _loadCounter() async {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    locationSerialCounter = (prefs.getInt('locationSerialCounter') ?? 1);
+    locationSerialCounter = (prefs.getInt('locationSerialCounter') ?? locationHighestSerial?? 1);
     locationCurrentMonth =
         prefs.getString('locationCurrentMonth') ?? currentMonth;
     currentuser_id = prefs.getString('currentuser_id') ?? '';
@@ -74,7 +73,7 @@ class LocationViewModel extends GetxController {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
 
     if (currentuser_id != user_id) {
-      locationSerialCounter = 1;
+      locationSerialCounter = locationHighestSerial??1;
       currentuser_id = user_id;
     }
 
@@ -269,6 +268,7 @@ saveLocation() async {
   // Read the GPX file
   List<int> gpxBytesList = await maingpxFile.readAsBytes();
   Uint8List gpxBytes = Uint8List.fromList(gpxBytesList);
+  await _loadCounter();
   final orderSerial = generateNewOrderId(user_id);
  await addLocation(LocationModel(
     location_id:  orderSerial.toString(),
@@ -346,5 +346,8 @@ saveLocation() async {
   void deleteLocation(String id) {
     locationRepository.delete(id);
     fetchAllLocation();
+  }
+  serialCounterGet()async{
+    await locationRepository.serialNumberGeneratorApi();
   }
 }

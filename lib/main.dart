@@ -45,7 +45,10 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart'
         NotificationDetails;
 import 'Tracker/location00.dart';
 import 'Tracker/trac.dart';
+import 'package:order_booking_app/ViewModels/login_view_model.dart';
 
+
+final LoginViewModel loginViewModel = Get.put(LoginViewModel());
 Future<void> main() async {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -64,6 +67,9 @@ Future<void> main() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.reload();
     bool isAuthenticated = prefs.getBool('isAuthenticated') ?? false;
+    if (isAuthenticated==false) {
+   await loginViewModel.checkInternetBeforeNavigation();
+    }
      // bool isAuthenticated = true;
     debugPrint("SharedPreferences initialized. isAuthenticated: $isAuthenticated");
 
@@ -131,7 +137,9 @@ class MyApp extends StatelessWidget {
       // home: SplashScreen()
     );
   }
+
 }
+
 
 Future<void> initializeServiceLocation() async {
   final service = FlutterBackgroundService();

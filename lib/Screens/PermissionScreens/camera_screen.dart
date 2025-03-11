@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../ViewModels/login_view_model.dart';
 import 'location_screen.dart';
 import '../Components/WidgetsComponents/contect_widget.dart';
 import '../Components/WidgetsComponents/custom_button.dart';
@@ -12,6 +13,7 @@ class CameraScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 

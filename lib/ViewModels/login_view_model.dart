@@ -21,10 +21,10 @@ class LoginViewModel extends GetxController {
     // TODO: implement onInit
     super.onInit();
     //fetchAllLight();
-    _checkInternetBeforeNavigation();
+    // _checkInternetBeforeNavigation();
   }
   // Method to check the internet connection before navigating to the login page
-  Future<void> _checkInternetBeforeNavigation() async {
+  Future<void> checkInternetBeforeNavigation() async {
     bool hasInternet = await isNetworkAvailable();
 
     if (!hasInternet) {

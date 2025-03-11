@@ -92,7 +92,7 @@ class ReturnFormViewModel extends GetxController {
   Future<void> _loadCounter() async {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    returnFormSerialCounter = (prefs.getInt('returnFormSerialCounter') ?? 1);
+    returnFormSerialCounter = (prefs.getInt('returnFormSerialCounter') ?? returnMasterHighestSerial?? 1);
     returnFormCurrentMonth = prefs.getString('returnFormCurrentMonth') ?? currentMonth;
     currentuser_id = prefs.getString('currentuser_id') ?? '';
 
@@ -117,7 +117,7 @@ class ReturnFormViewModel extends GetxController {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
 
     if (currentuser_id != user_id) {
-      returnFormSerialCounter = 1;
+      returnFormSerialCounter = returnMasterHighestSerial ?? 1;
       currentuser_id = user_id;
     }
 
@@ -150,5 +150,8 @@ class ReturnFormViewModel extends GetxController {
   deleteReturnForm(String id) {
     returnFormRepository.delete(id);
     fetchAllReturnForm();
+  }
+  serialCounterGet()async{
+    await returnFormRepository.serialNumberGeneratorApi();
   }
 }

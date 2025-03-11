@@ -8,6 +8,7 @@ import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Models/location_model.dart';
 import '../Services/ApiServices/api_service.dart';
+import '../Services/ApiServices/serial_number_genterator.dart';
 import '../Services/FirebaseServices/firebase_remote_config.dart';
 
 class LocationRepository {
@@ -188,5 +189,13 @@ class LocationRepository {
     var dbClient = await dbHelper.db;
     return await dbClient
         .delete(locationTableName, where: 'location_id = ?', whereArgs: [id]);
+  }
+  Future<void> serialNumberGeneratorApi() async {
+     final orderDetailsGenerator = SerialNumberGenerator(
+      apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/locationserial/get/$user_id',
+      maxColumnName: 'max(location_id)',
+      serialType: locationHighestSerial, // Unique identifier for shop visit serials
+    );
+     await orderDetailsGenerator.getAndIncrementSerialNumber();
   }
 }

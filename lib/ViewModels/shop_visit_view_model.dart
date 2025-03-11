@@ -19,6 +19,7 @@ import '../Repositories/ScreenRepositories/products_repository.dart';
 import '../Repositories/shop_visit_repository.dart';
 import '../Repositories/add_shop_repository.dart';
 import '../Screens/order_booking_screen.dart';
+import '../Services/ApiServices/serial_number_genterator.dart';
 
 class ShopVisitViewModel extends GetxController {
   var allShopVisit = <ShopVisitModel>[].obs;
@@ -178,10 +179,17 @@ class ShopVisitViewModel extends GetxController {
 
   Future<void> saveForm() async {
     if (validateForm()) {
-      await  getAndIncrementSerialNumber();
+
       debugPrint("Start Savinggggggggggggg");
       Uint8List? compressedImageBytes;
       if (selectedImage.value != null) {
+      // await  serialCounterGet();
+        SerialNumberGenerator(
+          apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/shopvisitserial/get/$user_id',
+          maxColumnName: 'max(shop_visit_master_id)',
+          serialType: shopVisitDetailsHighestSerial, // Unique identifier for shop visit serials
+        );
+        debugPrint("Serial: $shopVisitDetailsHighestSerial");
         compressedImageBytes = await FlutterImageCompress.compressWithFile(
           selectedImage.value!.path,
           minWidth: 400,
@@ -225,7 +233,6 @@ class ShopVisitViewModel extends GetxController {
 
   Future<void> saveFormNoOrder() async {
     if (validateForm()) {
-    await  getAndIncrementSerialNumber();
       debugPrint("Start Savinggggggggggggg");
       String? imagePath;
       Uint8List? imageBytes;
@@ -310,84 +317,8 @@ class ShopVisitViewModel extends GetxController {
   bool validateForm() {
     return _formKey.currentState?.validate() ?? false;
   }
+serialCounterGet()async{
+   await shopvisitRepository.serialNumberGeneratorApi();
+}
 
-  // Function to fetch the latest shop_visit_master_id from the server
-  Future<String> fetchLatestShopVisitIdFromServer() async {
-    try {
-      final response = await http.get(
-        Uri.parse(
-            'https://cloud.metaxperts.net:8443/erp/test1/shopvisitserial/get/$user_id'),
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final items = data['items'] as List<dynamic>?;
-
-        if (items != null && items.isNotEmpty) {
-          final latestId = items[0]['max(shop_visit_master_id)'] as String?;
-          if (latestId != null) {
-            return latestId;
-          } else {
-            throw Exception('No shop_visit_master_id found in the response');
-          }
-        } else {
-          throw Exception('No items found in the response');
-        }
-      } else {
-        throw Exception(
-            'Failed to fetch latest shop_visit_master_id: ${response.statusCode}');
-      }
-    } catch (e) {
-      debugPrint('Error fetching latest shop_visit_master_id: $e');
-      throw Exception('Failed to fetch latest shop_visit_master_id: $e');
-    }
-  }
-
-  // Function to extract and increment the serial number
-  Future<void> getAndIncrementSerialNumber() async {
-    try {
-      // Fetch the latest shop_visit_master_id from the server
-      final latestShopVisitId = await fetchLatestShopVisitIdFromServer();
-
-      // Extract the serial number from the shop_visit_master_id
-      final parts = latestShopVisitId.split('-');
-      if (parts.length > 2) {
-        final serialNoPart = parts.last;
-        final serialNumber = int.tryParse(serialNoPart);
-
-        if (serialNumber != null) {
-          // Increment the serial number
-          shopVisitHighestSerial = serialNumber + 1;
-          debugPrint(
-              'Latest serial number incremented to: $shopVisitHighestSerial');
-        } else {
-          throw Exception(
-              'Failed to parse serial number from shop_visit_master_id');
-        }
-      } else {
-        throw Exception('Invalid shop_visit_master_id format');
-      }
-    } catch (e) {
-      debugPrint('Error in getAndIncrementSerialNumber: $e');
-      throw Exception('Failed to increment serial number: $e');
-    }
-  }
-
-  // // Function to generate the next shop_visit_master_id
-  // Future<String> generateNextShopVisitId() async {
-  // await getAndIncrementSerialNumber(); // Fetch and increment the serial number
-  //
-  // // Define the prefix (e.g., "SV-VT0068-Mar")
-  // const prefix = "SV-VT0068-Mar";
-  //
-  // // Format the serial number with leading zeros (e.g., 001, 002)
-  // final serialNumber = highestSerial.toString().padLeft(3, '0');
-  //
-  // // Combine prefix and serial number
-  // return '$prefix-$serialNumber';
-  // }
 }

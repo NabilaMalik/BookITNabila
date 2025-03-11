@@ -81,7 +81,7 @@ class ProductsRepository extends GetxService{
       debugPrint('https://cloud.metaxperts.net:8443/erp/valor_trading/products/get/');
     try {
      // List<dynamic> data = await ApiService.getData(Config.getApiUrlProducts);
-      List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/valor_trading/products/get/');
+      List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/test1/products/get/');
       var dbClient = await dbHelperProducts.db;
 
       // Save data to database
