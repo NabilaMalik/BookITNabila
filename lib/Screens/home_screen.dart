@@ -3,6 +3,7 @@ import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/Databases/util.dart';
+import 'package:order_booking_app/Screens/recovery_form_screen.dart';
 import 'package:order_booking_app/ViewModels/shop_visit_view_model.dart';
 import 'package:order_booking_app/screens/add_shop_screen.dart';
 import 'package:order_booking_app/screens/order_booking_status_screen.dart';
@@ -240,6 +241,11 @@ class _RiveAppHomeState extends State<HomeScreen>
                   Get.to(() => ReturnFormScreen());
               }
                 // onTap: () => Get.to(() =>  ReturnFormScreen()),
+              ),
+              ActionBox(
+                imagePath:recovery2,
+                label: 'Recovery',
+                onTap: () => Get.to(() =>                   RecoveryFormScreen()),
               ),
               // ActionBox(
               //   imagePath: recovery2,

@@ -43,7 +43,7 @@ class OrderBookingStatusScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 Obx(()=> buildDateRangeRow(context, viewModel)),
                 const SizedBox(height: 20),
-                 Obx(() => buildStatusAndButtonRow(viewModel)),
+                Obx(() => buildStatusAndButtonRow(viewModel)),
                 const SizedBox(height: 20),
                 buildActionButtonsRow(viewModel),
                 const SizedBox(height: 20),

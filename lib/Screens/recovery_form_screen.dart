@@ -144,15 +144,17 @@ class RecoveryFormScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 10),
-                        Obx(() => _buildTextField(
-                          controller: cash_recoveryController,
-                          label: " Enter Amount",
-                          keyboardType: TextInputType.number,
-                          width: size.width * 0.5,
-                          height: 40,
-                          onChanged: viewModel.updatecash_recovery,
-                          enabled: viewModel.areFieldsEnabled.value,
-                        )),
+                        Obx(() =>
+                            _buildTextField(
+                              controller: cash_recoveryController,
+                              label: "Enter Amount",
+                              keyboardType: TextInputType.number,
+                              width: size.width * 0.5,
+                              height: 40,
+                              onChanged: viewModel.updatecash_recovery,
+                              enabled: viewModel.areFieldsEnabled.value,
+                            )
+                        ),
                       ],
                     ),
                     Row(

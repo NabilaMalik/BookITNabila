@@ -117,16 +117,16 @@ class OrderMasterViewModel extends GetxController {
         user_id: user_id.toString(),
         required_delivery_date: required_delivery_date.value,
         order_master_id: order_master_id.toString(),
-      );
-      debugPrint("Submitting OrderMasterModel: ${orderMasterModel.toMap()}");
-      await addConfirmOrder(orderMasterModel);
+       );
+        debugPrint("Submitting OrderMasterModel: ${orderMasterModel.toMap()}");
+        await addConfirmOrder(orderMasterModel);
 
-      debugPrint("Saving filtered products...");
-      await orderDetailsViewModel.confirmFilteredProducts();
+        debugPrint("Saving filtered products...");
+        await orderDetailsViewModel.confirmFilteredProducts();
 
-      debugPrint("Fetching all re-confirmed orders...");
-      await orderDetailsViewModel.fetchAllReConfirmOrder();
-      await orderMasterRepository.postDataFromDatabaseToAPI();
+        debugPrint("Fetching all re-confirmed orders...");
+        await orderDetailsViewModel.fetchAllReConfirmOrder();
+        await orderMasterRepository.postDataFromDatabaseToAPI();
     }
   }
 

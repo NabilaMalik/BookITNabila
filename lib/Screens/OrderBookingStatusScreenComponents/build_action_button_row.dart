@@ -17,17 +17,17 @@ import '../../Databases/dp_helper.dart';
 
 List<DataRow> dataRows = [];
 OrderBookingStatusViewModel orderBookingStatusViewModel =
-    Get.put(OrderBookingStatusViewModel());
+Get.put(OrderBookingStatusViewModel());
 String _getFormattedDate() {
   return DateFormat('dd-MMM-yyyy').format(DateTime.now());
 }
 
 Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
   OrderDetailsViewModel orderDetailsViewModel =
-      Get.put(OrderDetailsViewModel());
+  Get.put(OrderDetailsViewModel());
   final ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
   final OrderMasterViewModel orderMasterViewModel =
-      Get.find<OrderMasterViewModel>();
+  Get.find<OrderMasterViewModel>();
 
   // Define a footer
   pw.Widget buildFooter() {
@@ -67,7 +67,7 @@ Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
     int totalOrders = orderMasterViewModel.allOrderMaster.length;
     for (var order in orderMasterViewModel.allOrderMaster) {
       String amountText =
-          (order.total ?? '0').replaceAll(RegExp(r'[^\d.]'), '');
+      (order.total ?? '0').replaceAll(RegExp(r'[^\d.]'), '');
       double amount = double.tryParse(amountText) ?? 0.0;
       totalAmount += amount;
       rowsData.add([
@@ -103,12 +103,12 @@ Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
                     fontSize: 12,
                     color: PdfColors.white),
                 headerDecoration:
-                    const pw.BoxDecoration(color: PdfColors.black),
+                const pw.BoxDecoration(color: PdfColors.black),
                 cellStyle: const pw.TextStyle(fontSize: 10),
                 cellAlignment: pw.Alignment.center,
                 cellPadding: const pw.EdgeInsets.all(6),
                 oddRowDecoration:
-                    const pw.BoxDecoration(color: PdfColors.grey200),
+                const pw.BoxDecoration(color: PdfColors.grey200),
                 border: null, // Remove table borders
               ),
               pw.Divider(),

@@ -22,6 +22,7 @@ class OrderDetailsViewModel extends GetxController {
   var allReConfirmOrder = <OrderDetailsModel>[].obs;
   var filteredRows = <Map<String, dynamic>>[].obs;
   var rows = <DataRow>[].obs;
+  var required_delivery_date = ''.obs;
   ValueNotifier<List<Map<String, dynamic>>> rowsNotifier =
       ValueNotifier<List<Map<String, dynamic>>>([]);
   int orderDetailsSerialCounter = 1;
@@ -162,9 +163,11 @@ _loadCounter() async {
       final quantity = row['Enter Qty'];
       return quantity != null && quantity != 0;
     }).toList();
+    bool isDataFilled = productsToSave.any((product) => product['quantity'] != null && product['quantity'] > 0);
 
     // Check if there are any products to save
-    if (productsToSave.isEmpty) {
+    if (productsToSave.isEmpty)
+    {
       debugPrint("No products to save. Navigation not performed.");
       Get.snackbar(
         "Error",
@@ -175,6 +178,17 @@ _loadCounter() async {
         duration: Duration(seconds: 3),
       );
       return; // Do not navigate if no products to save
+    }
+     if (required_delivery_date == null || required_delivery_date.toString().trim().isEmpty) {
+      Get.snackbar(
+        "Error",
+        "Please fill in the required delivery field.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+      );
+        return;
     }
     Get.to(() =>  ReconfirmOrderScreen(rows: productsToSave));
   }

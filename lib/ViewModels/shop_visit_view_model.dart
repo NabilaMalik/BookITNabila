@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -314,8 +313,54 @@ class ShopVisitViewModel extends GetxController {
     // _formKey.currentState?.reset();
   }
 
+
+  // bool validateForm() {
+  //   if (_formKey.currentState?.validate() ?? false) {
+  //     if (selectedImage.value == null) {
+  //       Get.snackbar("Error", "Please select or capture an image!",
+  //           snackPosition: SnackPosition.BOTTOM,
+  //           backgroundColor: Colors.red,
+  //           colorText: Colors.white);
+  //       return false;
+  //     }
+  //
+  //     if (!checklistState.contains(true)) {
+  //       Get.snackbar("Error", "Please select at least one checklist item!",
+  //           snackPosition: SnackPosition.BOTTOM,
+  //           backgroundColor: Colors.red,
+  //           colorText: Colors.white);
+  //       return false;
+  //     }
+  //
+  //     return true;
+  //   }
+  //   return false;
+  // }
+
+
   bool validateForm() {
-    return _formKey.currentState?.validate() ?? false;
+    if (_formKey.currentState?.validate() ?? false) {
+      if (checklistState.contains(false)) { // Ensure all checklist items are selected
+        Get.snackbar("Error", "Please select all checklist items!",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white);
+        return false;
+      }
+      if (selectedImage.value == null) {
+        Get.snackbar("Error", "Please select or capture an image!",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white);
+        return false;
+      }
+
+
+
+      return true; // If all validations pass, return true.
+    }
+
+    return false; // If the form is invalid, return false.
   }
 serialCounterGet()async{
    await shopvisitRepository.serialNumberGeneratorApi();

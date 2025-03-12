@@ -25,7 +25,7 @@ Widget buildStatusAndButtonRow(OrderBookingStatusViewModel viewModel) {
         buttonText: 'Clear Filters',
         width: 120,
         height: 45,
-       textStyle:  const TextStyle(
+        textStyle:  const TextStyle(
           color: Colors.white,
           fontSize: 14,
           fontWeight: FontWeight.w600,

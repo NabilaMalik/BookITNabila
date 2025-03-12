@@ -59,7 +59,7 @@ class _StateShopVisitScreen extends State<ShopVisitScreen>{
                             ? shopVisitViewModel.selectedBrand.value
                             : 'Select a Brand',
                         onChanged: (value) async {
-                          await shopVisitDetailsViewModel.filteredRows.refresh();
+                          shopVisitDetailsViewModel.filteredRows.refresh();
                           shopVisitViewModel.selectedBrand.value = value!;
                           shopVisitDetailsViewModel.filterProductsByBrand(value);
                         },
@@ -76,7 +76,8 @@ class _StateShopVisitScreen extends State<ShopVisitScreen>{
                         contentPadding: MediaQuery.of(context).size.height * 0.005,
                         iconColor: Colors.blue,
                         textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black),
-                      )),
+                       )
+                      ),
 
 
                       Obx(() => CustomDropdown(
@@ -110,7 +111,8 @@ class _StateShopVisitScreen extends State<ShopVisitScreen>{
                         // contentPadding: 6.0,
                         contentPadding: 0.0,
                             iconColor: Colors.blue,
-                          )),
+                          )
+                      ),
                       Obx(() => _buildTextField(
                             initialValue: shopVisitViewModel.shop_address.value,
                             label: "Shop Address",
@@ -120,7 +122,8 @@ class _StateShopVisitScreen extends State<ShopVisitScreen>{
                                 : null,
                             onChanged: (value) =>
                                 shopVisitViewModel.shop_address.value = value,
-                          )),
+                          )
+                      ),
                       Obx(() => _buildTextField(
                             initialValue: shopVisitViewModel.owner_name.value,
                             label: "Owner Name",
@@ -187,7 +190,7 @@ class _StateShopVisitScreen extends State<ShopVisitScreen>{
                     textSize: 16,
                     iconSize: 18,
                     height: 45,
-                    padding: EdgeInsets.only(left: 3, right: 25),
+                    padding: const EdgeInsets.only(left: 3, right: 25),
                     icon: Icons.arrow_back_ios_new_rounded,
                     iconColor: Colors.white,
                     iconPosition: IconPosition.left,

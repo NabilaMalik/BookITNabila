@@ -62,10 +62,10 @@ class LabeledDropdownSearch extends StatelessWidget {
             showSearchBox: true,
           ),
           items: items,
-          dropdownDecoratorProps: DropDownDecoratorProps(
+          dropdownDecoratorProps: const DropDownDecoratorProps(
             dropdownSearchDecoration: InputDecoration(
               // hintText: hint,
-                ),
+            ),
           ),
           onChanged: onChanged,
           selectedItem:selectedItem?? hint ,
