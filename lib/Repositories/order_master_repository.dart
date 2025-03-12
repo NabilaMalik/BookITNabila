@@ -9,6 +9,7 @@ import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Models/order_master_model.dart';
 import '../Services/ApiServices/api_service.dart';
+import '../Services/ApiServices/serial_number_genterator.dart';
 import '../Services/FirebaseServices/firebase_remote_config.dart';
 
 class OrderMasterRepository extends GetxService {
@@ -205,5 +206,14 @@ class OrderMasterRepository extends GetxService {
         print('No orders found for this user');
       }
     }
+  }
+  Future<void> serialNumberGeneratorApi() async {
+    final orderDetailsGenerator = SerialNumberGenerator(
+      apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/ordermasterserial/get/$user_id',
+      maxColumnName: 'max(order_master_id)',
+      serialType: orderMasterHighestSerial, // Unique identifier for shop visit serials
+    );
+    await orderDetailsGenerator.getAndIncrementSerialNumber();
+    orderMasterHighestSerial = orderDetailsGenerator.serialType;
   }
 }

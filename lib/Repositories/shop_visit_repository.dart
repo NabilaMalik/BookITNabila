@@ -179,8 +179,9 @@ class ShopVisitRepository extends GetxService{
     final orderDetailsGenerator = SerialNumberGenerator(
       apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/shopvisitserial/get/$user_id',
       maxColumnName: 'max(shop_visit_master_id)',
-      serialType: shopVisitDetailsHighestSerial, // Unique identifier for shop visit serials
+      serialType: shopVisitHighestSerial, // Unique identifier for shop visit serials
     );
     await orderDetailsGenerator.getAndIncrementSerialNumber();
+    shopVisitHighestSerial = orderDetailsGenerator.serialType;
   }
 }

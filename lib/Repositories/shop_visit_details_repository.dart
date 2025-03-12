@@ -151,5 +151,7 @@ class ShopVisitDetailsRepository extends GetxService{
       serialType: shopVisitDetailsHighestSerial, // Unique identifier for shop visit serials
     );
      await orderDetailsGenerator.getAndIncrementSerialNumber();
+     shopVisitDetailsHighestSerial = orderDetailsGenerator.serialType;
+
   }
 }

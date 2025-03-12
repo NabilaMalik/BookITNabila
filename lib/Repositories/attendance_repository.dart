@@ -150,5 +150,7 @@ class AttendanceRepository {
       serialType: attendanceInHighestSerial, // Unique identifier for shop visit serials
     );
      await orderDetailsGenerator.getAndIncrementSerialNumber();
+     attendanceInHighestSerial = orderDetailsGenerator.serialType;
+
   }
 }

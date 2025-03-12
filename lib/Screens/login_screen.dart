@@ -19,6 +19,7 @@ import 'package:order_booking_app/ViewModels/order_master_view_model.dart';
 import 'package:order_booking_app/ViewModels/recovery_form_view_model.dart';
 import 'package:order_booking_app/ViewModels/shop_visit_details_view_model.dart';
 import 'package:order_booking_app/ViewModels/shop_visit_view_model.dart';
+import 'package:order_booking_app/ViewModels/update_function_view_model.dart';
 import 'package:order_booking_app/screens/Components/custom_button.dart';
 import 'package:order_booking_app/screens/signup_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -54,6 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
   late final attendanceViewModel = Get.put(AttendanceViewModel());
   late final attendanceOutViewModel = Get.put(AttendanceOutViewModel());
   final LocationViewModel locationViewModel = Get.put(LocationViewModel());
+  late final updateFunctionViewModel= Get.put(UpdateFunctionViewModel());
   // final orderMasterViewModel = Get.put(OrderMasterViewModel());
   // final orderDetailsViewModel = Get.put(OrderDetailsViewModel());
   final LoginViewModel loginViewModel = Get.put(LoginViewModel());
@@ -117,24 +119,6 @@ class _LoginScreenState extends State<LoginScreen> {
     debugPrint("User ID: $user_id");
 
     try {
-      // final OrderMasterViewModel orderMasterViewModel = Get.put(OrderMasterViewModel());
-      // final OrderDetailsViewModel orderDetailsViewModel = Get.put(OrderDetailsViewModel());
-      // final AddShopViewModel addShopViewModel = Get.put(AddShopViewModel());
-      // final ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
-      // final ShopVisitDetailsViewModel shopVisitDetailsViewModel = Get.put(ShopVisitDetailsViewModel());
-      // final RecoveryFormViewModel recoveryFormViewModel = Get.put(RecoveryFormViewModel());
-      // final ReturnFormModel returnFormModel = Get.put(ReturnFormModel());
-      // final AttendanceViewModel attendanceViewModel = Get.put(AttendanceViewModel());
-      // final AttendanceOutViewModel attendanceOutViewModel = Get.put(AttendanceOutViewModel());
-      // final LocationViewModel locationViewModel = Get.put(LocationViewModel());
-
-
-      // await addShopViewModel.fetchAndSaveShop();
-      // await productsViewModel.fetchAndSaveProducts();
-      // await orderMasterViewModel.fetchAndSaveOrderMaster();
-      // await orderDetailsViewModel.fetchAndSaveOrderDetails();
-      // await shopVisitViewModel.fetchAllShopVisit();
-      // await shopVisitDetailsViewModel.initializeProductData();
 
 
       // Explicitly define the type for Future.wait
@@ -146,21 +130,36 @@ class _LoginScreenState extends State<LoginScreen> {
         returnFormDetailsViewModel.serialCounterGet(),
         attendanceViewModel.serialCounterGet(),
         attendanceOutViewModel.serialCounterGet(),
+        orderMasterViewModel.serialCounterGet(),
+        orderDetailsViewModel.serialCounterGet(),
         locationViewModel.serialCounterGet(),
         addShopViewModel.serialCounterGet(),
 
-        addShopViewModel.fetchAndSaveShop(),
+    addShopViewModel.fetchAndSaveShop(),
         productsViewModel.fetchAndSaveProducts(),
         orderMasterViewModel.fetchAndSaveOrderMaster(),
         orderDetailsViewModel.fetchAndSaveOrderDetails(),
         shopVisitDetailsViewModel.initializeProductData(),
-        orderMasterViewModel.orderMasterSerial(),
-        orderDetailsViewModel.orderDetailsSerial(),
+
+        updateFunctionViewModel.checkAndSetInitializationDateTime(),
+        // orderMasterViewModel.orderMasterSerial(),
+        // orderDetailsViewModel.orderDetailsSerial(),
 
         // productsViewModel.serialCounterGet(),
-        // orderMasterViewModel.serialCounterGet(),
-        // orderDetailsViewModel.serialCounterGet(),
+
       ]);
+      debugPrint(
+          "recoveryHighestSerial: $shopVisitHighestSerial, "
+              "shopVisitDetailsHighestSerial: $shopVisitDetailsHighestSerial, "
+              "orderMasterHighestSerial: $orderMasterHighestSerial, "
+              "orderDetailsHighestSerial: $orderDetailsHighestSerial, "
+              "returnDetailsHighestSerial: $returnDetailsHighestSerial, "
+              "returnMasterHighestSerial: $returnMasterHighestSerial, "
+              "attendanceInHighestSerial: $attendanceInHighestSerial, "
+              "attendanceOutHighestSerial: $attendanceOutHighestSerial, "
+              "locationHighestSerial: $locationHighestSerial, "
+              "shopHighestSerial: $shopHighestSerial"
+      );
       Get.offNamed("/home");
       // Get.off(() => HomeScreen());
     } catch (e) {
@@ -291,16 +290,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     gradientColors: const [Colors.blue, Colors.blue],
                   ),
                   SizedBox(height: size.height * 0.03),
-                  UnderPart(
-                    title: "Don't have an account?",
-                    navigatorText: "Sign up here",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SignUpScreen()),
-                      );
-                    },
-                  ),
+                  // UnderPart(
+                  //   title: "Don't have an account?",
+                  //   navigatorText: "Sign up here",
+                  //   onTap: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(builder: (context) => SignUpScreen()),
+                  //     );
+                  //   },
+                  // ),
                   SizedBox(height: size.height * 0.03),
                   _buildSocialIcons(),
                   SizedBox(height: size.height * 0.1),

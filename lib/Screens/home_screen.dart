@@ -199,12 +199,12 @@ class _RiveAppHomeState extends State<HomeScreen>
   Widget _buildHeader() {
     return Container(
       color: Colors.blue,
-      child: const Column(
+      child:  Column(
         children: [
           Navbar(),
-          SizedBox(height: 10),
-          ProfileSection(),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
+          const ProfileSection(),
+          const SizedBox(height: 10),
         ],
       ),
     );
@@ -276,7 +276,10 @@ class _RiveAppHomeState extends State<HomeScreen>
               ActionBox(
                 imagePath: order_booking_status,
                 label: 'Booking Status',
-                onTap: () => Get.to(() => OrderBookingStatusScreen()),
+
+                onTap:  () async {
+                  await orderMasterViewModel.fetchAllOrderMaster();
+                  Get.to(() => OrderBookingStatusScreen());},
               ),
             ],
           ),

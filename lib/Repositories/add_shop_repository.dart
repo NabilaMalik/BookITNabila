@@ -92,7 +92,8 @@ class AddShopRepository extends GetxService {
   }
 
   Future<List<String>> fetchCitiesFromApi() async {
-    String url = Config.getApiUrlCities;
+    // String url = Config.getApiUrlCities;
+    String url = "https://cloud.metaxperts.net:8443/erp/test1/cities/get/";
     List<dynamic> data = await ApiService.getData(url);
     List<String> fetchedCities = data.map((city) => city.toString()).toList();
 
@@ -220,5 +221,7 @@ class AddShopRepository extends GetxService {
       serialType: shopHighestSerial, // Unique identifier for shop visit serials
     );
      await orderDetailsGenerator.getAndIncrementSerialNumber();
+     shopHighestSerial = orderDetailsGenerator.serialType;
+
   }
 }

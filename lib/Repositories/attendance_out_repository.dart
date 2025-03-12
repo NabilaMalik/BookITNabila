@@ -152,5 +152,6 @@ class AttendanceOutRepository extends GetxService {
       serialType: attendanceOutHighestSerial, // Unique identifier for shop visit serials
     );
      await orderDetailsGenerator.getAndIncrementSerialNumber();
+     attendanceOutHighestSerial = orderDetailsGenerator.serialType;
   }
 }

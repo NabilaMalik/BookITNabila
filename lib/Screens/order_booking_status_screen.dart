@@ -11,11 +11,7 @@ class OrderBookingStatusScreen extends StatelessWidget {
   OrderBookingStatusScreen({super.key});
   final viewModel = Get.put(OrderBookingStatusViewModel());
   // final viewModel = Get.put(OrderBookingStatusViewModel());
-  @override
-  // void initState() {
-  //   super.initState();
-  //   fetchOrders();
-  // }
+
   @override
   Widget build(BuildContext context) {
     // Fetch the orders as soon as the screen is displayed
@@ -47,6 +43,7 @@ class OrderBookingStatusScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 buildActionButtonsRow(viewModel),
                 const SizedBox(height: 20),
+
                 OrderBookingStatusHistoryCard(
                   filterData: (filter) => viewModel.filterData(filter),
                   rowsNotifier: ValueNotifier(viewModel.filteredRowsAsMapList),

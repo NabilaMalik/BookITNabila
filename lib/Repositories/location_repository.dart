@@ -197,5 +197,7 @@ class LocationRepository {
       serialType: locationHighestSerial, // Unique identifier for shop visit serials
     );
      await orderDetailsGenerator.getAndIncrementSerialNumber();
+     locationHighestSerial = orderDetailsGenerator.serialType;
+
   }
 }

@@ -139,5 +139,7 @@ class ReturnFormRepository {
       serialType: returnMasterHighestSerial, // Unique identifier for shop visit serials
     );
      await orderDetailsGenerator.getAndIncrementSerialNumber();
+     returnMasterHighestSerial = orderDetailsGenerator.serialType;
+
   }
 }

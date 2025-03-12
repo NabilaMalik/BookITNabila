@@ -198,5 +198,7 @@ class RecoveryFormRepository {
       serialType: recoveryHighestSerial, // Unique identifier for shop visit serials
     );
      await orderDetailsGenerator.getAndIncrementSerialNumber();
+     recoveryHighestSerial = orderDetailsGenerator.serialType;
+
   }
 }

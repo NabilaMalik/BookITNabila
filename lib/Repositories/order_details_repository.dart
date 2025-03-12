@@ -8,6 +8,7 @@ import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Models/order_details_model.dart';
 import '../Services/ApiServices/api_service.dart';
+import '../Services/ApiServices/serial_number_genterator.dart';
 import '../Services/FirebaseServices/firebase_remote_config.dart';
 
 class OrderDetailsRepository extends GetxService {
@@ -195,5 +196,13 @@ class OrderDetailsRepository extends GetxService {
       }
     }
   }
-
+  Future<void> serialNumberGeneratorApi() async {
+    final orderDetailsGenerator = SerialNumberGenerator(
+      apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/orderdetailserial/get/$user_id',
+      maxColumnName: 'max(order_details_id)',
+      serialType: orderDetailsHighestSerial, // Unique identifier for shop visit serials
+    );
+    await orderDetailsGenerator.getAndIncrementSerialNumber();
+    orderDetailsHighestSerial = orderDetailsGenerator.serialType;
+  }
 }

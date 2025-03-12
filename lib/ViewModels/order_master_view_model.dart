@@ -102,7 +102,7 @@ class OrderMasterViewModel extends GetxController {
 
   Future<void> confirmSubmitForm() async {
     if (shopVisitViewModel.selectedShop.value.isNotEmpty) {
-      await orderMasterSerial();
+      // await orderMasterSerial();
       await _loadCounter();
       final orderSerial = await generateAndSaveOrderId(user_id); // Generate and save
       order_master_id = orderSerial;
@@ -158,7 +158,10 @@ class OrderMasterViewModel extends GetxController {
     await orderMasterRepository.delete(id);
     await fetchAllOrderMaster();
   }
-  Future<void>orderMasterSerial()async{
-    await orderMasterRepository.getHighestSerialNo();
+  // Future<void>orderMasterSerial()async{
+  //   await orderMasterRepository.getHighestSerialNo();
+  // }
+  serialCounterGet()async{
+    await orderMasterRepository.serialNumberGeneratorApi();
   }
 }

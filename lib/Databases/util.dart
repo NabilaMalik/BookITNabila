@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // import 'package:connectivity/connectivity.dart';
 
@@ -12,8 +15,8 @@ String? shop_visit_master_id = "";
 String? returnMasterId = "";
 String? order_master_id = "";
 
-int? recoveryHighestSerial;
 String? recoverySavedMonthCounter;
+int? recoveryHighestSerial;
 int? shopVisitHighestSerial;
 int? shopVisitDetailsHighestSerial;
 int? orderMasterHighestSerial;
@@ -100,3 +103,23 @@ Future<bool> isNetworkAvailable() async {
     }
   }
 }
+// Future<void> checkAndSetInitializationDateTime() async {
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//
+//   // Check if 'lastInitializationDateTime' is already stored
+//   String? lastInitDateTime = prefs.getString('lastInitializationDateTime');
+//
+//   if (lastInitDateTime == null) {
+//     // If not, set the current date and time
+//     DateTime now = DateTime.now();
+//     String formattedDateTime = DateFormat('dd-MMM-yyyy-HH:mm:ss').format(now);
+//     await prefs.setString('lastInitializationDateTime', formattedDateTime);
+//
+//       debugPrint('lastInitializationDateTime was not set, initializing to: $formattedDateTime');
+//
+//   } else {
+//
+//     debugPrint('lastInitializationDateTime is already set to: $lastInitDateTime');
+//
+//   }
+

@@ -215,7 +215,7 @@ _loadCounter() async {
     }
 
     for (var product in productsToSave) {
-      await orderDetailsSerial();
+      // await orderDetailsSerial();
       await _loadCounter();
       dynamic orderSerial = await generateNewOrderId(user_id);
       final orderDetailsModel = OrderDetailsModel(
@@ -262,7 +262,10 @@ _loadCounter() async {
     orderDetailsRepository.delete(id);
     fetchAllReConfirmOrder();
   }
-  Future<void>orderDetailsSerial()async{
-    await orderDetailsRepository.getHighestSerialNo();
+  // Future<void>oderDetailsSerial()async{
+  //   await orderDetailsRepository.getHighestSerialNo();
+  // }
+  serialCounterGet()async{
+    await orderDetailsRepository.serialNumberGeneratorApi();
   }
 }
