@@ -53,7 +53,6 @@ class OrderMasterViewModel extends GetxController {
       orderMasterSerialCounter = 1;
       orderMasterCurrentMonth = currentMonth;
     }
-
     debugPrint('SR: $orderMasterSerialCounter');
   }
 
@@ -92,11 +91,20 @@ class OrderMasterViewModel extends GetxController {
   }
 
   Future<void> submitForm(GlobalKey<FormState> formKey) async {
-    if (formKey.currentState!.validate()) {
+    if (formKey.currentState!.validate()&& required_delivery_date.value.isNotEmpty ) {
       final orderSerial = generateNewOrderId(user_id); // Generate serial
       order_master_id = orderSerial;
       debugPrint("Saving filtered products...");
       await orderDetailsViewModel.saveFilteredProducts();
+    }else{
+      Get.snackbar(
+              "Error",
+              "Please fill in the required delivery field.",
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.orange,
+              colorText: Colors.white,
+              duration: const Duration(seconds: 3),
+            );
     }
   }
 
