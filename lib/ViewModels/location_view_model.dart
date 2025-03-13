@@ -207,6 +207,7 @@ class LocationViewModel extends GetxController {
     isClockedIn.value = clockedIn;
   }
 
+
   Future<double> calculateTotalDistance(String filePath) async {
     File file = File(filePath);
     if (!file.existsSync()) {
