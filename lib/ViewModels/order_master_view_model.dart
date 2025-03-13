@@ -103,7 +103,7 @@ class OrderMasterViewModel extends GetxController {
               snackPosition: SnackPosition.BOTTOM,
               backgroundColor: Colors.orange,
               colorText: Colors.white,
-              duration: const Duration(seconds: 3),
+              duration: const Duration(seconds: 5),
             );
     }
   }

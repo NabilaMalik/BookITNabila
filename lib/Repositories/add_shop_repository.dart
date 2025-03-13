@@ -215,7 +215,7 @@ class AddShopRepository extends GetxService {
     }
   }
   Future<void> serialNumberGeneratorApi() async {
-     final orderDetailsGenerator = SerialNumberGenerator(
+    SharedPreferences prefs = await SharedPreferences.getInstance();     final orderDetailsGenerator = SerialNumberGenerator(
       apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/shopserial/get/$user_id',
       maxColumnName: 'max(shop_id)',
       serialType: shopHighestSerial, // Unique identifier for shop visit serials

@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Models/order_details_model.dart';
@@ -197,6 +198,7 @@ class OrderDetailsRepository extends GetxService {
     }
   }
   Future<void> serialNumberGeneratorApi() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
       apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/orderdetailserial/get/$user_id',
       maxColumnName: 'max(order_details_id)',
@@ -204,5 +206,7 @@ class OrderDetailsRepository extends GetxService {
     );
     await orderDetailsGenerator.getAndIncrementSerialNumber();
     orderDetailsHighestSerial = orderDetailsGenerator.serialType;
+    await prefs.reload();
+    await prefs.setInt("orderDetailsHighestSerial", orderDetailsHighestSerial!);
   }
 }

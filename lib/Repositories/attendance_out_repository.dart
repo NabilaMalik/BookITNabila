@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Models/attendanceOut_model.dart';
@@ -146,12 +147,14 @@ class AttendanceOutRepository extends GetxService {
         where: 'attendance_out_id = ?', whereArgs: [id]);
   }
   Future<void> serialNumberGeneratorApi() async {
-     final orderDetailsGenerator = SerialNumberGenerator(
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final orderDetailsGenerator = SerialNumberGenerator(
       apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/attendanceoutserial/get/$user_id',
       maxColumnName: 'max(attendance_out_id)',
       serialType: attendanceOutHighestSerial, // Unique identifier for shop visit serials
     );
      await orderDetailsGenerator.getAndIncrementSerialNumber();
      attendanceOutHighestSerial = orderDetailsGenerator.serialType;
+     await prefs.setInt("attendanceOutHighestSerial", attendanceOutHighestSerial!);
   }
 }

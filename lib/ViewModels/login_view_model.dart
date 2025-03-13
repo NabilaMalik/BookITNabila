@@ -66,21 +66,55 @@ class LoginViewModel extends GetxController {
   //   return false; // Login failed
   // }
   Future<bool> login(String userId, String password) async {
-    final user = await loginRepository.getUserByCredentials(userId, password);
+    try {
+      // Step 1: Authenticate user
+      final user = await loginRepository.getUserByCredentials(userId, password);
 
-    if (user != null) {
-      isAuthenticated.value = true; // Set login status to true
+      if (user == null) {
+        isAuthenticated.value = false; // Set login status to false
+        return false; // Login failed
+      }
 
-      // Save authentication stateF
-      debugPrint("Initializing SharedPreferences isAuthenticated...");
+      // Step 2: Fetch user details
+      var userDetails = await loginRepository.getUserDetailsById(userId);
+      if (userDetails == null) {
+        isAuthenticated.value = false; // Set login status to false
+        return false; // Login failed (user details not found)
+      }
+
+      // Step 3: Extract and store user details
       final prefs = await SharedPreferences.getInstance();
+      await prefs.reload();
+
+      // Store user details in SharedPreferences
+      await prefs.setString('userName', userDetails['user_name'] ?? "Null");
+      await prefs.setString('userCity', userDetails['city'] ?? "Null");
+      await prefs.setString('userDesignation', userDetails['designation'] ?? "Null");
+      await prefs.setString('userBrand', userDetails['brand'] ?? "Null Brand");
+      await prefs.setString('userRSM', userDetails['RSM_ID'] ?? "Null");
+      await prefs.setString('userSM', userDetails['SM_ID'] ?? "Null");
+      await prefs.setString('userNSM', userDetails['NSM_ID'] ?? "Null");
+
+      // Log user details for debugging
+      debugPrint("City: ${userDetails['city']}");
+      debugPrint("User Name: ${userDetails['user_name']}");
+      debugPrint("Designation: ${userDetails['designation']}");
+      debugPrint("Brand: ${userDetails['brand']}");
+      debugPrint("RSM: ${userDetails['RSM']}");
+      debugPrint("SM: ${userDetails['SM']}");
+      debugPrint("NSM: ${userDetails['NSM']}");
+
+      // Step 4: Set authentication state
+      isAuthenticated.value = true; // Set login status to true
       await prefs.setBool('isAuthenticated', true);
 
       return true; // Login successful
+    } catch (e) {
+      // Handle any errors that occur during the login process
+      debugPrint("Login failed with error: $e");
+      isAuthenticated.value = false; // Set login status to false
+      return false; // Login failed
     }
-
-    isAuthenticated.value = false; // Set login status to false
-    return false; // Login failed
   }
   logout() async {
     isAuthenticated.value = false; // Set login status to false

@@ -133,10 +133,11 @@ class LocationViewModel extends GetxController {
     }
   }
 // Function to save the current time to SharedPreferences
-  void saveCurrentTime() async {
+  saveCurrentTime() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     DateTime currentTime = DateTime.now();
     String formattedTime = _formatDateTime(currentTime);
+    prefs.reload();
     prefs.setString('savedTime', formattedTime);
 
       debugPrint("Save Current Time");
@@ -180,14 +181,16 @@ class LocationViewModel extends GetxController {
   }
 
   Future<String> stopTimer() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     _timer?.cancel();
     String totalTime = _formatDuration(newsecondpassed.value.toString());
+
     debugPrint("Initializing SharedPreferences stopTimer...");
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt('secondsPassed', 0);
 
       secondsPassed.value = 0;
 
+    await prefs.setString('totalTime', totalTime);
     return totalTime;
   }
   // Function to format DateTime object to a string
@@ -254,11 +257,14 @@ class LocationViewModel extends GetxController {
     return (distanceInMeters / 1000); // Multiply the result by 2
   }
 saveLocation() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
   final date = DateFormat('dd-MM-yyyy').format(DateTime.now());
   final downloadDirectory = await getDownloadsDirectory();
   final gpxFilePath = '${downloadDirectory!.path}/track$date.gpx';
   final maingpxFile = File(gpxFilePath);
   double totalDistance = await calculateTotalDistance("${downloadDirectory?.path}/track$date.gpx");
+  await prefs.reload();
+  await prefs.setDouble('totalDistance', totalDistance);
   if (!maingpxFile.existsSync()) {
 
       debugPrint('GPX file does not exist');
@@ -275,7 +281,7 @@ saveLocation() async {
    user_id: user_id.toString(),
      total_distance: totalDistance.toString(),
      file_name: "$date.gpx",
-    booker_name: user_id,
+    booker_name: userName,
      body: gpxBytes,
 
   ));

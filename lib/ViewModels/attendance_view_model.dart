@@ -118,11 +118,11 @@ LocationViewModel locationViewModel = Get.put(LocationViewModel());
    await addAttendance(AttendanceModel(
       attendance_in_id: orderSerial,
       user_id: user_id,
-      // booker_name: ,
-      // time_in: ,
+      city: userCity,
+      booker_name: userName,
       lat_in: locationViewModel.globalLatitude1.value,
       lng_in: locationViewModel.globalLongitude1.value ,
-      // designation: ,
+      designation: userDesignation,
        address: locationViewModel.shopAddress.value,
     ));
     await attendanceRepository.postDataFromDatabaseToAPI();

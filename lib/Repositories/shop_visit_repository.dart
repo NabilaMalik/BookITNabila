@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Models/shop_visit_model.dart';
@@ -176,6 +177,7 @@ class ShopVisitRepository extends GetxService{
         .delete(shopVisitMasterTableName, where: 'shop_visit_master_id = ?', whereArgs: [id]);
   }
   Future<void> serialNumberGeneratorApi() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
       apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/shopvisitserial/get/$user_id',
       maxColumnName: 'max(shop_visit_master_id)',
@@ -183,5 +185,8 @@ class ShopVisitRepository extends GetxService{
     );
     await orderDetailsGenerator.getAndIncrementSerialNumber();
     shopVisitHighestSerial = orderDetailsGenerator.serialType;
+    await prefs.reload();
+    await prefs.setInt("shopVisitHighestSerial", shopVisitHighestSerial!);
+
   }
 }

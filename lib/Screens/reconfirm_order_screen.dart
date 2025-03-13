@@ -13,7 +13,10 @@ import '../Databases/util.dart';
 import 'Components/custom_button.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:share_plus/share_plus.dart';//
+import 'package:share_plus/share_plus.dart'; //
+
+bool isPressed = false;
+
 class ReconfirmOrderScreen extends StatefulWidget {
   final List<Map<String, dynamic>> rows;
 
@@ -26,8 +29,9 @@ class ReconfirmOrderScreen extends StatefulWidget {
 class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
   int _currentPage = 0;
   OrderMasterViewModel orderMasterViewModel = Get.put(OrderMasterViewModel());
-  OrderDetailsViewModel orderDetailsViewModel = Get.put(OrderDetailsViewModel());
-  ShopVisitViewModel shopVisitViewModel =Get.put(ShopVisitViewModel());
+  OrderDetailsViewModel orderDetailsViewModel =
+      Get.put(OrderDetailsViewModel());
+  ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
 
   void _nextPage() {
     setState(() {
@@ -53,6 +57,7 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
     }
     return widget.rows.sublist(startIndex, endIndex);
   }
+
   Future<void> _generateAndSharePDF() async {
     final pdf = pw.Document();
 
@@ -199,7 +204,8 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
                             style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           ),
                           pw.TextSpan(
-                            text: DateFormat('dd-MMM-yyyy : HH-mm-ss').format(DateTime.now()),
+                            text: DateFormat('dd-MMM-yyyy : HH-mm-ss')
+                                .format(DateTime.now()),
                           ),
                         ],
                       ),
@@ -212,7 +218,10 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
 
           pw.SizedBox(height: 10),
           pw.Text('Order Summary',
-              style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold, color: baseColor)),
+              style: pw.TextStyle(
+                  fontSize: 18,
+                  fontWeight: pw.FontWeight.bold,
+                  color: baseColor)),
           pw.SizedBox(height: 10),
 
           // Table Section
@@ -243,7 +252,8 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
               3: pw.Alignment.centerRight,
             },
             border: const pw.TableBorder(
-              horizontalInside: pw.BorderSide(color: tableBorderColor, width: 0.5),
+              horizontalInside:
+                  pw.BorderSide(color: tableBorderColor, width: 0.5),
               top: pw.BorderSide(color: tableBorderColor, width: 1),
               bottom: pw.BorderSide(color: tableBorderColor, width: 1),
             ),
@@ -277,7 +287,8 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
                           style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                         ),
                         pw.TextSpan(
-                          text: orderMasterViewModel.required_delivery_date.value,
+                          text:
+                              orderMasterViewModel.required_delivery_date.value,
                         ),
                       ],
                     ),
@@ -289,7 +300,8 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
                   children: [
                     pw.TextSpan(
                       text: 'Total: ',
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 17),
+                      style: pw.TextStyle(
+                          fontWeight: pw.FontWeight.bold, fontSize: 17),
                     ),
                     pw.TextSpan(
                       text: orderDetailsViewModel.total.value,
@@ -299,7 +311,6 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
               ),
             ],
           ),
-
         ],
 
         // Correctly placed footer
@@ -349,13 +360,13 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
                 // Right-aligned page number
                 pw.Text(
                   'Page ${context.pageNumber} of ${context.pagesCount}',
-                  style: const pw.TextStyle(fontSize: 12, color: PdfColors.grey600),
+                  style: const pw.TextStyle(
+                      fontSize: 12, color: PdfColors.grey600),
                 ),
               ],
             ),
           );
         },
-
       ),
     );
 
@@ -370,92 +381,111 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
     } catch (e) {
       Get.snackbar('Error', 'Failed to generate and share PDF: $e');
     }
-    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      appBar: AppBar(
-        title: const Text(
-          'Order Invoice',
-          style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-
-        backgroundColor: Colors.blue,
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.share, color: Colors.white,),
-            onPressed: () {
-              _generateAndSharePDF();
-              // Add your share functionality here
-            },
-          ),
-        ],
-      ),
-
-      body: SingleChildScrollView( child:
-      Container(
-        color: Colors.white,
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildField(label: 'Order ID', value: order_master_id),
-            _buildField(label: 'Customer Name', value: shopVisitViewModel.selectedShop.value),
-            _buildField(label: 'Phone Number', value: '+1234567890'),
-
-            const Divider(color: Colors.grey),
-            const Text(
-              'Order Summary',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, ),
+        appBar: AppBar(
+            title: const Text(
+              'Order Invoice',
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 2),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.6, // Example: 50% of screen height
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: _getCurrentPageRows().map((row) {
-                        int index = _getCurrentPageRows().indexOf(row);
-                        return OrderSummaryRow(
-                          serialNumber: (_currentPage * 10) + index + 1,
-                          rowData: row,
-                        );
-                      }).toList(),
-                    ),
+            backgroundColor: Colors.blue,
+            centerTitle: true,
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.share,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  _generateAndSharePDF();
+                  // Add your share functionality here
+                },
+              ),
+            ],
+            leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  if (isPressed = true) {
+                  } else {
+                    Get.offNamed("/OrderBookingScreen");
+                  }
+                })),
+        body: SingleChildScrollView(
+          child: Container(
+            color: Colors.white,
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildField(label: 'Order ID', value: order_master_id),
+                _buildField(
+                    label: 'Customer Name',
+                    value: shopVisitViewModel.selectedShop.value),
+                _buildField(
+                    label: 'Phone Number',
+                    value: shopVisitViewModel.phone_number.value),
+                const Divider(color: Colors.grey),
+                const Text(
+                  'Order Summary',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
-
-                  _buildPaginationControls(),
-                  const Divider(color: Colors.grey),
-                ],
-              ),
+                ),
+                const SizedBox(height: 2),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height *
+                      0.6, // Example: 50% of screen height
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          children: _getCurrentPageRows().map((row) {
+                            int index = _getCurrentPageRows().indexOf(row);
+                            return OrderSummaryRow(
+                              serialNumber: (_currentPage * 10) + index + 1,
+                              rowData: row,
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      _buildPaginationControls(),
+                      const Divider(color: Colors.grey),
+                    ],
+                  ),
+                ),
+                const OrderFooter(),
+                const SizedBox(height: 5),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: CustomButton(
+                    textSize: 14,
+                    spacing: 0,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 6.0),
+                    height: 40,
+                    width: 120,
+                    buttonText: "Close",
+                    onTap: () {
+                      // Get.to(const HomeScreen());
+                      Get.offNamed("/home");
+                    }, // onTap: orderMasterViewModel.confirmSubmitForm,
+                    gradientColors: [Colors.red, Colors.red],
+                  ),
+                ),
+              ],
             ),
-            const OrderFooter(),
-
-            const SizedBox(height: 5),
-            Align(
-              alignment: Alignment.centerRight,
-              child: CustomButton(
-                textSize: 14,
-                spacing: 0,
-                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-                height: 40,
-                width: 120,
-                buttonText: "Close",
-                onTap: () {
-                  // Get.to(const HomeScreen());
-                  Get.offNamed("/home");
-                },                // onTap: orderMasterViewModel.confirmSubmitForm,
-                gradientColors: [Colors.red, Colors.red],
-              ),
-            ),
-          ],
-        ),
-      ),
-    )
-    );
+          ),
+        ));
   }
 
   Widget _buildField({required String label, required String? value}) {
@@ -463,8 +493,11 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         children: [
-          Text('$label: ', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-          Expanded(child: Text(value ?? '', style: const TextStyle(fontSize: 14))),
+          Text('$label: ',
+              style:
+                  const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+          Expanded(
+              child: Text(value ?? '', style: const TextStyle(fontSize: 14))),
         ],
       ),
     );
@@ -492,7 +525,6 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
               foregroundColor: Colors.white,
             ),
           ),
-
       ],
     );
   }
@@ -524,18 +556,20 @@ class OrderSummaryRow extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             flex: 4,
-            child: Text(rowData['Product'], style: const TextStyle(fontSize: 14)),
+            child:
+                Text(rowData['Product'], style: const TextStyle(fontSize: 14)),
           ),
           const SizedBox(width: 8),
           Expanded(
             flex: 2,
-            child: Text(rowData['Enter Qty'].toString(), style: const TextStyle(fontSize: 14)),
+            child: Text(rowData['Enter Qty'].toString(),
+                style: const TextStyle(fontSize: 14)),
           ),
           const SizedBox(width: 8),
           Expanded(
             flex: 2,
-
-            child: Text(rowData['Amount'].toString(), style: const TextStyle(fontSize: 14)),
+            child: Text(rowData['Amount'].toString(),
+                style: const TextStyle(fontSize: 14)),
           ),
         ],
       ),
@@ -543,9 +577,7 @@ class OrderSummaryRow extends StatelessWidget {
   }
 }
 
-
 class OrderFooter extends StatefulWidget {
-
   const OrderFooter({super.key});
 
   @override
@@ -554,7 +586,8 @@ class OrderFooter extends StatefulWidget {
 
 class _OrderFooterState extends State<OrderFooter> {
   OrderMasterViewModel orderMasterViewModel = Get.put(OrderMasterViewModel());
-  OrderDetailsViewModel orderDetailsViewModel = Get.put(OrderDetailsViewModel());
+  OrderDetailsViewModel orderDetailsViewModel =
+      Get.put(OrderDetailsViewModel());
 
   @override
   Widget build(BuildContext context) {
@@ -580,9 +613,13 @@ class _OrderFooterState extends State<OrderFooter> {
             alignment: Alignment.centerRight,
             child: CustomButton(
               height: 45,
-              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
               buttonText: "CONFIRM ORDER",
-              onTap: orderMasterViewModel.confirmSubmitForm,
+              onTap: () async {
+                isPressed = true;
+                await orderMasterViewModel.confirmSubmitForm();
+              },
               gradientColors: [Colors.blue, Colors.blue],
             ),
           ),

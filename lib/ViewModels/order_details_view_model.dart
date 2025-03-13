@@ -22,7 +22,6 @@ class OrderDetailsViewModel extends GetxController {
   var allReConfirmOrder = <OrderDetailsModel>[].obs;
   var filteredRows = <Map<String, dynamic>>[].obs;
   var rows = <DataRow>[].obs;
-  // var required_delivery_date = ''.obs;
   ValueNotifier<List<Map<String, dynamic>>> rowsNotifier =
       ValueNotifier<List<Map<String, dynamic>>>([]);
   int orderDetailsSerialCounter = 1;
@@ -179,17 +178,7 @@ _loadCounter() async {
       );
       return; // Do not navigate if no products to save
     }
-    //  if (required_delivery_date == null || required_delivery_date.toString().trim().isEmpty) {
-    //   Get.snackbar(
-    //     "Error",
-    //     "Please fill in the required delivery field.",
-    //     snackPosition: SnackPosition.BOTTOM,
-    //     backgroundColor: Colors.orange,
-    //     colorText: Colors.white,
-    //     duration: const Duration(seconds: 3),
-    //   );
-    //     return;
-    // }
+
     Get.to(() =>  ReconfirmOrderScreen(rows: productsToSave));
   }
 

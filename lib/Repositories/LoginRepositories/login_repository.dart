@@ -27,7 +27,21 @@ class LoginRepository extends GetxService{
     }
     return null; // No user found
   }
+  Future<Map?> getUserDetailsById(String userId) async {
+    var dbClient = await dbHelper.db;
 
+    List<Map> maps = await dbClient.query(
+      tableNameLogin,
+      where: 'user_id = ?',
+      whereArgs: [userId],
+      columns: ['user_id', 'city', 'user_name', 'designation', 'brand', 'images', 'RSM', 'RSM_ID', 'SM', 'SM_ID', 'NSM', 'NSM_ID'],
+    );
+
+    if (maps.isNotEmpty) {
+      return maps.first; // Return the first matching user details as a Map
+    }
+    return null; // No user found
+  }
   Future<List<LoginModels>> getLogin() async {
     // Get the database client
     var dbClient = await dbHelper.db;

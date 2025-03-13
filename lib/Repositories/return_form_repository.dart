@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
@@ -133,13 +134,16 @@ class ReturnFormRepository {
         .delete(returnFormMasterTableName, where: 'return_master_id = ?', whereArgs: [id]);
   }
   Future<void> serialNumberGeneratorApi() async {
-     final orderDetailsGenerator = SerialNumberGenerator(
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final orderDetailsGenerator = SerialNumberGenerator(
       apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/returnmasterserial/get/$user_id',
       maxColumnName: 'max(return_master_id)',
       serialType: returnMasterHighestSerial, // Unique identifier for shop visit serials
     );
      await orderDetailsGenerator.getAndIncrementSerialNumber();
      returnMasterHighestSerial = orderDetailsGenerator.serialType;
+     await prefs.reload();
+     await prefs.setInt("returnMasterHighestSerial", returnMasterHighestSerial!);
 
   }
 }

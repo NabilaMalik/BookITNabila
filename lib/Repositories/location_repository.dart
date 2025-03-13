@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'dart:typed_data';
 
 import 'package:http_parser/http_parser.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Models/location_model.dart';
@@ -191,13 +192,16 @@ class LocationRepository {
         .delete(locationTableName, where: 'location_id = ?', whereArgs: [id]);
   }
   Future<void> serialNumberGeneratorApi() async {
-     final orderDetailsGenerator = SerialNumberGenerator(
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final orderDetailsGenerator = SerialNumberGenerator(
       apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/locationserial/get/$user_id',
       maxColumnName: 'max(location_id)',
       serialType: locationHighestSerial, // Unique identifier for shop visit serials
     );
      await orderDetailsGenerator.getAndIncrementSerialNumber();
      locationHighestSerial = orderDetailsGenerator.serialType;
+     await prefs.reload();
+     await prefs.setInt("locationHighestSerial", locationHighestSerial!);
 
   }
 }

@@ -109,10 +109,21 @@ class _RiveAppHomeState extends State<HomeScreen>
     // Update state with retrieved values
     setState(() {
       user_id = prefs.getString('userId') ?? '';
-      // userNames = prefs.getString('userNames') ?? '';
-      // userCitys = prefs.getString('userCitys') ?? '';
-      // userDesignation = prefs.getString('userDesignation') ?? '';
-      // userBrand = prefs.getString('userBrand') ?? '';
+      attendanceInHighestSerial = prefs.getInt('attendanceInHighestSerial') ?? 1;
+      attendanceOutHighestSerial = prefs.getInt('attendanceOutHighestSerial') ?? 1;
+      shopVisitHighestSerial = prefs.getInt('shopVisitHighestSerial') ?? 1;
+      shopVisitDetailsHighestSerial = prefs.getInt('shopVisitDetailsHighestSerial') ?? 1;
+      orderMasterHighestSerial = prefs.getInt('orderMasterHighestSerial') ?? 1;
+      orderDetailsHighestSerial = prefs.getInt('orderDetailsHighestSerial') ?? 1;
+      recoveryHighestSerial = prefs.getInt('recoveryHighestSerial') ?? 1;
+      returnMasterHighestSerial = prefs.getInt('returnMasterHighestSerial') ?? 1;
+      returnDetailsHighestSerial = prefs.getInt('returnDetailsHighestSerial') ?? 1;
+      locationHighestSerial = prefs.getInt('locationHighestSerial') ?? 1;
+      shopHighestSerial = prefs.getInt('shopHighestSerial') ?? 1;
+      userName = prefs.getString('userName') ?? '';
+      userCity = prefs.getString('userCity') ?? '';
+      userDesignation = prefs.getString('userDesignation') ?? '';
+      userBrand = prefs.getString('userBrand') ?? '';
     });
     debugPrint(user_id);
   }
@@ -245,7 +256,7 @@ class _RiveAppHomeState extends State<HomeScreen>
               ActionBox(
                 imagePath:recovery2,
                 label: 'Recovery',
-                onTap: () => Get.to(() =>                   RecoveryFormScreen()),
+                onTap: () => Get.to(() =>  RecoveryFormScreen()),
               ),
               // ActionBox(
               //   imagePath: recovery2,

@@ -88,7 +88,7 @@ class TimerCard extends StatelessWidget {
             return ElevatedButton(
               onPressed: () async {
                 try {
-                  locationViewModel.saveCurrentLocation();
+                  await locationViewModel.saveCurrentLocation();
                   final service = FlutterBackgroundService();
                   bool newIsClockedIn = locationViewModel.isClockedIn.value;
 
@@ -99,6 +99,7 @@ class TimerCard extends StatelessWidget {
 
                     // await locationViewModel.saveCurrentLocation();
                     await attendanceOutViewModel.saveFormAttendanceOut();
+                    var totalTime = await locationViewModel.stopTimer();
 
                     await locationViewModel.stopTimer();
                     await locationViewModel.clockRefresh();
@@ -116,7 +117,7 @@ class TimerCard extends StatelessWidget {
                     await location.changeSettings(
                         interval: 300, accuracy: loc.LocationAccuracy.high);
                     await service.startService();
-                    locationViewModel.saveCurrentTime();
+                    await locationViewModel.saveCurrentTime();
                     await locationViewModel.saveClockStatus(true);
                     await locationViewModel.clockRefresh();
                     locationViewModel.isClockedIn.value = true;

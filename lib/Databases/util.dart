@@ -6,11 +6,14 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// import 'package:connectivity/connectivity.dart';
 
 String globalselectedbrand="";
 String userBrand="";
+double totalDistance=0.0;
 String user_id= "";
+String userName="";
+String userCity="";
+String userDesignation="";
 String? shop_visit_master_id = "";
 String? returnMasterId = "";
 String? order_master_id = "";
