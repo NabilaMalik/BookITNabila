@@ -198,11 +198,10 @@ class SubmitButton extends StatelessWidget {
       //  viewModel.cController?.clear();
         viewModel.selectedShop.value = "";
 
-        returnFormDetailsViewModel.items.clear();  // ✅ Correct way to clear RxList
+        returnFormDetailsViewModel.items.clear();
         returnFormDetailsViewModel.reasons.clear();
        // returnFormDetailsViewModel.quantity.clear();
 
-        // ✅ Show success message
         Get.snackbar(
           "Success",
           "Form submitted successfully! Fields cleared.",
