@@ -30,7 +30,7 @@ class Navbar extends StatelessWidget {
             children: [
               InkWell(
                 onTap: () => Get.to(
-                  () => const SideMenu(),
+                      () => const SideMenu(),
                   transition: Transition.fade, // Add fade transition
                 ),
                 child: const Icon(Icons.menu, color: Colors.white, size: 30),

@@ -188,24 +188,64 @@ class RecoveryFormViewModel extends GetxController{
   }
 
   Future<void> submitForm() async {
-    await     _loadCounter();
+    await _loadCounter();
+
+    // Validate Shop Selection
+    if (selectedShop.value.isEmpty) {
+      Get.snackbar(
+        "Error",
+        "⚠ Please select a shop before submitting.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+      );
+      return;
+    }
+
+    // Validate Cash Recovery Amount
+    if (cash_recovery.value == null || cash_recovery.value <= 0) {
+      Get.snackbar(
+        "Error",
+        "⚠ Please enter a valid amount before submitting.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+      );
+      return;
+    }
+
     final recoverySerial = generateNewOrderId(user_id);
-     recovery_id.value = recoverySerial;
-   await  addRecoveryForm(RecoveryFormModel(
+    recovery_id.value = recoverySerial;
+
+    await addRecoveryForm(RecoveryFormModel(
       recovery_id: recovery_id.value,
       shop_name: selectedShop.value,
-      current_balance: current_balance.value!.toString(),
+      current_balance: current_balance.value?.toString() ?? "0",
       cash_recovery: cash_recovery.value,
       net_balance: net_balance.value,
-     user_id: user_id.toString(),
-   ));
+      user_id: user_id.toString(),
+    ));
+
     await recoveryformRepository.postDataFromDatabaseToAPI();
 
-    // Implement your form submission logic here
-    Get.snackbar("Success", "Form submitted successfully!");
-     Get.to(()=>   RecoveryForm_2ndPage());
-    // Get.to(() => const HomeScreen());
+    // Show success message
+    Get.snackbar(
+      "Success",
+      "Form submitted successfully!",
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      duration: const Duration(seconds: 3),
+    );
+
+    // Navigate to the next page
+    Get.to(() => RecoveryForm_2ndPage());
   }
+
+
+
 
 
 

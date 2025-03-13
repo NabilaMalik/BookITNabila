@@ -173,25 +173,61 @@ class SubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ReturnFormViewModel viewModel = Get.find();
-    return
-      CustomButton(
-        buttonText: "Submit",
-        onTap: viewModel.submitForm,
-        gradientColors: [Colors.blue, Colors.blue],
-      );
-    //   ElevatedButton(
-    //   onPressed: viewModel.submitForm,
-    //   style: ElevatedButton.styleFrom(
-    //     padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-    //     backgroundColor: Colors.blue,
-    //     shape: RoundedRectangleBorder(
-    //       borderRadius: BorderRadius.circular(20),
-    //     ),
-    //   ),
-    //   child: const Text(
-    //     'Submit',
-    //     style: TextStyle(fontSize: 20, color: Colors.white),
-    //   ),
-    // );
+    final ReturnFormDetailsViewModel returnFormDetailsViewModel = Get.find();
+
+    return CustomButton(
+      buttonText: "Submit",
+      onTap: () async {
+        // ✅ Validation: Ensure a shop is selected before submission
+        if (viewModel.selectedShop.value.isEmpty) {
+          Get.snackbar(
+            "Error",
+            "⚠ Please select a shop before submitting.",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            duration: const Duration(seconds: 3),
+          );
+          return;
+        }
+
+        // ✅ Call submitForm
+        await viewModel.submitForm();
+
+        // ✅ Safely clear controllers & reset fields after successful submission
+      //  viewModel.cController?.clear();
+        viewModel.selectedShop.value = "";
+
+        returnFormDetailsViewModel.items.clear();  // ✅ Correct way to clear RxList
+        returnFormDetailsViewModel.reasons.clear();
+       // returnFormDetailsViewModel.quantity.clear();
+
+        // ✅ Show success message
+        Get.snackbar(
+          "Success",
+          "Form submitted successfully! Fields cleared.",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+      },
+      gradientColors: [Colors.blue, Colors.blue],
+    );
   }
 }
+
+//   ElevatedButton(
+//   onPressed: viewModel.submitForm,
+//   style: ElevatedButton.styleFrom(
+//     padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+//     backgroundColor: Colors.blue,
+//     shape: RoundedRectangleBorder(
+//       borderRadius: BorderRadius.circular(20),
+//     ),
+//   ),
+//   child: const Text(
+//     'Submit',
+//     style: TextStyle(fontSize: 20, color: Colors.white),
+//   ),
+// );

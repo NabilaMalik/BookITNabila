@@ -66,7 +66,7 @@ class _CustomDropdownState extends State<CustomDropdownSecond> {
       padding: const EdgeInsets.only(left: 1, right: 2,bottom: 16),
       child: Container(
         width: widget.width ?? double.infinity,
-        height: widget.height ?? 65.0,
+        height: widget.height ?? 68.0,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(3),

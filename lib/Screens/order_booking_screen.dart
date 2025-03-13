@@ -146,8 +146,7 @@ void initState() {
                           ), // Adjust padding as needed
                           child: SizedBox(
                             width: double.infinity , // Adjust width as needed
-                            child:
-                            _buildTextFieldWithCalendar(
+                            child: _buildTextFieldWithCalendar(
 
                               label: "Required Delivery",
                               text: orderMasterViewModel.required_delivery_date.isNotEmpty
@@ -199,6 +198,7 @@ void initState() {
             onDateSelected(selectedDate);
           }
         },
+
         child: Row(
             children: [
               Padding(
