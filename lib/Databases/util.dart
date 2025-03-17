@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,10 +19,23 @@ String userDesignation="";
 String? shop_visit_master_id = "";
 String? returnMasterId = "";
 String? order_master_id = "";
+String userSM="";
+String userNSM="";
+String userRSM="";
+String userNameRSM="";
+String userNameNSM="";
+String userNameSM="";
+
+
+
+bool newIsClockedIn= false;
+String pageName="";
+
 
 String? recoverySavedMonthCounter;
 int? recoveryHighestSerial;
 int? shopVisitHighestSerial;
+int? shopVisitHeadsHighestSerial;
 int? shopVisitDetailsHighestSerial;
 int? orderMasterHighestSerial;
 int? orderDetailsHighestSerial;
@@ -49,6 +64,8 @@ const attendanceOutTableName = "attendanceOut";
 const locationTableName = "location";
 const productsTableName = "products";
 const tableNameLogin ='login';
+const headsShopVisitsTableName = 'HeadsShopVisits';
+
 
 // Future<bool> isNetworkAvailable() async {
 //   var connectivityResult = await (Connectivity().checkConnectivity());
@@ -76,7 +93,7 @@ const tableNameLogin ='login';
 //   return false;
 // }
 
-
+dynamic shopAddress = "";
 
 Future<bool> isNetworkAvailable() async {
   var connectivityResult = await (Connectivity().checkConnectivity());
@@ -86,7 +103,7 @@ Future<bool> isNetworkAvailable() async {
   } else {
     try {
       // Replace with your server URL
-      final url = Uri.parse('https://cloud.metaxperts.net:8443/erp/test1/ordermasterget/get/B02');
+      final url = Uri.parse('https://cloud.metaxperts.net:8443/erp/test1/loginget/get/');
 
       // Make an HTTP GET request to your server
       final response = await http.get(url).timeout(Duration(seconds: 5));
@@ -103,6 +120,24 @@ Future<bool> isNetworkAvailable() async {
       return false; // Request timed out
     } catch (e) {
       return false; // Other errors
+    }
+  }
+}
+void checkForUpdate() async {
+  try {
+    final AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
+    if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
+      await InAppUpdate.performImmediateUpdate();
+    }
+  } catch (e) {
+    if (e is PlatformException && e.code == 'TASK_FAILURE' && e.message?.contains('Install Error(-10)') == true) {
+      if (kDebugMode) {
+        print("The app is not owned by any user on this device. Update check skipped.");
+      }
+    } else {
+      if (kDebugMode) {
+        print("Failed to check for updates: $e");
+      }
     }
   }
 }

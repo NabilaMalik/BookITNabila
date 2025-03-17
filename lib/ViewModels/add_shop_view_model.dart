@@ -176,6 +176,10 @@ class AddShopViewModel extends GetxController {
     await _shopRepository.fetchAndSaveShops();
     // await fetchAllAddShop();
   }
+  fetchAndSaveHeadsShop() async {
+    await _shopRepository.fetchAndSaveShopsForHeads();
+    // await fetchAllAddShop();
+  }
 
   addAddShop(AddShopModel addShopModel) async {
     await _shopRepository.addAddShop(addShopModel, allAddShop);

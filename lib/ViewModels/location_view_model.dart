@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:gpx/gpx.dart';
 import 'package:intl/intl.dart';
+import 'package:order_booking_app/Repositories/location_services_repository.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,7 +17,7 @@ import 'package:geocoding/geocoding.dart';
 import '../Tracker/trac.dart';
 
 class LocationViewModel extends GetxController {
-
+  // late final LocationServicesRepository locationServicesRepository = Get.put(LocationServicesRepository());
   var allLocation = <LocationModel>[].obs;
   LocationRepository locationRepository = LocationRepository();
   var globalLatitude1 = 0.0.obs;
@@ -124,6 +125,7 @@ class LocationViewModel extends GetxController {
     isClockedIn.value = prefs.getBool('isClockedIn') ?? false;
     if (isClockedIn.value == true) {
       startTimerFromSavedTime();
+      // locationServicesRepository.startTimerFromSavedTime();
       // Uncomment these lines if needed
       // final service = FlutterBackgroundService();
       // service.startService();
@@ -132,6 +134,9 @@ class LocationViewModel extends GetxController {
       prefs.setInt('secondsPassed', 0);
     }
   }
+
+
+
 // Function to save the current time to SharedPreferences
   saveCurrentTime() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -184,9 +189,9 @@ class LocationViewModel extends GetxController {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _timer?.cancel();
     String totalTime = _formatDuration(newsecondpassed.value.toString());
-
+    await prefs.reload();
     debugPrint("Initializing SharedPreferences stopTimer...");
-    prefs.setInt('secondsPassed', 0);
+    await prefs.setInt('secondsPassed', 0);
 
       secondsPassed.value = 0;
 

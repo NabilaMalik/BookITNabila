@@ -10,6 +10,7 @@ import 'Components/custom_dropdown_second.dart';
 
 class AddShopScreen extends StatelessWidget {
   final AddShopViewModel _viewModel = Get.put(AddShopViewModel());
+
   final LocationViewModel locationViewModel = Get.put(LocationViewModel());
   AddShopScreen({super.key});
 

@@ -29,11 +29,11 @@ class DBHelper extends GetxService {
   _onCreate(Database db, int version) async {
     // Database Table
     List<String> tableQueries = [
-      "CREATE TABLE IF NOT EXISTS $tableNameLogin(user_id TEXT , password TEXT ,user_name TEXT, city TEXT, designation TEXT,brand TEXT,RSM TEXT,SM TEXT,NSM TEXT,RSM_ID TEXT,SM_ID TEXT,NSM_ID TEXT,images BLOB)",
+      "CREATE TABLE IF NOT EXISTS $tableNameLogin(user_id TEXT , password TEXT ,user_name TEXT, city TEXT, designation TEXT,brand TEXT,rsm TEXT,sm TEXT,nsm TEXT,rsm_id TEXT,sm_id TEXT,nsm_id TEXT,images BLOB)",
       "CREATE TABLE IF NOT EXISTS $addShopTableName(shop_id TEXT PRIMARY KEY, shop_date TEXT, shop_time TEXT, shop_name TEXT,city TEXT,shop_address TEXT,owner_name TEXT,owner_cnic TEXT,phone_no TEXT, alternative_phone_no TEXT, user_id TEXT, posted INTEGER DEFAULT 0 )",
       "CREATE TABLE IF NOT EXISTS $shopVisitMasterTableName(shop_visit_master_id TEXT PRIMARY KEY, shop_visit_date TEXT, shop_visit_time TEXT, brand TEXT,user_id TEXT, shop_name TEXT, shop_address TEXT, owner_name TEXT,posted INTEGER DEFAULT 0, booker_name TEXT,walk_through TEXT,planogram TEXT,signage TEXT,product_reviewed TEXT,feedback TEXT,body BLOB)",
       "CREATE TABLE IF NOT EXISTS $shopVisitDetailsTableName(shop_visit_details_id TEXT PRIMARY KEY, shop_visit_details_date TEXT, shop_visit_details_time TEXT,user_id TEXT, shop_visit_master_id TEXT, product TEXT, quantity TEXT,posted INTEGER DEFAULT 0, FOREIGN KEY(shop_visit_master_id) REFERENCES $shopVisitMasterTableName(shop_visit_master_id))",
-      "CREATE TABLE IF NOT EXISTS $orderMasterTableName(order_master_id TEXT PRIMARY KEY,order_status TEXT, order_master_date TEXT, order_master_time TEXT,user_id TEXT,shop_name TEXT,owner_name TEXT, phone_no TEXT,brand TEXT,total TEXT, credit_limit TEXT, posted INTEGER DEFAULT 0,required_delivery_date TEXT)",
+      "CREATE TABLE IF NOT EXISTS $orderMasterTableName(order_master_id TEXT PRIMARY KEY,order_status TEXT, order_master_date TEXT, order_master_time TEXT,user_id TEXT,shop_name TEXT,owner_name TEXT, phone_no TEXT,brand TEXT,total TEXT, credit_limit TEXT, posted INTEGER DEFAULT 0,required_delivery_date TEXT,rsm TEXT,sm TEXT,nsm TEXT,rsm_id TEXT,sm_id TEXT,nsm_id TEXT)",
       "CREATE TABLE IF NOT EXISTS $orderMasterStatusTableName(order_master_id TEXT PRIMARY KEY,order_status TEXT, order_master_date TEXT, order_master_time TEXT,user_id TEXT,shop_name TEXT,owner_name TEXT, phone_no TEXT,brand TEXT,total TEXT, credit_limit TEXT, posted INTEGER DEFAULT 0,required_delivery_date TEXT)",
       "CREATE TABLE IF NOT EXISTS $orderDetailsTableName (order_details_id TEXT PRIMARY KEY, order_details_date TEXT, order_details_time TEXT,user_id TEXT, order_master_id TEXT, product TEXT, quantity TEXT, in_stock TEXT, rate TEXT,posted INTEGER DEFAULT 0, amount TEXT, FOREIGN KEY(order_master_id) REFERENCES $orderMasterTableName(order_master_id))",
       "CREATE TABLE IF NOT EXISTS $returnFormMasterTableName(return_master_id TEXT PRIMARY KEY, return_amount TEXT,return_master_date TEXT,user_id TEXT, return_master_time TEXT, posted INTEGER DEFAULT 0,select_shop TEXT)",
@@ -43,6 +43,8 @@ class DBHelper extends GetxService {
       "CREATE TABLE IF NOT EXISTS $attendanceOutTableName(attendance_out_id TEXT PRIMARY KEY, attendance_out_date TEXT, attendance_out_time TEXT,  total_time TEXT, user_id TEXT, lat_out TEXT, lng_out TEXT, total_distance TEXT,posted INTEGER DEFAULT 0, address TEXT)",
       "CREATE TABLE IF NOT EXISTS $locationTableName(location_id TEXT PRIMARY KEY, location_date TEXT, location_time TEXT, file_name TEXT, user_id TEXT, total_distance TEXT, booker_name TEXT, posted INTEGER DEFAULT 0, body BLOB)",
       "CREATE TABLE IF NOT EXISTS $productsTableName(id NUMBER, product_code TEXT, product_name TEXT, uom TEXT ,price TEXT, brand TEXT, quantity TEXT, in_stock TEXT)",
+      "CREATE TABLE IF NOT EXISTS $productsTableName(id NUMBER, product_code TEXT, product_name TEXT, uom TEXT ,price TEXT, brand TEXT, quantity TEXT, in_stock TEXT)",
+      "CREATE TABLE IF NOT EXISTS $headsShopVisitsTableName(shop_visit_heads_id TEXT PRIMARY KEY, shop_visit_heads_date TEXT,shop_visit_heads_time TEXT,posted INTEGER DEFAULT 0, shop_name TEXT, user_id TEXT, city TEXT, booker_name TEXT, feedback TEXT, shop_address TEXT, booker_id TEXT)"
     ];
     for (var query in tableQueries) {
       await db.execute(query);

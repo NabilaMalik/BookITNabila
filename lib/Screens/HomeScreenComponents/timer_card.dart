@@ -5,7 +5,10 @@ import 'package:order_booking_app/ViewModels/attendance_view_model.dart';
 import 'package:order_booking_app/ViewModels/location_view_model.dart';
 import 'package:rive/rive.dart';
 import 'package:location/location.dart' as loc;
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../Databases/util.dart';
 import '../../ViewModels/attendance_out_view_model.dart';
+import '../../ViewModels/location_services_view_model.dart';
 import '../../main.dart';
 import 'assets.dart ';
 import 'menu_item.dart';
@@ -14,6 +17,7 @@ class TimerCard extends StatelessWidget {
   final locationViewModel = Get.put(LocationViewModel());
   final attendanceViewModel = Get.put(AttendanceViewModel());
   final attendanceOutViewModel = Get.put(AttendanceOutViewModel());
+  // final locationServicesViewModel = Get.put(LocationServicesViewModel());
   final loc.Location location = loc.Location();
 
   void onThemeToggle(bool value) {
@@ -87,12 +91,17 @@ class TimerCard extends StatelessWidget {
           Obx(() {
             return ElevatedButton(
               onPressed: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
                 try {
                   await locationViewModel.saveCurrentLocation();
                   final service = FlutterBackgroundService();
-                  bool newIsClockedIn = locationViewModel.isClockedIn.value;
+                  newIsClockedIn = locationViewModel.isClockedIn.value;
 
                   if (newIsClockedIn) {
+                    locationViewModel.isClockedIn.value = false;
+                    newIsClockedIn = locationViewModel.isClockedIn.value;
+                    prefs.setBool('isClockedIn', newIsClockedIn);
+
                     // await Future(() => service.invoke("stopService"));
                     service.invoke("stopService");
                     // await Future.delayed(const Duration(seconds: 4));
@@ -112,6 +121,7 @@ class TimerCard extends StatelessWidget {
                     _themeMenuIcon[0].riveIcon.status!.value = false;
                     await location.enableBackgroundMode(enable: false);
                   } else {
+                    // await locationServicesViewModel.initializeServiceLocation();
                     await initializeServiceLocation();
                     await location.enableBackgroundMode(enable: true);
                     await location.changeSettings(
@@ -121,6 +131,8 @@ class TimerCard extends StatelessWidget {
                     await locationViewModel.saveClockStatus(true);
                     await locationViewModel.clockRefresh();
                     locationViewModel.isClockedIn.value = true;
+                    newIsClockedIn = locationViewModel.isClockedIn.value;
+                    prefs.setBool('isClockedIn', newIsClockedIn);
                     await attendanceViewModel.saveFormAttendanceIn();
 
                     _themeMenuIcon[0].riveIcon.status!.value = true;

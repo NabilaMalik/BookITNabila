@@ -1,5 +1,6 @@
 import 'dart:async' show Future, StreamSubscription;
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -7,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:gpx/gpx.dart';
 
 import 'package:intl/intl.dart';
+import 'package:order_booking_app/Databases/util.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,6 +25,11 @@ class LocationService {
   late String userIdForLocation;
   late String userCityForLocatiion;
   late String userDesignationForLocation;
+
+  late String userNameForLocation;
+  late String rsmIdForLocation;
+  late String nsmIdForLocation;
+  late String smIdForLocation;
   late final filepath;
   late final Directory? downloadDirectory;
   late double totalDistance;
@@ -98,7 +105,7 @@ class LocationService {
           }
           file.writeAsStringSync(gpxString);
 
-          // isConnected = await isInternetConnected();
+           isConnected = await isNetworkAvailable();
           if (isConnected) {
             await FirebaseFirestore.instance
                 .collection('location')
@@ -106,19 +113,35 @@ class LocationService {
                 .set({
               'latitude': position.latitude,
               'longitude': position.longitude,
-              'name': userIdForLocation.toString(),
+              'name': userNameForLocation.toString(),
+              'userId': userIdForLocation.toString(),
               'city': userCityForLocatiion.toString(),
               'designation': userDesignationForLocation.toString(),
+              'RSM_ID': rsmIdForLocation.toString(),
+              'NSM_ID':nsmIdForLocation.toString(),
+              'SM_ID':smIdForLocation.toString() ,
               'isActive': true
             }, SetOptions(merge: true));
           }
         });
 
     SharedPreferences pref = await SharedPreferences.getInstance();
-    userIdForLocation = pref.getString("userNames") ?? "USER";
-    userCityForLocatiion = pref.getString("userCitys") ?? "CITY";
-    userDesignationForLocation =
-        pref.getString("userDesignation") ?? "DESIGNATION";
+    await pref.reload();
+    userNameForLocation = pref.getString("userName") ?? "USERName";
+    userIdForLocation = pref.getString("userId") ?? "USERId";
+    nsmIdForLocation = pref.getString("userNSM") ?? "nsmUSER";
+    rsmIdForLocation = pref.getString("userRSM") ?? "rsmUSER";
+    smIdForLocation = pref.getString("userSM") ?? "smUSER";
+    userCityForLocatiion = pref.getString("userCity") ?? "CITY";
+    userDesignationForLocation = pref.getString("userDesignation") ?? "DESIGNATION";
+    debugPrint('User ID: $userIdForLocation');
+    debugPrint('User Name: $userNameForLocation');
+    debugPrint('User City: $userCityForLocatiion');
+    debugPrint('User Designation: $userDesignationForLocation');
+    debugPrint('User RSM ID: $rsmIdForLocation');
+    debugPrint('User NSM ID: $nsmIdForLocation');
+    debugPrint('User SM ID: $smIdForLocation');
+
     try {
       gpx = Gpx();
       track = Trk();
@@ -155,12 +178,15 @@ class LocationService {
 
   Future<void> init() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    userIdForLocation = pref.getString("userNames") ?? "USER";
-    userCityForLocatiion = pref.getString("userCitys") ?? "CITY";
-    userDesignationForLocation =
-        pref.getString("userDesignation") ?? "DESIGNATION";
+    await pref.reload();
+    userNameForLocation = pref.getString("userName") ?? "USERName";
+    userIdForLocation = pref.getString("userId") ?? "USERId";
+    nsmIdForLocation = pref.getString("userNSM") ?? "nsmUSER";
+    rsmIdForLocation = pref.getString("userRSM") ?? "rsmUSER";
+    smIdForLocation = pref.getString("userSM") ?? "smUSER";
+    userCityForLocatiion = pref.getString("userCity") ?? "CITY";
+    userDesignationForLocation = pref.getString("userDesignation") ?? "DESIGNATION";
   }
-
   double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     double distanceInMeters =
     Geolocator.distanceBetween(lat1, lon1, lat2, lon2);

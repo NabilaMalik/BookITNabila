@@ -55,7 +55,7 @@ void startTimerFromSavedTime() {
     }
   });
 }
-
+//
 // Function to post a GPX file
 // Future<void> postFile() async {
 //   final date = DateFormat('dd-MM-yyyy').format(DateTime.now());
@@ -93,12 +93,12 @@ void startTimerFromSavedTime() {
 //   //   print(userid);
 //   //   print(userNames);
 //   // }
-//   bool isConnected = await isInternetAvailable();
+//   bool isConnected = await isNetworkAvailable();
 //   if (isConnected == true) {
 //     // await locationViewModel.postLocation();
 //   }
 // }
-
+//
 // Function to get the formatted date and time
 //   String _getFormattedDate1() {
 //     final now = DateTime.now();

@@ -4,10 +4,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:order_booking_app/Databases/dp_helper.dart';
-// import 'package:order_booking_app/Models/return_form_model.dart';
-// import 'package:order_booking_app/Models/returnform_details_model.dart';
-// import 'package:order_booking_app/Screens/home_screen.dart';
 import 'package:order_booking_app/ViewModels/ProductsViewModel.dart';
 import 'package:order_booking_app/ViewModels/add_shop_view_model.dart';
 import 'package:order_booking_app/ViewModels/attendance_out_view_model.dart';
@@ -119,35 +115,39 @@ class _LoginScreenState extends State<LoginScreen> {
     debugPrint("User ID: $user_id");
 
     try {
+      // Conditional execution based on user designation
+      if (userDesignation == 'RSM' || userDesignation == 'SM' || userDesignation == 'NSM') {
+        await addShopViewModel.fetchAndSaveHeadsShop();
+        await shopVisitViewModel.serialCounterGetHeads();
+        await attendanceViewModel.serialCounterGet();
+        await attendanceOutViewModel.serialCounterGet();
+        await locationViewModel.serialCounterGet();
 
+    } else {
+        await addShopViewModel.fetchAndSaveShop();
+        await shopVisitViewModel.serialCounterGet();
+        await Future.wait<void>([
+          shopVisitViewModel.serialCounterGet(),
+          shopVisitDetailsViewModel.serialCounterGet(),
+          recoveryFormViewModel.serialCounterGet(),
+          returnFormViewModel.serialCounterGet(),
+          returnFormDetailsViewModel.serialCounterGet(),
+          attendanceViewModel.serialCounterGet(),
+          attendanceOutViewModel.serialCounterGet(),
+          orderMasterViewModel.serialCounterGet(),
+          orderDetailsViewModel.serialCounterGet(),
+          locationViewModel.serialCounterGet(),
 
-      // Explicitly define the type for Future.wait
-      await Future.wait<void>([
-        shopVisitViewModel.serialCounterGet(),
-        shopVisitDetailsViewModel.serialCounterGet(),
-        recoveryFormViewModel.serialCounterGet(),
-        returnFormViewModel.serialCounterGet(),
-        returnFormDetailsViewModel.serialCounterGet(),
-        attendanceViewModel.serialCounterGet(),
-        attendanceOutViewModel.serialCounterGet(),
-        orderMasterViewModel.serialCounterGet(),
-        orderDetailsViewModel.serialCounterGet(),
-        locationViewModel.serialCounterGet(),
-        addShopViewModel.serialCounterGet(),
-
-    addShopViewModel.fetchAndSaveShop(),
-        productsViewModel.fetchAndSaveProducts(),
-        orderMasterViewModel.fetchAndSaveOrderMaster(),
-        orderDetailsViewModel.fetchAndSaveOrderDetails(),
-        shopVisitDetailsViewModel.initializeProductData(),
-
-        updateFunctionViewModel.checkAndSetInitializationDateTime(),
-        // orderMasterViewModel.orderMasterSerial(),
-        // orderDetailsViewModel.orderDetailsSerial(),
-
-        // productsViewModel.serialCounterGet(),
-
-      ]);
+        ]);
+        // Execute other fetch and save operations concurrently
+        await Future.wait<void>([
+          productsViewModel.fetchAndSaveProducts(),
+          orderMasterViewModel.fetchAndSaveOrderMaster(),
+          orderDetailsViewModel.fetchAndSaveOrderDetails(),
+          shopVisitDetailsViewModel.initializeProductData(),
+          updateFunctionViewModel.checkAndSetInitializationDateTime(),
+        ]);
+      }
       debugPrint(
           "recoveryHighestSerial: $shopVisitHighestSerial, "
               "shopVisitDetailsHighestSerial: $shopVisitDetailsHighestSerial, "
@@ -160,7 +160,8 @@ class _LoginScreenState extends State<LoginScreen> {
               "locationHighestSerial: $locationHighestSerial, "
               "shopHighestSerial: $shopHighestSerial"
       );
-      Get.offNamed("/home");
+
+      await loginViewModel.navigateToHomePage();
       // Get.off(() => HomeScreen());
     } catch (e) {
       debugPrint('Error fetching data: $e');

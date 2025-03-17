@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
@@ -66,7 +65,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
         padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 2),
         child: Container(
             width: widget.width ?? double.infinity,
-            height: widget.height ?? 69.0,
+            height: widget.height ?? 75.0,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(3),

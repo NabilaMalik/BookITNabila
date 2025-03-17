@@ -12,6 +12,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:order_booking_app/ViewModels/shop_visit_details_view_model.dart';
 import '../Databases/util.dart';
+import '../Models/HeadsShopVistModels.dart';
 import '../Models/add_shop_model.dart';
 import '../Models/shop_visit_model.dart';
 import '../Repositories/ScreenRepositories/products_repository.dart';
@@ -61,7 +62,9 @@ class ShopVisitViewModel extends GetxController {
   ];
 
   int shopVisitsSerialCounter = 1;
+  int shopVisitsHeadsSerialCounter = 1;
   String shopVisitCurrentMonth = DateFormat('MMM').format(DateTime.now());
+  String shopVisitHeadsCurrentMonth = DateFormat('MMM').format(DateTime.now());
   String currentuser_id = '';
 
   @override
@@ -183,11 +186,7 @@ class ShopVisitViewModel extends GetxController {
       Uint8List? compressedImageBytes;
       if (selectedImage.value != null) {
       // await  serialCounterGet();
-        SerialNumberGenerator(
-          apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/shopvisitserial/get/$user_id',
-          maxColumnName: 'max(shop_visit_master_id)',
-          serialType: shopVisitDetailsHighestSerial, // Unique identifier for shop visit serials
-        );
+
         debugPrint("Serial: $shopVisitDetailsHighestSerial");
         compressedImageBytes = await FlutterImageCompress.compressWithFile(
           selectedImage.value!.path,
@@ -272,6 +271,38 @@ class ShopVisitViewModel extends GetxController {
       Get.to(() => const HomeScreen());
     }
   }
+  Future<void> saveHeadsFormNoOrder() async {
+    if (validateForm()) {
+      debugPrint("Start Savinggggggggggggg");
+
+
+      final orderSerial = generateNewOrderId(user_id);
+      shop_visit_master_id = orderSerial;
+
+      await (ShopVisitModel(
+        shop_name: selectedShop.value.toString(),
+        shop_address: shop_address.value.toString(),
+        owner_name: owner_name.value.toString(),
+        brand: selectedBrand.value.toString(),
+        booker_name: booker_name.value.toString(),
+        walk_through: checklistState[0],
+        planogram: checklistState[1],
+        signage: checklistState[2],
+        product_reviewed: checklistState[3],
+        feedback: feedBack.value,
+        shop_visit_master_id: shop_visit_master_id,
+      ));
+
+      await shopvisitRepository.getShopVisit();
+      await shopVisitDetailsViewModel.saveFilteredProducts();
+      await shopvisitRepository.postDataFromDatabaseToAPI();
+
+      Get.snackbar("Success", "Form submitted successfully!",
+          snackPosition: SnackPosition.BOTTOM);
+      await clearFilters();
+      Get.to(() => const HomeScreen());
+    }
+  }
 
   fetchAllShopVisit() async {
     var shopvisit = await shopvisitRepository.getShopVisit();
@@ -287,7 +318,14 @@ class ShopVisitViewModel extends GetxController {
     shopvisitRepository.update(shopvisitModel);
     fetchAllShopVisit();
   }
-
+  addHeadsShopVisit(HeadsShopVisitModel headsShopVisitModel){
+    shopvisitRepository.addHeasdsShopVisits(headsShopVisitModel);
+    fetchAllShopVisit();
+  }
+  updateHeadsShopVisit(HeadsShopVisitModel headsShopVisitModel){
+    shopvisitRepository.updateheads(headsShopVisitModel);
+    fetchAllShopVisit();
+  }
   deleteShopVisit(String id) {
     shopvisitRepository.delete(id);
     fetchAllShopVisit();
@@ -365,5 +403,54 @@ class ShopVisitViewModel extends GetxController {
 serialCounterGet()async{
    await shopvisitRepository.serialNumberGeneratorApi();
 }
+serialCounterGetHeads()async{
+   await shopvisitRepository.serialNumberGeneratorApiHeads();
+}
+  Future<void> loadCounterHeads() async {
+    String currentMonth = DateFormat('MMM').format(DateTime.now());
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    shopVisitsSerialCounter = (prefs.getInt('shopVisitsHeadsSerialCounter') ??
+        shopVisitHeadsHighestSerial ??
+        1);
+    shopVisitHeadsCurrentMonth =
+        prefs.getString('shopVisitHeadsCurrentMonth') ?? currentMonth;
+    currentuser_id = prefs.getString('currentuser_id') ?? '';
 
+    if (shopVisitHeadsCurrentMonth != currentMonth) {
+      shopVisitsHeadsSerialCounter = 1;
+      shopVisitHeadsCurrentMonth = currentMonth;
+    }
+
+    debugPrint('SR: $shopVisitsHeadsSerialCounter');
+  }
+
+  Future<void> _saveCounterHeads() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('shopVisitsHeadsSerialCounter', shopVisitsHeadsSerialCounter);
+    await prefs.setString('shopVisitCurrentMonth', shopVisitHeadsCurrentMonth);
+    await prefs.setString('currentuser_id', currentuser_id);
+  }
+
+  String generateNewOrderIdHeads(String user_id) {
+    String currentMonth = DateFormat('MMM').format(DateTime.now());
+
+    if (currentuser_id != user_id) {
+      shopVisitsHeadsSerialCounter = shopVisitHeadsHighestSerial ?? 1;
+      currentuser_id = user_id;
+    }
+
+    if (shopVisitHeadsCurrentMonth != currentMonth) {
+      shopVisitsHeadsSerialCounter = 1;
+      shopVisitHeadsCurrentMonth = currentMonth;
+    }
+
+    String orderId =
+        "SV-$user_id-$currentMonth-${shopVisitsHeadsSerialCounter.toString().padLeft(3, '0')}";
+    shopVisitsHeadsSerialCounter++;
+    _saveCounterHeads();
+    return orderId;
+  }
+  Future<void> postHeadsShopVisit() async {
+   await shopvisitRepository.postDataFromDatabaseToAPIHeads();
+  }
 }

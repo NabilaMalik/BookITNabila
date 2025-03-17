@@ -124,6 +124,12 @@ class _RiveAppHomeState extends State<HomeScreen>
       userCity = prefs.getString('userCity') ?? '';
       userDesignation = prefs.getString('userDesignation') ?? '';
       userBrand = prefs.getString('userBrand') ?? '';
+      userSM = prefs.getString('userSM') ?? '';
+      userNSM = prefs.getString('userNSM') ?? '';
+      userRSM = prefs.getString('userRSM') ?? '';
+      userNameRSM = prefs.getString('userNameRSM') ?? '';
+      userNameNSM = prefs.getString('userNameNSM') ?? '';
+      userNameSM = prefs.getString('userNameSM') ?? '';
     });
     debugPrint(user_id);
   }

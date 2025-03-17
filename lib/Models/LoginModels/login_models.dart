@@ -6,12 +6,12 @@ class LoginModels{
   dynamic designation;
   dynamic brand;
   dynamic images;
-  dynamic RSM;
-  dynamic SM;
-  dynamic NSM;
-  dynamic RSM_ID;
-  dynamic SM_ID;
-  dynamic NSM_ID;
+  dynamic rsm;
+  dynamic sm;
+  dynamic nsm;
+  dynamic rsm_id;
+  dynamic sm_id;
+  dynamic nsm_id;
 
   LoginModels({
     this.user_id,
@@ -21,12 +21,12 @@ class LoginModels{
     this.designation,
     this.brand,
     this.images,
-    this.NSM,
-    this.NSM_ID,
-    this.RSM,
-    this.RSM_ID,
-    this.SM,
-    this.SM_ID
+    this.nsm,
+    this.nsm_id,
+    this.rsm,
+    this.rsm_id,
+    this.sm,
+    this.sm_id
 
   });
   factory
@@ -36,18 +36,35 @@ class LoginModels{
       password: json['password'],
       user_name: json['user_name'],
       city: json['city'],
-      RSM_ID: json['RSM_ID'],
-      RSM: json['RSM'],
-      NSM_ID: json['NSM_ID'],
-      NSM: json['NSM'],
-      SM_ID: json['SM_ID'],
-      SM: json['SM'],
+      rsm_id: json['rsm_id'],
+      rsm: json['rsm'],
+      nsm_id: json['nsm_id'],
+      nsm: json['nsm'],
+      sm_id: json['sm_id'],
+      sm: json['sm'],
       designation: json['designation'],
       brand: json['brand'],
       images: json['images'],
 
     );
   }
+  // factory LoginModels.fromMap(Map<dynamic, dynamic> map) {
+  //   return LoginModels(
+  //     user_id: map['user_id'] ?? '', // Ensure this matches the database column name
+  //     password: map['password'] ?? '',
+  //     city: map['city'] ?? '',
+  //     user_name: map['user_name'] ?? '',
+  //     designation: map['designation'] ?? '',
+  //     brand: map['brand'] ?? '',
+  //     images: map['images'] ?? '',
+  //     rsm: map['rsm'] ?? '',
+  //     rsm_id: map['rsm_id'] ?? '',
+  //     sm: map['sm'] ?? '',
+  //     SM_ID: map['SM_ID'] ?? '',
+  //     nsm: map['nsm'] ?? '',
+  //     nsm_id: map['nsm_id'] ?? '',
+  //   );
+  // }
   Map<String,dynamic>toMap(){
     return{
       'user_id':user_id,
@@ -57,12 +74,12 @@ class LoginModels{
       'brand': brand,
       'designation': designation,
       'images': images,
-      'NSM': NSM,
-      'NSM_ID': NSM_ID,
-      'RSM': RSM,
-      'RSM_ID': RSM_ID,
-      'SM': SM,
-      'SM_ID': SM_ID,
+      'nsm': nsm,
+      'nsm_id': nsm_id,
+      'rsm': rsm,
+      'rsm_id': rsm_id,
+      'sm': sm,
+      'sm_id': sm_id,
     };
 
   }

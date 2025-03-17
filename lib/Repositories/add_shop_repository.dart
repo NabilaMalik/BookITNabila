@@ -143,6 +143,23 @@ class AddShopRepository extends GetxService {
     }
     // await getAddShop();
   }
+  Future<void> fetchAndSaveShopsForHeads() async {
+    if (kDebugMode) {
+      print(Config.getApiUrlShops1);
+      print('https://cloud.metaxperts.net:8443/erp/test1/shopget/get/');
+    }
+   // List<dynamic> data = await ApiService.getData(Config.getApiUrlShops1);
+    List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/test1/shopget/get/');
+    var dbClient = await dbHelper.db;
+
+    // Save data to database
+    for (var item in data) {
+      item['posted'] = 1; // Set posted to 1
+      AddShopModel model = AddShopModel.fromMap(item);
+      await dbClient.insert(addShopTableName, model.toMap());
+    }
+    // await getAddShop();
+  }
 
   // Fetch all unposted shops (posted = 0)
   Future<List<AddShopModel>> getUnPostedShops() async {
@@ -215,13 +232,15 @@ class AddShopRepository extends GetxService {
     }
   }
   Future<void> serialNumberGeneratorApi() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();     final orderDetailsGenerator = SerialNumberGenerator(
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final orderDetailsGenerator = SerialNumberGenerator(
       apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/shopserial/get/$user_id',
       maxColumnName: 'max(shop_id)',
       serialType: shopHighestSerial, // Unique identifier for shop visit serials
     );
      await orderDetailsGenerator.getAndIncrementSerialNumber();
      shopHighestSerial = orderDetailsGenerator.serialType;
+     await prefs.setInt("shopHighestSerial", shopHighestSerial!);
 
   }
 }

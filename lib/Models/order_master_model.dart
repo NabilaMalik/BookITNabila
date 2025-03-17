@@ -10,6 +10,12 @@ class OrderMasterModel{
   String? total;
   String? user_id;
   String? credit_limit;
+  String? rsm_id;
+  String? sm_id;
+  String? nsm_id;
+  String? rsm;
+  String? sm;
+  String? nsm;
   String? required_delivery_date;
   DateTime? order_master_date;
   DateTime? order_master_time;
@@ -25,6 +31,12 @@ class OrderMasterModel{
     this.user_id,
     this.total,
     this.credit_limit,
+    this.rsm_id,
+    this.sm_id,
+    this.nsm_id,
+    this.rsm,
+    this.sm,
+    this.nsm,
     this.required_delivery_date,
     this.order_master_date,
     this.order_master_time,
@@ -41,6 +53,12 @@ class OrderMasterModel{
       user_id: json['user_id'],
       total:json['total'].toString(),
       credit_limit:json['credit_limit'],
+      rsm_id:json['rsm_id'],
+      sm_id:json['sm_id'],
+      nsm_id:json['nsm_id'],
+      rsm:json['rsm'],
+      sm:json['sm'],
+      nsm:json['nsm'],
       required_delivery_date:json['required_delivery_date'],
       order_master_date: DateTime.now(),
       // Always set live date
@@ -62,6 +80,12 @@ class OrderMasterModel{
       'credit_limit':credit_limit,
       'order_status':order_status,
       'required_delivery_date':required_delivery_date,
+      'rsm_id':rsm_id,
+      'sm_id':sm_id,
+      'nsm_id':nsm_id,
+      'rsm':rsm,
+      'sm':sm,
+      'nsm':nsm,
       'order_master_date': DateFormat('dd-MMM-yyyy')
           .format(order_master_date ?? DateTime.now()), // Always set live date
       'order_master_time': DateFormat('HH:mm:ss')
@@ -69,5 +93,4 @@ class OrderMasterModel{
       'posted': posted,
     };
   }
-
 }

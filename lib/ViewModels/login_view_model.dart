@@ -12,9 +12,13 @@ import '../Repositories/LoginRepositories/login_repository.dart';
 class LoginViewModel extends GetxController {
 
   var allLogin = <LoginModels>[].obs;
+  // var bookers = <LoginModels>[].obs;
   LoginRepository loginRepository = LoginRepository();
   DBHelper dbHelper = Get.put(DBHelper());
   var isAuthenticated = false.obs; // To track login status
+  var bookers = <dynamic>[].obs; // Change this line
+  var bookersId =  <LoginModels>[].obs; // Change this line
+
 
   @override
   void onInit(){
@@ -23,6 +27,42 @@ class LoginViewModel extends GetxController {
     //fetchAllLight();
     // _checkInternetBeforeNavigation();
   }
+  fetchBookerNamesBySMDesignation() async {
+
+    var smnames = await loginRepository.getBookerNamesBySMDesignation();
+    bookers.value = smnames;
+
+  }
+  Future<void> fetchBookerIds() async {
+    try {
+      debugPrint('Fetching booker IDs...');
+      //var savedShops = await loginRepository.getLogin();
+      var savedShops = await loginRepository.getBookerNamesByDesignation('sm_id', user_id);
+      debugPrint('Fetched booker IDs: ${savedShops.map((e) => e.user_id).toList()}');
+
+      bookers.value = savedShops.map((userIds) => userIds.user_id).toList();
+      bookersId.value = savedShops;
+
+      debugPrint('Bookers list for dropdown: ${bookers.value}');
+    } catch (e) {
+      debugPrint('Failed to fetch bookers: $e');
+    }
+  }
+  // fetchBookerNamesBySMDesignation() async {
+  //   var smnames = await loginRepository.getBookerNamesBySMDesignation();
+  //   bookers.value = smnames;
+  // }
+  // Future<void> fetchBookerIds() async {
+  //   try {
+  //     var savedShops = await loginRepository.getBookerNamesByDesignation('SM_ID', user_id);
+  //     bookers.value = savedShops.map((userIds) => userIds.user_id).toList();
+  //     allLogin.value =
+  //         savedShops; // Update this line to store full shop details
+  //   } catch (e) {
+  //     debugPrint('Failed to fetch shops: $e');
+  //   }
+  // }
+
   // Method to check the internet connection before navigating to the login page
   Future<void> checkInternetBeforeNavigation() async {
     bool hasInternet = await isNetworkAvailable();
@@ -87,23 +127,32 @@ class LoginViewModel extends GetxController {
       await prefs.reload();
 
       // Store user details in SharedPreferences
-      await prefs.setString('userName', userDetails['user_name'] ?? "Null");
-      await prefs.setString('userCity', userDetails['city'] ?? "Null");
-      await prefs.setString('userDesignation', userDetails['designation'] ?? "Null");
-      await prefs.setString('userBrand', userDetails['brand'] ?? "Null Brand");
-      await prefs.setString('userRSM', userDetails['RSM_ID'] ?? "Null");
-      await prefs.setString('userSM', userDetails['SM_ID'] ?? "Null");
-      await prefs.setString('userNSM', userDetails['NSM_ID'] ?? "Null");
+      await prefs.setString('userName', userDetails['user_name'] ?? "");
+      await prefs.setString('userCity', userDetails['city'] ?? "");
+      await prefs.setString('userDesignation', userDetails['designation'] ?? "");
+      await prefs.setString('userBrand', userDetails['brand'] ?? "");
+      await prefs.setString('userRSM', userDetails['rsm_id'] ?? "");
+      await prefs.setString('userSM', userDetails['sm_id'] ?? "");
+      await prefs.setString('userNSM', userDetails['nsm_id'] ?? "");
+      await prefs.setString('userNameNSM', userDetails['nsm'] ?? "");
+      await prefs.setString('userNameRSM', userDetails['rsm'] ?? "");
+      await prefs.setString('userNameSM', userDetails['sm'] ?? "");
+
+
 
       // Log user details for debugging
       debugPrint("City: ${userDetails['city']}");
       debugPrint("User Name: ${userDetails['user_name']}");
       debugPrint("Designation: ${userDetails['designation']}");
       debugPrint("Brand: ${userDetails['brand']}");
-      debugPrint("RSM: ${userDetails['RSM']}");
-      debugPrint("SM: ${userDetails['SM']}");
-      debugPrint("NSM: ${userDetails['NSM']}");
+      debugPrint("RSM: ${userDetails['rsm']}");
+      debugPrint("SM: ${userDetails['sm']}");
+      debugPrint("NSM: ${userDetails['nsm']}");
+      debugPrint("RSM ID: ${userDetails['rsm_id']}");
+      debugPrint("SM ID: ${userDetails['sm_id']}");
+      debugPrint("NSM ID: ${userDetails['nsm_id']}");
 
+      await _loginRetrieveSavedValues();
       // Step 4: Set authentication state
       isAuthenticated.value = true; // Set login status to true
       await prefs.setBool('isAuthenticated', true);
@@ -116,6 +165,45 @@ class LoginViewModel extends GetxController {
       return false; // Login failed
     }
   }
+  navigateToHomePage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userDesignation = prefs.getString('userDesignation') ?? '';
+    switch (userDesignation) {
+      case 'RSM':
+        pageName = "/RSMHomepage";
+        Get.offNamed("/RSMHomepage");
+        break;
+      case 'SM':
+        pageName = "/SMHomepage";
+        Get.offNamed("/SMHomepage");
+        break;
+      case 'NSM':
+        pageName = "/NSMHomepage";
+        Get.offNamed("/NSMHomepage");
+        break;
+      default:
+        pageName = "/home";
+        Get.offNamed("/home");
+        break;
+    }
+
+    // Save the pageName in SharedPreferences
+    await prefs.setString('pageName', pageName);
+  }
+  _loginRetrieveSavedValues() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      user_id = prefs.getString('userId') ?? '';
+      userName = prefs.getString('userName') ?? '';
+      userCity = prefs.getString('userCity') ?? '';
+      userDesignation = prefs.getString('userDesignation') ?? '';
+      userBrand = prefs.getString('userBrand') ?? '';
+      userSM = prefs.getString('userSM') ?? '';
+      userNSM = prefs.getString('userNSM') ?? '';
+      userRSM = prefs.getString('userRSM') ?? '';
+
+  }
+
   logout() async {
     isAuthenticated.value = false; // Set login status to false
 
@@ -132,6 +220,12 @@ class LoginViewModel extends GetxController {
     var login = await loginRepository.getLogin();
     allLogin.value = login;
   }
+  // Add these methods for booker names
+ getBookerNamesByRSMDesignation() async {
+      var bookers = await loginRepository.getBookerNamesByDesignation('rsm_id',user_id );
+      // bookers.value = bookers;
+  }
+
   fetchAndSaveLoginData() async {
     await loginRepository.fetchAndSaveLogin();
     fetchAllLogin();

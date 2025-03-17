@@ -19,6 +19,9 @@ import 'package:order_booking_app/screens/splash_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 import 'Databases/util.dart';
+import 'Screens/NSM/nsm_homepage.dart';
+import 'Screens/RSMS_Views/RSM_HomePage.dart';
+import 'Screens/SM/sm_homepage.dart';
 import 'Screens/shop_visit_screen.dart';
 import 'Services/FirebaseServices/firebase_remote_config.dart';
 import 'Services/FirebaseServices/firebase_options.dart';
@@ -67,6 +70,8 @@ Future<void> main() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.reload();
     bool isAuthenticated = prefs.getBool('isAuthenticated') ?? false;
+    pageName = prefs.getString('pageName') ?? '/cameraScreen';
+    newIsClockedIn = prefs.getBool('isClockedIn') ?? false;
     if (isAuthenticated==false) {
    await loginViewModel.checkInternetBeforeNavigation();
     }
@@ -116,9 +121,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: isAuthenticated ? '/home' : '/cameraScreen',
+      initialRoute: isAuthenticated ? pageName : '/cameraScreen',
       // initialRoute: '/',
       getPages: [
         GetPage(name: '/', page: () => const SplashScreen()),
@@ -130,6 +136,10 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/OrderBookingScreen', page: () => OrderBookingScreen()),
         GetPage(name: '/RecoveryFormScreen', page: () => RecoveryFormScreen()),
         GetPage(name: '/ReturnFormScreen', page: () => ReturnFormScreen()),
+        GetPage(name: '/NSMHomepage', page: () => const NSMHomepage()),
+        GetPage(name: '/RSMHomepage', page: () => const RSMHomepage()),
+        GetPage(name: '/SMHomepage', page: () => const SMHomepage()),
+
         GetPage(
             name: '/OrderBookingStatusScreen',
             page: () => OrderBookingStatusScreen()),

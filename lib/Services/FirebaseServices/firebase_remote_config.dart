@@ -73,6 +73,9 @@ class Config {
   static String get getApiUrlShopVisit =>
       remoteConfig.getString('ShopVisitGetUrl');
 
+  static String get getApiUrlShopVisitHeads =>
+      remoteConfig.getString('ShopVisitHeadsGetUrl');
+
   static String get getApiUrlStockCheckItems =>
       remoteConfig.getString('StockCheckItemsGetUrl');
 

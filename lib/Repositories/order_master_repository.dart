@@ -33,6 +33,12 @@ class OrderMasterRepository extends GetxService {
       'total',
       'user_id',
       'credit_limit',
+      'rsm_id',
+      'sm_id',
+      'nsm_id',
+      'rsm',
+      'sm',
+      'nsm',
       'required_delivery_date',
       'posted'
     ]);

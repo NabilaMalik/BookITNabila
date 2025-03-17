@@ -1,4 +1,5 @@
 // import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
@@ -8,6 +9,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
+import '../Models/HeadsShopVistModels.dart';
 import '../Models/shop_visit_model.dart';
 import '../Services/ApiServices/api_service.dart';
 import '../Services/ApiServices/serial_number_genterator.dart';
@@ -105,10 +107,6 @@ class ShopVisitRepository extends GetxService{
     }
   }
 
-
-
-
-
   Future<void> postShopToAPI(ShopVisitModel shop, Uint8List imageBytes) async {
     try {
       await Config.fetchLatestConfig();
@@ -162,13 +160,22 @@ class ShopVisitRepository extends GetxService{
     return await dbClient.insert(
         shopVisitMasterTableName, shopvisitModel.toMap());
   }
-
+  Future<int> addHeasdsShopVisits(HeadsShopVisitModel headsShopVisitModel) async {
+    var dbClient = await dbHelper.db;
+    return await dbClient.insert(headsShopVisitsTableName, headsShopVisitModel.toMap());
+  }
   Future<int> update(ShopVisitModel shopvisitModel) async {
     var dbClient = await dbHelper.db;
     return await dbClient.update(
         shopVisitMasterTableName, shopvisitModel.toMap(),
         where: 'shop_visit_master_id = ?',
         whereArgs: [shopvisitModel.shop_visit_master_id]);
+  }  Future<int> updateheads(HeadsShopVisitModel shopvisitModel) async {
+    var dbClient = await dbHelper.db;
+    return await dbClient.update(
+        headsShopVisitsTableName, shopvisitModel.toMap(),
+        where: 'shop_visit_heads_id = ?',
+        whereArgs: [shopvisitModel.shop_visit_heads_id]);
   }
 
   Future<int> delete(String id) async {
@@ -189,4 +196,85 @@ class ShopVisitRepository extends GetxService{
     await prefs.setInt("shopVisitHighestSerial", shopVisitHighestSerial!);
 
   }
-}
+  Future<void> serialNumberGeneratorApiHeads() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final orderDetailsGenerator = SerialNumberGenerator(
+      apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/shopvisitheadsserial/get/$user_id',
+      maxColumnName: 'max(shop_visit_heads_id)',
+      serialType: shopVisitHeadsHighestSerial, // Unique identifier for shop visit serials
+    );
+    await orderDetailsGenerator.getAndIncrementSerialNumber();
+    shopVisitHeadsHighestSerial = orderDetailsGenerator.serialType;
+    await prefs.reload();
+    await prefs.setInt("shopVisitHeadsHighestSerial", shopVisitHeadsHighestSerial!);
+
+  }
+  Future<List<HeadsShopVisitModel>> getUnPostedShopVisitHeads() async {
+    var dbClient = await dbHelper.db;
+    List<Map> maps = await dbClient.query(
+      headsShopVisitsTableName,
+      where: 'posted = ?',
+      whereArgs: [0],  // Fetch machines that have not been posted
+    );
+
+    List<HeadsShopVisitModel> headsShopVisit = maps.map((map) => HeadsShopVisitModel.fromMap(map)).toList();
+    return headsShopVisit;
+  }
+
+  Future<void> postDataFromDatabaseToAPIHeads() async {
+    try {
+      var unPostedShops = await getUnPostedShopVisitHeads();
+
+      if (await isNetworkAvailable()) {
+        for (var shop in unPostedShops) {
+          try {
+            await postShopToAPIHeads(shop);
+            shop.posted = 1;
+            await updateheads(shop);
+            if (kDebugMode) {
+              print('Shop with id ${shop.shop_visit_heads_id} posted and updated in local database.');
+            }
+          } catch (e) {
+            if (kDebugMode) {
+              print('Failed to post shop with id ${shop.shop_visit_heads_id}: $e');
+            }
+          }
+        }
+      } else {
+        if (kDebugMode) {
+          print('Network not available. Unposted shops will remain local.');
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error fetching unposted shops: $e');
+      }
+    }
+  }
+
+  Future<void> postShopToAPIHeads(HeadsShopVisitModel shop) async {
+    try {
+      await Config.fetchLatestConfig();
+      if (kDebugMode) {
+        print('Updated Shop Post API: ${Config.getApiUrlShopVisitHeads}');
+      }
+      var shopData = shop.toMap();
+      final response = await http.post(
+        Uri.parse(Config.getApiUrlShopVisitHeads),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode(shopData),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print('Shop data posted successfully: $shopData');
+      } else {
+        throw Exception('Server error: ${response.statusCode}, ${response.body}');
+      }
+    } catch (e) {
+      print('Error posting shop data: $e');
+      throw Exception('Failed to post data: $e');
+    }
+  }}
