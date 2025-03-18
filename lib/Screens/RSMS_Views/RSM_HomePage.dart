@@ -5,6 +5,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart' as loc;
@@ -20,6 +21,9 @@ import 'dart:io' show File, InternetAddress, SocketException;
 import '../../Databases/util.dart';
 import '../../Tracker/trac.dart';
 
+import '../../ViewModels/add_shop_view_model.dart';
+import '../../ViewModels/attendance_out_view_model.dart';
+import '../../ViewModels/attendance_view_model.dart';
 import '../../main.dart';
 
 import '../HomeScreenComponents/timer_card.dart';
@@ -41,55 +45,25 @@ class RSMHomepage extends StatefulWidget {
 }
 
 class _RSMHomepageState extends State<RSMHomepage> {
-  int? attendanceId;
-  int? attendanceId1;
-  double? globalLatitude1;
-  double? globalLongitude1;
-  DBHelper dbHelper = DBHelper();
-  bool isLoadingReturn= false;
-  final loc.Location location = loc.Location();
-  bool isLoading = false; // Define isLoading variable
-  Timer? _timer;
-  bool pressClockIn = false;
+  late final addShopViewModel = Get.put(AddShopViewModel());
+  late final attendanceViewModel = Get.put(AttendanceViewModel());
+  late final attendanceOutViewModel = Get.put(AttendanceOutViewModel());
+
   late StreamSubscription<ServiceStatus> locationServiceStatusStream;
+
 
 
   @override
   void initState() {
     super.initState();
-    // checkAndSetInitializationDateTime();
-    // backgroundTask();
-    // WidgetsBinding.instance.addObserver(this);
-
-    // _monitorLocationService();
+    addShopViewModel.fetchAllAddShop();
+    attendanceViewModel.fetchAllAttendance();
+    attendanceOutViewModel.fetchAllAttendanceOut();
     _retrieveSavedValues();
-
-
-    //_requestPermission();
-    // location.changeSettings(interval: 300, accuracy: loc.LocationAccuracy.high);
-    // location.enableBackgroundMode(enable: true);
-
-
-    _checkForUpdate(); // Check for updates when the screen opens
+    checkForUpdate(); // Check for updates when the screen opens
   }
-  void _checkForUpdate() async {
-    try {
-      final AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
-      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
-        await InAppUpdate.performImmediateUpdate();
-      }
-    } catch (e) {
-      if (e is PlatformException && e.code == 'TASK_FAILURE' && e.message?.contains('Install Error(-10)') == true) {
-        if (kDebugMode) {
-          print("The app is not owned by any user on this device. Update check skipped.");
-        }
-      } else {
-        if (kDebugMode) {
-          print("Failed to check for updates: $e");
-        }
-      }
-    }
-  }
+
+
   @override
   void dispose() {
     locationServiceStatusStream.cancel();
@@ -103,19 +77,22 @@ class _RSMHomepageState extends State<RSMHomepage> {
   //   });
   // }
 
+
   _retrieveSavedValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       user_id = prefs.getString('userId') ?? '';
       userName = prefs.getString('userName') ?? '';
-      userCity = prefs.getString('userCity') ?? '';
+      userCity= prefs.getString('userCity') ?? '';
       userDesignation = prefs.getString('userDesignation') ?? '';
       userBrand = prefs.getString('userBrand') ?? '';
       userSM = prefs.getString('userSM') ?? '';
       userNSM = prefs.getString('userNSM') ?? '';
       userRSM= prefs.getString('userRSM') ?? '';
+      shopVisitHeadsHighestSerial = prefs.getInt('shopVisitHeadsHighestSerial') ?? 1;
     });
   }
+
   void showLoadingIndicator(BuildContext context) {
     showDialog(
       context: context,
@@ -193,7 +170,7 @@ class _RSMHomepageState extends State<RSMHomepage> {
               ],
             ),
             body: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(12.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -242,37 +219,35 @@ class _RSMHomepageState extends State<RSMHomepage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 94), // Adjust the spacing after the "LIVE LOCATION" card
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     Text(
-                  //       'Timer: ${_formatDuration(newsecondpassed.toString())}',
-                  //       style: TextStyle(
-                  //         fontFamily: 'avenir next',
-                  //         fontSize: timerFontSize,
-                  //         fontWeight: FontWeight.bold,
-                  //       ),
-                  //     ),
-                  //     const SizedBox(width: 50),
-                  //     TimerCard(), // Add the TimerCard here
-                  //
-                  //   ],
-                  // ),
+                  const SizedBox(height: 94),
+                  // Adjust the spacing after the "LIVE LOCATION" card
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+
+                    children: [
+
+
+                      // const SizedBox(width: 50),
+                      TimerCard(), // Add the TimerCard here
+
+                    ],
+                  ),// Add the TimerCard here
+
                   const SizedBox(height: 10), // Add some space after the button row
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  //   children: [
-                  //     Text(
-                  //       version,
-                  //       style: TextStyle(
-                  //         fontFamily: 'avenir next',
-                  //         fontSize: timerFontSize,
-                  //         fontWeight: FontWeight.bold,
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        version,
+                        style: TextStyle(
+                          fontFamily: 'avenir next',
+                          fontSize: timerFontSize,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -350,14 +325,14 @@ class _RSMHomepageState extends State<RSMHomepage> {
     // Navigation logic based on the title
     switch (title) {
       case 'SHOP VISIT':
-        // if (isClockedIn) {
+         if (newIsClockedIn==true) {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => const ShopVisitPage(),
             ),
           );
-        // } else {
+         } else {
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
@@ -371,7 +346,7 @@ class _RSMHomepageState extends State<RSMHomepage> {
               ],
             ),
           );
-        // }
+         }
         break;
       case 'BOOKERS STATUS':
         Navigator.push(

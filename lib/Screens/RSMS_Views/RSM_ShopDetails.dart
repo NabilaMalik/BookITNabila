@@ -66,7 +66,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> {
   }
 
   Future<bool> _fetchAndSaveData() async {
-    final url = 'rsmShopStatusGetApiuserId';
+    final url = 'https://cloud.metaxperts.net:8443/erp/test1/rsmshops/get/$user_id';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {

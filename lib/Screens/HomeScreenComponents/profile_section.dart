@@ -1,5 +1,8 @@
 
 import 'package:flutter/material.dart';
+import 'package:order_booking_app/Databases/util.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 
 /// Profile section widget.
 class ProfileSection extends StatelessWidget {
@@ -15,27 +18,28 @@ class ProfileSection extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
         ),
-        child: const Row(
+        child: Row(
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   "BOOKIT",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 2),
-                Text("User Name", style: TextStyle(fontSize: 14)),
-                SizedBox(height: 2),
-                Text("LOGIN", style: TextStyle(fontSize: 14)),
-                SizedBox(height: 2),
-                Text("Designation", style: TextStyle(fontSize: 14)),
+                const SizedBox(height: 2),
+                Text("ID: $user_id", style: const TextStyle(fontSize: 14)),
+                const SizedBox(height: 2),
+                Text('Name: $userName', style: const TextStyle(fontSize: 14)),
+                const SizedBox(height: 2),
+                Text('Designation: $userDesignation',
+                    style: const TextStyle(fontSize: 14)),
               ],
             ),
-            Spacer(),
-            CircleAvatar(
+            const Spacer(),
+            const CircleAvatar(
               radius: 40,
-              backgroundImage: AssetImage('assets/images/Hamid2.jpg'),
+              backgroundImage: AssetImage('assets/icons/avatar3.png'), // Fallback PNG
             ),
           ],
         ),

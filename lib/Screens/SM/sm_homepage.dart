@@ -179,7 +179,7 @@ class _SMHomepageState extends State<SMHomepage> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Text(
-                        "version",
+                        version,
                         style: const TextStyle(
                           fontFamily: 'avenir next',
                           fontSize: 14,
