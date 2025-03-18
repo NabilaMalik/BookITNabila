@@ -5,7 +5,6 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
 import 'package:permission_handler/permission_handler.dart';
@@ -17,6 +16,9 @@ import '../../Databases/util.dart';
 import '../../Models/HeadsShopVistModels.dart';
 
 
+import '../../ViewModels/add_shop_view_model.dart';
+import '../../ViewModels/location_view_model.dart';
+import '../../ViewModels/login_view_model.dart';
 import '../../ViewModels/shop_visit_view_model.dart';
 import 'RSM_HomePage.dart';
 
@@ -36,6 +38,10 @@ class ShopVisitPageState extends State<ShopVisitPage> {
   TextEditingController feedbackController = TextEditingController();
   bool isGpsEnabled = false;
   bool isLoadingLocation = false; // Loading state variable
+  final AddShopViewModel _viewModel = Get.put(AddShopViewModel());
+  final loginViewModel = Get.put(LoginViewModel());
+  final locationViewModel = Get.put(LocationViewModel());
+  final shopVisitViewModel = Get.put(ShopVisitViewModel());
 
   dynamic globalLatitude = '';
   dynamic globalLongitude = '';
@@ -43,54 +49,23 @@ class ShopVisitPageState extends State<ShopVisitPage> {
   bool isLocationChecked = false; // Checkbox state
   // final ownerViewModel = Get.put(OwnerViewModel());
   // final loginViewModel = Get.put(LoginViewModel());
-  final ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
   List<String> dropdownItems = [];
   List<String> bookersDropdownItems = [];
   List<String> citiesDropdownItems = [];
   final TextEditingController rsmNameController = TextEditingController(text: userName);
   final String currentDate = DateFormat('dd-MMM-yyyy').format(DateTime.now());
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _checkUserIdAndFetchShopNames();
-  //   fetchBookerNamesByRSMDesignation();
-  //   fetchCitiesNames();
-  // }
   @override
   void initState() {
     super.initState();
     shopVisitViewModel.fetchBrands();
     shopVisitViewModel.fetchShops();
+    loginViewModel.fetchBookerIds("rsm_id");
+    debugPrint('userDesignation: $user_id');
+    // Debug: Print the bookers list
+    debugPrint('Bookers list for dropdown: ${loginViewModel.bookers.value}');
     // shopVisitDetailsViewModel.initializeProductData();
   }
-  // Future<void> fetchCitiesNames() async {
-  //   List<dynamic> businessNames = await dbHelper.getCitiesNames();
-  //   setState(() {
-  //     citiesDropdownItems = businessNames.map((dynamic item) => item.toString()).toSet().toList();
-  //   });
-  // }
-
-  // Future<void> _checkUserIdAndFetchShopNames() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String? userDesignation = prefs.getString('userDesignation');
-  //
-  //   var boxName = (userDesignation == 'RSM') ? 'shopNames' : 'shopNamesByCities';
-  //   var box = await Hive.openBox(boxName);
-  //
-  //   cachedShopNames = box.get(boxName) as List<String>?;
-  //   await box.close();
-  //
-  //   if (cachedShopNames != null && cachedShopNames!.isNotEmpty) {
-  //     setState(() {
-  //       dropdownItems = cachedShopNames!.map((dynamic item) => item.toString()).toSet().toList();
-  //     });
-  //   } else {
-  //     if (userDesignation == 'RSM') {
-  //       await fetchShopNamesAll();
-  //     }
-  //   }
-  // }
 
   bool isSwitchDisabled = false; // Add this state variable
 
@@ -201,38 +176,7 @@ class ShopVisitPageState extends State<ShopVisitPage> {
   }
 
 
-  // Future<void> fetchShopNamesAll() async {
-  //   ownerViewModel.fetchShopNames();
-  //   List<String> shopNames = ownerViewModel.shopNames.map((dynamic item) => item.toString()).toSet().toList();
-  //
-  //   var box = await Hive.openBox('shopNames');
-  //   await box.put('shopNames', shopNames);
-  //   List<String> allShopNames = box.get('shopNames', defaultValue: <String>[]);
-  //   if (kDebugMode) {
-  //     print('All shop names: $allShopNames');
-  //   }
-  //   await box.close();
-  //
-  //   setState(() {
-  //     dropdownItems = shopNames.map((dynamic item) => item.toString()).toSet().toList();
-  //   });
-  // }
-  // Future<void> fetchBookerNamesByRSMDesignation() async {
-  //   loginViewModel.fetchBookerNamesByRSMDesignation();
-  //   List<String> bookerNames = loginViewModel.bookerNamesByRSMDesignation.map((dynamic item) => item.toString()).toSet().toList();
-  //
-  //   var box = await Hive.openBox('bookerNames');
-  //   await box.put('bookerNames', bookerNames);
-  //   List<String> allBookerNames = box.get('bookerNames', defaultValue: <String>[]);
-  //   if (kDebugMode) {
-  //     print('All shop names: $allBookerNames');
-  //   }
-  //   await box.close();
-  //
-  //   setState(() {
-  //     bookersDropdownItems = bookerNames.map((dynamic item) => item.toString()).toSet().toList();
-  //   });
-  // }
+
 
   bool _isSubmitButtonEnabled() {
     return isLocationFetched &&
@@ -283,12 +227,35 @@ class ShopVisitPageState extends State<ShopVisitPage> {
             const SizedBox(height: 16),
             buildAnimatedDateField(currentDate),
             const SizedBox(height: 16),
-            _buildAnimatedDropdown("Select City", citiesDropdownItems, Icons.location_on, regionController,onDropdownTapRegion),
+            _buildAnimatedDropdown(
+                "Select City", _viewModel.cities.value, Icons.location_on,
+                regionController, onDropdownTapRegion),
             const SizedBox(height: 16),
-            _buildAnimatedDropdown("Select Booker ID", bookersDropdownItems, Icons.book, bookerController, onDropdownTapBooker),
+            Obx(() {
+              return
+                _buildAnimatedDropdown(
+                  "Select Booker ID",
+                  loginViewModel.bookers.value
+                      .where((userId) => userId != null)
+                      .cast<String>()
+                      .toList(),
+                  Icons.book,
+                  bookerController,
+                  onDropdownTapBooker,
+                );
+
+              // Debug: Print the bookers list
+              debugPrint('Bookers list for dropdown: ${loginViewModel.bookers.value}');
+            }),
             const SizedBox(height: 16),
-            _buildAnimatedDropdown("Select Shop", dropdownItems, Icons.store, shopController,onDropdownTapShop),
-            const SizedBox(height: 16),
+            Obx(() {
+              return _buildAnimatedDropdown(
+                  "Select Shop", shopVisitViewModel.shops.value
+                  .where((shop) => shop != null)
+                  .cast<String>()
+                  .toList(),
+                  Icons.store, shopController, onDropdownTapShop);
+            }),const SizedBox(height: 16),
             _buildAnimatedFeedbackBox(),
             const SizedBox(height: 10),
             _buildGpsStatusWidget(),
@@ -473,7 +440,7 @@ class ShopVisitPageState extends State<ShopVisitPage> {
       child: ElevatedButton(
         onPressed: _isSubmitButtonEnabled()
             ? () async {
-          // await _handleLogin();
+           await _handleLogin();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Form Submitted Successfully'),
@@ -501,20 +468,20 @@ class ShopVisitPageState extends State<ShopVisitPage> {
       ),
     );
   }
-  //
-  // Future<void> _handleLogin() async {
-  //   var id = await customAlphabet('1234567890', 10);
-  //   await shopVisitViewModel.addHeadsShopVisit(HeadsShopVisitModel(
-  //     id: int.parse(id),
-  //     shopName: shopController.text,
-  //     userId: user_id,
-  //     bookerName: rsmNameController.text,
-  //     booker_id: bookerController.text,
-  //     city: regionController.text,
-  //     date: currentDate,
-  //     feedback: feedbackController.text,
-  //     address: shopAddress,
-  //   ));
-  //   await shopVisitViewModel.postHeadsShopVisit();
-  // }
+  Future<void> _handleLogin() async {
+    await shopVisitViewModel.loadCounterHeads();
+    final orderSerial = await shopVisitViewModel.generateNewOrderIdHeads(user_id);
+
+    await shopVisitViewModel.addHeadsShopVisit(HeadsShopVisitModel(
+      shop_visit_master_id: orderSerial,
+      shop_name: shopController.text,
+      user_id: user_id,
+      booker_name: rsmNameController.text,
+      booker_id: bookerController.text,
+      city: regionController.text,
+      feedback: feedbackController.text,
+      shop_address: locationViewModel.shopAddress.value,
+    ));
+    await shopVisitViewModel.postHeadsShopVisit();
+  }
 }

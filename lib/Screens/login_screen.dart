@@ -118,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // Conditional execution based on user designation
       if (userDesignation == 'RSM' || userDesignation == 'SM' || userDesignation == 'NSM') {
         await addShopViewModel.fetchAndSaveHeadsShop();
-        await shopVisitViewModel.serialCounterGetHeads();
+         await shopVisitViewModel.serialCounterGetHeads();
         await attendanceViewModel.serialCounterGet();
         await attendanceOutViewModel.serialCounterGet();
         await locationViewModel.serialCounterGet();

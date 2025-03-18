@@ -174,8 +174,8 @@ class ShopVisitRepository extends GetxService{
     var dbClient = await dbHelper.db;
     return await dbClient.update(
         headsShopVisitsTableName, shopvisitModel.toMap(),
-        where: 'shop_visit_heads_id = ?',
-        whereArgs: [shopvisitModel.shop_visit_heads_id]);
+        where: 'shop_visit_master_id = ?',
+        whereArgs: [shopvisitModel.shop_visit_master_id]);
   }
 
   Future<int> delete(String id) async {
@@ -199,8 +199,8 @@ class ShopVisitRepository extends GetxService{
   Future<void> serialNumberGeneratorApiHeads() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/shopvisitheadsserial/get/$user_id',
-      maxColumnName: 'max(shop_visit_heads_id)',
+      apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/shopvisitserial/get/$user_id',
+      maxColumnName: 'max(shop_visit_master_id)',
       serialType: shopVisitHeadsHighestSerial, // Unique identifier for shop visit serials
     );
     await orderDetailsGenerator.getAndIncrementSerialNumber();
@@ -232,11 +232,11 @@ class ShopVisitRepository extends GetxService{
             shop.posted = 1;
             await updateheads(shop);
             if (kDebugMode) {
-              print('Shop with id ${shop.shop_visit_heads_id} posted and updated in local database.');
+              print('Shop with id ${shop.shop_visit_master_id} posted and updated in local database.');
             }
           } catch (e) {
             if (kDebugMode) {
-              print('Failed to post shop with id ${shop.shop_visit_heads_id}: $e');
+              print('Failed to post shop with id ${shop.shop_visit_master_id}: $e');
             }
           }
         }
@@ -260,7 +260,8 @@ class ShopVisitRepository extends GetxService{
       }
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse(Config.getApiUrlShopVisitHeads),
+        Uri.parse("https://cloud.metaxperts.net:8443/erp/test1/headshopvisit/post/"),
+        // Uri.parse(Config.getApiUrlShopVisitHeads),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",

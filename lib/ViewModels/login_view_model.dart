@@ -33,11 +33,11 @@ class LoginViewModel extends GetxController {
     bookers.value = smnames;
 
   }
-  Future<void> fetchBookerIds() async {
+  Future<void> fetchBookerIds(String columnName) async {
     try {
       debugPrint('Fetching booker IDs...');
       //var savedShops = await loginRepository.getLogin();
-      var savedShops = await loginRepository.getBookerNamesByDesignation('sm_id', user_id);
+      var savedShops = await loginRepository.getBookerNamesByDesignation(columnName, user_id);
       debugPrint('Fetched booker IDs: ${savedShops.map((e) => e.user_id).toList()}');
 
       bookers.value = savedShops.map((userIds) => userIds.user_id).toList();

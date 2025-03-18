@@ -15,9 +15,9 @@ class AttendanceStatusModel {
 
   factory AttendanceStatusModel.fromJson(Map<dynamic, dynamic> json) {
     return AttendanceStatusModel(
-      date: json['attendance_date'],
-      timeIn: json['time_in'],
-      timeOut: json['time_out'],
+      date: json['attendance_in_date'],
+      timeIn: json['attendance_in_time'],
+      timeOut: json['attendance_out_time'],
       totalTime: json['total_time'],
       totalDistance: json['total_distance'],
     );
@@ -25,9 +25,9 @@ class AttendanceStatusModel {
 
   Map<dynamic, dynamic> toJson() {
     return {
-      'attendance_date':date,
-      'time_in': timeIn,
-      'time_out': timeOut,
+      'attendance_in_date':date,
+      'attendance_in_time': timeIn,
+      'attendance_out_time': timeOut,
       'total_time': totalTime,
       'total_distance': totalDistance,
     };

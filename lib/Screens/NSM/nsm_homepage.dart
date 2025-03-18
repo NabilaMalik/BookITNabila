@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:get/get.dart';
+import 'package:order_booking_app/Screens/NSM/nsm_order_details_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
 import '../../Databases/dp_helper.dart';
 import '../../Databases/util.dart';
 import '../../Tracker/location00.dart';
+import '../../ViewModels/add_shop_view_model.dart';
+import '../../ViewModels/attendance_out_view_model.dart';
+import '../../ViewModels/attendance_view_model.dart';
+import '../HomeScreenComponents/timer_card.dart';
+import 'NSMOrderDetails/nsm_order_details_screen.dart';
 import 'NSM_ShopVisit.dart';
 import 'NSM_bookerbookingdetails.dart';
 import 'nsm_bookingStatus.dart';
@@ -47,71 +54,40 @@ class NSMHomepageState extends State<NSMHomepage> {
   Timer? _timer;
   bool pressClockIn = false;
   late StreamSubscription<ServiceStatus> locationServiceStatusStream;
+  late final addShopViewModel = Get.put(AddShopViewModel());
+  late final attendanceViewModel = Get.put(AttendanceViewModel());
+  late final attendanceOutViewModel = Get.put(AttendanceOutViewModel());
 
 
   @override
   void initState() {
     super.initState();
-    // checkAndSetInitializationDateTime();
-    // backgroundTask();
-    // WidgetsBinding.instance.addObserver(this);
-
+    addShopViewModel.fetchAllAddShop();
+    attendanceViewModel.fetchAllAttendance();
+    attendanceOutViewModel.fetchAllAttendanceOut();
     _retrieveSavedValues();
-
-
-    //_requestPermission();
-    // location.changeSettings(interval: 300, accuracy: loc.LocationAccuracy.high);
-    // location.enableBackgroundMode(enable: true);
-
-    _checkForUpdate(); // Check for updates when the screen opens
+    checkForUpdate(); // Check for updates when the screen opens
   }
-  void _checkForUpdate() async {
-    try {
-      final AppUpdateInfo updateInfo = await InAppUpdate.checkForUpdate();
-      if (updateInfo.updateAvailability == UpdateAvailability.updateAvailable) {
-        await InAppUpdate.performImmediateUpdate();
-      }
-    } catch (e) {
-      if (e is PlatformException && e.code == 'TASK_FAILURE' && e.message?.contains('Install Error(-10)') == true) {
-        if (kDebugMode) {
-          print("The app is not owned by any user on this device. Update check skipped.");
-        }
-      } else {
-        if (kDebugMode) {
-          print("Failed to check for updates: $e");
-        }
-      }
-    }
-  }
+
+
   @override
   void dispose() {
     locationServiceStatusStream.cancel();
     super.dispose();
   }
-  // void _monitorLocationService() {
-  //   locationServiceStatusStream = Geolocator.getServiceStatusStream().listen((ServiceStatus status) async {
-  //     if (status == ServiceStatus.disabled && isClockedIn) {
-  //       await _handleClockOut();
-  //     }
-  //   });
-  // }
-
-
-
-
-
 
   _retrieveSavedValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       user_id = prefs.getString('userId') ?? '';
       userName = prefs.getString('userName') ?? '';
-      userCity = prefs.getString('userCity') ?? '';
+      userCity= prefs.getString('userCity') ?? '';
       userDesignation = prefs.getString('userDesignation') ?? '';
       userBrand = prefs.getString('userBrand') ?? '';
-      userNSM= prefs.getString('userNSM') ?? 'NULL';
-      userSM= prefs.getString('userSM') ?? 'NULL';
-      userRSM= prefs.getString('userRSM') ?? 'NULL';
+      userSM = prefs.getString('userSM') ?? '';
+      userNSM = prefs.getString('userNSM') ?? '';
+      userRSM= prefs.getString('userRSM') ?? '';
+      shopVisitHeadsHighestSerial = prefs.getInt('shopVisitHeadsHighestSerial') ?? 1;
     });
   }
 
@@ -169,7 +145,7 @@ class NSMHomepageState extends State<NSMHomepage> {
           ],
         ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -201,51 +177,33 @@ class NSMHomepageState extends State<NSMHomepage> {
               ),
             ),
             const SizedBox(height: 20),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.center,
-            //   children: [
-            //     Text(
-            //       'Timer: ${_formatDuration(newsecondpassed.toString())}',
-            //       style: const TextStyle(
-            //         fontFamily: 'avenir next',
-            //         fontSize: 14,
-            //         fontWeight: FontWeight.bold,
-            //       ),
-            //     ),
-            //     const SizedBox(width: 55),
-            //     ElevatedButton.icon(
-            //       onPressed: _toggleClockInOut,
-            //       icon: Icon(isClockedIn ? Icons.timer_off : Icons.timer,color: isClockedIn ? Colors.red : Colors.white),
-            //       label: Text(
-            //         isClockedIn ? 'Clock Out' : 'Clock In',
-            //         style: const TextStyle(
-            //           fontFamily: 'avenir next',
-            //           fontSize: 14,
-            //           fontWeight: FontWeight.bold,
-            //         ),
-            //       ),
-            //       style: ElevatedButton.styleFrom(
-            //         foregroundColor: isClockedIn ? Colors.red : Colors.white,
-            //         backgroundColor: Colors.green, // Background color
-            //         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            //       ),
-            //     ),
-            //   ],
-            // ),
-        const SizedBox(height: 0),
-  //       Row(
-  //         mainAxisAlignment: MainAxisAlignment.spaceAround,
-  //         children: [
-  //           Text(
-  //             version,
-  //             style: const TextStyle(
-  //               fontFamily: 'avenir next',
-  //               fontSize: 14,
-  //               fontWeight: FontWeight.bold,
-  //             ),
-  //           ),
-  // ]
-  //       ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+
+              children: [
+
+
+                // const SizedBox(width: 50),
+                TimerCard(), // Add the TimerCard here
+
+              ],
+            ),// Add the TimerCard here
+
+            const SizedBox(height: 0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text(
+              version,
+              style: const TextStyle(
+                fontFamily: 'avenir next',
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+  ]
+        ),
 
           ],
         ),
@@ -320,14 +278,14 @@ class NSMHomepageState extends State<NSMHomepage> {
   void _navigateToPage(BuildContext context, String title) {
     switch (title) {
       case 'Shop Visit':
-        // if (isClockedIn) {
+        if (newIsClockedIn==true) {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => const NSMShopVisitPage(),
             ),
           );
-        // } else {
+        } else {
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
@@ -341,7 +299,7 @@ class NSMHomepageState extends State<NSMHomepage> {
               ],
             ),
           );
-        // }
+         }
         break;
       case 'Booker Status':
         Navigator.push(
@@ -358,7 +316,8 @@ class NSMHomepageState extends State<NSMHomepage> {
       case 'Booker Order Details':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => NSMBookingBookPage()),
+          // MaterialPageRoute(builder: (context) => NSMBookingBookPage()),
+          MaterialPageRoute(builder: (context) => NsmOrderDetailsScreen()),
         );
         break;
       case 'Location':

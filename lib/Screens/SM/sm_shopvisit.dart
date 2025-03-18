@@ -53,19 +53,12 @@ class ShopVisitPageState extends State<ShopVisitPage> {
       text: userName);
   final String currentDate = DateFormat('dd-MMM-yyyy').format(DateTime.now());
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _checkUserIdAndFetchShopNames();
-  //   fetchBookerNamesBySMDesignation();
-  //   fetchCitiesNames();
-  // }
   @override
   void initState() {
     super.initState();
     shopVisitViewModel.fetchBrands();
     shopVisitViewModel.fetchShops();
-    loginViewModel.fetchBookerIds();
+    loginViewModel.fetchBookerIds("sm_id");
     debugPrint('userDesignation: $user_id');
     // Debug: Print the bookers list
     debugPrint('Bookers list for dropdown: ${loginViewModel.bookers.value}');
@@ -489,7 +482,7 @@ await shopVisitViewModel.loadCounterHeads();
 final orderSerial = await shopVisitViewModel.generateNewOrderIdHeads(user_id);
 
   await shopVisitViewModel.addHeadsShopVisit(HeadsShopVisitModel(
-    shop_visit_heads_id: orderSerial,
+    shop_visit_master_id: orderSerial,
     shop_name: shopController.text,
     user_id: user_id,
     booker_name: SMNameController.text,

@@ -1,30 +1,29 @@
+import 'package:flutter/material.dart';
+
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-
-
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-import '../../Databases/util.dart';
-import '../../Models/Bookers_RSM_SM_NSM_Models/RSMStatusModel.dart';
-import '../../main.dart';
-import '../SM/sm_booker_details.dart';
+import '../../../Databases/util.dart';
+import '../../../Models/Bookers_RSM_SM_NSM_Models/nsm_sm_order_model.dart';
+import '../NSM_booker_details_page.dart';
 
 
-class NSM_RSM_Status extends StatefulWidget {
+class NsmSmOrderDetailsScreen extends StatefulWidget {
+  const NsmSmOrderDetailsScreen({super.key});
+
   @override
-  NSM_RSM_StatusState createState() => NSM_RSM_StatusState();
+  _NSM_SM_StatusState createState() => _NSM_SM_StatusState();
 }
 
-class NSM_RSM_StatusState extends State<NSM_RSM_Status> {
-  List<RSMStatusModel> _allBookers = [];
-  List<RSMStatusModel> _filteredBookers = [];
-  final List<RSMStatusModel> _displayedBookers = [];
+class _NSM_SM_StatusState extends State<NsmSmOrderDetailsScreen> {
+  List<NsmSmOrderModel> _allBookers = [];
+  List<NsmSmOrderModel> _filteredBookers = [];
+  final List<NsmSmOrderModel> _displayedBookers = [];
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _attendanceController = TextEditingController();
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 
   @override
@@ -66,12 +65,12 @@ class NSM_RSM_StatusState extends State<NSM_RSM_Status> {
   }
 
   Future<bool> _fetchAndSaveData() async {
-    final url = 'https://cloud.metaxperts.net:8443/erp/test1/nsmrsmstatus/get/$user_id';
+    final url = 'https://cloud.metaxperts.net:8443/erp/test1/nsmorders/get/11';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body)['items'];
-      List<RSMStatusModel> fetchedBookers = data.map<RSMStatusModel>((json) => RSMStatusModel.fromJson(json)).toList();
+      List<NsmSmOrderModel> fetchedBookers = data.map<NsmSmOrderModel>((json) => NsmSmOrderModel.fromJson(json)).toList();
 
       // Compare with existing data to check if new data is fetched
       bool isNewData = _hasNewData(fetchedBookers, _allBookers);
@@ -82,7 +81,7 @@ class NSM_RSM_StatusState extends State<NSM_RSM_Status> {
 
         // Save the last sync timestamp
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('last_SM_RSM_sync_time', DateTime.now().toIso8601String());
+        await prefs.setString('last_NSM_SM_sync_time', DateTime.now().toIso8601String());
       }
 
       return isNewData;
@@ -91,7 +90,7 @@ class NSM_RSM_StatusState extends State<NSM_RSM_Status> {
     }
   }
 
-  bool _hasNewData(List<RSMStatusModel> newData, List<RSMStatusModel> oldData) {
+  bool _hasNewData(List<NsmSmOrderModel> newData, List<NsmSmOrderModel> oldData) {
     if (newData.length != oldData.length) return true;
     for (int i = 0; i < newData.length; i++) {
       if (newData[i].toJson() != oldData[i].toJson()) return true;
@@ -101,7 +100,7 @@ class NSM_RSM_StatusState extends State<NSM_RSM_Status> {
 
   Future<String?> _getLastSyncTime() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? lastSyncTime = prefs.getString('last_SM_RSM_sync_time');
+    String? lastSyncTime = prefs.getString('last_NSM_SM_sync_time');
     if (lastSyncTime != null) {
       DateTime syncDateTime = DateTime.parse(lastSyncTime);
       return "${syncDateTime.toLocal()}";
@@ -113,21 +112,21 @@ class NSM_RSM_StatusState extends State<NSM_RSM_Status> {
   Future<void> _saveBookersData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String bookersJson = jsonEncode(_allBookers.map((b) => b.toJson()).toList());
-    prefs.setString('SM_RSM_data', bookersJson);
+    prefs.setString('NSM_SM_data', bookersJson);
   }
 
   Future<void> _loadBookersData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? bookersJson = prefs.getString('SM_RSM_data');
+    String? bookersJson = prefs.getString('NSM_SM_data');
     if (bookersJson != null) {
       List<dynamic> jsonList = jsonDecode(bookersJson);
-      _allBookers = jsonList.map((json) => RSMStatusModel.fromJson(json)).toList();
+      _allBookers = jsonList.map((json) => NsmSmOrderModel.fromJson(json)).toList();
     }
   }
 
 
 
-  void _addBookersToList(List<RSMStatusModel> bookers) async {
+  void _addBookersToList(List<NsmSmOrderModel> bookers) async {
     for (int i = 0; i < bookers.length; i++) {
       if (!_displayedBookers.contains(bookers[i])) {
         _displayedBookers.add(bookers[i]);
@@ -151,18 +150,13 @@ class NSM_RSM_StatusState extends State<NSM_RSM_Status> {
 
   void _filterBookers() {
     final nameFilter = _nameController.text.toLowerCase();
-    final attendanceFilter = _attendanceController.text.toLowerCase();
     _filteredBookers = _allBookers.where((booker) {
       final matchesName = booker.name.toLowerCase().contains(nameFilter);
-      final matchesStatus = booker.attendanceStatus.toLowerCase().contains(attendanceFilter);
-      return matchesName && matchesStatus;
+      return matchesName ;
     }).toList();
     _removeBookersFromList();
     _addBookersToList(_filteredBookers);
   }
-
-
-
 
 
   void showProfessionalDialog(BuildContext context, String message, IconData icon, Color backgroundColor, {String? actionText, VoidCallback? onActionPressed}) {
@@ -233,36 +227,27 @@ class NSM_RSM_StatusState extends State<NSM_RSM_Status> {
   Future<void> _handleRefresh() async {
     try {
       bool isConnected = await isNetworkAvailable();
-
       if (isConnected) {
-        // Set a timeout duration
         const timeoutDuration = Duration(seconds: 20);
-
-        // Create a Future that will complete when data is loaded or timeout occurs
         Future<void> loadDataFuture = _loadData();
 
-        // Run the loadDataFuture with a timeout
         await loadDataFuture.timeout(timeoutDuration, onTimeout: () {
           throw TimeoutException('Data loading took too long');
         });
 
-        // Update the list after data is loaded
         setState(() {
           _filteredBookers = _allBookers;
           _removeBookersFromList();
           _addBookersToList(_filteredBookers);
         });
 
-        // Notify user of successful refresh
         showProfessionalDialog(
           context,
           'Data refreshed successfully!',
           Icons.check_circle_outline,
           Colors.green[600]!,
-
         );
       } else {
-        // Notify user of connectivity issue
         showProfessionalDialog(
           context,
           'No internet connection. Please check your connection and try again.',
@@ -285,8 +270,8 @@ class NSM_RSM_StatusState extends State<NSM_RSM_Status> {
           Colors.orange[600]!,
           actionText: 'Retry',
           onActionPressed: () {
-            Navigator.of(context).pop(); // Close the dialog
-            _handleRefresh(); // Retry refreshing data
+            Navigator.of(context).pop();
+            _handleRefresh();
           },
         );
       } else {
@@ -301,77 +286,82 @@ class NSM_RSM_StatusState extends State<NSM_RSM_Status> {
           Colors.orange[600]!,
           actionText: 'Retry',
           onActionPressed: () {
-            Navigator.of(context).pop(); // Close the dialog
-            _handleRefresh(); // Retry refreshing data
+            Navigator.of(context).pop();
+            _handleRefresh();
           },
         );
       }
     }
   }
 
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: RefreshIndicator(
-          onRefresh: _handleRefresh,
-          child:  Column(
+      body: RefreshIndicator(
+        onRefresh: _handleRefresh,
+        child:  Column(
+          children: [
+            Column(
               children: [
-                    Column(
+                _buildTextField('Search by Booker Name', _nameController, false, false),
+              ],
+            ),
+
+            FutureBuilder<String?>(
+              future: _getLastSyncTime(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasData && snapshot.data != null) {
+                  DateTime lastSyncDateTime = DateTime.parse(snapshot.data!);
+                  String formattedTime = DateFormat('dd MMM yyyy, hh:mm a').format(lastSyncDateTime);
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2.0),
+                    child: Row(
                       children: [
-                        _buildTextField('Search by Booker Name', _nameController, false, false),
-                      ],
-                    ),
-                FutureBuilder<String?>(
-                  future: _getLastSyncTime(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    } else if (snapshot.hasData && snapshot.data != null) {
-                      DateTime lastSyncDateTime = DateTime.parse(snapshot.data!);
-                      String formattedTime = DateFormat('dd MMM yyyy, hh:mm a').format(lastSyncDateTime);
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2.0),
-                        child: Row(
+                        const Icon(Icons.access_time, color: Colors.blue),
+                        const SizedBox(width: 8.0),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(Icons.access_time, color: Colors.blue, size: 14.0, ),
-                            const SizedBox(width: 8.0),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Last Sync: ',
-                                  style: TextStyle(fontSize: 10.0),
-                                ),
-                                SizedBox(height: 1.0), // Add gap between Last Sync and the date
-                                Text(
-                                  formattedTime,
-                                  style: const TextStyle( fontSize: 10.0),
-                                ),
-                              ],
+                            const Text(
+                              'Last Sync: ',
+                              style: TextStyle(fontSize: 10.0),
+                            ),
+                            SizedBox(height: 4.0), // Add gap between Last Sync and the date
+                            Text(
+                              formattedTime,
+                              style: const TextStyle( fontSize: 10.0),
                             ),
                           ],
                         ),
-                      );
-                    } else {
-                      return Container(); // No data to display
-                    }
-                  },
-                ),
-
-                Expanded(
-                  child: AnimatedList(
-                    key: _listKey,
-                    initialItemCount: _displayedBookers.length,
-                    itemBuilder: (context, index, animation) {
-                      final booker = _displayedBookers[index];
-                      return _buildBookerCard(booker, animation);
-                    },
-                  ),
-                ),
-              ],
+                      ],
+                    ),
+                  );
+                } else {
+                  return Container(); // No data to display
+                }
+              },
             ),
-          ),
-        );
+
+            Expanded(
+              child: AnimatedList(
+                key: _listKey,
+                initialItemCount: _displayedBookers.length,
+                itemBuilder: (context, index, animation) {
+                  final booker = _displayedBookers[index];
+                  return _buildBookerCard(booker, animation);
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildTextField(String hint, TextEditingController controller, bool isDate, bool isReadOnly) {
@@ -394,7 +384,7 @@ class NSM_RSM_StatusState extends State<NSM_RSM_Status> {
             border: InputBorder.none,
             focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(color: Colors.green, width: 1.0),
-              borderRadius: BorderRadius.circular(2.0),
+              borderRadius: BorderRadius.circular(8.0),
             ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.green, width: 0.1),
@@ -412,35 +402,35 @@ class NSM_RSM_StatusState extends State<NSM_RSM_Status> {
     );
   }
 
-  Widget _buildBookerCard(RSMStatusModel booker, Animation<double> animation) {
+  Widget _buildBookerCard(NsmSmOrderModel booker, Animation<double> animation) {
     Color statusColor;
     String statusText;
 
     // Determine the color and text based on the attendance status
-    switch (booker.attendanceStatus) {
-      case 'clock_in':
-        statusColor = Colors.green;
-        statusText = 'Clocked In';
-        break;
-      case 'clock_out':
-        statusColor = Colors.red;
-        statusText = 'Clocked Out';
-        break;
-      default:
-        statusColor = Colors.grey;
-        statusText = 'Unknown';
-    }
+    // switch (booker.attendanceStatus) {
+    //   case 'clock_in':
+    //     statusColor = Colors.green;
+    //     statusText = 'Clocked In';
+    //     break;
+    //   case 'clock_out':
+    //     statusColor = Colors.red;
+    //     statusText = 'Clocked Out';
+    //     break;
+    //   default:
+    //     statusColor = Colors.grey;
+    //     statusText = 'Unknown';
+    // }
 
     return FadeTransition(
       opacity: animation,
       child: GestureDetector(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SMBookerDetailPage(booker: booker),
-            ),
-          );
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => NSMBookerDetailPage(booker: booker),
+          //   ),
+          // );
         },
         child: Card(
           margin: const EdgeInsets.all(1.0),
@@ -458,12 +448,12 @@ class NSM_RSM_StatusState extends State<NSM_RSM_Status> {
                     width: 45,
                     height: 45,
                     child: Image.asset(
-                      'assets/icons/avatar3.png',
+                      'assets/icons/avatar3.png', // Path to your image
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
-                const SizedBox(width: 7.0),
+                const SizedBox(width: 8.0),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -484,21 +474,21 @@ class NSM_RSM_StatusState extends State<NSM_RSM_Status> {
                               style: const TextStyle(fontSize: 11, color: Colors.black),
                             ),
                             const Spacer(),
-                            Container(
-                              padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
-                              decoration: BoxDecoration(
-                                color: statusColor.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(3.0),
-                              ),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    statusText,
-                                    style: TextStyle(fontSize: 9, color: statusColor), // Status color
-                                  ),
-                                ],
-                              ),
-                            ),
+                            // Container(
+                            //   padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
+                            //   decoration: BoxDecoration(
+                            //     color: statusColor.withOpacity(0.2),
+                            //     borderRadius: BorderRadius.circular(3.0),
+                            //   ),
+                            //   child: Row(
+                            //     children: [
+                            //       Text(
+                            //         statusText,
+                            //         style: TextStyle(fontSize: 9, color: statusColor), // Status color
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
@@ -514,21 +504,16 @@ class NSM_RSM_StatusState extends State<NSM_RSM_Status> {
                           ),
                         ],
                       ),
-                      if (booker.designation == 'SO') ...[
-                        const SizedBox(height: 1.0),
-                        Row(
-                          children: [
-                      //      const Icon(Icons.location_on, size: 14.0, color: Colors.green),
-                            const SizedBox(width: 4.0),
-                            Expanded(
-                              child: Text(
-                                'City: ${booker.city}',
-                                style: const TextStyle(fontSize: 11),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                      // if (booker.designation == 'SO') ...[
+                      //   const SizedBox(height: 1.0),
+                      //   // Row(
+                      //   //   children: [
+                      //   //     const Icon(Icons.location_city, size: 11.0, color: Colors.green),
+                      //   //     const SizedBox(width: 4.0),
+                      //   //
+                      //   //   ],
+                      //   // ),
+                      // ],
                     ],
                   ),
                 ),
@@ -540,7 +525,5 @@ class NSM_RSM_StatusState extends State<NSM_RSM_Status> {
     );
   }
 }
-
-
 
 

@@ -63,7 +63,7 @@ class _NSMBookerStatusState extends State<NSMBookerStatus> {
   }
 
   Future<bool> _fetchAndSaveData() async {
-    final url = 'nsmBookerStatusGetApiuserId';
+    final url = 'https://cloud.metaxperts.net:8443/erp/test1/nsmbookerstatus/get/$user_id';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {

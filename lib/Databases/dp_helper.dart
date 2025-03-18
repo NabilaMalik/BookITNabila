@@ -43,8 +43,7 @@ class DBHelper extends GetxService {
       "CREATE TABLE IF NOT EXISTS $attendanceOutTableName(attendance_out_id TEXT PRIMARY KEY, attendance_out_date TEXT, attendance_out_time TEXT,  total_time TEXT, user_id TEXT, lat_out TEXT, lng_out TEXT, total_distance TEXT,posted INTEGER DEFAULT 0, address TEXT)",
       "CREATE TABLE IF NOT EXISTS $locationTableName(location_id TEXT PRIMARY KEY, location_date TEXT, location_time TEXT, file_name TEXT, user_id TEXT, total_distance TEXT, booker_name TEXT, posted INTEGER DEFAULT 0, body BLOB)",
       "CREATE TABLE IF NOT EXISTS $productsTableName(id NUMBER, product_code TEXT, product_name TEXT, uom TEXT ,price TEXT, brand TEXT, quantity TEXT, in_stock TEXT)",
-      "CREATE TABLE IF NOT EXISTS $productsTableName(id NUMBER, product_code TEXT, product_name TEXT, uom TEXT ,price TEXT, brand TEXT, quantity TEXT, in_stock TEXT)",
-      "CREATE TABLE IF NOT EXISTS $headsShopVisitsTableName(shop_visit_heads_id TEXT PRIMARY KEY, shop_visit_heads_date TEXT,shop_visit_heads_time TEXT,posted INTEGER DEFAULT 0, shop_name TEXT, user_id TEXT, city TEXT, booker_name TEXT, feedback TEXT, shop_address TEXT, booker_id TEXT)"
+      "CREATE TABLE IF NOT EXISTS $headsShopVisitsTableName(shop_visit_master_id TEXT PRIMARY KEY, shop_visit_date TEXT,shop_visit_time TEXT,posted INTEGER DEFAULT 0, shop_name TEXT, user_id TEXT, city TEXT, booker_name TEXT, feedback TEXT, shop_address TEXT, booker_id TEXT)"
     ];
     for (var query in tableQueries) {
       await db.execute(query);

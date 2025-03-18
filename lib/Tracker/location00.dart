@@ -107,6 +107,7 @@ class LocationService {
 
            isConnected = await isNetworkAvailable();
           if (isConnected) {
+            debugPrint("FIrebaseeeeeeeeeeeeeeeeeeee");
             await FirebaseFirestore.instance
                 .collection('location')
                 .doc(userIdForLocation.toString())
@@ -122,6 +123,7 @@ class LocationService {
               'SM_ID':smIdForLocation.toString() ,
               'isActive': true
             }, SetOptions(merge: true));
+            debugPrint("FIrebaseeingggggggggggggggggggg");
           }
         });
 
