@@ -136,7 +136,7 @@ class AddShopScreen extends StatelessWidget {
                   CustomButton(
                     buttonText: "Save",
                     onTap: _viewModel.saveForm,
-                    gradientColors: [Colors.blue, Colors.blue],
+                    gradientColors: const [Colors.blue, Colors.blue],
                   ),
                 ],
               ),

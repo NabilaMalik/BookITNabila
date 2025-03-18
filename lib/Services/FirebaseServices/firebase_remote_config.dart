@@ -119,7 +119,7 @@ class Config {
       remoteConfig.getString('ReturnFormDetailsPostUrl');
 
   static String get postApiUrlShopVisit =>
-      remoteConfig.getString('ShopVisitPostUrl');
+      remoteConfig.getString('ShopVisitPostUrl'); //https://cloud.metaxperts.net:8443/erp/test1/headshopvisit/post/
 
   static String get postApiUrlAttendanceIn =>
       remoteConfig.getString('AttendanceInPostUrl');
