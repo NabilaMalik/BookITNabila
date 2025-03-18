@@ -51,21 +51,25 @@ class _LoginScreenState extends State<LoginScreen> {
   late final attendanceViewModel = Get.put(AttendanceViewModel());
   late final attendanceOutViewModel = Get.put(AttendanceOutViewModel());
   final LocationViewModel locationViewModel = Get.put(LocationViewModel());
-  late final updateFunctionViewModel= Get.put(UpdateFunctionViewModel());
-  // final orderMasterViewModel = Get.put(OrderMasterViewModel());
-  // final orderDetailsViewModel = Get.put(OrderDetailsViewModel());
+  late final updateFunctionViewModel = Get.put(UpdateFunctionViewModel());
   final LoginViewModel loginViewModel = Get.put(LoginViewModel());
 
   final _formKey = GlobalKey<FormState>();
   bool isChecked = true;
   bool isLoading = false;
   bool isPasswordVisible = false;
+  bool isButtonDisabled = false;
+
+  // Add a ValueNotifier to track progress
+  final ValueNotifier<double> _progressNotifier = ValueNotifier<double>(0.0);
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
       isLoading = true;
+      isButtonDisabled = true;
+      _progressNotifier.value = 0.0; // Reset progress
     });
 
     final prefs = await SharedPreferences.getInstance();
@@ -75,6 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Get.snackbar('Error', 'No internet connection', snackPosition: SnackPosition.BOTTOM);
       setState(() {
         isLoading = false;
+        isButtonDisabled = false;
       });
       return;
     }
@@ -85,6 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Get.snackbar('Error', 'No internet connection', snackPosition: SnackPosition.BOTTOM);
         setState(() {
           isLoading = false;
+          isButtonDisabled = false;
         });
         return;
       }
@@ -92,6 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Get.snackbar('Error', 'No internet connection', snackPosition: SnackPosition.BOTTOM);
       setState(() {
         isLoading = false;
+        isButtonDisabled = false;
       });
       return;
     }
@@ -105,6 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Get.snackbar('Error', 'Invalid user ID or password', snackPosition: SnackPosition.BOTTOM);
       setState(() {
         isLoading = false;
+        isButtonDisabled = false;
       });
       return;
     }
@@ -115,17 +123,33 @@ class _LoginScreenState extends State<LoginScreen> {
     debugPrint("User ID: $user_id");
 
     try {
+      // Total number of tasks to track progress
+      final totalTasks = 10; // Adjust this based on the number of tasks
+      int completedTasks = 0;
+
+      // Function to update progress
+      void updateProgress() {
+        completedTasks++;
+        _progressNotifier.value = completedTasks / totalTasks;
+      }
+
       // Conditional execution based on user designation
       if (userDesignation == 'RSM' || userDesignation == 'SM' || userDesignation == 'NSM') {
         await addShopViewModel.fetchAndSaveHeadsShop();
-         await shopVisitViewModel.serialCounterGetHeads();
+        updateProgress();
+        await shopVisitViewModel.serialCounterGetHeads();
+        updateProgress();
         await attendanceViewModel.serialCounterGet();
+        updateProgress();
         await attendanceOutViewModel.serialCounterGet();
+        updateProgress();
         await locationViewModel.serialCounterGet();
-
-    } else {
+        updateProgress();
+      } else {
         await addShopViewModel.fetchAndSaveShop();
+        updateProgress();
         await shopVisitViewModel.serialCounterGet();
+        updateProgress();
         await Future.wait<void>([
           shopVisitViewModel.serialCounterGet(),
           shopVisitDetailsViewModel.serialCounterGet(),
@@ -137,8 +161,9 @@ class _LoginScreenState extends State<LoginScreen> {
           orderMasterViewModel.serialCounterGet(),
           orderDetailsViewModel.serialCounterGet(),
           locationViewModel.serialCounterGet(),
-
         ]);
+        updateProgress();
+
         // Execute other fetch and save operations concurrently
         await Future.wait<void>([
           productsViewModel.fetchAndSaveProducts(),
@@ -147,7 +172,9 @@ class _LoginScreenState extends State<LoginScreen> {
           shopVisitDetailsViewModel.initializeProductData(),
           updateFunctionViewModel.checkAndSetInitializationDateTime(),
         ]);
+        updateProgress();
       }
+
       debugPrint(
           "recoveryHighestSerial: $shopVisitHighestSerial, "
               "shopVisitDetailsHighestSerial: $shopVisitDetailsHighestSerial, "
@@ -162,13 +189,13 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       await loginViewModel.navigateToHomePage();
-      // Get.off(() => HomeScreen());
     } catch (e) {
       debugPrint('Error fetching data: $e');
-      Get.snackbar('Error', 'Failed to fetch data: $e', snackPosition: SnackPosition.BOTTOM,);
+      Get.snackbar('Error', 'Failed to fetch data: $e', snackPosition: SnackPosition.BOTTOM);
     } finally {
       setState(() {
         isLoading = false;
+        isButtonDisabled = false;
       });
     }
   }
@@ -282,25 +309,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: size.height * 0.02),
                   _buildRememberMeRow(),
                   SizedBox(height: size.height * 0.02),
-                  CustomButton(
-                    height: size.height * 0.065,
-                    width: size.width * 0.45,
-                    onTap: _login,
-                    buttonText: isLoading ? 'Please wait...' : 'Sign in',
-                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.01),
-                    gradientColors: const [Colors.blue, Colors.blue],
+                  ValueListenableBuilder<double>(
+                    valueListenable: _progressNotifier,
+                    builder: (context, progress, _) {
+                      return CustomButton(
+                        height: size.height * 0.065,
+                        width: size.width * 0.45,
+                        onTap: isButtonDisabled ? null : _login,
+                        buttonText: isLoading
+                            ? 'Please wait... ${(progress * 100).toStringAsFixed(0)}%'
+                            : 'Sign in',
+                        padding: EdgeInsets.symmetric(horizontal: size.width * 0.01),
+                        gradientColors: const [Colors.blue, Colors.blue],
+                      );
+                    },
                   ),
-                  SizedBox(height: size.height * 0.03),
-                  // UnderPart(
-                  //   title: "Don't have an account?",
-                  //   navigatorText: "Sign up here",
-                  //   onTap: () {
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(builder: (context) => SignUpScreen()),
-                  //     );
-                  //   },
-                  // ),
                   SizedBox(height: size.height * 0.03),
                   _buildSocialIcons(),
                   SizedBox(height: size.height * 0.1),

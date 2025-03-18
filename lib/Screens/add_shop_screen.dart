@@ -5,7 +5,6 @@ import 'package:order_booking_app/Screens/Components/custom_switch.dart';
 import 'package:order_booking_app/ViewModels/location_view_model.dart';
 import '../ViewModels/add_shop_view_model.dart';
 import 'Components/custom_button.dart';
-import 'Components/custom_dropdown.dart';
 import 'Components/custom_dropdown_second.dart';
 
 class AddShopScreen extends StatelessWidget {

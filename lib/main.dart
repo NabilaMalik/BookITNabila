@@ -72,6 +72,18 @@ Future<void> main() async {
     bool isAuthenticated = prefs.getBool('isAuthenticated') ?? false;
     pageName = prefs.getString('pageName') ?? '/cameraScreen';
     newIsClockedIn = prefs.getBool('isClockedIn') ?? false;
+    user_id = prefs.getString('userId') ?? '';
+    userName = prefs.getString('userName') ?? '';
+    userCity = prefs.getString('userCity') ?? '';
+    userDesignation = prefs.getString('userDesignation') ?? '';
+    userBrand = prefs.getString('userBrand') ?? '';
+    userSM = prefs.getString('userSM') ?? '';
+    userNSM = prefs.getString('userNSM') ?? '';
+    userRSM = prefs.getString('userRSM') ?? '';
+    userNameRSM = prefs.getString('userNameRSM') ?? '';
+    userNameNSM = prefs.getString('userNameNSM') ?? '';
+    userNameSM = prefs.getString('userNameSM') ?? '';
+
     if (isAuthenticated==false) {
    await loginViewModel.checkInternetBeforeNavigation();
     }
