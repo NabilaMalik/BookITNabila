@@ -386,107 +386,103 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: const Text(
-              'Order Invoice',
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold),
-            ),
-            backgroundColor: Colors.blue,
-            centerTitle: true,
-            actions: [
-              IconButton(
-                icon: Icon(
-                  Icons.share,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  _generateAndSharePDF();
-                  // Add your share functionality here
-                },
-              ),
-            ],
-            leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  if (isPressed = true) {
-                  } else {
-                    Get.offNamed("/OrderBookingScreen");
-                  }
-                })),
-        body: SingleChildScrollView(
-          child: Container(
+      appBar: AppBar(
+        title: const Text(
+          'Order Invoice',
+          style: TextStyle(
+            fontSize: 20,
             color: Colors.white,
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildField(label: 'Order ID', value: order_master_id),
-                _buildField(
-                    label: 'Customer Name',
-                    value: shopVisitViewModel.selectedShop.value),
-                _buildField(
-                    label: 'Phone Number',
-                    value: shopVisitViewModel.phone_number.value),
-                const Divider(color: Colors.grey),
-                const Text(
-                  'Order Summary',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height *
-                      0.6, // Example: 50% of screen height
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children: _getCurrentPageRows().map((row) {
-                            int index = _getCurrentPageRows().indexOf(row);
-                            return OrderSummaryRow(
-                              serialNumber: (_currentPage * 10) + index + 1,
-                              rowData: row,
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                      _buildPaginationControls(),
-                      const Divider(color: Colors.grey),
-                    ],
-                  ),
-                ),
-                const OrderFooter(),
-                const SizedBox(height: 5),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: CustomButton(
-                    textSize: 14,
-                    spacing: 0,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0, vertical: 6.0),
-                    height: 40,
-                    width: 120,
-                    buttonText: "Close",
-                    onTap: () {
-                      // Get.to(const HomeScreen());
-                      Get.offNamed("/home");
-                    }, // onTap: orderMasterViewModel.confirmSubmitForm,
-                    gradientColors: [Colors.red, Colors.red],
-                  ),
-                ),
-              ],
-            ),
+            fontWeight: FontWeight.bold,
           ),
-        ));
+        ),
+        backgroundColor: Colors.blue,
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share, color: Colors.white),
+            onPressed: () {
+              _generateAndSharePDF();
+            },
+          ),
+        ],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            if (isPressed == true) {
+              // Handle case when isPressed is true
+            } else {
+              Get.offNamed("/OrderBookingScreen");
+            }
+          },
+        ),
+      ),
+      body: Container(
+        color: Colors.white,
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildField(label: 'Order ID', value: order_master_id),
+            _buildField(
+              label: 'Customer Name',
+              value: shopVisitViewModel.selectedShop.value,
+            ),
+            _buildField(
+              label: 'Phone Number',
+              value: shopVisitViewModel.phone_number.value,
+            ),
+            const Divider(color: Colors.grey),
+
+            const Text(
+              'Order Summary',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 5),
+
+            // **This ensures the order list dynamically adjusts**
+            Expanded(
+              child: ListView(
+                children: [
+                  Column(
+                    children: _getCurrentPageRows().asMap().entries.map((entry) {
+                      int index = entry.key;
+                      var row = entry.value;
+                      return OrderSummaryRow(
+                        serialNumber: (_currentPage * 10) + index + 1,
+                        rowData: row,
+                      );
+                    }).toList(),
+                  ),
+                  _buildPaginationControls(), // Pagination controls
+                  const Divider(color: Colors.grey),
+                  const OrderFooter(), // Total Credit Limit, Required Date, etc.
+                  const SizedBox(height: 5),
+                ],
+              ),
+            ),
+
+            // **Bottom Button Row** (Moves up dynamically)
+            Align(
+              alignment: Alignment.centerRight,
+              child: CustomButton(
+                textSize: 14,
+                spacing: 0,
+                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+                height: 40,
+                width: 120,
+                buttonText: "Close",
+                onTap: () {
+                  Get.offNamed("/home");
+                },
+                gradientColors: [Colors.red.shade700, Colors.red],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
+
 
   Widget _buildField({required String label, required String? value}) {
     return Padding(

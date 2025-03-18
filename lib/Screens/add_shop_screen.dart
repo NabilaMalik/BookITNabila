@@ -1,11 +1,14 @@
 // lib/screens/add_shop_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/Screens/Components/custom_switch.dart';
 import 'package:order_booking_app/ViewModels/location_view_model.dart';
 import '../ViewModels/add_shop_view_model.dart';
 import 'Components/custom_button.dart';
+import 'Components/custom_dropdown.dart';
 import 'Components/custom_dropdown_second.dart';
+import 'Components/validators.dart';
 
 class AddShopScreen extends StatelessWidget {
   final AddShopViewModel _viewModel = Get.put(AddShopViewModel());
@@ -86,42 +89,35 @@ class AddShopScreen extends StatelessWidget {
                         ? "Please enter owner name"
                         : null,
                   ),
+
                   _buildTextField(
                     label: "Owner CNIC",
                     icon: Icons.badge,
-                    onChanged: (value) =>
-                        _viewModel.setShopField('owner_cnic', value),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter CNIC";
-                      }
-                      const cnicPattern = r'^\d{5}-\d{7}-\d{1}$';
-                      if (!RegExp(cnicPattern).hasMatch(value)) {
-                        return "Please enter a valid CNIC (e.g.12345-1234567-1)";
-                      }
-                      return null;
-                    },
-                    keyboardType: TextInputType.number,
+                    onChanged: (value) => _viewModel.setShopField('owner_cnic', value),
+                    validator: Validators.validateCNIC,
+                    keyboardType: TextInputType.number, // Optional: helps with digit input
                   ),
+
+
                   _buildTextField(
                     label: "Phone Number",
                     icon: Icons.phone,
-                    onChanged: (value) =>
-                        _viewModel.setShopField('phone_no', value),
-                    validator: (value) => value == null || value.isEmpty
-                        ? "Please enter phone number"
-                        : null,
+                    onChanged: (value) => _viewModel.setShopField('phone_no', value),
+                    validator: Validators.validatePhoneNumber,
                     keyboardType: TextInputType.phone,
+                    inputFormatters: [PhoneNumberFormatter()],
                   ),
+
+
+
                   _buildTextField(
                     label: "Alternative Phone Number",
                     icon: Icons.phone_android,
                     onChanged: (value) =>
                         _viewModel.setShopField('alternative_phone_no', value),
-                    validator: (value) => value == null || value.isEmpty
-                        ? "Please enter alternative number"
-                        : null,
+                    validator: Validators.validatePhoneNumber,
                     keyboardType: TextInputType.phone,
+                    inputFormatters: [PhoneNumberFormatter()],
                   ),
                   const SizedBox(height: 10),
                   // Use Obx to reactively update CustomSwitch
@@ -158,6 +154,7 @@ class AddShopScreen extends StatelessWidget {
     required ValueChanged<String> onChanged,
     required String? Function(String?) validator,
     TextInputType keyboardType = TextInputType.text,
+    List<TextInputFormatter>? inputFormatters,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
@@ -169,6 +166,7 @@ class AddShopScreen extends StatelessWidget {
         ),
         onChanged: onChanged,
         keyboardType: keyboardType,
+        inputFormatters: inputFormatters, // <-- apply it here
         validator: validator,
       ),
     );

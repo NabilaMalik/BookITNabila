@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/Databases/util.dart';
 import 'package:order_booking_app/Screens/recovery_form_screen.dart';
+import 'package:order_booking_app/Screens/shop_visit_screen.dart';
 import 'package:order_booking_app/ViewModels/shop_visit_view_model.dart';
 import 'package:order_booking_app/screens/add_shop_screen.dart';
 import 'package:order_booking_app/screens/order_booking_status_screen.dart';
@@ -109,21 +110,10 @@ class _RiveAppHomeState extends State<HomeScreen>
     // Update state with retrieved values
     setState(() {
       user_id = prefs.getString('userId') ?? '';
-      attendanceInHighestSerial = prefs.getInt('attendanceInHighestSerial') ?? 1;
-      attendanceOutHighestSerial = prefs.getInt('attendanceOutHighestSerial') ?? 1;
-      shopVisitHighestSerial = prefs.getInt('shopVisitHighestSerial') ?? 1;
-      shopVisitDetailsHighestSerial = prefs.getInt('shopVisitDetailsHighestSerial') ?? 1;
-      orderMasterHighestSerial = prefs.getInt('orderMasterHighestSerial') ?? 1;
-      orderDetailsHighestSerial = prefs.getInt('orderDetailsHighestSerial') ?? 1;
-      recoveryHighestSerial = prefs.getInt('recoveryHighestSerial') ?? 1;
-      returnMasterHighestSerial = prefs.getInt('returnMasterHighestSerial') ?? 1;
-      returnDetailsHighestSerial = prefs.getInt('returnDetailsHighestSerial') ?? 1;
-      locationHighestSerial = prefs.getInt('locationHighestSerial') ?? 1;
-      shopHighestSerial = prefs.getInt('shopHighestSerial') ?? 1;
-      userName = prefs.getString('userName') ?? '';
-      userCity = prefs.getString('userCity') ?? '';
-      userDesignation = prefs.getString('userDesignation') ?? '';
-      userBrand = prefs.getString('userBrand') ?? '';
+      // userNames = prefs.getString('userNames') ?? '';
+      // userCitys = prefs.getString('userCitys') ?? '';
+      // userDesignation = prefs.getString('userDesignation') ?? '';
+      // userBrand = prefs.getString('userBrand') ?? '';
       userSM = prefs.getString('userSM') ?? '';
       userNSM = prefs.getString('userNSM') ?? '';
       userRSM = prefs.getString('userRSM') ?? '';
@@ -239,64 +229,90 @@ class _RiveAppHomeState extends State<HomeScreen>
               ActionBox(
                 imagePath: add_shop,
                 label: 'Add Shop',
-                onTap: () => Get.to(() => AddShopScreen()),
+                onTap: () async {
+                  if (newIsClockedIn==true) {
+                    Get.to(() => AddShopScreen());
+                  }
+                  else {
+                    Get.defaultDialog(
+                      title: "Clock In Required",
+                      middleText: "Please start the timer first.",
+                      textConfirm: "OK",
+                      confirmTextColor: Colors.white,
+                      onConfirm: () {
+                        Get.back();
+                      },
+                    );
+                  }
+                },
               ),
               ActionBox(
-                  imagePath: shop_visit,
-                  label: 'Shop Visit',
-                  onTap: () => Get.offAllNamed("/ShopVisitScreen")
-                  // onTap: () => Get.to(() => ShopVisitScreen()),
-                  ),
+                imagePath: shop_visit,
+                label: 'Shop Visit',
+                onTap: () async {
+                  if (newIsClockedIn==true) {
+                    Get.to(() => const ShopVisitScreen());
+                  }
+                  else {
+                    Get.defaultDialog(
+                      title: "Clock In Required",
+                      middleText: "Please start the timer first.",
+                      textConfirm: "OK",
+                      confirmTextColor: Colors.white,
+                      onConfirm: () {
+                        Get.back();
+                      },
+                    );
+                  }
+                },
+              ),
               ActionBox(
                 imagePath: return_form,
                 label: 'Return Form',
                 onTap: () async {
-                  // if(clocked==false){
-                  //   Get.snackbar('Please clock In', 'Please start timer first', snackPosition: SnackPosition.BOTTOM);
-                  // }else {
-                  // await orderDetailsViewModel.fetchAndSaveOrderDetails();
-                  Get.to(() => ReturnFormScreen());
-              }
-                // onTap: () => Get.to(() =>  ReturnFormScreen()),
+                  if (newIsClockedIn==true) {
+                    Get.to(() => ReturnFormScreen());
+                  }
+                  else {
+                    Get.defaultDialog(
+                      title: "Clock In Required",
+                      middleText: "Please start the timer first.",
+                      textConfirm: "OK",
+                      confirmTextColor: Colors.white,
+                      onConfirm: () {
+                        Get.back();
+                      },
+                    );
+                  }
+                },
               ),
-              ActionBox(
-                imagePath:recovery2,
-                label: 'Recovery',
-                onTap: () => Get.to(() =>  RecoveryFormScreen()),
-              ),
-              // ActionBox(
-              //   imagePath: recovery2,
-              //   label: 'Recovery',
-              //   onTap: () async {
-              //     attendanceViewModel.setClockIn(false);
-              //     await Future.delayed(const Duration(milliseconds: 100)); // Small delay to allow state to update
-              //     debugPrint("ClockedIn State After Update: ${attendanceViewModel.clockedIn.value}");
-              //
-              //     if (!attendanceViewModel.clockedIn.value) {
-              //       debugPrint("Clock-in not successful.");
-              //       Get.snackbar(
-              //         'Please Clock In',
-              //         'You need to start the timer first',
-              //         backgroundColor: Colors.redAccent,
-              //         colorText: Colors.white,
-              //       );
-              //     }
-              //     else {
-              //       debugPrint("Fetching orders...");
-              //       await orderMasterViewModel.fetchAndSaveOrderMaster();
-              //       debugPrint("Navigating to RecoveryFormScreen...");
-              //       Get.to(() => RecoveryFormScreen());
-              //     }
-              //   },
-              // ),
 
+              ActionBox(
+                imagePath: recovery2,
+                label: 'Recovery',
+                onTap: () async {
+                  if (newIsClockedIn==true) {
+                    Get.to(() => RecoveryFormScreen());
+                  }
+                  else {
+                    Get.defaultDialog(
+                      title: "Clock In Required",
+                      middleText: "Please start the timer first.",
+                      textConfirm: "OK",
+                      confirmTextColor: Colors.white,
+                      onConfirm: () {
+                        Get.back();
+                      },
+                    );
+                  }
+                },
+              ),
               ActionBox(
                 imagePath: order_booking_status,
                 label: 'Booking Status',
-
-                onTap:  () async {
-                  await orderMasterViewModel.fetchAllOrderMaster();
-                  Get.to(() => OrderBookingStatusScreen());},
+                onTap: () async {
+                    Get.to(() => OrderBookingStatusScreen());
+                },
               ),
             ],
           ),

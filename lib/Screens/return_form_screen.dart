@@ -48,9 +48,7 @@ class ReturnFormScreen extends StatelessWidget {
                             labelStyle: TextStyle(fontSize: 15),
                             border: UnderlineInputBorder(),
                           ),
-                          value: viewModel.selectedShop.value.isEmpty
-                              ? null
-                              : viewModel.selectedShop.value,
+                          value: viewModel.selectedShop.value.isEmpty ? null : viewModel.selectedShop.value,
                           items: viewModel.shops.map((shop) {
                             debugPrint("Adding Shop to Dropdown: ${shop.name}");
                             return DropdownMenuItem(
@@ -178,7 +176,7 @@ class SubmitButton extends StatelessWidget {
     return CustomButton(
       buttonText: "Submit",
       onTap: () async {
-        // ✅ Validation: Ensure a shop is selected before submission
+        // ✅ Step 1: Validate if a shop is selected
         if (viewModel.selectedShop.value.isEmpty) {
           Get.snackbar(
             "Error",
@@ -191,17 +189,29 @@ class SubmitButton extends StatelessWidget {
           return;
         }
 
-        // ✅ Call submitForm
+        // ✅ Step 2: Validate if all required fields are filled
+        if (returnFormDetailsViewModel.items.isEmpty ||
+            returnFormDetailsViewModel.reasons.isEmpty ||
+            returnFormDetailsViewModel.formRows.isEmpty) {
+          Get.snackbar(
+            "Error",
+            "⚠ Please fill all required fields before submitting.",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            duration: const Duration(seconds: 3),
+          );
+          return;
+        }
+
+        // ✅ Step 3: Call submitForm (even though it returns void, we still call it)
         await viewModel.submitForm();
 
-        // ✅ Safely clear controllers & reset fields after successful submission
-      //  viewModel.cController?.clear();
+        // ✅ Step 4: Clear fields after submission
         viewModel.selectedShop.value = "";
-
         returnFormDetailsViewModel.items.clear();
         returnFormDetailsViewModel.reasons.clear();
-       // returnFormDetailsViewModel.quantity.clear();
-
+        returnFormDetailsViewModel.formRows.clear();
         Get.snackbar(
           "Success",
           "Form submitted successfully! Fields cleared.",
@@ -211,11 +221,10 @@ class SubmitButton extends StatelessWidget {
           duration: const Duration(seconds: 3),
         );
       },
-      gradientColors: [Colors.blue, Colors.blue],
+      gradientColors: const [Colors.blue, Colors.blue],
     );
   }
 }
-
 //   ElevatedButton(
 //   onPressed: viewModel.submitForm,
 //   style: ElevatedButton.styleFrom(

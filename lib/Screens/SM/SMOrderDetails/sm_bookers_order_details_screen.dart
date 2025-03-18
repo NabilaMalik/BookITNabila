@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:order_booking_app/Screens/SM/SMOrderDetails/sm_bookers_booking_details_screen.dart';
+import 'package:order_booking_app/Services/FirebaseServices/firebase_remote_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
@@ -66,8 +67,11 @@ class _NSM_SM_StatusState extends State<SmBookersOrderDetailsScreen> {
   }
 
   Future<bool> _fetchAndSaveData() async {
-    final url = 'https://cloud.metaxperts.net:8443/erp/test1/smuserorders/get/$user_id';
-    final response = await http.get(Uri.parse(url));
+    //final response = await http.get(
+       // Uri.parse(
+    //final url = 'https://cloud.metaxperts.net:8443/erp/test1/smuserorders/get/$user_id';
+    final response = await http.get(Uri.parse('${Config.getApiUrlOrderDetails}/$user_id/}'
+        ));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body)['items'];

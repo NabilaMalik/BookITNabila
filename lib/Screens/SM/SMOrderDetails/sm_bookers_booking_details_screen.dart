@@ -38,7 +38,7 @@ class _NSMBookerDetailsPageState extends State<SmBookersBookingDetailsScreen> {
   Future<void> _fetchAttendanceData() async {
     final response = await http.get(
       Uri.parse(
-          '${Config.getApiUrlSmUserOrderDetails}/$user_id/${widget.booker.booker_id}'),
+          '${Config.getApiUrlSmBookersAttendanceData}/$user_id/${widget.booker.booker_id}'),
       //Uri.parse('http://103.149.32.30:8080/ords/metaxperts/attendancedata/get/${widget.booker.booker_id}'),
     );
 

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Required for input formatter
 import 'package:get/get.dart';
 import 'package:order_booking_app/ViewModels/return_form_details_view_model.dart';
 import '../../Models/ScreenModels/return_form_model.dart';
-import '../../ViewModels/ScreenViewModels/return_form_view_model.dart';
-import '../../ViewModels/return_form_view_model.dart';
 
 class FormRow extends StatelessWidget {
   final Size size;
@@ -12,20 +11,26 @@ class FormRow extends StatelessWidget {
   final ReturnForm row;
   final int index;
 
-  const FormRow({required this.size, required this.returnFormDetailsViewModel, required this.row, required this.index, super.key});
+  const FormRow({
+    required this.size,
+    required this.returnFormDetailsViewModel,
+    required this.row,
+    required this.index,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: index % 2 == 0 ? Colors.white : Colors.grey[200], // Even: White, Odd: Light Gray
+        color: index % 2 == 0 ? Colors.white : Colors.grey[200],
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // First Row: Item Dropdown
+          // Item Dropdown
           SizedBox(
             width: size.width * 0.84,
             height: 60,
@@ -50,18 +55,19 @@ class FormRow extends StatelessWidget {
             }),
           ),
 
-          // Second Row: Qty and Reason
+          // Qty and Reason Row
           Row(
             children: [
               _buildTextField(
                 label: "Qty *",
+                keyboardType: TextInputType.number,
                 initialValue: row.quantity,
                 onChanged: (value) => row.quantity = value,
                 width: size.width * 0.3,
                 height: 40,
                 fontSize: 18.0,
               ),
-              const SizedBox(width: 15), // Space between fields
+              const SizedBox(width: 15),
               SizedBox(
                 width: size.width * 0.5,
                 height: 40,
@@ -86,7 +92,7 @@ class FormRow extends StatelessWidget {
             ],
           ),
 
-          // Delete Icon (Centered)
+          // Delete Button
           Align(
             alignment: Alignment.center,
             child: IconButton(
@@ -106,20 +112,25 @@ class FormRow extends StatelessWidget {
     required double width,
     required double height,
     double fontSize = 16.0,
+    TextInputType keyboardType = TextInputType.text,
   }) {
     return SizedBox(
-        width: width,
-        height: height,
-        child: TextFormField(
-            initialValue: initialValue,
-            style: TextStyle(fontSize: fontSize),
-            decoration: InputDecoration(
-              hintText: label,
-              hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
-              border: const UnderlineInputBorder(),
-            ),
-            onChanged: onChanged,
-            ),
-        );
-    }
+      width: width,
+      height: height,
+      child: TextFormField(
+        initialValue: initialValue,
+        style: TextStyle(fontSize: fontSize),
+        keyboardType: keyboardType,
+        inputFormatters: keyboardType == TextInputType.number
+            ? [FilteringTextInputFormatter.digitsOnly]
+            : null,
+        decoration: InputDecoration(
+          hintText: label,
+          hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+          border: const UnderlineInputBorder(),
+        ),
+        onChanged: onChanged,
+      ),
+    );
+  }
 }

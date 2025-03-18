@@ -4,13 +4,12 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:order_booking_app/Databases/util.dart';
 
-
 Future<Map<String, LatLng>> fetchRSMMarkers() async {
   Map<String, LatLng> markers = {};
   QuerySnapshot snapshot = await FirebaseFirestore.instance
-      .collection('location') // Adjust this collection path as needed
-      .where('designation', whereIn:  ['RSM']) // Fetch RSM markers
-      .where('SM_ID', whereIn:  [user_id]) // Fetch RSM markers
+      .collection('location')
+      .where('designation', whereIn: ['RSM'])
+      .where('SM_ID', whereIn: [user_id])
       .get();
 
   for (var doc in snapshot.docs) {
@@ -22,6 +21,8 @@ Future<Map<String, LatLng>> fetchRSMMarkers() async {
 }
 
 class RSMLocation extends StatefulWidget {
+  const RSMLocation({super.key});
+
   @override
   _RSMLocationState createState() => _RSMLocationState();
 }
@@ -41,7 +42,7 @@ class _RSMLocationState extends State<RSMLocation> {
   Future<void> _loadMarkers() async {
     Map<String, LatLng> fetchedMarkers = await fetchRSMMarkers();
     setState(() {
-      _markers = fetchedMarkers; // Update state with fetched markers
+      _markers = fetchedMarkers;
     });
   }
 
@@ -62,7 +63,6 @@ class _RSMLocationState extends State<RSMLocation> {
 
   void _fitAllMarkers() {
     if (_markers.isNotEmpty) {
-      LatLngBounds bounds;
       LatLng southwest = LatLng(
         _markers.values.map((latlng) => latlng.latitude).reduce((a, b) => a < b ? a : b),
         _markers.values.map((latlng) => latlng.longitude).reduce((a, b) => a < b ? a : b),
@@ -71,87 +71,140 @@ class _RSMLocationState extends State<RSMLocation> {
         _markers.values.map((latlng) => latlng.latitude).reduce((a, b) => a > b ? a : b),
         _markers.values.map((latlng) => latlng.longitude).reduce((a, b) => a > b ? a : b),
       );
-      bounds = LatLngBounds(southwest: southwest, northeast: northeast);
+      LatLngBounds bounds = LatLngBounds(southwest: southwest, northeast: northeast);
 
       mapController.animateCamera(
-        CameraUpdate.newLatLngBounds(bounds, 50), // Padding of 50 pixels
+        CameraUpdate.newLatLngBounds(bounds, 50),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    double halfScreenHeight = MediaQuery.of(context).size.height * 0.5;
+
     return Scaffold(
-      body: Stack(
-        children: [
-          GoogleMap(
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(
-              target: _initialCameraPosition,
-              zoom: 4.0,
+      body: Column(
+        children: [Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
-            markers: _markers.entries.map((entry) {
-              return Marker(
-                markerId: MarkerId(entry.key),
-                position: entry.value,
-                infoWindow: InfoWindow(title: entry.key),
-              );
-            }).toSet(),
-          ),
-          Positioned(
-            top: 20,
-            left: 20,
-            right: 20,
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              elevation: 5,
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: DropdownSearch<String>(
-                  items: _markers.keys.toList(),
-                  onChanged: (String? newValue) {
-                    if (newValue != null) {
-                      _onMarkerSelected(newValue);
-                    }
-                  },
-                  selectedItem: _markers.isNotEmpty ? _markers.keys.first : null,
-                  dropdownDecoratorProps: DropDownDecoratorProps(
-                    dropdownSearchDecoration: InputDecoration(
-                      labelText: "Select Marker",
-                      prefixIcon: const Icon(Icons.location_on),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            elevation: 5,
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: DropdownSearch<String>(
+                items: _markers.keys.toList(),
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    _onMarkerSelected(newValue);
+                  }
+                },
+                selectedItem: _markers.isNotEmpty ? _markers.keys.first : null,
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownSearchDecoration: InputDecoration(
+                    labelText: "Select Marker",
+                    prefixIcon: const Icon(Icons.location_on),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+                popupProps: PopupProps.menu(
+                  showSearchBox: true,
+                  searchFieldProps: TextFieldProps(
+                    decoration: InputDecoration(
+                      hintText: "Search Marker",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
-                  popupProps: PopupProps.menu(
-                    showSearchBox: true,
-                    searchFieldProps: TextFieldProps(
-                      decoration: InputDecoration(
-                        hintText: "Search Marker",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    menuProps: MenuProps(
-                      elevation: 8,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                  menuProps: MenuProps(
+                    elevation: 8,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
                 ),
               ),
             ),
           ),
+        ),
+          // Map takes 50% of screen height
+          SizedBox(
+            height: 380,
+            width: 380,
+            child: GoogleMap(
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                target: _initialCameraPosition,
+                zoom: 4.0,
+              ),
+              markers: _markers.entries.map((entry) {
+                return Marker(
+                  markerId: MarkerId(entry.key),
+                  position: entry.value,
+                  infoWindow: InfoWindow(title: entry.key),
+                );
+              }).toSet(),
+            ),
+          ),
+          // Dropdown below the map
+          // Padding(
+          //   padding: const EdgeInsets.all(16.0),
+          //   child: Card(
+          //     shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.circular(12),
+          //     ),
+          //     elevation: 5,
+          //     child: Padding(
+          //       padding: const EdgeInsets.all(12.0),
+          //       child: DropdownSearch<String>(
+          //         items: _markers.keys.toList(),
+          //         onChanged: (String? newValue) {
+          //           if (newValue != null) {
+          //             _onMarkerSelected(newValue);
+          //           }
+          //         },
+          //         selectedItem: _markers.isNotEmpty ? _markers.keys.first : null,
+          //         dropdownDecoratorProps: DropDownDecoratorProps(
+          //           dropdownSearchDecoration: InputDecoration(
+          //             labelText: "Select Marker",
+          //             prefixIcon: const Icon(Icons.location_on),
+          //             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          //             border: OutlineInputBorder(
+          //               borderRadius: BorderRadius.circular(12),
+          //             ),
+          //           ),
+          //         ),
+          //         popupProps: PopupProps.menu(
+          //           showSearchBox: true,
+          //           searchFieldProps: TextFieldProps(
+          //             decoration: InputDecoration(
+          //               hintText: "Search Marker",
+          //               border: OutlineInputBorder(
+          //                 borderRadius: BorderRadius.circular(12),
+          //               ),
+          //             ),
+          //           ),
+          //           menuProps: MenuProps(
+          //             elevation: 8,
+          //             shape: RoundedRectangleBorder(
+          //               borderRadius: BorderRadius.circular(12),
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // Optional: Display selected marker at bottom
           if (_selectedMarker != null)
-            Positioned(
-              bottom: 20,
-              left: 20,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -161,7 +214,7 @@ class _RSMLocationState extends State<RSMLocation> {
                   padding: const EdgeInsets.all(12.0),
                   child: Text(
                     _selectedMarker!,
-                    style: TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ),
               ),

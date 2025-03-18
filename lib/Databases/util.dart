@@ -46,7 +46,7 @@ int? attendanceOutHighestSerial;
 int? locationHighestSerial;
 int? shopHighestSerial;
 
-// bool isClockedIn = false;
+// bool newIsClockedIn = false;
 // late Timer timer;
 // int secondsPassed=0;
 

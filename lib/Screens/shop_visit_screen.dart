@@ -83,17 +83,14 @@ class _StateShopVisitScreen extends State<ShopVisitScreen>{
                       Obx(() => CustomDropdown(
                             label: "Shop",
                             icon: Icons.store,
-                            items: shopVisitViewModel.shops.value
-                                .where((shop) => shop != null)
-                                .cast<String>()
-                                .toList(),
+                            items: shopVisitViewModel.shops.value.where((shop) => shop != null).cast<String>().toList(),
                             selectedValue:shopVisitViewModel.selectedShop.value.isNotEmpty?
                                 shopVisitViewModel.selectedShop.value: " Select  a Shop",
                             onChanged: (value) async {
                               shopVisitViewModel.selectedShop.value = value!;
                               await shopVisitViewModel.updateShopDetails(value);
                               shopVisitViewModel.selectedShop.value =
-                                  value; // Pehle assignment thi, ab baad mein
+                                  value;
                               debugPrint(shopVisitViewModel.shop_address.value);
                             },
                             validator: (value) => value == null || value.isEmpty

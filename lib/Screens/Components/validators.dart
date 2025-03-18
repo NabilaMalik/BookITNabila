@@ -1,3 +1,6 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
+
 class Validators {
   static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
@@ -32,4 +35,49 @@ class Validators {
     }
     return null;
   }
+  static String? validatePhoneNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your phone number';
+    } else if (!RegExp(r'^\d{4}-\d{7}$').hasMatch(value)) {
+      return 'Phone number must be in format 0303-3899999';
+    }
+    return null;
+  }
+  static String? validateCNIC(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your CNIC number';
+    } else if (!RegExp(r'^\d{5}-\d{7}-\d{1}$').hasMatch(value)) {
+      return 'CNIC must be in format 12345-1234567-1';
+    }
+    return null;
+  }
+
+
+
 }
+
+
+class PhoneNumberFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    // Remove all non-digit characters
+    final digitsOnly = newValue.text.replaceAll(RegExp(r'\D'), '');
+
+    final buffer = StringBuffer();
+    for (int i = 0; i < digitsOnly.length && i < 11; i++) {
+      buffer.write(digitsOnly[i]);
+      if (i == 3 ) {
+        buffer.write('-');
+      }
+    }
+
+    final formatted = buffer.toString();
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
+    );
+  }
+}
+
+
+

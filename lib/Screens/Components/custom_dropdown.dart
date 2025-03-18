@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
@@ -74,7 +75,7 @@ class _CustomDropdownState extends State<CustomDropdown> {
                   [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.3),
-                      offset: Offset(3, 5),
+                      offset: const Offset(3, 5),
                       blurRadius: 6,
                     ),
                   ]

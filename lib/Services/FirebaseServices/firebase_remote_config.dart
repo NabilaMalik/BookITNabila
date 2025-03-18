@@ -7,13 +7,12 @@ class Config {
   static Future<void> initialize() async {
     remoteConfig = FirebaseRemoteConfig.instance;
     await remoteConfig.setConfigSettings(RemoteConfigSettings(
-      fetchTimeout: Duration(seconds: 1),
+      fetchTimeout: const Duration(seconds: 1),
       // Set to 1 minute for development; change to a larger interval for production
-      minimumFetchInterval: Duration(seconds: 1),
+      minimumFetchInterval: const Duration(seconds: 1),
     ));
     await fetchLatestConfig(); // Fetch and activate immediately
   }
-
   static Future<void> fetchLatestConfig() async {
     try {
       bool updated = await remoteConfig.fetchAndActivate();
@@ -32,7 +31,6 @@ class Config {
       }
     }
   }
-
 // Static configuration parameters for GET API URLs
   static String get getApiUrlLogin => remoteConfig.getString('LoginGetUrl');//https://cloud.metaxperts.net:8443/erp/test1/loginget/get/
 
@@ -50,16 +48,17 @@ class Config {
       remoteConfig.getString('AttendanceOutGetUrl');
   static String get getApiUrlProducts =>
       remoteConfig.getString('ProductsGetUrl');//https://cloud.metaxperts.net:8443/erp/test1/products/get/
-
+//
   static String get getApiUrlBrands => remoteConfig.getString('BrandsGetUrl');
-
-  static String get getApiUrlCities => remoteConfig.getString('CitiesGetUrl');
+//
+  static String get getApiUrlCities => remoteConfig.getString('CitiesGetUrl'); //https://cloud.metaxperts.net:8443/erp/test1/cities/get/
 
   static String get getApiUrlOrderMaster =>
-      remoteConfig.getString('OrderMasterGetUrl');
+      remoteConfig.getString('OrderMasterGetUrl'); //https://cloud.metaxperts.net:8443/erp/test1/ordermasterget/get/$user_id
 
   static String get getApiUrlOrderDetails =>
-      remoteConfig.getString('OrderDetailsGetUrl');
+      remoteConfig.getString('OrderDetailsGetUrl'); // https://cloud.metaxperts.net:8443/erp/test1/smuserorders/get/$user_id';
+
 
   static String get getApiUrlRecoveryForm =>
       remoteConfig.getString('RecoveryFormGetUrl');
@@ -82,6 +81,8 @@ class Config {
   static String get getApiUrlOrderBookingStatus =>
       remoteConfig.getString('OrderBookingStatusGetUrl');
 
+  static String get getApiUrlSmBookersAttendanceData =>
+      remoteConfig.getString('SmBookersAttendanceDataGetUrl'); //http://103.149.32.30:8080/ords/metaxperts/attendancedata/get/${widget.booker.booker_id}
   static String get getApiUrlSmUserOrderDetails =>
       remoteConfig.getString('SmUserOrderDetailsGetUrl');//https://cloud.metaxperts.net:8443/erp/test1/smuserorderdetails/get/$user_id/${widget.booker.booker_id}
 
@@ -92,24 +93,9 @@ class Config {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Static configuration parameters for POST API URLs with postApiUrl prefix
   static String get postApiUrlShopVisitDetails =>
-      remoteConfig.getString('ShopVisitDetailsPostUrl');
+      remoteConfig.getString('ShopVisitDetailsPostUrl'); //https://cloud.metaxperts.net:8443/erp/test1/headshopvisit/post/
   static String get postApiUrlShops => remoteConfig.getString('ShopsPostUrl');
 
   static String get postApiUrlProducts =>

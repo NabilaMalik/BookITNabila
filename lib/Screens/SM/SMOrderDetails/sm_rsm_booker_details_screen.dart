@@ -7,6 +7,7 @@ import 'dart:convert';
 
 import '../../../Models/Bookers_RSM_SM_NSM_Models/nsm_rsm_order_model.dart';
 import '../../../Models/Bookers_RSM_SM_NSM_Models/nsm_sm_order_details_model.dart';
+import '../../../Services/FirebaseServices/firebase_remote_config.dart';
 
 
 class SmRsmBookerDetailsScreen extends StatefulWidget {
@@ -35,11 +36,12 @@ class _NSMBookerDetailsPageState extends State<SmRsmBookerDetailsScreen> {
   }
 
   Future<void> _fetchAttendanceData() async {
-    final response = await http.get(
-      Uri.parse('https://cloud.metaxperts.net:8443/erp/test1/smrsmorderdetails/get/$user_id/${widget.booker.booker_id}'),
-      //Uri.parse('http://103.149.32.30:8080/ords/metaxperts/attendancedata/get/${widget.booker.booker_id}'),
+    // final response = await http.get(
+    //   Uri.parse('https://cloud.metaxperts.net:8443/erp/test1/smrsmorderdetails/get/$user_id/${widget.booker.booker_id}'),
+    //   //Uri.parse('http://103.149.32.30:8080/ords/metaxperts/attendancedata/get/${widget.booker.booker_id}'),
+    // );
+    final response = await http.get(Uri.parse('${Config.getApiUrlSmUserOrderDetails}/$user_id${widget.booker.booker_id}')
     );
-
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['items'];
 
