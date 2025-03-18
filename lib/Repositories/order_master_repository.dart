@@ -32,6 +32,7 @@ class OrderMasterRepository extends GetxService {
       'order_status',
       'total',
       'user_id',
+      'user_name',
       'credit_limit',
       'rsm_id',
       'sm_id',

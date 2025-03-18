@@ -63,7 +63,7 @@ class _NSMShopDetailPageState extends State<NSMShopDetailPage> {
   }
 
   Future<bool> _fetchAndSaveData() async {
-    final url = 'nsmShopStatusGetApiuserId';
+    final url = 'https://cloud.metaxperts.net:8443/erp/test1/nsmshops/get/$user_id';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {

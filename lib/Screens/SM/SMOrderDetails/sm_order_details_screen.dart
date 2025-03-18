@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:order_booking_app/Screens/NSM/NSMOrderDetails/nsm_sm_order_details_screen.dart';
+import 'package:order_booking_app/Screens/SM/SMOrderDetails/sm_bookers_order_details_screen.dart';
+import 'package:order_booking_app/Screens/SM/SMOrderDetails/sm_rsm_order_details_screen.dart';
 
-import 'nsm_bookers_order_details_screen.dart';
-import 'nsm_rsm_order_details_screen.dart';
 
 
-class NsmOrderDetailsScreen extends StatefulWidget {
+
+class SmOrderDetailsScreen extends StatefulWidget {
   @override
   _NSMBookingStatusState createState() => _NSMBookingStatusState();
 }
 
-class _NSMBookingStatusState extends State<NsmOrderDetailsScreen> {
+class _NSMBookingStatusState extends State<SmOrderDetailsScreen> {
   final PageController _pageController = PageController();
   int _selectedIndex = 0;
 
@@ -55,30 +56,30 @@ class _NSMBookingStatusState extends State<NsmOrderDetailsScreen> {
             height: 55,
             child: Row(
               children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => _onButtonPressed(0),
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: _selectedIndex == 0 ? Colors.green : Colors.transparent,
-                            width: 3.0,
-                          ),
-                        ),
-                      ),
-                      child: Text(
-                        'SM',
-                        style: TextStyle(
-                          color: _selectedIndex == 0 ? Colors.green : Colors.black,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                // Expanded(
+                //   child: GestureDetector(
+                //     onTap: () => _onButtonPressed(0),
+                //     child: Container(
+                //       alignment: Alignment.center,
+                //       padding: EdgeInsets.symmetric(vertical: 10),
+                //       decoration: BoxDecoration(
+                //         border: Border(
+                //           bottom: BorderSide(
+                //             color: _selectedIndex == 0 ? Colors.green : Colors.transparent,
+                //             width: 3.0,
+                //           ),
+                //         ),
+                //       ),
+                //       child: Text(
+                //         'SM',
+                //         style: TextStyle(
+                //           color: _selectedIndex == 0 ? Colors.green : Colors.black,
+                //           fontSize: 14,
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 Expanded(
                   child: GestureDetector(
                     onTap: () => _onButtonPressed(1),
@@ -134,9 +135,8 @@ class _NSMBookingStatusState extends State<NsmOrderDetailsScreen> {
             child: PageView(
               controller: _pageController,
               children: [
-                NsmSmOrderDetailsScreen(),
-                NsmRsmOrderDetailsScreen(),
-                NsmBookersOrderDetailsScreen(),
+                SmRsmOrderDetailsScreen(),
+                SmBookersOrderDetailsScreen(),
               ],
             ),
           ),

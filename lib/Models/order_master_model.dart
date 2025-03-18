@@ -9,6 +9,7 @@ class OrderMasterModel{
   String? brand;
   String? total;
   String? user_id;
+  String? user_name;
   String? credit_limit;
   String? rsm_id;
   String? sm_id;
@@ -26,6 +27,7 @@ class OrderMasterModel{
     this.shop_name,
     this.order_status,
     this.owner_name,
+    this.user_name,
     this.phone_no,
     this.brand,
     this.user_id,
@@ -47,6 +49,7 @@ class OrderMasterModel{
       order_master_id: json['order_master_id'],
       shop_name: json['shop_name'],
       owner_name: json['owner_name'],
+      user_name: json['user_name'],
       phone_no: json['phone_no'],
       order_status: json['order_status'],
       brand:json['brand'],
@@ -74,6 +77,7 @@ class OrderMasterModel{
       'shop_name':shop_name,
       'owner_name':owner_name,
       'phone_no':phone_no,
+      'user_name':user_name,
       'brand':brand,
       'total':total,
       'user_id':user_id,

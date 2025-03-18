@@ -4,26 +4,26 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:order_booking_app/Screens/SM/SMOrderDetails/sm_bookers_booking_details_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import '../../../Databases/util.dart';
-import '../../../Models/Bookers_RSM_SM_NSM_Models/nsm_sm_order_model.dart';
-import 'nsm_sm_bookers_details_screen.dart';
+import '../../../Models/Bookers_RSM_SM_NSM_Models/nsm_bookers_order_model.dart';
 
 
 
-class NsmSmOrderDetailsScreen extends StatefulWidget {
-  const NsmSmOrderDetailsScreen({super.key});
+class RsmBookersOrderDetailsScreen extends StatefulWidget {
+  const RsmBookersOrderDetailsScreen({super.key});
 
   @override
   _NSM_SM_StatusState createState() => _NSM_SM_StatusState();
 }
 
-class _NSM_SM_StatusState extends State<NsmSmOrderDetailsScreen> {
-  List<NsmSmOrderModel> _allBookers = [];
-  List<NsmSmOrderModel> _filteredBookers = [];
-  final List<NsmSmOrderModel> _displayedBookers = [];
+class _NSM_SM_StatusState extends State<RsmBookersOrderDetailsScreen> {
+  List<NsmBookersOrderModel> _allBookers = [];
+  List<NsmBookersOrderModel> _filteredBookers = [];
+  final List<NsmBookersOrderModel> _displayedBookers = [];
   final TextEditingController _nameController = TextEditingController();
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 
@@ -66,12 +66,12 @@ class _NSM_SM_StatusState extends State<NsmSmOrderDetailsScreen> {
   }
 
   Future<bool> _fetchAndSaveData() async {
-    final url = 'https://cloud.metaxperts.net:8443/erp/test1/nsmorders/get/11';
+    final url = 'https://cloud.metaxperts.net:8443/erp/test1/rsmuserorders/get/$user_id';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body)['items'];
-      List<NsmSmOrderModel> fetchedBookers = data.map<NsmSmOrderModel>((json) => NsmSmOrderModel.fromJson(json)).toList();
+      List<NsmBookersOrderModel> fetchedBookers = data.map<NsmBookersOrderModel>((json) => NsmBookersOrderModel.fromJson(json)).toList();
 
       // Compare with existing data to check if new data is fetched
       bool isNewData = _hasNewData(fetchedBookers, _allBookers);
@@ -91,7 +91,7 @@ class _NSM_SM_StatusState extends State<NsmSmOrderDetailsScreen> {
     }
   }
 
-  bool _hasNewData(List<NsmSmOrderModel> newData, List<NsmSmOrderModel> oldData) {
+  bool _hasNewData(List<NsmBookersOrderModel> newData, List<NsmBookersOrderModel> oldData) {
     if (newData.length != oldData.length) return true;
     for (int i = 0; i < newData.length; i++) {
       if (newData[i].toJson() != oldData[i].toJson()) return true;
@@ -121,13 +121,13 @@ class _NSM_SM_StatusState extends State<NsmSmOrderDetailsScreen> {
     String? bookersJson = prefs.getString('NSM_SM_data');
     if (bookersJson != null) {
       List<dynamic> jsonList = jsonDecode(bookersJson);
-      _allBookers = jsonList.map((json) => NsmSmOrderModel.fromJson(json)).toList();
+      _allBookers = jsonList.map((json) => NsmBookersOrderModel.fromJson(json)).toList();
     }
   }
 
 
 
-  void _addBookersToList(List<NsmSmOrderModel> bookers) async {
+  void _addBookersToList(List<NsmBookersOrderModel> bookers) async {
     for (int i = 0; i < bookers.length; i++) {
       if (!_displayedBookers.contains(bookers[i])) {
         _displayedBookers.add(bookers[i]);
@@ -403,7 +403,7 @@ class _NSM_SM_StatusState extends State<NsmSmOrderDetailsScreen> {
     );
   }
 
-  Widget _buildBookerCard(NsmSmOrderModel booker, Animation<double> animation) {
+  Widget _buildBookerCard(NsmBookersOrderModel booker, Animation<double> animation) {
     Color statusColor;
     String statusText;
 
@@ -429,7 +429,7 @@ class _NSM_SM_StatusState extends State<NsmSmOrderDetailsScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => NsmSmBookersDetailsScreen(booker: booker),
+              builder: (context) => SmBookersBookingDetailsScreen(booker: booker),
             ),
           );
         },

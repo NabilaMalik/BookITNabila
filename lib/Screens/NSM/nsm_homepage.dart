@@ -3,8 +3,6 @@ import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/Screens/NSM/nsm_order_details_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-
 import '../../Databases/dp_helper.dart';
 import '../../Databases/util.dart';
 import '../../Tracker/location00.dart';

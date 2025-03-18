@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:in_app_update/in_app_update.dart';
 
 import 'package:order_booking_app/Databases/util.dart';
+import 'package:order_booking_app/Screens/SM/SMOrderDetails/sm_order_details_screen.dart';
 import 'package:order_booking_app/Screens/SM/sm_shopdetails.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -307,7 +308,8 @@ class _SMHomepageState extends State<SMHomepage> {
 
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SMBookingBookPage()),
+          MaterialPageRoute(builder: (context) => SmOrderDetailsScreen()),
+          // MaterialPageRoute(builder: (context) => SMBookingBookPage()),
         );
         break;
       case 'Location':

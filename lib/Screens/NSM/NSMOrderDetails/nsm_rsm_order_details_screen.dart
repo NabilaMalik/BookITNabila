@@ -8,22 +8,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import '../../../Databases/util.dart';
+import '../../../Models/Bookers_RSM_SM_NSM_Models/nsm_rsm_order_model.dart';
 import '../../../Models/Bookers_RSM_SM_NSM_Models/nsm_sm_order_model.dart';
+import 'nsm_rsm_booker_details_screen.dart';
 import 'nsm_sm_bookers_details_screen.dart';
 
 
 
-class NsmSmOrderDetailsScreen extends StatefulWidget {
-  const NsmSmOrderDetailsScreen({super.key});
+class NsmRsmOrderDetailsScreen extends StatefulWidget {
+  const NsmRsmOrderDetailsScreen({super.key});
 
   @override
   _NSM_SM_StatusState createState() => _NSM_SM_StatusState();
 }
 
-class _NSM_SM_StatusState extends State<NsmSmOrderDetailsScreen> {
-  List<NsmSmOrderModel> _allBookers = [];
-  List<NsmSmOrderModel> _filteredBookers = [];
-  final List<NsmSmOrderModel> _displayedBookers = [];
+class _NSM_SM_StatusState extends State<NsmRsmOrderDetailsScreen> {
+  List<NsmRsmOrderModel> _allBookers = [];
+  List<NsmRsmOrderModel> _filteredBookers = [];
+  final List<NsmRsmOrderModel> _displayedBookers = [];
   final TextEditingController _nameController = TextEditingController();
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 
@@ -66,12 +68,12 @@ class _NSM_SM_StatusState extends State<NsmSmOrderDetailsScreen> {
   }
 
   Future<bool> _fetchAndSaveData() async {
-    final url = 'https://cloud.metaxperts.net:8443/erp/test1/nsmorders/get/11';
+    final url = 'https://cloud.metaxperts.net:8443/erp/test1/nsmrsmorders/get/11';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body)['items'];
-      List<NsmSmOrderModel> fetchedBookers = data.map<NsmSmOrderModel>((json) => NsmSmOrderModel.fromJson(json)).toList();
+      List<NsmRsmOrderModel> fetchedBookers = data.map<NsmRsmOrderModel>((json) => NsmRsmOrderModel.fromJson(json)).toList();
 
       // Compare with existing data to check if new data is fetched
       bool isNewData = _hasNewData(fetchedBookers, _allBookers);
@@ -91,7 +93,7 @@ class _NSM_SM_StatusState extends State<NsmSmOrderDetailsScreen> {
     }
   }
 
-  bool _hasNewData(List<NsmSmOrderModel> newData, List<NsmSmOrderModel> oldData) {
+  bool _hasNewData(List<NsmRsmOrderModel> newData, List<NsmRsmOrderModel> oldData) {
     if (newData.length != oldData.length) return true;
     for (int i = 0; i < newData.length; i++) {
       if (newData[i].toJson() != oldData[i].toJson()) return true;
@@ -121,13 +123,13 @@ class _NSM_SM_StatusState extends State<NsmSmOrderDetailsScreen> {
     String? bookersJson = prefs.getString('NSM_SM_data');
     if (bookersJson != null) {
       List<dynamic> jsonList = jsonDecode(bookersJson);
-      _allBookers = jsonList.map((json) => NsmSmOrderModel.fromJson(json)).toList();
+      _allBookers = jsonList.map((json) => NsmRsmOrderModel.fromJson(json)).toList();
     }
   }
 
 
 
-  void _addBookersToList(List<NsmSmOrderModel> bookers) async {
+  void _addBookersToList(List<NsmRsmOrderModel> bookers) async {
     for (int i = 0; i < bookers.length; i++) {
       if (!_displayedBookers.contains(bookers[i])) {
         _displayedBookers.add(bookers[i]);
@@ -403,7 +405,7 @@ class _NSM_SM_StatusState extends State<NsmSmOrderDetailsScreen> {
     );
   }
 
-  Widget _buildBookerCard(NsmSmOrderModel booker, Animation<double> animation) {
+  Widget _buildBookerCard(NsmRsmOrderModel booker, Animation<double> animation) {
     Color statusColor;
     String statusText;
 
@@ -429,7 +431,7 @@ class _NSM_SM_StatusState extends State<NsmSmOrderDetailsScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => NsmSmBookersDetailsScreen(booker: booker),
+              builder: (context) => NsmRsmBookerDetailsScreen(booker: booker),
             ),
           );
         },

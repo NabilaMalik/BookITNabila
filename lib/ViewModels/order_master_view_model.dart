@@ -129,6 +129,7 @@ class OrderMasterViewModel extends GetxController {
         nsm: userNameNSM,
         order_status: order_status.value,
         user_id: user_id.toString(),
+        user_name: userName,
         required_delivery_date: required_delivery_date.value,
         order_master_id: order_master_id.toString(),
        );

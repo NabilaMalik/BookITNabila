@@ -25,6 +25,7 @@ import '../../main.dart';
 import '../HomeScreenComponents/timer_card.dart';
 import 'LIVE_location_page.dart';
 import 'BookerStatus.dart';
+import 'RSMOrderDetails/rsm_order_details_screen.dart';
 import 'RSM_ShopDetails.dart';
 import 'RSM_ShopVisit.dart';
 import 'RSM_bookerbookingdetails.dart';
@@ -387,7 +388,8 @@ class _RSMHomepageState extends State<RSMHomepage> {
       case 'BOOKERS ORDER DETAILS':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => RSMBookingBookPage()),
+          MaterialPageRoute(builder: (context) => RsmOrderDetailsScreen()),
+          // MaterialPageRoute(builder: (context) => RSMBookingBookPage()),
         );
         break;
       case 'LIVE LOCATION':

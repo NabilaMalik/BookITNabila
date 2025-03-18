@@ -34,7 +34,7 @@ class Config {
   }
 
 // Static configuration parameters for GET API URLs
-  static String get getApiUrlLogin => remoteConfig.getString('LoginGetUrl');
+  static String get getApiUrlLogin => remoteConfig.getString('LoginGetUrl');//https://cloud.metaxperts.net:8443/erp/test1/loginget/get/
 
   static String get getApiUrlShops1 => remoteConfig.getString('ShopsGetUrl1');
   static String get getApiUrlShops2 => remoteConfig.getString('ShopsGetUrl2');
@@ -49,7 +49,7 @@ class Config {
   static String get getApiUrlAttendanceOut =>
       remoteConfig.getString('AttendanceOutGetUrl');
   static String get getApiUrlProducts =>
-      remoteConfig.getString('ProductsGetUrl');
+      remoteConfig.getString('ProductsGetUrl');//https://cloud.metaxperts.net:8443/erp/test1/products/get/
 
   static String get getApiUrlBrands => remoteConfig.getString('BrandsGetUrl');
 
@@ -81,6 +81,31 @@ class Config {
 
   static String get getApiUrlOrderBookingStatus =>
       remoteConfig.getString('OrderBookingStatusGetUrl');
+
+  static String get getApiUrlSmUserOrderDetails =>
+      remoteConfig.getString('SmUserOrderDetailsGetUrl');//https://cloud.metaxperts.net:8443/erp/test1/smuserorderdetails/get/$user_id/${widget.booker.booker_id}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Static configuration parameters for POST API URLs with postApiUrl prefix
   static String get postApiUrlShopVisitDetails =>
