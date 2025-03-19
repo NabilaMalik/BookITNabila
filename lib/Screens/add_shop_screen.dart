@@ -91,11 +91,15 @@ class AddShopScreen extends StatelessWidget {
                   ),
 
                   _buildTextField(
-                    label: "Owner CNIC",
+                    label: "CNIC",
                     icon: Icons.badge,
-                    onChanged: (value) => _viewModel.setShopField('owner_cnic', value),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [CNICInputFormatter()],
                     validator: Validators.validateCNIC,
-                    keyboardType: TextInputType.number, // Optional: helps with digit input
+                    onChanged: (value) {
+                      // Handle CNIC value if needed
+                      _viewModel.setShopField('cnic', value);
+                    },
                   ),
 
 
