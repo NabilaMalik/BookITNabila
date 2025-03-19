@@ -278,6 +278,7 @@ class Config {
   static String get postApiUrlShopVisitDetails => remoteConfig.getString(
       'ShopVisitDetailsPostUrl');
   //https://cloud.metaxperts.net:8443/erp/test1/headshopvisit/post/
+
   static String get postApiUrlShops => remoteConfig.getString('ShopsPostUrl');
 
   static String get postApiUrlProducts =>
