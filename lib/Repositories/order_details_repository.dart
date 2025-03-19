@@ -202,7 +202,7 @@ class OrderDetailsRepository extends GetxService {
     await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: '${Config.getApiUrlOrderDetails}$user_id',
+      apiUrl: '${Config.getApiUrlOrderDetailsSerial}$user_id',
       maxColumnName: 'max(order_details_id)',
       serialType: orderDetailsHighestSerial, // Unique identifier for shop visit serials
     );

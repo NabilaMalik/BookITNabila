@@ -133,6 +133,7 @@ class _StateShopVisitScreen extends State<ShopVisitScreen>{
                           )),
                       _buildTextField(
                         label: "Booker Name",
+
                         initialValue: shopVisitViewModel.booker_name.value,
                         icon: Icons.person,
                         validator: (value) => value == null || value.isEmpty
@@ -270,7 +271,7 @@ class _StateShopVisitScreen extends State<ShopVisitScreen>{
     bool obscureText = false,
   }) {
     return CustomEditableMenuOption(
-      //readOnly: true,
+      readOnly: true,
       label: label,
       initialValue: initialValue,
       onChanged: onChanged,

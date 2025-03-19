@@ -16,6 +16,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart'; //
 
 bool isPressed = false;
+bool isButtonDisabled = false; // Add this flag
 
 class ReconfirmOrderScreen extends StatefulWidget {
   final List<Map<String, dynamic>> rows;
@@ -472,6 +473,9 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
                 width: 120,
                 buttonText: "Close",
                 onTap: () {
+                  setState(() {
+                    isButtonDisabled = false; // Re-enable the button if needed
+                  });
                   Get.offNamed("/home");
                 },
                 gradientColors: [Colors.red.shade700, Colors.red],
@@ -582,8 +586,9 @@ class OrderFooter extends StatefulWidget {
 
 class _OrderFooterState extends State<OrderFooter> {
   OrderMasterViewModel orderMasterViewModel = Get.put(OrderMasterViewModel());
-  OrderDetailsViewModel orderDetailsViewModel =
-      Get.put(OrderDetailsViewModel());
+  OrderDetailsViewModel orderDetailsViewModel = Get.put(OrderDetailsViewModel());
+
+  String buttonText = "CONFIRM ORDER"; // To change the button text
 
   @override
   Widget build(BuildContext context) {
@@ -609,12 +614,18 @@ class _OrderFooterState extends State<OrderFooter> {
             alignment: Alignment.centerRight,
             child: CustomButton(
               height: 45,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-              buttonText: "CONFIRM ORDER",
-              onTap: () async {
+              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+              buttonText: buttonText, // Use the variable for button text
+              onTap: isButtonDisabled
+                  ? null // Disable the button if isButtonDisabled is true
+                  : () async {
+                setState(() {
+                  isButtonDisabled = true; // Disable the button
+                  buttonText = "SUBMITTED"; // Change button text
+                });
                 isPressed = true;
                 await orderMasterViewModel.confirmSubmitForm();
+
               },
               gradientColors: [Colors.blue, Colors.blue],
             ),

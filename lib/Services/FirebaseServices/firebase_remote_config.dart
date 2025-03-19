@@ -32,24 +32,22 @@ class Config {
       }
     }
   }
-  static String get getApiUrlServer => remoteConfig.getString(
-      'ServerGetUrl');
+
+  static String get getApiUrlServer => remoteConfig.getString('ServerGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/loginget/get/');
-  static String get getApiUrlERP => remoteConfig.getString(
-      'ERPGetUrl');
+  static String get getApiUrlERP => remoteConfig.getString('ERPGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/
-  static String get getApiUrlServerIP => remoteConfig.getString(
-      'ServerIPGetUrl');
+  static String get getApiUrlServerIP =>
+      remoteConfig.getString('ServerIPGetUrl');
   // 'https://cloud.metaxperts.net:8443/
 
-
 // Static configuration parameters for GET API URLs
-  static String get getApiUrlLogin => remoteConfig.getString(
-      'LoginGetUrl');
+  static String get getApiUrlLogin => remoteConfig.getString('LoginGetUrl');
   //https://cloud.metaxperts.net:8443/erp/test1/loginget/get/
   static String get getApiUrlShops => remoteConfig.getString('ShopsGetUrl');
   //        'https://cloud.metaxperts.net:8443/erp/test1/shopget/get/');
-  static String get getApiUrlShopsUserId => remoteConfig.getString('ShopsUserIdGetUrl');
+  static String get getApiUrlShopsUserId =>
+      remoteConfig.getString('ShopsUserIdGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/shopgetid/get/$user_id');
 
   static String get getApiUrlShops1 => remoteConfig.getString('ShopsGetUrl1');
@@ -66,22 +64,20 @@ class Config {
   static String get getApiUrlAttendanceOut =>
       remoteConfig.getString('AttendanceOutGetUrl');
 
-
-  static String get getApiUrlProducts => remoteConfig.getString(
-      'ProductsGetUrl');
+  static String get getApiUrlProducts =>
+      remoteConfig.getString('ProductsGetUrl');
   //https://cloud.metaxperts.net:8443/erp/test1/products/get/
   static String get getApiUrlBrands => remoteConfig.getString('BrandsGetUrl');
 //
-  static String get getApiUrlCities => remoteConfig.getString(
-      'CitiesGetUrl');
+  static String get getApiUrlCities => remoteConfig.getString('CitiesGetUrl');
   //https://cloud.metaxperts.net:8443/erp/test1/cities/get/
 
-  static String get getApiUrlOrderMaster => remoteConfig.getString(
-      'OrderMasterGetUrl');
+  static String get getApiUrlOrderMaster =>
+      remoteConfig.getString('OrderMasterGetUrl');
   //https://cloud.metaxperts.net:8443/erp/test1/ordermasterget/get/$user_id
 
-  static String get getApiUrlOrderDetails => remoteConfig.getString(
-      'OrderDetailsGetUrl');
+  static String get getApiUrlOrderDetails =>
+      remoteConfig.getString('OrderDetailsGetUrl');
   //'https://cloud.metaxperts.net:8443/erp/test1/orderdetailsget/get/$user_id'
 
   static String get getApiUrlRecoveryForm =>
@@ -108,128 +104,138 @@ class Config {
 
 
 
-  static String get getApiUrlHeadsAttendanceData => remoteConfig.getString(
-      'HeadsAttendanceDataGetUrl');
+///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+  static String get getApiUrlHeadsAttendanceData =>
+      remoteConfig.getString('HeadsAttendanceDataGetUrl');
 
-  static String get getApiUrlNsmShop => remoteConfig.getString(
-      'NsmShopsGetUrl1');
+  static String get getApiUrlNsmShop =>
+      remoteConfig.getString('NsmShopsGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/nsmshops/get/$user_id';
-  static String get getApiUrlRsmShop => remoteConfig.getString(
-      'RsmShopsGetUrl1');
+  static String get getApiUrlRsmShop =>
+      remoteConfig.getString('RsmShopsGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/rsmshops/get/$user_id';
-  static String get getApiUrlSmShop => remoteConfig.getString(
-      'SmShopsGetUrl1');
+  static String get getApiUrlSmShop =>
+      remoteConfig.getString('SmShopsGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/smshops/get/$user_id';
 
-
-  static String get getApiUrlNsmBookersStatus => remoteConfig.getString(
-      'NsmBookersStatusGetUrl');
+  static String get getApiUrlNsmBookersStatus =>
+      remoteConfig.getString('NsmBookersStatusGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/nsmbookerstatus/get/$user_id';
-  static String get getApiUrlNsmRsmStatus => remoteConfig.getString(
-      'NsmRsmStatusGetUrl');
+  static String get getApiUrlNsmRsmStatus =>
+      remoteConfig.getString('NsmRsmStatusGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/nsmrsmstatus/get/$user_id';
-  static String get getApiUrlNsmSmStatus=> remoteConfig.getString(
-      'NsmSmStatusGetUrl');
+  static String get getApiUrlNsmSmStatus =>
+      remoteConfig.getString('NsmSmStatusGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/nsmsmstatus/get/$user_id';
 
-  static String get getApiUrlSmRsmStatus => remoteConfig.getString(
-      'SmRsmStatusGetUrl');
+  static String get getApiUrlSmRsmStatus =>
+      remoteConfig.getString('SmRsmStatusGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/smstatus/get/$user_id';
-  static String get getApiUrlSmBookersStatus=> remoteConfig.getString(
-      'SmBookersStatusGetUrl');
+  static String get getApiUrlSmBookersStatus =>
+      remoteConfig.getString('SmBookersStatusGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/smbookerstatus/get/$user_id';
 
-  static String get getApiUrlRsmBookersStatus=> remoteConfig.getString(
-      'RsmBookersStatusGetUrl');
+  static String get getApiUrlRsmBookersStatus =>
+      remoteConfig.getString('RsmBookersStatusGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/bookerattendanceStatus/get/$user_id';
 
 
-
-  static String get getApiUrlSmRsmAttendanceData => remoteConfig.getString(
-      'SmRsmAttendanceDataGetUrl');
-  //'https://cloud.metaxperts.net:8443/erp/test1/attendancedata/get/$user_id/${widget.booker.booker_id}'),
-    static String get getApiUrlSmBookersAttendanceData => remoteConfig.getString(
-      'SmBookersAttendanceDataGetUrl');
-  //'https://cloud.metaxperts.net:8443/erp/test1/attendancedata/get/$user_id/${widget.booker.booker_id}'),
-
-    static String get getApiUrlRsmBookersAttendanceData => remoteConfig.getString(
-      'RsmBookersAttendanceDataGetUrl');
-  //'https://cloud.metaxperts.net:8443/erp/test1/attendancedata/get/$user_id/${widget.booker.booker_id}'),
-
-
-  static String get getApiUrlNsmSmOrder => remoteConfig.getString(
-      'NsmRsmOrderGetUrl');
+  static String get getApiUrlNsmSmOrder =>
+      remoteConfig.getString('NsmRsmOrderGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/nsmorders/get/11';
-  static String get getApiUrlNsmRsmOrder => remoteConfig.getString(
-      'NsmRsmOrderGetUrl');
+  static String get getApiUrlNsmRsmOrder =>
+      remoteConfig.getString('NsmRsmOrderGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/nsmrsmorders/get/$user_id';
-  static String get getApiUrlNsmUserOrder => remoteConfig.getString(
-      'NsmUserOrderGetUrl');
+  static String get getApiUrlNsmUserOrder =>
+      remoteConfig.getString('NsmUserOrderGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/nsmuserorders/get/$user_id';
 
-
-
-
-    static String get getApiUrlNsmSmOrderDetails => remoteConfig.getString(
-      'NsmSmOrderDetailsGetUrl');
+  static String get getApiUrlNsmSmOrderDetails =>
+      remoteConfig.getString('NsmSmOrderDetailsGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/nsmsmorderdetails/get/$user_id/${widget.booker.booker_id}'),
 
-  static String get getApiUrlNsmRsmOrderDetails => remoteConfig.getString(
-      'NsmRsmOrderDetailsGetUrl');
+  static String get getApiUrlNsmRsmOrderDetails =>
+      remoteConfig.getString('NsmRsmOrderDetailsGetUrl');
   //https://cloud.metaxperts.net:8443/erp/test1/nsmrsmorderdetails/get/$user_id/${widget.booker.booker_id}
-    static String get getApiUrlNsmUserOrderDetails => remoteConfig.getString(
-      'NsmUserOrderDetailsGetUrl');
+  static String get getApiUrlNsmUserOrderDetails =>
+      remoteConfig.getString('NsmUserOrderDetailsGetUrl');
   //https://cloud.metaxperts.net:8443/erp/test1/nsmuserorderdetails/get/$user_id/${widget.booker.booker_id}
 
-
-
-  static String get getApiUrlSmRsmOrder => remoteConfig.getString(
-      'SmRsmOrderGetUrl');
+  static String get getApiUrlSmRsmOrder =>
+      remoteConfig.getString('SmRsmOrderGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/nsmrsmorders/get/$user_id';
-  static String get getApiUrlSmUserOrder => remoteConfig.getString(
-      'SmUserOrderGetUrl');
+  static String get getApiUrlSmUserOrder =>
+      remoteConfig.getString('SmUserOrderGetUrl');
   //final url = 'https://cloud.metaxperts.net:8443/erp/test1/smuserorders/get/$user_id';
 
-
-  static String get getApiUrlSmRsmOrderDetails => remoteConfig.getString(
-      'SmRsmOrderDetailsGetUrl');
+  static String get getApiUrlSmRsmOrderDetails =>
+      remoteConfig.getString('SmRsmOrderDetailsGetUrl');
   //   Uri.parse('https://cloud.metaxperts.net:8443/erp/test1/smrsmorderdetails/get/$user_id/${widget.booker.booker_id}'),
-    static String get getApiUrlSmUserOrderDetails => remoteConfig.getString(
-      'SmUserOrderDetailsGetUrl');
+  static String get getApiUrlSmUserOrderDetails =>
+      remoteConfig.getString('SmUserOrderDetailsGetUrl');
   // final url = 'https://cloud.metaxperts.net:8443/erp/test1/smrsmorders/get/$user_id';
 
-
-
-    static String get getApiUrlRsmUserOrderDetails => remoteConfig.getString(
-      'RsmUserOrderDetailsGetUrl');
+  static String get getApiUrlRsmUserOrderDetails =>
+      remoteConfig.getString('RsmUserOrderDetailsGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/rsmuserorderdetails/get/$user_id/${widget.booker.booker_id}'),
 
-  static String get getApiUrlRsmUserOrder => remoteConfig.getString(
-      'RsmUserOrderGetUrl');
+  static String get getApiUrlRsmUserOrder =>
+      remoteConfig.getString('RsmUserOrderGetUrl');
   //final url = 'https://cloud.metaxperts.net:8443/erp/test1/smuserorders/get/$user_id';
+  ///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+  ///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+  ///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+  ///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+  ///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+  ///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+  ///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+  ///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+  ///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
+  ///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
 
 
 
-
-
-
-  static String get getApiUrlProductsWithTime => remoteConfig.getString(
-      'ProductsWthTimeGetUrl');
+  ///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///
+  ///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///
+  ///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///
+  ///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///
+  ///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///
+  ///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///
+  ///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///
+  ///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///
+  static String get getApiUrlProductsWithTime =>
+      remoteConfig.getString('ProductsWthTimeGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/productgettime/get/$formattedDateTime');
-    static String get getApiUrlOrderMasterWithTime => remoteConfig.getString(
-      'OrderMasterWthTimeGetUrl');
+  static String get getApiUrlOrderMasterWithTime =>
+      remoteConfig.getString('OrderMasterWthTimeGetUrl');
   //        'https://cloud.metaxperts.net:8443/erp/test1/ordermastergettime/get/$user_id/$formattedDateTime');
-      static String get getApiUrlCitiesWithTime => remoteConfig.getString(
-      'CitiesWthTimeGetUrl');
+  static String get getApiUrlCitiesWithTime =>
+      remoteConfig.getString('CitiesWthTimeGetUrl');
   //     "https://cloud.metaxperts.net:8443/erp/test1/citiestime/get/$formattedDateTime";
 
+  ///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///
+  ///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///
+  ///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///
+  ///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///
+  ///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///
+  ///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///
+  ///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///
+  ///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///WITH TIME///
 
-
-
-
-
-
-//Serial Get
+///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get
+///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get
+///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get
+///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get
+///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get
   static String get getApiUrlShopVisitSerial =>
       remoteConfig.getString('ShopVisitSerialGetUrl');
   //'https://cloud.metaxperts.net:8443/erp/test1/shopvisitserial/get/$user_id'
@@ -263,20 +269,22 @@ class Config {
   static String get getApiUrlRecoveryFormSerial =>
       remoteConfig.getString('RecoveryFormSerialGetUrl');
   //      apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/recoveryserial/get/$user_id',
+  ///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get
+  ///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get
+  ///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get
+  ///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get
+  ///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get///Serial Get
 
 
 
-
-
-
-
-
-
-
-
-// Static configuration parameters for POST API URLs with postApiUrl prefix
-  static String get postApiUrlShopVisitDetails => remoteConfig.getString(
-      'ShopVisitDetailsPostUrl');
+/// Static configuration parameters for POST API URLs with postApiUrl prefix  ///
+/// Static configuration parameters for POST API URLs with postApiUrl prefix  ///
+/// Static configuration parameters for POST API URLs with postApiUrl prefix  ///
+/// Static configuration parameters for POST API URLs with postApiUrl prefix  ///
+/// Static configuration parameters for POST API URLs with postApiUrl prefix  ///
+/// Static configuration parameters for POST API URLs with postApiUrl prefix  ///
+  static String get postApiUrlShopVisitDetails =>
+      remoteConfig.getString('ShopVisitDetailsPostUrl');
   //https://cloud.metaxperts.net:8443/erp/test1/headshopvisit/post/
 
   static String get postApiUrlShops => remoteConfig.getString('ShopsPostUrl');
@@ -303,8 +311,8 @@ class Config {
 
   static String get postApiUrlShopVisit => remoteConfig.getString(
       'ShopVisitPostUrl'); //https://cloud.metaxperts.net:8443/erp/test1/headshopvisit/post/
-  static String get postApiUrlShopVisitHeads => remoteConfig.getString(
-      'ShopVisitHeadsPostUrl');
+  static String get postApiUrlShopVisitHeads =>
+      remoteConfig.getString('ShopVisitHeadsPostUrl');
   // "https://cloud.metaxperts.net:8443/erp/test1/headshopvisit/post/"
 
   static String get postApiUrlAttendanceIn =>
@@ -315,6 +323,4 @@ class Config {
 
   static String get postApiUrlLocation =>
       remoteConfig.getString('LocationPostUrl');
-
-
 }

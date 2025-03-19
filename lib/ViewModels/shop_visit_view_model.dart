@@ -40,7 +40,7 @@ class ShopVisitViewModel extends GetxController {
   final TextEditingController bookerNameController = TextEditingController();
   var shop_address = ''.obs;
   var owner_name = ''.obs;
-  var booker_name = ''.obs;
+  var booker_name = userName.obs;
   var phone_number = ''.obs;
   var feedBack = ''.obs;
   var selectedBrand = ''.obs;
