@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 class Validators {
@@ -59,14 +58,15 @@ class Validators {
 
 class PhoneNumberFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue,
+      TextEditingValue newValue) {
     // Remove all non-digit characters
     final digitsOnly = newValue.text.replaceAll(RegExp(r'\D'), '');
 
     final buffer = StringBuffer();
     for (int i = 0; i < digitsOnly.length && i < 11; i++) {
       buffer.write(digitsOnly[i]);
-      if (i == 3 ) {
+      if (i == 3) {
         buffer.write('-');
       }
     }

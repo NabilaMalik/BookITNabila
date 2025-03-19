@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Databases/util.dart';
 import '../../Models/Bookers_RSM_SM_NSM_Models/ShopStatusModel.dart';
+import '../../Services/FirebaseServices/firebase_remote_config.dart';
 import '../../main.dart';
 import '../SM/shop_details_page..dart';
 class NSMShopDetailPage extends StatefulWidget {
@@ -63,7 +64,10 @@ class _NSMShopDetailPageState extends State<NSMShopDetailPage> {
   }
 
   Future<bool> _fetchAndSaveData() async {
-    final url = 'https://cloud.metaxperts.net:8443/erp/test1/nsmshops/get/$user_id';
+    await Config.fetchLatestConfig();
+    final url =
+        "${Config.getApiUrlNsmShop}$user_id";
+        // 'https://cloud.metaxperts.net:8443/erp/test1/nsmshops/get/$user_id';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {

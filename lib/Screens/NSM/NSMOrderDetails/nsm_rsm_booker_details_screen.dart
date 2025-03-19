@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:order_booking_app/Databases/util.dart';
+import 'package:order_booking_app/Services/FirebaseServices/firebase_remote_config.dart';
 import 'dart:convert';
 
 import '../../../Models/Bookers_RSM_SM_NSM_Models/nsm_rsm_order_model.dart';
@@ -35,9 +36,10 @@ class _NSMBookerDetailsPageState extends State<NsmRsmBookerDetailsScreen> {
   }
 
   Future<void> _fetchAttendanceData() async {
+    await Config.fetchLatestConfig();
     final response = await http.get(
-      Uri.parse('https://cloud.metaxperts.net:8443/erp/test1/nsmrsmorderdetails/get/11/${widget.booker.booker_id}'),
-      //Uri.parse('http://103.149.32.30:8080/ords/metaxperts/attendancedata/get/${widget.booker.booker_id}'),
+      Uri.parse(
+          '${Config.getApiUrlNsmRsmOrderDetails}$user_id/${widget.booker.booker_id}'),
     );
 
     if (response.statusCode == 200) {

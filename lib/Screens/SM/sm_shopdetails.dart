@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:order_booking_app/Services/FirebaseServices/firebase_remote_config.dart';
 
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -67,7 +68,10 @@ class _SMShopDetailPageState extends State<SMShopDetailPage> {
   }
 
   Future<bool> _fetchAndSaveData() async {
-    final url = 'https://cloud.metaxperts.net:8443/erp/test1/smshops/get/$user_id';
+    await Config.fetchLatestConfig();
+    final url =
+    "${Config.getApiUrlSmShop}$user_id";
+        // 'https://cloud.metaxperts.net:8443/erp/test1/smshops/get/$user_id';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {

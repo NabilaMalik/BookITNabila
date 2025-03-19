@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../../Databases/util.dart';
 import '../../Models/Bookers_RSM_SM_NSM_Models/BookerStatusModel.dart';
+import '../../Services/FirebaseServices/firebase_remote_config.dart';
 import '../../main.dart';
 import '../RSMS_Views/booker_details_page.dart';
 
@@ -62,8 +63,10 @@ class _NSMBookerStatusState extends State<NSMBookerStatus> {
     }
   }
 
-  Future<bool> _fetchAndSaveData() async {
-    final url = 'https://cloud.metaxperts.net:8443/erp/test1/nsmbookerstatus/get/$user_id';
+  Future<bool> _fetchAndSaveData() async {    await Config.fetchLatestConfig();
+    final url =
+        "${Config.getApiUrlNsmBookersStatus}$user_id";
+        // 'https://cloud.metaxperts.net:8443/erp/test1/nsmbookerstatus/get/$user_id';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {

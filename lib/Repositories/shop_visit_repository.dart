@@ -15,7 +15,7 @@ import '../Services/ApiServices/api_service.dart';
 import '../Services/ApiServices/serial_number_genterator.dart';
 import '../Services/FirebaseServices/firebase_remote_config.dart';
 
-class ShopVisitRepository extends GetxService{
+class ShopVisitRepository extends GetxService {
   DBHelper dbHelper = DBHelper();
   Future<List<ShopVisitModel>> getShopVisit() async {
     var dbClient = await dbHelper.db;
@@ -34,26 +34,26 @@ class ShopVisitRepository extends GetxService{
       'product_reviewed',
       'feedback',
       'user_id',
-      'posted'
-,      'body'
+      'posted',
+      'body'
     ]);
     List<ShopVisitModel> shopvisit = [];
     for (int i = 0; i < maps.length; i++) {
       shopvisit.add(ShopVisitModel.fromMap(maps[i]));
     }
 
-      debugPrint('Raw data from Shop Visit Table database:');
+    debugPrint('Raw data from Shop Visit Table database:');
 
     for (var map in maps) {
-
-        debugPrint("$map");
-
+      debugPrint("$map");
     }
     return shopvisit;
   }
+
   Future<void> fetchAndSaveShopVisit() async {
     debugPrint('${Config.getApiUrlShopVisit}$user_id');
-    List<dynamic> data = await ApiService.getData('${Config.getApiUrlShopVisit}$user_id');
+    List<dynamic> data =
+        await ApiService.getData('${Config.getApiUrlShopVisit}$user_id');
     var dbClient = await dbHelper.db;
 
     // Save data to database
@@ -69,10 +69,11 @@ class ShopVisitRepository extends GetxService{
     List<Map> maps = await dbClient.query(
       shopVisitMasterTableName,
       where: 'posted = ?',
-      whereArgs: [0],  // Fetch machines that have not been posted
+      whereArgs: [0], // Fetch machines that have not been posted
     );
 
-    List<ShopVisitModel> attendanceIn = maps.map((map) => ShopVisitModel.fromMap(map)).toList();
+    List<ShopVisitModel> attendanceIn =
+        maps.map((map) => ShopVisitModel.fromMap(map)).toList();
     return attendanceIn;
   }
 
@@ -87,23 +88,18 @@ class ShopVisitRepository extends GetxService{
             shop.posted = 1;
             await update(shop);
 
-              debugPrint('Shop with id ${shop.shop_visit_master_id} posted and updated in local database.');
-
+            debugPrint(
+                'Shop with id ${shop.shop_visit_master_id} posted and updated in local database.');
           } catch (e) {
-
-              debugPrint('Failed to post shop with id ${shop.shop_visit_master_id}: $e');
-
+            debugPrint(
+                'Failed to post shop with id ${shop.shop_visit_master_id}: $e');
           }
         }
       } else {
-
-          debugPrint('Network not available. Unposted shops will remain local.');
-
+        debugPrint('Network not available. Unposted shops will remain local.');
       }
     } catch (e) {
-
-        debugPrint('Error fetching unposted shops: $e');
-
+      debugPrint('Error fetching unposted shops: $e');
     }
   }
 
@@ -111,7 +107,7 @@ class ShopVisitRepository extends GetxService{
     try {
       await Config.fetchLatestConfig();
 
-        debugPrint('Updated Shop Post API: ${Config.postApiUrlShopVisit}');
+      debugPrint('Updated Shop Post API: ${Config.postApiUrlShopVisit}');
 
       var shopData = shop.toMap();
 
@@ -123,14 +119,16 @@ class ShopVisitRepository extends GetxService{
       request.headers['Content-Type'] = 'multipart/form-data';
       request.headers['Accept'] = 'application/json';
 
-      request.fields.addAll(shopData.map((key, value) => MapEntry(key, value.toString())));
+      request.fields.addAll(
+          shopData.map((key, value) => MapEntry(key, value.toString())));
 
       if (imageBytes.isNotEmpty) {
         request.files.add(
           http.MultipartFile.fromBytes(
             'body',
             imageBytes,
-            contentType: MediaType('body', 'jpeg'), // Adjust the content type based on your image type
+            contentType: MediaType('body',
+                'jpeg'), // Adjust the content type based on your image type
             // filename: 'upload.jpg',
           ),
         );
@@ -144,8 +142,8 @@ class ShopVisitRepository extends GetxService{
         // Delete the shop visit data from the local database after successful post
         await delete(shop.shop_visit_master_id!);
 
-          debugPrint('Shop with id ${shop.shop_visit_master_id} deleted from local database.');
-
+        debugPrint(
+            'Shop with id ${shop.shop_visit_master_id} deleted from local database.');
       } else {
         final responseBody = await response.stream.bytesToString();
         throw Exception('Server error: ${response.statusCode}, $responseBody');
@@ -155,22 +153,29 @@ class ShopVisitRepository extends GetxService{
       throw Exception('Failed to post data: $e');
     }
   }
+
   Future<int> add(ShopVisitModel shopvisitModel) async {
     var dbClient = await dbHelper.db;
     return await dbClient.insert(
         shopVisitMasterTableName, shopvisitModel.toMap());
   }
-  Future<int> addHeasdsShopVisits(HeadsShopVisitModel headsShopVisitModel) async {
+
+  Future<int> addHeasdsShopVisits(
+      HeadsShopVisitModel headsShopVisitModel) async {
     var dbClient = await dbHelper.db;
-    return await dbClient.insert(headsShopVisitsTableName, headsShopVisitModel.toMap());
+    return await dbClient.insert(
+        headsShopVisitsTableName, headsShopVisitModel.toMap());
   }
+
   Future<int> update(ShopVisitModel shopvisitModel) async {
     var dbClient = await dbHelper.db;
     return await dbClient.update(
         shopVisitMasterTableName, shopvisitModel.toMap(),
         where: 'shop_visit_master_id = ?',
         whereArgs: [shopvisitModel.shop_visit_master_id]);
-  }  Future<int> updateheads(HeadsShopVisitModel shopvisitModel) async {
+  }
+
+  Future<int> updateheads(HeadsShopVisitModel shopvisitModel) async {
     var dbClient = await dbHelper.db;
     return await dbClient.update(
         headsShopVisitsTableName, shopvisitModel.toMap(),
@@ -180,44 +185,50 @@ class ShopVisitRepository extends GetxService{
 
   Future<int> delete(String id) async {
     var dbClient = await dbHelper.db;
-    return await dbClient
-        .delete(shopVisitMasterTableName, where: 'shop_visit_master_id = ?', whereArgs: [id]);
+    return await dbClient.delete(shopVisitMasterTableName,
+        where: 'shop_visit_master_id = ?', whereArgs: [id]);
   }
+
   Future<void> serialNumberGeneratorApi() async {
+    await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/shopvisitserial/get/$user_id',
+      apiUrl: '${Config.getApiUrlShopVisitSerial}$user_id',
       maxColumnName: 'max(shop_visit_master_id)',
-      serialType: shopVisitHighestSerial, // Unique identifier for shop visit serials
+      serialType:
+          shopVisitHighestSerial, // Unique identifier for shop visit serials
     );
     await orderDetailsGenerator.getAndIncrementSerialNumber();
     shopVisitHighestSerial = orderDetailsGenerator.serialType;
     await prefs.reload();
     await prefs.setInt("shopVisitHighestSerial", shopVisitHighestSerial!);
-
   }
+
   Future<void> serialNumberGeneratorApiHeads() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/shopvisitserial/get/$user_id',
+      apiUrl: '${Config.getApiUrlShopVisitSerial}$user_id',
       maxColumnName: 'max(shop_visit_master_id)',
-      serialType: shopVisitHeadsHighestSerial, // Unique identifier for shop visit serials
+      serialType:
+          shopVisitHeadsHighestSerial, // Unique identifier for shop visit serials
     );
     await orderDetailsGenerator.getAndIncrementSerialNumber();
     shopVisitHeadsHighestSerial = orderDetailsGenerator.serialType;
     await prefs.reload();
-    await prefs.setInt("shopVisitHeadsHighestSerial", shopVisitHeadsHighestSerial!);
-
+    await prefs.setInt(
+        "shopVisitHeadsHighestSerial", shopVisitHeadsHighestSerial!);
   }
+
   Future<List<HeadsShopVisitModel>> getUnPostedShopVisitHeads() async {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(
       headsShopVisitsTableName,
       where: 'posted = ?',
-      whereArgs: [0],  // Fetch machines that have not been posted
+      whereArgs: [0], // Fetch machines that have not been posted
     );
 
-    List<HeadsShopVisitModel> headsShopVisit = maps.map((map) => HeadsShopVisitModel.fromMap(map)).toList();
+    List<HeadsShopVisitModel> headsShopVisit =
+        maps.map((map) => HeadsShopVisitModel.fromMap(map)).toList();
     return headsShopVisit;
   }
 
@@ -232,11 +243,13 @@ class ShopVisitRepository extends GetxService{
             shop.posted = 1;
             await updateheads(shop);
             if (kDebugMode) {
-              print('Shop with id ${shop.shop_visit_master_id} posted and updated in local database.');
+              print(
+                  'Shop with id ${shop.shop_visit_master_id} posted and updated in local database.');
             }
           } catch (e) {
             if (kDebugMode) {
-              print('Failed to post shop with id ${shop.shop_visit_master_id}: $e');
+              print(
+                  'Failed to post shop with id ${shop.shop_visit_master_id}: $e');
             }
           }
         }
@@ -256,12 +269,13 @@ class ShopVisitRepository extends GetxService{
     try {
       await Config.fetchLatestConfig();
       if (kDebugMode) {
-        print('Updated Shop Post API: ${Config.getApiUrlShopVisitHeads}');
+        print('Updated Shop Post API: ${Config.postApiUrlShopVisitHeads}');
       }
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse("https://cloud.metaxperts.net:8443/erp/test1/headshopvisit/post/"),
-        // Uri.parse(Config.getApiUrlShopVisitHeads),
+        Uri.parse(
+            Config.postApiUrlShopVisitHeads
+          ),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -272,10 +286,12 @@ class ShopVisitRepository extends GetxService{
       if (response.statusCode == 200 || response.statusCode == 201) {
         print('Shop data posted successfully: $shopData');
       } else {
-        throw Exception('Server error: ${response.statusCode}, ${response.body}');
+        throw Exception(
+            'Server error: ${response.statusCode}, ${response.body}');
       }
     } catch (e) {
       print('Error posting shop data: $e');
       throw Exception('Failed to post data: $e');
     }
-  }}
+  }
+}

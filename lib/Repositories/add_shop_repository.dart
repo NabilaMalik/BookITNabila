@@ -17,13 +17,14 @@ class AddShopRepository extends GetxService {
   @override
   void onInit() {
     super.onInit();
-    Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
+    Connectivity()
+        .onConnectivityChanged
+        .listen((List<ConnectivityResult> results) {
       if (results.isNotEmpty && results.contains(ConnectivityResult.none)) {
         postDataFromDatabaseToAPI();
       }
     });
   }
-
 
   Future<List<AddShopModel>> getAddShop() async {
     var dbClient = await dbHelper.db;
@@ -49,7 +50,7 @@ class AddShopRepository extends GetxService {
       print('Shop Raw data from database:');
     }
     for (var map in maps) {
-        // debugPrint("$map");
+      // debugPrint("$map");
     }
     return addShop;
   }
@@ -67,7 +68,8 @@ class AddShopRepository extends GetxService {
 
   Future<int> delete(String? id) async {
     var dbClient = await dbHelper.db;
-    return await dbClient.delete(addShopTableName, where: 'shop_id = ?', whereArgs: [id]);
+    return await dbClient
+        .delete(addShopTableName, where: 'shop_id = ?', whereArgs: [id]);
   }
 
   // Future<void> fetchAllAddShop(RxList<AddShopModel> allAddShop) async {
@@ -75,31 +77,36 @@ class AddShopRepository extends GetxService {
   //   allAddShop.value = addShop;
   // }
 
-  Future<void> addAddShop(AddShopModel addShopModel, RxList<AddShopModel> allAddShop) async {
+  Future<void> addAddShop(
+      AddShopModel addShopModel, RxList<AddShopModel> allAddShop) async {
     await add(addShopModel);
     // await fetchAllAddShop(allAddShop);
     await postDataFromDatabaseToAPI();
   }
 
-  Future<void> updateAddShop(AddShopModel addShopModel, RxList<AddShopModel> allAddShop) async {
+  Future<void> updateAddShop(
+      AddShopModel addShopModel, RxList<AddShopModel> allAddShop) async {
     await update(addShopModel);
     // await fetchAllAddShop(allAddShop);
   }
 
-  Future<void> deleteAddShop(String? id, RxList<AddShopModel> allAddShop) async {
+  Future<void> deleteAddShop(
+      String? id, RxList<AddShopModel> allAddShop) async {
     await delete(id);
     // await fetchAllAddShop(allAddShop);
   }
 
   Future<List<String>> fetchCitiesFromApi() async {
-    // String url = Config.getApiUrlCities;
-    String url = "https://cloud.metaxperts.net:8443/erp/test1/cities/get/";
+     String url = Config.getApiUrlCities;
+    // String url = "https://cloud.metaxperts.net:8443/erp/test1/cities/get/";
     List<dynamic> data = await ApiService.getData(url);
     List<String> fetchedCities = data.map((city) => city.toString()).toList();
 
     List<String> storedCities = await getCitiesFromSharedPreferences();
-    List<String> newCities = fetchedCities.where((city) => !storedCities.contains(city)).toList();
-    List<String> removedCities = storedCities.where((city) => !fetchedCities.contains(city)).toList();
+    List<String> newCities =
+        fetchedCities.where((city) => !storedCities.contains(city)).toList();
+    List<String> removedCities =
+        storedCities.where((city) => !fetchedCities.contains(city)).toList();
 
     storedCities.addAll(newCities);
     removedCities.forEach((city) => storedCities.remove(city));
@@ -127,12 +134,10 @@ class AddShopRepository extends GetxService {
   }
 
   Future<void> fetchAndSaveShops() async {
-    if (kDebugMode) {
-      print(Config.getApiUrlShops1);
-      print('https://cloud.metaxperts.net:8443/erp/test1/shopget/get/');
-    }
-   // List<dynamic> data = await ApiService.getData(Config.getApiUrlShops1);
-    List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/test1/shopgetid/get/$user_id');
+
+    await Config.fetchLatestConfig();
+    List<dynamic> data = await ApiService.getData(
+        '${Config.getApiUrlShopsUserId}$user_id');
     var dbClient = await dbHelper.db;
 
     // Save data to database
@@ -143,13 +148,13 @@ class AddShopRepository extends GetxService {
     }
     // await getAddShop();
   }
+
   Future<void> fetchAndSaveShopsForHeads() async {
-    if (kDebugMode) {
-      print(Config.getApiUrlShops1);
-      print('https://cloud.metaxperts.net:8443/erp/test1/shopget/get/');
-    }
-   // List<dynamic> data = await ApiService.getData(Config.getApiUrlShops1);
-    List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/test1/shopget/get/');
+await Config.fetchLatestConfig();
+    // List<dynamic> data = await ApiService.getData(Config.getApiUrlShops1);
+    List<dynamic> data = await ApiService.getData(
+        Config.getApiUrlShops
+    );
     var dbClient = await dbHelper.db;
 
     // Save data to database
@@ -167,10 +172,11 @@ class AddShopRepository extends GetxService {
     List<Map> maps = await dbClient.query(
       addShopTableName,
       where: 'posted = ?',
-      whereArgs: [0],  // Fetch shops that have not been posted
+      whereArgs: [0], // Fetch shops that have not been posted
     );
 
-    List<AddShopModel> unpostedShops = maps.map((map) => AddShopModel.fromMap(map)).toList();
+    List<AddShopModel> unpostedShops =
+        maps.map((map) => AddShopModel.fromMap(map)).toList();
     return unpostedShops;
   }
 
@@ -185,7 +191,8 @@ class AddShopRepository extends GetxService {
             shop.posted = 1;
             await update(shop);
             if (kDebugMode) {
-              print('Shop with id ${shop.shop_id} posted and updated in local database.');
+              print(
+                  'Shop with id ${shop.shop_id} posted and updated in local database.');
             }
           } catch (e) {
             if (kDebugMode) {
@@ -224,23 +231,25 @@ class AddShopRepository extends GetxService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         print('Shop data posted successfully: $shopData');
       } else {
-        throw Exception('Server error: ${response.statusCode}, ${response.body}');
+        throw Exception(
+            'Server error: ${response.statusCode}, ${response.body}');
       }
     } catch (e) {
       print('Error posting shop data: $e');
       throw Exception('Failed to post data: $e');
     }
   }
+
   Future<void> serialNumberGeneratorApi() async {
+    await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/shopserial/get/$user_id',
+      apiUrl: '${Config.getApiUrlShopSerial}$user_id',
       maxColumnName: 'max(shop_id)',
       serialType: shopHighestSerial, // Unique identifier for shop visit serials
     );
-     await orderDetailsGenerator.getAndIncrementSerialNumber();
-     shopHighestSerial = orderDetailsGenerator.serialType;
-     await prefs.setInt("shopHighestSerial", shopHighestSerial!);
-
+    await orderDetailsGenerator.getAndIncrementSerialNumber();
+    shopHighestSerial = orderDetailsGenerator.serialType;
+    await prefs.setInt("shopHighestSerial", shopHighestSerial!);
   }
 }

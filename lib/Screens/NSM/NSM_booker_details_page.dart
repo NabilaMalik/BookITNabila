@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../Models/Bookers_RSM_SM_NSM_Models/AttendanceStatusModel.dart';
 import '../../Models/Bookers_RSM_SM_NSM_Models/SMStatusModel.dart';
+import '../../Services/FirebaseServices/firebase_remote_config.dart';
 
 class NSMBookerDetailPage extends StatefulWidget {
   final SMStatusModel booker;
@@ -33,9 +34,11 @@ class _NSMBookerDetailsPageState extends State<NSMBookerDetailPage> {
 
   Future<void> _fetchAttendanceData() async {
     final response = await http.get(
-      Uri.parse('https://cloud.metaxperts.net:8443/erp/test1/attendancedata/get/${widget.booker.booker_id}'),
+      Uri.parse(
+        "${Config.getApiUrlHeadsAttendanceData}${widget.booker.booker_id}"),
+          // 'https://cloud.metaxperts.net:8443/erp/test1/attendancedata/get/${widget.booker.booker_id}'),
       //Uri.parse('http://103.149.32.30:8080/ords/metaxperts/attendancedata/get/${widget.booker.booker_id}'),
-    );
+     );
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['items'];

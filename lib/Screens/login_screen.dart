@@ -151,6 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
         await shopVisitViewModel.serialCounterGet();
         updateProgress();
         await Future.wait<void>([
+          addShopViewModel.serialCounterGet(),
           shopVisitViewModel.serialCounterGet(),
           shopVisitDetailsViewModel.serialCounterGet(),
           recoveryFormViewModel.serialCounterGet(),
