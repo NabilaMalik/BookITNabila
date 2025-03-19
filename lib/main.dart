@@ -119,12 +119,12 @@ void callbackDispatcher() {
   });
 }
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  if (kDebugMode) {
-    debugPrint("Handling a background message: ${message.messageId}");
-  }
-}
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   await Firebase.initializeApp();
+//   if (kDebugMode) {
+//     debugPrint("Handling a background message: ${message.messageId}");
+//   }
+// }
 
 class MyApp extends StatelessWidget {
   final bool isAuthenticated;

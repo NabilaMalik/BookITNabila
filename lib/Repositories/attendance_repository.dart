@@ -145,9 +145,10 @@ class AttendanceRepository {
         .delete(attendanceTableName, where: 'attendance_in_id = ?', whereArgs: [id]);
   }
   Future<void> serialNumberGeneratorApi() async {
+    await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/attendanceinserial/get/$user_id',
+      apiUrl: '${Config.getApiUrlAttendanceInSerial}$user_id',
       maxColumnName: 'max(attendance_in_id)',
       serialType: attendanceInHighestSerial, // Unique identifier for shop visit serials
     );

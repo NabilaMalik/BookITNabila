@@ -5,18 +5,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../Databases/util.dart';
 
-
-
-Future<Map<String, LatLng>> fetchMarkersByDesignation(List<String> designation) async {
+Future<Map<String, LatLng>> fetchMarkersByDesignation(
+    List<String> designation) async {
   Map<String, LatLng> markers = {};
   QuerySnapshot snapshot = await FirebaseFirestore.instance
       .collection('location') // Adjust this collection path as needed
-      .where('designation', whereIn: designation) // Fetch markers with specified designations
+      .where('designation',
+          whereIn: designation) // Fetch markers with specified designations
       .where('NSM_ID', whereIn: [user_id]) // Additional condition for userId
       .get();
   for (var doc in snapshot.docs) {
     final data = doc.data() as Map<String, dynamic>;
-    markers[data['name']] = LatLng(data['latitude'], data['longitude']); // Ensure that your document has 'name', 'latitude', 'longitude' fields
+    markers[data['name']] = LatLng(
+        data['latitude'],
+        data[
+            'longitude']); // Ensure that your document has 'name', 'latitude', 'longitude' fields
   }
 
   return markers;
@@ -33,7 +36,12 @@ class _BookerLocationnsmState extends State<BookerLocationnsm> {
   late GoogleMapController mapController;
   Map<String, LatLng> _markers = {};
   final LatLng _initialCameraPosition = const LatLng(24.8607, 67.0011);
-  final List<String> designations = ['ASM', 'SO', 'SOS', 'SPO']; // List of designations to fetch
+  final List<String> designations = [
+    'ASM',
+    'SO',
+    'SOS',
+    'SPO'
+  ]; // List of designations to fetch
 
   @override
   void initState() {
@@ -42,7 +50,8 @@ class _BookerLocationnsmState extends State<BookerLocationnsm> {
   }
 
   Future<void> _loadMarkers() async {
-    Map<String, LatLng> fetchedMarkers = await fetchMarkersByDesignation(designations);
+    Map<String, LatLng> fetchedMarkers =
+        await fetchMarkersByDesignation(designations);
     setState(() {
       _markers = fetchedMarkers; // Update state with fetched markers
     });
@@ -64,12 +73,20 @@ class _BookerLocationnsmState extends State<BookerLocationnsm> {
     if (_markers.isNotEmpty) {
       LatLngBounds bounds;
       LatLng southwest = LatLng(
-        _markers.values.map((latlng) => latlng.latitude).reduce((a, b) => a < b ? a : b),
-        _markers.values.map((latlng) => latlng.longitude).reduce((a, b) => a < b ? a : b),
+        _markers.values
+            .map((latlng) => latlng.latitude)
+            .reduce((a, b) => a < b ? a : b),
+        _markers.values
+            .map((latlng) => latlng.longitude)
+            .reduce((a, b) => a < b ? a : b),
       );
       LatLng northeast = LatLng(
-        _markers.values.map((latlng) => latlng.latitude).reduce((a, b) => a > b ? a : b),
-        _markers.values.map((latlng) => latlng.longitude).reduce((a, b) => a > b ? a : b),
+        _markers.values
+            .map((latlng) => latlng.latitude)
+            .reduce((a, b) => a > b ? a : b),
+        _markers.values
+            .map((latlng) => latlng.longitude)
+            .reduce((a, b) => a > b ? a : b),
       );
       bounds = LatLngBounds(southwest: southwest, northeast: northeast);
 
@@ -116,12 +133,14 @@ class _BookerLocationnsmState extends State<BookerLocationnsm> {
                       _onMarkerSelected(newValue);
                     }
                   },
-                  selectedItem: _markers.isNotEmpty ? _markers.keys.first : null,
+                  selectedItem:
+                      _markers.isNotEmpty ? _markers.keys.first : null,
                   dropdownDecoratorProps: DropDownDecoratorProps(
                     dropdownSearchDecoration: InputDecoration(
                       labelText: "Select Marker",
                       prefixIcon: const Icon(Icons.location_on),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -152,7 +171,8 @@ class _BookerLocationnsmState extends State<BookerLocationnsm> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          mapController.animateCamera(CameraUpdate.newLatLngZoom(_initialCameraPosition, 6));
+          mapController.animateCamera(
+              CameraUpdate.newLatLngZoom(_initialCameraPosition, 6));
         },
         backgroundColor: Colors.green,
         child: const Icon(Icons.my_location, color: Colors.white),

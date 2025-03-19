@@ -8,6 +8,8 @@ import 'package:in_app_update/in_app_update.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Services/FirebaseServices/firebase_remote_config.dart';
+
 
 String globalselectedbrand="";
 String userBrand="";
@@ -102,8 +104,12 @@ Future<bool> isNetworkAvailable() async {
     return false; // No internet connection
   } else {
     try {
+      await Config.fetchLatestConfig();
       // Replace with your server URL
-      final url = Uri.parse('https://cloud.metaxperts.net:8443/erp/test1/loginget/get/');
+      final url = Uri.parse(
+        Config.getApiUrlServer
+      );
+          // 'https://cloud.metaxperts.net:8443/erp/test1/loginget/get/');
 
       // Make an HTTP GET request to your server
       final response = await http.get(url).timeout(Duration(seconds: 5));

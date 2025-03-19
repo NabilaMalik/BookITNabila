@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:order_booking_app/Services/FirebaseServices/firebase_remote_config.dart';
 import 'dart:convert';
 
 import '../../Models/Bookers_RSM_SM_NSM_Models/AttendanceStatusModel.dart';
@@ -33,8 +34,11 @@ class _RSMBookerDetailsPageState extends State<RSMBookerDetailsPage> {
   }
 
   Future<void> _fetchAttendanceData() async {
+    await Config.fetchLatestConfig();
     final response = await http.get(
-      Uri.parse('http://103.149.32.30:8080/ords/metaxperts/attendancedata/get/${widget.booker.booker_id}'),
+      Uri.parse(
+        "${Config.getApiUrlHeadsAttendanceData}${widget.booker.booker_id}"),
+          // 'http://103.149.32.30:8080/ords/metaxperts/attendancedata/get/${widget.booker.booker_id}'),
     );
 
     if (response.statusCode == 200) {

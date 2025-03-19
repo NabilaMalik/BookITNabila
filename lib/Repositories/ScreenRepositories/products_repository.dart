@@ -77,10 +77,10 @@ class ProductsRepository extends GetxService{
   }
 
   Future<void> fetchAndSaveProducts() async {
+    await Config.fetchLatestConfig();
        debugPrint(Config.getApiUrlProducts);
     try {
-     // List<dynamic> data = await ApiService.getData(Config.getApiUrlProducts);
-      List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/test1/products/get/');
+      List<dynamic> data = await ApiService.getData(Config.getApiUrlProducts);
       var dbClient = await dbHelperProducts.db;
 
       // Save data to database

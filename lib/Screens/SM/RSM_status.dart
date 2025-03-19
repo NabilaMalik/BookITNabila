@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:order_booking_app/Screens/SM/sm_booker_details.dart';
+import 'package:order_booking_app/Services/FirebaseServices/firebase_remote_config.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -64,7 +65,10 @@ class _SM_RSMStatusState extends State<SM_RSMStatus> {
   }
 
   Future<bool> _fetchAndSaveData() async {
-    final url = 'https://cloud.metaxperts.net:8443/erp/test1/smstatus/get/$user_id';
+    await Config.fetchLatestConfig();
+    final url =
+    "${Config.getApiUrlSmRsmStatus}${user_id}";
+        // 'https://cloud.metaxperts.net:8443/erp/test1/smstatus/get/$user_id';
     // final url = 'http://103.149.32.30:8080/ords/valor_trading/smbookerstatus/get/VT0038';
     final response = await http.get(Uri.parse(url));
 

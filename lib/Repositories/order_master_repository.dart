@@ -56,8 +56,12 @@ class OrderMasterRepository extends GetxService {
   }
 
   Future<void> fetchAndSaveOrderMaster() async {
+    await Config.fetchLatestConfig();
     debugPrint('${Config.getApiUrlOrderMaster}$user_id');
-    List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/test1/ordermasterget/get/$user_id');
+    List<dynamic> data = await ApiService.getData(
+        '${Config.getApiUrlOrderMaster}$user_id'
+        // 'https://cloud.metaxperts.net:8443/erp/test1/ordermasterget/get/$user_id'
+    );
     var dbClient = await dbHelper.db;
 
     // Save data to database
@@ -216,9 +220,10 @@ class OrderMasterRepository extends GetxService {
     }
   }
   Future<void> serialNumberGeneratorApi() async {
+    await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/ordermasterserial/get/$user_id',
+      apiUrl: '${Config.getApiUrlOrderMasterSerial}$user_id',
       maxColumnName: 'max(order_master_id)',
       serialType: orderMasterHighestSerial, // Unique identifier for shop visit serials
     );

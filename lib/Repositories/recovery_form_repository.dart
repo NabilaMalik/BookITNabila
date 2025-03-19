@@ -193,9 +193,10 @@ class RecoveryFormRepository {
         .delete(recoveryFormTableName, where: 'recovery_id = ?', whereArgs: [id]);
   }
   Future<void> serialNumberGeneratorApi() async {
+    await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/recoveryserial/get/$user_id',
+      apiUrl: '${Config.getApiUrlRecoveryFormSerial}$user_id',
       maxColumnName: 'max(recovery_id)',
       serialType: recoveryHighestSerial, // Unique identifier for shop visit serials
     );

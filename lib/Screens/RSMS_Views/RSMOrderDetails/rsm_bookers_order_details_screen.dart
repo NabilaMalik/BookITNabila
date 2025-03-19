@@ -10,6 +10,7 @@ import 'dart:convert';
 
 import '../../../Databases/util.dart';
 import '../../../Models/Bookers_RSM_SM_NSM_Models/nsm_bookers_order_model.dart';
+import '../../../Services/FirebaseServices/firebase_remote_config.dart';
 
 
 
@@ -66,7 +67,10 @@ class _NSM_SM_StatusState extends State<RsmBookersOrderDetailsScreen> {
   }
 
   Future<bool> _fetchAndSaveData() async {
-    final url = 'https://cloud.metaxperts.net:8443/erp/test1/rsmuserorders/get/$user_id';
+    await Config.fetchLatestConfig();
+    final url =
+        "${Config.getApiUrlRsmUserOrder}$user_id";
+        // 'https://cloud.metaxperts.net:8443/erp/test1/rsmuserorders/get/$user_id';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {

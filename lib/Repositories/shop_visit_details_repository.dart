@@ -146,9 +146,10 @@ class ShopVisitDetailsRepository extends GetxService{
         .delete(shopVisitDetailsTableName, where: 'shop_visit_details_id = ?', whereArgs: [id]);
   }
   Future<void> serialNumberGeneratorApi() async {
+    await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/stockitemserial/get/$user_id',
+      apiUrl: '${Config.getApiUrlShopVisitDetailsSerial}$user_id',
       maxColumnName: 'max(shop_visit_details_id)',
       serialType: shopVisitDetailsHighestSerial, // Unique identifier for shop visit serials
     );

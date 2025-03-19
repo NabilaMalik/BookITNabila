@@ -192,9 +192,10 @@ class LocationRepository {
         .delete(locationTableName, where: 'location_id = ?', whereArgs: [id]);
   }
   Future<void> serialNumberGeneratorApi() async {
+    await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/locationserial/get/$user_id',
+      apiUrl: '${Config.getApiUrlLocationSerial}$user_id',
       maxColumnName: 'max(location_id)',
       serialType: locationHighestSerial, // Unique identifier for shop visit serials
     );

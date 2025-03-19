@@ -66,11 +66,12 @@ class _NSM_SM_StatusState extends State<SmBookersOrderDetailsScreen> {
     }
   }
 
-  Future<bool> _fetchAndSaveData() async {
+   Future<bool> _fetchAndSaveData() async {
+    await Config.fetchLatestConfig();
     //final response = await http.get(
        // Uri.parse(
     //final url = 'https://cloud.metaxperts.net:8443/erp/test1/smuserorders/get/$user_id';
-    final response = await http.get(Uri.parse('${Config.getApiUrlOrderDetails}/$user_id/}'
+    final response = await http.get(Uri.parse('${Config.getApiUrlSmUserOrder}/$user_id/}'
         ));
 
     if (response.statusCode == 200) {

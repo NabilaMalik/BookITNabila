@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:order_booking_app/Services/FirebaseServices/firebase_remote_config.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -65,7 +66,8 @@ class _RSMBookerStatusState extends State<RSMBookerStatus> {
   }
 
   Future<bool> _fetchAndSaveData() async {
-    final url = 'bookerStatusGetApiuserId';
+    await Config.fetchLatestConfig();
+    final url = '${Config.getApiUrlRsmBookersStatus}${user_id}';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {

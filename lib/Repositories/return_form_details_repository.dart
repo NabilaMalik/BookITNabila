@@ -142,9 +142,10 @@ class ReturnFormDetailsRepository {
         .delete(returnFormDetailsTableName, where: 'return_details_id = ?', whereArgs: [id]);
   }
   Future<void> serialNumberGeneratorApi() async {
+    await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: 'https://cloud.metaxperts.net:8443/erp/test1/returndetailserial/get/$user_id',
+      apiUrl: '${Config.getApiUrlReturnFormDetailsSerial}$user_id',
       maxColumnName: 'max(return_details_id)',
       serialType: returnDetailsHighestSerial, // Unique identifier for shop visit serials
     );
