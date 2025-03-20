@@ -106,14 +106,15 @@ class _RiveAppHomeState extends State<HomeScreen>
   _retrieveSavedValues() async {
     // Get instance of SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.reload();
 
     // Update state with retrieved values
     setState(() {
       user_id = prefs.getString('userId') ?? '';
-      // userNames = prefs.getString('userNames') ?? '';
-      // userCitys = prefs.getString('userCitys') ?? '';
-      // userDesignation = prefs.getString('userDesignation') ?? '';
-      // userBrand = prefs.getString('userBrand') ?? '';
+      userName = prefs.getString('userName') ?? '';
+      userCity = prefs.getString('userCity') ?? '';
+      userDesignation = prefs.getString('userDesignation') ?? '';
+      userBrand = prefs.getString('userBrand') ?? '';
       userSM = prefs.getString('userSM') ?? '';
       userNSM = prefs.getString('userNSM') ?? '';
       userRSM = prefs.getString('userRSM') ?? '';

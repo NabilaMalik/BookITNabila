@@ -45,6 +45,7 @@ class LocationRepository {
   }
 
   Future<void> fetchAndSaveLocation() async {
+    await Config.fetchLatestConfig();
     debugPrint('${Config.getApiUrlLocation}$user_id');
     List<dynamic> data = await ApiService.getData('${Config.getApiUrlLocation}$user_id');
     var dbClient = await dbHelper.db;

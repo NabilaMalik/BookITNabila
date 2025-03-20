@@ -6,7 +6,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:gpx/gpx.dart';
-
 import 'package:intl/intl.dart';
 import 'package:order_booking_app/Databases/util.dart';
 import 'package:path_provider/path_provider.dart';
@@ -105,7 +104,8 @@ class LocationService {
           }
           file.writeAsStringSync(gpxString);
 
-           isConnected = await isNetworkAvailable();
+           isConnected = await isNetworkAvailableForFirebase();
+           // isConnected = await isNetworkAvailable();
           if (isConnected) {
             debugPrint("FIrebaseeeeeeeeeeeeeeeeeeee");
             await FirebaseFirestore.instance

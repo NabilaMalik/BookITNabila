@@ -59,7 +59,7 @@ class Navbar extends StatelessWidget {
               GestureDetector(
                 onTap: () async {
                   // Add your onTap logic for the refresh icon here
-                  print('Refresh icon tapped');
+                  debugPrint('Refresh icon tapped');
                   await Future.wait<void>([
                     updateFunctionViewModel.fetchAndSaveUpdatedCities(),
                     updateFunctionViewModel.fetchAndSaveUpdatedProducts(),

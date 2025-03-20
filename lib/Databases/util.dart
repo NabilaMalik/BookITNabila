@@ -108,6 +108,39 @@ Future<bool> isNetworkAvailable() async {
       // Replace with your server URL
       final url = Uri.parse(
         Config.getApiUrlServer
+
+      );
+          // 'https://cloud.metaxperts.net:8443/erp/test1/loginget/get/');
+
+      // Make an HTTP GET request to your server
+      final response = await http.get(url).timeout(Duration(seconds: 5));
+
+      // Check if the response status code is 200 (OK)
+      if (response.statusCode == 200) {
+        return true; // Server is reachable
+      } else {
+        return false; // Server returned an error
+      }
+    } on SocketException catch (_) {
+      return false; // No internet connection or server unreachable
+    } on TimeoutException catch (_) {
+      return false; // Request timed out
+    } catch (e) {
+      return false; // Other errors
+    }
+  }
+}Future<bool> isNetworkAvailableForFirebase() async {
+  var connectivityResult = await (Connectivity().checkConnectivity());
+
+  if (connectivityResult == ConnectivityResult.none) {
+    return false; // No internet connection
+  } else {
+    try {
+      // await Config.fetchLatestConfig();
+      // Replace with your server URL
+      final url = Uri.parse(
+        // Config.getApiUrlServer
+"https://google.com"
       );
           // 'https://cloud.metaxperts.net:8443/erp/test1/loginget/get/');
 

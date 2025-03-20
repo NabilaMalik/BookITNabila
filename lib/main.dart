@@ -68,7 +68,7 @@ Future<void> main() async {
 
     debugPrint("Initializing SharedPreferences main...");
     final prefs = await SharedPreferences.getInstance();
-    prefs.reload();
+    await prefs.reload();
     bool isAuthenticated = prefs.getBool('isAuthenticated') ?? false;
     pageName = prefs.getString('pageName') ?? '/cameraScreen';
     newIsClockedIn = prefs.getBool('isClockedIn') ?? false;
@@ -334,19 +334,19 @@ void onStart(ServiceInstance service) async {
         //   ),
         // );
 
-        // flutterLocalNotificationsPlugin.show(
-        //   889,
-        //   'Location',
-        //   'Longitude ${locationService.longi} , Latitute ${locationService.lat}',
-        //   const NotificationDetails(
-        //     android: AndroidNotificationDetails(
-        //       'my_foreground',
-        //       'MY FOREGROUND SERVICE',
-        //       icon: 'ic_bg_service_small',
-        //       ongoing: true,
-        //     ),
-        //   ),
-        // );
+        flutterLocalNotificationsPlugin.show(
+          889,
+          'Location',
+          'Longitude ${locationService.longi} , Latitute ${locationService.lat}',
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'my_foreground',
+              'MY FOREGROUND SERVICE',
+              icon: 'ic_bg_service_small',
+              ongoing: true,
+            ),
+          ),
+        );
 
         service.setForegroundNotificationInfo(
           title: "ClockIn",

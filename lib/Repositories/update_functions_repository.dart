@@ -45,8 +45,8 @@ class UpdateFunctionsRepository extends GetxService {
     await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    debugPrint('${Config.getApiUrlOrderMasterWithTime}$user_id');
     String? formattedDateTime = prefs.getString('lastInitializationDateTime');
+    debugPrint('${Config.getApiUrlOrderMasterWithTime}$user_id/$formattedDateTime');
 
     // Fetch data from the API
     List<dynamic> data = await ApiService.getData(
