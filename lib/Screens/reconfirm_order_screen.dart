@@ -27,29 +27,12 @@ class ReconfirmOrderScreen extends StatefulWidget {
   _ReconfirmOrderScreenState createState() => _ReconfirmOrderScreenState();
 }
 
-void clearFormData() {
-
-  // selectedShop.value = "";
-  // shop_address.value = "";
-  // owner_name.value = "";
-  // selectedBrand.value = "";
-  // booker_name.value = "";
-  // feedBack.value = "";
-  // required_delivery_date.value = "";
-  // checklistState = [false, false, false, false];
-  // selectedImage.value = null;
-}
-
 class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
   int _currentPage = 0;
   OrderMasterViewModel orderMasterViewModel = Get.put(OrderMasterViewModel());
-  //ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
   OrderDetailsViewModel orderDetailsViewModel =
-  Get.put(OrderDetailsViewModel());
+      Get.put(OrderDetailsViewModel());
   ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
-
-
-
 
   void _nextPage() {
     setState(() {
@@ -490,13 +473,10 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
                 width: 120,
                 buttonText: "Close",
                 onTap: () {
-                  clearFormData();
-
                   setState(() {
                     isButtonDisabled = false; // Re-enable the button if needed
                   });
-
-                  Get.offNamed("/home"); // Navigate back to home screen
+                  Get.offNamed("/home");
                 },
                 gradientColors: [Colors.red.shade700, Colors.red],
               ),

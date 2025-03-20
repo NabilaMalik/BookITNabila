@@ -363,7 +363,7 @@ class _RiveAppHomeState extends State<HomeScreen>
             return Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Colors.blue.shade50,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(

@@ -13,11 +13,12 @@ class SmallBox extends StatelessWidget {
       width: 60,
       height: 60,
       decoration: BoxDecoration(
-        gradient:const LinearGradient(
-          colors: [Colors.blue, Colors.white], // List of colors
-          begin: Alignment.center, // Starting point
-          end: Alignment.bottomRight, // Ending point
+        gradient: LinearGradient(
+          colors: [Colors.blue.shade200, Colors.blue.shade50], // Safe, non-null colors
+          begin: Alignment.center,       // Gradient starts at center
+          end: Alignment.bottomRight,    // Gradient ends at bottom right
         ),
+
         borderRadius: BorderRadius.circular(35),
         boxShadow: [
           BoxShadow(
@@ -32,11 +33,12 @@ class SmallBox extends StatelessWidget {
         child: Text(
           number,
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: Colors.black,
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
+
         ),
       ),
     );

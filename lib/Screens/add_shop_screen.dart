@@ -68,7 +68,7 @@ class AddShopScreen extends StatelessWidget {
                         textStyle: const TextStyle(
                             fontSize: 19,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black), // ✅ Adjust font size
+                            color: Colors.black),
                       )
                   ),
                   _buildTextField(
@@ -97,7 +97,7 @@ class AddShopScreen extends StatelessWidget {
                     inputFormatters: [CNICInputFormatter()],
                     validator: Validators.validateCNIC,
                     onChanged: (value) {
-                      // Handle CNIC value if needed
+
                       _viewModel.setShopField('cnic', value);
                     },
                   ),

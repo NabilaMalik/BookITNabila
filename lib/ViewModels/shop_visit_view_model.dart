@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -258,7 +257,8 @@ class ShopVisitViewModel extends GetxController {
         body: imageBytes,
         feedback: feedBack.value.trim(),
         shop_visit_master_id: shop_visit_master_id,
-      ));
+      )
+      );
 
       await shopvisitRepository.getShopVisit();
       await shopVisitDetailsViewModel.saveFilteredProducts();
