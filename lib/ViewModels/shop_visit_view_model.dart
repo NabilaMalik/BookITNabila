@@ -234,6 +234,7 @@ class ShopVisitViewModel extends GetxController {
       debugPrint("Start Savinggggggggggggg");
       String? imagePath;
       Uint8List? imageBytes;
+
       if (selectedImage.value != null) {
         imagePath = selectedImage.value!.path;
 
@@ -241,8 +242,6 @@ class ShopVisitViewModel extends GetxController {
         imageBytes = Uint8List.fromList(imageBytesList);
       }
 
-      List<int> imageBytesList = await File(imagePath!).readAsBytes();
-      imageBytes = Uint8List.fromList(imageBytesList);
       final orderSerial = generateNewOrderId(user_id);
       shop_visit_master_id = orderSerial;
 
@@ -256,8 +255,8 @@ class ShopVisitViewModel extends GetxController {
         planogram: checklistState[1],
         signage: checklistState[2],
         product_reviewed: checklistState[3],
-        body: imageBytes, // Store the file path
-        feedback: feedBack.value,
+        body: imageBytes,
+        feedback: feedBack.value.trim(),
         shop_visit_master_id: shop_visit_master_id,
       ));
 
@@ -267,10 +266,12 @@ class ShopVisitViewModel extends GetxController {
 
       Get.snackbar("Success", "Form submitted successfully!",
           snackPosition: SnackPosition.BOTTOM);
+
       await clearFilters();
       Get.to(() => const HomeScreen());
     }
   }
+
   Future<void> saveHeadsFormNoOrder() async {
     if (validateForm()) {
       debugPrint("Start Savinggggggggggggg");

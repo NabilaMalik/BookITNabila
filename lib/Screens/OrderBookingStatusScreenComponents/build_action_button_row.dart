@@ -48,26 +48,20 @@ Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
   // Generate Order PDF
   Future<void> generateOrderPDF() async {
     final pdf = pw.Document();
-    // ignore: unused_local_variable
-    const baseColor = PdfColors.blue;
-    // ignore: unused_local_variable
-    const headerColor = PdfColors.black;
     String currentDate = _getFormattedDate();
-    // ignore: unnecessary_null_comparison
     String ordersDate = (orderBookingStatusViewModel.endDate.value != null)
         ? '${orderBookingStatusViewModel.startDate.value} - ${orderBookingStatusViewModel.endDate.value}'
         : 'Date Not Selected';
 
-    // Ensure orders are fetched
+    // Fetch order data
     await orderMasterViewModel.fetchAllOrderMaster();
 
-    // Extract data from OrderMasterViewModel
     List<List<String>> rowsData = [];
     double totalAmount = 0.0;
     int totalOrders = orderMasterViewModel.allOrderMaster.length;
+
     for (var order in orderMasterViewModel.allOrderMaster) {
-      String amountText =
-      (order.total ?? '0').replaceAll(RegExp(r'[^\d.]'), '');
+      String amountText = (order.total ?? '0').replaceAll(RegExp(r'[^\d.]'), '');
       double amount = double.tryParse(amountText) ?? 0.0;
       totalAmount += amount;
       rowsData.add([
@@ -77,7 +71,23 @@ Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
       ]);
     }
 
-    // Generate PDF page
+    // Footer Widget
+    pw.Widget buildFooter() {
+      return pw.Container(
+        alignment: pw.Alignment.center,
+        margin: const pw.EdgeInsets.only(top: 10),
+        child: pw.Text(
+          'Developed By MetaXperts!',
+          style: pw.TextStyle(
+            fontSize: 12,
+            fontStyle: pw.FontStyle.italic,
+            color: PdfColors.grey,
+          ),
+        ),
+      );
+    }
+
+    // Build PDF
     pdf.addPage(
       pw.Page(
         build: (pw.Context context) {
@@ -85,49 +95,52 @@ Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
               pw.Text('Valor Trading Order Booking Status',
-                  style: pw.TextStyle(
-                      fontSize: 20, fontWeight: pw.FontWeight.bold)),
+                  style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold)),
               pw.SizedBox(height: 10),
               pw.Text('Booker ID: ${orderMasterViewModel.currentuser_id}'),
               pw.Text('Booker Name: ${shopVisitViewModel.booker_name}'),
               pw.Text('Print Date: $currentDate'),
               pw.Text('Orders Date: $ordersDate'),
               pw.SizedBox(height: 10),
-
-              // Table with aligned headers
               pw.Table.fromTextArray(
                 headers: ['Order No', 'Shop Name', 'Amount'],
                 data: rowsData,
                 headerStyle: pw.TextStyle(
-                    fontWeight: pw.FontWeight.bold,
-                    fontSize: 12,
-                    color: PdfColors.white),
-                headerDecoration:
-                const pw.BoxDecoration(color: PdfColors.black),
+                    fontWeight: pw.FontWeight.bold, fontSize: 12, color: PdfColors.white),
+                headerDecoration: const pw.BoxDecoration(color: PdfColors.black),
                 cellStyle: const pw.TextStyle(fontSize: 10),
                 cellAlignment: pw.Alignment.center,
                 cellPadding: const pw.EdgeInsets.all(6),
-                oddRowDecoration:
-                const pw.BoxDecoration(color: PdfColors.grey200),
-                border: null, // Remove table borders
+                oddRowDecoration: const pw.BoxDecoration(color: PdfColors.grey200),
+                border: null,
               ),
               pw.Divider(),
               pw.Text('Total Orders: $totalOrders',
                   style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
               pw.Text('Total Amount: PKR ${totalAmount.toStringAsFixed(2)}',
                   style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-              buildFooter(), // Add Footer
+              buildFooter(),
             ],
           );
         },
       ),
     );
 
-    // Save or Share PDF
-    await Printing.layoutPdf(
-      onLayout: (PdfPageFormat format) async => pdf.save(),
-    );
+    try {
+      final directory = await getTemporaryDirectory();
+      final filePath = '${directory.path}/Order_Booking_Status_${DateTime.now().millisecondsSinceEpoch}.pdf';
+      final file = File(filePath);
+      await file.writeAsBytes(await pdf.save());
+
+      final xfile = XFile(filePath);
+      await Share.shareXFiles([xfile], text: 'Order Booking PDF Document');
+      Get.snackbar('Success', 'Order PDF shared successfully!');
+    } catch (e) {
+      debugPrint("Error saving or sharing Order PDF: $e");
+      Get.snackbar('Error', 'Failed to generate or share Order PDF.');
+    }
   }
+
 
   generateProductsPDF() async {
     final pdf = pw.Document();
@@ -234,12 +247,12 @@ Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
       ElevatedButton(
         onPressed: generateOrderPDF,
         style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-        child: const Text('Order PDF'),
+        child: const Text('Order PDF',style: TextStyle(color: Colors.white,fontSize: 15),),
       ),
       ElevatedButton(
         onPressed: generateProductsPDF,
         style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-        child: const Text('Products PDF'),
+        child: const Text('Products PDF',style: TextStyle(color: Colors.white,fontSize: 15),),
       ),
     ],
   );

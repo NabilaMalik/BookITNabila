@@ -11,7 +11,7 @@ Future<Map<String, LatLng>> fetchMarkersByDesignation(
   QuerySnapshot snapshot = await FirebaseFirestore.instance
       .collection('location') // Adjust this collection path as needed
       .where('designation',
-          whereIn: designation) // Fetch markers with specified designations
+      whereIn: designation) // Fetch markers with specified designations
       .where('NSM_ID', whereIn: [user_id]) // Additional condition for userId
       .get();
   for (var doc in snapshot.docs) {
@@ -19,7 +19,7 @@ Future<Map<String, LatLng>> fetchMarkersByDesignation(
     markers[data['name']] = LatLng(
         data['latitude'],
         data[
-            'longitude']); // Ensure that your document has 'name', 'latitude', 'longitude' fields
+        'longitude']); // Ensure that your document has 'name', 'latitude', 'longitude' fields
   }
 
   return markers;
@@ -51,7 +51,7 @@ class _BookerLocationnsmState extends State<BookerLocationnsm> {
 
   Future<void> _loadMarkers() async {
     Map<String, LatLng> fetchedMarkers =
-        await fetchMarkersByDesignation(designations);
+    await fetchMarkersByDesignation(designations);
     setState(() {
       _markers = fetchedMarkers; // Update state with fetched markers
     });
@@ -134,7 +134,7 @@ class _BookerLocationnsmState extends State<BookerLocationnsm> {
                     }
                   },
                   selectedItem:
-                      _markers.isNotEmpty ? _markers.keys.first : null,
+                  _markers.isNotEmpty ? _markers.keys.first : null,
                   dropdownDecoratorProps: DropDownDecoratorProps(
                     dropdownSearchDecoration: InputDecoration(
                       labelText: "Select Marker",

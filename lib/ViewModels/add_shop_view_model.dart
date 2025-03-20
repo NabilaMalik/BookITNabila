@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../Models/add_shop_model.dart';
 import '../../Repositories/add_shop_repository.dart';
 import '../Databases/util.dart';
-import '../Services/ApiServices/serial_number_genterator.dart';
 
 class AddShopViewModel extends GetxController {
   final AddShopRepository _shopRepository = Get.put(AddShopRepository());
@@ -14,6 +13,13 @@ class AddShopViewModel extends GetxController {
   var allAddShop = <AddShopModel>[].obs;
 
   final _formKey = GlobalKey<FormState>();
+
+  void clearFormFields() {
+    _shop.value = AddShopModel();
+    selectedCity.value = '';
+    _formKey.currentState?.reset();
+  }
+
 
   AddShopModel get shop => _shop.value;
   GlobalKey<FormState> get formKey => _formKey;
@@ -35,7 +41,7 @@ class AddShopViewModel extends GetxController {
       cities.value = fetchedCities;
     } catch (e) {
 
-        debugPrint('Failed to fetch cities: $e');
+      debugPrint('Failed to fetch cities: $e');
 
     }
   }
@@ -102,7 +108,7 @@ class AddShopViewModel extends GetxController {
       shopCurrentMonth = currentMonth;
     }
 
-      debugPrint('SR: $shopSerialCounter');
+    debugPrint('SR: $shopSerialCounter');
 
   }
 
@@ -159,14 +165,38 @@ class AddShopViewModel extends GetxController {
         city: _shop.value.city,
         user_id: user_id.toString(),
         isGPSEnabled: _shop.value.isGPSEnabled,
-      ), allAddShop);
+      ),
+          allAddShop);
 
-      //await fetchAllAddShop();
-      // await clearFilters();
-      // Navigate to another screen if needed
-      // Get.to(() => HomeScreen());
+      // ✅ Show success snackbar
+      Get.snackbar(
+        'Success',
+        'Shop saved successfully!',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        margin: const EdgeInsets.all(10),
+        duration: const Duration(seconds: 2),
+      );
+
+      // 👉 Clear the form fields after saving
+      clearFormFields();
+
+    } else {
+      // ❌ Show error
+      Get.snackbar(
+        'Error',
+        'Please fill all required fields.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        margin: const EdgeInsets.all(10),
+        duration: const Duration(seconds: 2),
+      );
     }
   }
+
+
 
   fetchAllAddShop() async {
     var addShop = await _shopRepository.getAddShop();

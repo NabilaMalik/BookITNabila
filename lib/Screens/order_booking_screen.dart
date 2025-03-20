@@ -10,7 +10,7 @@ import 'Components/custom_editable_menu_option.dart';
 import 'OrderBookingScreenComponents/order_master_product_search_card.dart';
 
 class OrderBookingScreen extends StatefulWidget {
-  const OrderBookingScreen({Key? key}) : super(key: key);
+  const OrderBookingScreen({super.key});
 
   @override
   _OrderBookingScreenState createState() => _OrderBookingScreenState();
@@ -138,36 +138,39 @@ void initState() {
                   //   icon: Icons.calendar_today,
                   // ),
                   const SizedBox(height: 10),
-                  Obx(() => Column(
+                  Obx(
+                          () => Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16,right: 18
-                          ), // Adjust padding as needed
-                          child: SizedBox(
-                            width: double.infinity , // Adjust width as needed
-                            child: _buildTextFieldWithCalendar(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 16, right: 18),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: _buildTextFieldWithCalendar(
+                                    label: "Required Delivery",
+                                    text: orderMasterViewModel.required_delivery_date.isNotEmpty
+                                        ? orderMasterViewModel.required_delivery_date.value
+                                        : "Select a date",
+                                    context: context,
+                                    onDateSelected: (selectedDate) {
+                                      String formattedDate =
+                                          "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
+                                      orderMasterViewModel.required_delivery_date.value = formattedDate;
+                                    },
+                                    icon: Icons.calendar_today,
+                                  ),
+                                ),
+                              ),
+                              // if (orderMasterViewModel.required_delivery_date.value.isEmpty)
+                              //   Text(
+                              //       'Please select Date',
+                              //       style: TextStyle(color: Colors.red),
+                              //     ),
 
-                              label: "Required Delivery",
-                              text: orderMasterViewModel.required_delivery_date.isNotEmpty
-                                  ? orderMasterViewModel.required_delivery_date.value
-                                  : "Select a date", // Show selected date or placeholder
+                            ],
 
-                              context: context,
-                              onDateSelected: (selectedDate)
-                              {
-                                // Format the selected date
-                                String formattedDate =
-                                    "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
-                                // Update the ViewModel
-                                orderMasterViewModel.required_delivery_date.value = formattedDate;
-                              },
-                              icon: Icons.calendar_today,
-                            ),
-                          ),
-                        ),
-                      ],
-                 )),
+                          )
+                  ),
                   const SizedBox(height: 30),
                   _buildSubmitButton(),
                   const SizedBox(height: 50),

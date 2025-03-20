@@ -137,7 +137,7 @@ class _SideMenuState extends State<SideMenu>  with SingleTickerProviderStateMixi
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              "Software Engineer",
+                              " ",
                               style: TextStyle(
                                   color: Colors.white.withOpacity(0.7),
                                   fontSize: 15,
@@ -162,40 +162,40 @@ class _SideMenuState extends State<SideMenu>  with SingleTickerProviderStateMixi
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 32,
-                          height: 32,
-                          child: Opacity(
-                            opacity: 0.99,
-                            child: RiveAnimation.asset(
-                              app_assets.iconsRiv,
-                              stateMachines: [
-                                _themeMenuIcon[0].riveIcon.stateMachine
-                              ],
-                              artboard: _themeMenuIcon[0].riveIcon.artboard,
-                              onInit: onThemeRiveIconInit,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Text(
-                            _themeMenuIcon[0].title,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 17,
-                                fontFamily: "Inter",
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        CupertinoSwitch(value: _isDarkMode, onChanged: onThemeToggle),
-                      ],
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.all(20),
+                  //   child: Row(
+                  //     children: [
+                  //       SizedBox(
+                  //         width: 32,
+                  //         height: 22,
+                  //         child: Opacity(
+                  //           opacity: 0.99,
+                  //           child: RiveAnimation.asset(
+                  //             app_assets.iconsRiv,
+                  //             stateMachines: [
+                  //               _themeMenuIcon[0].riveIcon.stateMachine
+                  //             ],
+                  //             artboard: _themeMenuIcon[0].riveIcon.artboard,
+                  //             onInit: onThemeRiveIconInit,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       const SizedBox(width: 14),
+                  //       Expanded(
+                  //         child: Text(
+                  //           _themeMenuIcon[0].title,
+                  //           style: const TextStyle(
+                  //               color: Colors.white,
+                  //               fontSize: 17,
+                  //               fontFamily: "Inter",
+                  //               fontWeight: FontWeight.w600),
+                  //         ),
+                  //       ),
+                  //       CupertinoSwitch(value: _isDarkMode, onChanged: onThemeToggle),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
             ),

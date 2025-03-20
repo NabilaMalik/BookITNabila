@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:order_booking_app/screens/HomeScreenComponents/tab_item.dart';
 
+import '../home_screen.dart';
+
 
 
 class MenuItemModel {
@@ -8,16 +10,21 @@ class MenuItemModel {
     this.id,
     this.title = "",
     required this.riveIcon,
+    this.screen
+
+
   });
 
   UniqueKey? id = UniqueKey();
   String title;
   TabItem riveIcon;
+  Widget? screen;
 
   static List<MenuItemModel> menuItems = [
     MenuItemModel(
       title: "Home",
       riveIcon: TabItem(stateMachine: "HOME_interactivity", artboard: "HOME"),
+      screen: const HomeScreen(),
     ),
     MenuItemModel(
       title: "Search",

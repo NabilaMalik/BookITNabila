@@ -69,7 +69,8 @@ class AddShopScreen extends StatelessWidget {
                             fontSize: 19,
                             fontWeight: FontWeight.bold,
                             color: Colors.black), // ✅ Adjust font size
-                      )),
+                      )
+                  ),
                   _buildTextField(
                     label: "Shop Address",
                     icon: Icons.place,
@@ -169,7 +170,7 @@ class AddShopScreen extends StatelessWidget {
         ),
         onChanged: onChanged,
         keyboardType: keyboardType,
-        inputFormatters: inputFormatters, // <-- apply it here
+        inputFormatters: inputFormatters,
         validator: validator,
       ),
     );

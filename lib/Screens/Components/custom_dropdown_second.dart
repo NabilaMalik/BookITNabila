@@ -61,9 +61,19 @@ class _CustomDropdownState extends State<CustomDropdownSecond> {
   }
 
   @override
+  void didUpdateWidget(CustomDropdownSecond oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedValue != widget.selectedValue) {
+      setState(() {
+        _selectedValue = widget.selectedValue;  // 👈 Sync with updated value
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 1, right: 2,bottom: 16),
+      padding: const EdgeInsets.only(left: 1, right: 2, bottom: 16),
       child: Container(
         width: widget.width ?? double.infinity,
         height: widget.height ?? 68.0,
@@ -102,17 +112,20 @@ class _CustomDropdownState extends State<CustomDropdownSecond> {
               ),
             Expanded(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: widget.contentPadding!),
+                padding:
+                EdgeInsets.symmetric(horizontal: widget.contentPadding!),
                 child: FormField<String>(
                   validator: widget.validator,
                   builder: (FormFieldState<String> state) {
                     return InputDecorator(
                       decoration: InputDecoration(
-                        labelText: _selectedValue == null ? widget.label : null,
+                        labelText: _selectedValue == null
+                            ? widget.label
+                            : null,
                         border: widget.inputBorder ?? InputBorder.none,
                         errorText: state.hasError ? state.errorText : null,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: .0),
-                        // contentPadding: EdgeInsets.symmetric(vertical: widget.contentPadding!),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 0.0, horizontal: .0),
                         floatingLabelBehavior: FloatingLabelBehavior.auto,
                       ),
                       isEmpty: _selectedValue == null,
@@ -120,27 +133,28 @@ class _CustomDropdownState extends State<CustomDropdownSecond> {
                         child: DropdownSearch<String>(
                           popupProps: PopupProps.bottomSheet(
                             showSearchBox: true,
-                            itemBuilder: (context, item, isSelected) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                item,
-                                style: const TextStyle( color: Colors.black, fontSize: 15), // ✅ Set font size for dropdown items
-                              ),
-                            ),
+                            itemBuilder: (context, item, isSelected) =>
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    item,
+                                    style: const TextStyle(
+                                        color: Colors.black, fontSize: 15),
+                                  ),
+                                ),
                           ),
                           items: widget.items,
                           selectedItem: _selectedValue,
                           dropdownDecoratorProps: DropDownDecoratorProps(
                             dropdownSearchDecoration: InputDecoration(
-
-                              //hintText: 'Select ${widget.label}',
                               labelText: 'Select ${widget.label}',
                               border: InputBorder.none,
                             ),
                           ),
                           dropdownBuilder: (context, selectedItem) => Text(
                             selectedItem ?? 'Select ${widget.label}',
-                            style: const TextStyle(fontSize: 15,  color: Colors.black), // ✅ Set font size for selected item
+                            style: const TextStyle(
+                                fontSize: 15, color: Colors.black),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -162,3 +176,4 @@ class _CustomDropdownState extends State<CustomDropdownSecond> {
     );
   }
 }
+
