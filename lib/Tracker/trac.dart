@@ -21,9 +21,11 @@ String gpxString = "";
 Future<void> startTimer() async {
   startTimerFromSavedTime();
   SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.reload();
 
   // Periodically update the timer every second
   Timer.periodic(const Duration(seconds: 1), (timer) async {
+    await prefs.reload();
     locationViewModel.secondsPassed.value++;
     await prefs.setInt('secondsPassed', locationViewModel.secondsPassed.value );
   });
@@ -32,6 +34,7 @@ Future<void> startTimer() async {
 // Function to start the timer from saved time in SharedPreferences
 void startTimerFromSavedTime() {
   SharedPreferences.getInstance().then((prefs) async {
+    await prefs.reload();
     // Retrieve saved time and calculate the total saved seconds
     String savedTime = prefs.getString('savedTime') ?? '00:00:00';
     List<String> timeComponents = savedTime.split(':');
@@ -49,6 +52,7 @@ void startTimerFromSavedTime() {
     if (locationViewModel.secondsPassed.value  < 0) {
       locationViewModel.secondsPassed.value  = 0;
     }
+    await prefs.reload();
     await prefs.setInt('secondsPassed', locationViewModel.secondsPassed.value );
     if (kDebugMode) {
       print("Loaded Saved Time");

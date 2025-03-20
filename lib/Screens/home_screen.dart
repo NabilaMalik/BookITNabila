@@ -162,6 +162,9 @@ class _RiveAppHomeState extends State<HomeScreen>
     _retrieveSavedValues();
     addShopViewModel.fetchAllAddShop();
     shopVisitViewModel.fetchAllShopVisit();
+    Future.microtask(() {
+      shopVisitViewModel.clearFilters();
+    });
     shopVisitDetailsViewModel.initializeProductData();
     orderMasterViewModel.fetchAllOrderMaster();
     recoveryFormViewModel.fetchAllRecoveryForm();
@@ -252,7 +255,8 @@ class _RiveAppHomeState extends State<HomeScreen>
                 label: 'Shop Visit',
                 onTap: () async {
                   if (newIsClockedIn==true) {
-                    Get.to(() => const ShopVisitScreen());
+                    Get.offNamed("/ShopVisitScreen");
+                    // Get.to(() => const ShopVisitScreen());
                   }
                   else {
                     Get.defaultDialog(
@@ -312,6 +316,7 @@ class _RiveAppHomeState extends State<HomeScreen>
                 imagePath: order_booking_status,
                 label: 'Booking Status',
                 onTap: () async {
+                  orderMasterViewModel.fetchAllOrderMaster();
                     Get.to(() => OrderBookingStatusScreen());
                 },
               ),
@@ -402,18 +407,18 @@ class _RiveAppHomeState extends State<HomeScreen>
                     labels: const [
                       "Monthly Attendance",
                       "Daily Bookings",
-                      "Orders",
+                      "Dispatched",
                       "Recovery"
                     ],
                   ),
                   const SizedBox(height: 20),
-                  const OverviewRow(
-                    numbers: [
-                      "910",
-                      "112",
-                    ],
-                    labels: ["Total Orders", "Dispatched"],
-                  ),
+                 // OverviewRow(
+                 //    numbers: [
+                 //      // totalDispatchedOrders.toString(),
+                 //      "112",
+                 //    ],
+                 //    labels: ["Total Orders", "Dispatched"],
+                 //  ),
                 ],
               ),
             );

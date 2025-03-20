@@ -22,6 +22,7 @@ class AddShopViewModel extends GetxController {
 
 
   AddShopModel get shop => _shop.value;
+
   GlobalKey<FormState> get formKey => _formKey;
   var cities = <String>[].obs;
   int shopSerialCounter = 1;
@@ -40,9 +41,7 @@ class AddShopViewModel extends GetxController {
       var fetchedCities = await _shopRepository.fetchCities();
       cities.value = fetchedCities;
     } catch (e) {
-
       debugPrint('Failed to fetch cities: $e');
-
     }
   }
 
@@ -99,7 +98,8 @@ class AddShopViewModel extends GetxController {
   Future<void> _loadCounter() async {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    shopSerialCounter = (prefs.getInt('shopSerialCounter') ??shopHighestSerial?? 1);
+    shopSerialCounter =
+    (prefs.getInt('shopSerialCounter') ?? shopHighestSerial ?? 1);
     shopCurrentMonth = prefs.getString('shopCurrentMonth') ?? currentMonth;
     currentuser_id = prefs.getString('currentuser_id') ?? '';
 
@@ -109,7 +109,6 @@ class AddShopViewModel extends GetxController {
     }
 
     debugPrint('SR: $shopSerialCounter');
-
   }
 
   Future<void> _saveCounter() async {
@@ -123,7 +122,7 @@ class AddShopViewModel extends GetxController {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
 
     if (currentuser_id != user_id) {
-      shopSerialCounter = shopHighestSerial??1;
+      shopSerialCounter = shopHighestSerial ?? 1;
       currentuser_id = user_id;
     }
 
@@ -132,7 +131,9 @@ class AddShopViewModel extends GetxController {
       shopCurrentMonth = currentMonth;
     }
 
-    String orderId = "S-$user_id-$currentMonth-${shopSerialCounter.toString().padLeft(3, '0')}";
+    String orderId = "S-$user_id-$currentMonth-${shopSerialCounter
+        .toString()
+        .padLeft(3, '0')}";
     shopSerialCounter++;
     _saveCounter();
     return orderId;
@@ -181,7 +182,6 @@ class AddShopViewModel extends GetxController {
 
       // 👉 Clear the form fields after saving
       clearFormFields();
-
     } else {
       // ❌ Show error
       Get.snackbar(
@@ -197,15 +197,16 @@ class AddShopViewModel extends GetxController {
   }
 
 
-
   fetchAllAddShop() async {
     var addShop = await _shopRepository.getAddShop();
     allAddShop.value = addShop;
   }
+
   fetchAndSaveShop() async {
     await _shopRepository.fetchAndSaveShops();
     // await fetchAllAddShop();
   }
+
   fetchAndSaveHeadsShop() async {
     await _shopRepository.fetchAndSaveShopsForHeads();
     // await fetchAllAddShop();
@@ -222,7 +223,8 @@ class AddShopViewModel extends GetxController {
   deleteAddShop(String? id) async {
     await _shopRepository.deleteAddShop(id, allAddShop);
   }
-  serialCounterGet()async{
+
+  serialCounterGet() async {
     await _shopRepository.serialNumberGeneratorApi();
   }
 }

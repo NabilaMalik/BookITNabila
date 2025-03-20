@@ -334,19 +334,19 @@ void onStart(ServiceInstance service) async {
         //   ),
         // );
 
-        flutterLocalNotificationsPlugin.show(
-          889,
-          'Location',
-          'Longitude ${locationService.longi} , Latitute ${locationService.lat}',
-          const NotificationDetails(
-            android: AndroidNotificationDetails(
-              'my_foreground',
-              'MY FOREGROUND SERVICE',
-              icon: 'ic_bg_service_small',
-              ongoing: true,
-            ),
-          ),
-        );
+        // flutterLocalNotificationsPlugin.show(
+        //   889,
+        //   'Location',
+        //   'Longitude ${locationService.longi} , Latitute ${locationService.lat}',
+        //   const NotificationDetails(
+        //     android: AndroidNotificationDetails(
+        //       'my_foreground',
+        //       'MY FOREGROUND SERVICE',
+        //       icon: 'ic_bg_service_small',
+        //       ongoing: true,
+        //     ),
+        //   ),
+        // );
 
         service.setForegroundNotificationInfo(
           title: "ClockIn",

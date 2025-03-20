@@ -44,7 +44,7 @@ class UpdateFunctionsRepository extends GetxService {
   Future<void> fetchAndSaveUpdatedOrderMaster() async {
     await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-
+await prefs.reload();
     String? formattedDateTime = prefs.getString('lastInitializationDateTime');
     debugPrint('${Config.getApiUrlOrderMasterWithTime}$user_id/$formattedDateTime');
 

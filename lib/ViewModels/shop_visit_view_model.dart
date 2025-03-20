@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -178,87 +179,39 @@ class ShopVisitViewModel extends GetxController {
     }
   }
 
-  Future<void> saveForm() async {
+  Future<void> _saveShopVisitData({bool isOrder = true}) async {
     if (validateForm()) {
-
       debugPrint("Start Savinggggggggggggg");
       Uint8List? compressedImageBytes;
-      if (selectedImage.value != null) {
-      // await  serialCounterGet();
 
-        debugPrint("Serial: $shopVisitDetailsHighestSerial");
+      if (selectedImage.value != null) {
         compressedImageBytes = await FlutterImageCompress.compressWithFile(
           selectedImage.value!.path,
           minWidth: 400,
           minHeight: 600,
           quality: 40,
         );
-
-        await _loadCounter();
-        final orderSerial = generateNewOrderId(user_id);
-        shop_visit_master_id = orderSerial;
-
-        await addShopVisit(ShopVisitModel(
-          shop_name: selectedShop.value,
-          shop_address: shop_address.value,
-          owner_name: owner_name.value,
-          brand: selectedBrand.value,
-          booker_name: booker_name.value,
-          walk_through: checklistState[0],
-          planogram: checklistState[1],
-          signage: checklistState[2],
-          product_reviewed: checklistState[3],
-          body: compressedImageBytes,
-          feedback: feedBack.value,
-          user_id: user_id.toString(),
-          shop_visit_master_id:
-          shop_visit_master_id.toString(), // Add the generated serial here
-        ));
-        await shopvisitRepository.getShopVisit();
-        await shopVisitDetailsViewModel.saveFilteredProducts();
-        await shopvisitRepository.postDataFromDatabaseToAPI();
-        await shopvisitRepository.getShopVisit();
-
-        Get.snackbar("Success", "Form submitted successfully!",
-            snackPosition: SnackPosition.BOTTOM);
-        await clearFilters();
-        // Get.offAllNamed("/OrderBookingScreen");
-        Get.to(() => const OrderBookingScreen());
-      }
-    }
-  }
-
-  Future<void> saveFormNoOrder() async {
-    if (validateForm()) {
-      debugPrint("Start Savinggggggggggggg");
-      String? imagePath;
-      Uint8List? imageBytes;
-
-      if (selectedImage.value != null) {
-        imagePath = selectedImage.value!.path;
-
-        List<int> imageBytesList = await File(imagePath).readAsBytes();
-        imageBytes = Uint8List.fromList(imageBytesList);
       }
 
+      await _loadCounter();
       final orderSerial = generateNewOrderId(user_id);
       shop_visit_master_id = orderSerial;
 
       await addShopVisit(ShopVisitModel(
-        shop_name: selectedShop.value.toString(),
-        shop_address: shop_address.value.toString(),
-        owner_name: owner_name.value.toString(),
-        brand: selectedBrand.value.toString(),
-        booker_name: booker_name.value.toString(),
+        shop_name: selectedShop.value,
+        shop_address: shop_address.value,
+        owner_name: owner_name.value,
+        brand: selectedBrand.value,
+        booker_name: booker_name.value,
         walk_through: checklistState[0],
         planogram: checklistState[1],
         signage: checklistState[2],
         product_reviewed: checklistState[3],
-        body: imageBytes,
-        feedback: feedBack.value.trim(),
-        shop_visit_master_id: shop_visit_master_id,
-      )
-      );
+        body: compressedImageBytes,
+        feedback: feedBack.value,
+        user_id: user_id.toString(),
+        shop_visit_master_id: shop_visit_master_id.toString(),
+      ));
 
       await shopvisitRepository.getShopVisit();
       await shopVisitDetailsViewModel.saveFilteredProducts();
@@ -267,9 +220,21 @@ class ShopVisitViewModel extends GetxController {
       Get.snackbar("Success", "Form submitted successfully!",
           snackPosition: SnackPosition.BOTTOM);
 
-      await clearFilters();
-      Get.to(() => const HomeScreen());
+      if (isOrder) {
+        Get.to(() => const OrderBookingScreen());
+      } else {
+        await clearFilters();
+        Get.to(() => const HomeScreen());
+      }
     }
+  }
+
+  Future<void> saveForm() async {
+    await _saveShopVisitData(isOrder: true);
+  }
+
+  Future<void> saveFormNoOrder() async {
+    await _saveShopVisitData(isOrder: false);
   }
 
   Future<void> saveHeadsFormNoOrder() async {
@@ -301,8 +266,9 @@ class ShopVisitViewModel extends GetxController {
       Get.snackbar("Success", "Form submitted successfully!",
           snackPosition: SnackPosition.BOTTOM);
       await clearFilters();
-      Get.to(() => const HomeScreen());
-    }
+      // Get.to(() => const HomeScreen());
+
+      Get.offNamed("/home");    }
   }
 
   fetchAllShopVisit() async {
@@ -347,11 +313,28 @@ class ShopVisitViewModel extends GetxController {
   }
 
   clearFilters() {
-    // _shopVisit.value = ShopVisitModel();
-
-    // _formKey.currentState?.reset();
+    _shopVisit.value = ShopVisitModel();
+    selectedBrand.value = '';
+    selectedShop.value = '';
+    shop_address.value = '';
+    owner_name.value = '';
+    booker_name.value = userName;
+    feedBack.value = '';
+    selectedImage.value = null;
+    checklistState.value = List<bool>.filled(4, false);
+    _formKey.currentState?.reset();
   }
-
+// resetForm() {
+//     selectedBrand.value = '';
+//     selectedShop.value = '';
+//     shop_address.value = '';
+//     owner_name.value = '';
+//     booker_name.value = userName;
+//     feedBack.value = '';
+//     selectedImage.value = null;
+//     checklistState.value = List<bool>.filled(4, false);
+//     _formKey.currentState?.reset();
+//   }
 
   // bool validateForm() {
   //   if (_formKey.currentState?.validate() ?? false) {
@@ -379,13 +362,14 @@ class ShopVisitViewModel extends GetxController {
 
   bool validateForm() {
     if (_formKey.currentState?.validate() ?? false) {
-      if (checklistState.contains(false)) { // Ensure all checklist items are selected
-        Get.snackbar("Error", "Please select all checklist items!",
+      if (!checklistState.contains(true)) { // Ensure at least one checklist item is selected
+        Get.snackbar("Error", "Please select at least one checklist item!",
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: Colors.red,
             colorText: Colors.white);
         return false;
       }
+
       if (selectedImage.value == null) {
         Get.snackbar("Error", "Please select or capture an image!",
             snackPosition: SnackPosition.BOTTOM,

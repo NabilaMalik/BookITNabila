@@ -13,19 +13,22 @@ import 'ShopVisitScreenComponents/product_search_card.dart';
 
 class ShopVisitScreen extends StatefulWidget {
   const ShopVisitScreen({super.key});
+
   @override
   _StateShopVisitScreen createState() => _StateShopVisitScreen();
 }
-class _StateShopVisitScreen extends State<ShopVisitScreen>{
+
+class _StateShopVisitScreen extends State<ShopVisitScreen> {
   final ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
   final ShopVisitDetailsViewModel shopVisitDetailsViewModel =
-      Get.put(ShopVisitDetailsViewModel());
+  Get.put(ShopVisitDetailsViewModel());
   final ProductsViewModel productsViewModel = Get.put(ProductsViewModel());
 
 
   @override
   void initState() {
     super.initState();
+    // shopVisitViewModel.clearFilters();
     shopVisitViewModel.fetchBrands();
     shopVisitViewModel.fetchShops();
     // shopVisitDetailsViewModel.initializeProductData();
@@ -45,105 +48,133 @@ class _StateShopVisitScreen extends State<ShopVisitScreen>{
               children: [
                 Form(
                   key: shopVisitViewModel.formKey,
-                  child: Column(
-                    children: [
-                      Obx(() => CustomDropdown(
-
-                        label: "Brand",
-                        icon: Icons.branding_watermark,
-                        items: shopVisitViewModel.brands
-                            .where((brand) => brand != null)
-                            .cast<String>()
-                            .toList(),
-                        selectedValue: shopVisitViewModel.selectedBrand.value.isNotEmpty
-                            ? shopVisitViewModel.selectedBrand.value
-                            : 'Select a Brand',
-                        onChanged: (value) async {
-                          shopVisitDetailsViewModel.filteredRows.refresh();
-                          shopVisitViewModel.selectedBrand.value = value!;
-                          shopVisitDetailsViewModel.filterProductsByBrand(value);
-                        },
-                        useBoxShadow: false,
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Please select a brand'
-                            : null,
-                        inputBorder: const UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue, width: 1.0),
-                        ),
-                        // maxWidth: fieldWidth,  // ✅ Same width as _buildTextField
-                        // maxHeight: MediaQuery.of(context).size.height * 0.079,
-                        iconSize: 22.0,
-                        contentPadding: MediaQuery.of(context).size.height * 0.005,
-                        iconColor: Colors.blue,
-                        textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black),
-                       )
-                      ),
-
-
-                      Obx(() => CustomDropdown(
-                            label: "Shop",
-                            icon: Icons.store,
-                            items: shopVisitViewModel.shops.value.where((shop) => shop != null).cast<String>().toList(),
-                            selectedValue:shopVisitViewModel.selectedShop.value.isNotEmpty?
-                                shopVisitViewModel.selectedShop.value: " Select  a Shop",
-                            onChanged: (value) async {
-                              shopVisitViewModel.selectedShop.value = value!;
-                              await shopVisitViewModel.updateShopDetails(value);
-                              shopVisitViewModel.selectedShop.value =
-                                  value;
-                              debugPrint(shopVisitViewModel.shop_address.value);
-                            },
-                            validator: (value) => value == null || value.isEmpty
-                                ? 'Please select a shop'
-                                : null,
-                            useBoxShadow: false,
-                            inputBorder: const UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.blue, width: 1.0),
+                  child: Obx(() {
+                    return Column(
+                      children: [
+                        // Obx(() =>
+                            CustomDropdown(
+                              label: "Brand",
+                              icon: Icons.branding_watermark,
+                              items: shopVisitViewModel.brands
+                                  .where((brand) => brand != null)
+                                  .cast<String>()
+                                  .toList(),
+                              selectedValue: shopVisitViewModel.selectedBrand
+                                  .value.isNotEmpty
+                                  ? shopVisitViewModel.selectedBrand.value
+                                  : 'Select a Brand',
+                              onChanged: (value) async {
+                                shopVisitDetailsViewModel.filteredRows
+                                    .refresh();
+                                shopVisitViewModel.selectedBrand.value = value!;
+                                shopVisitDetailsViewModel.filterProductsByBrand(
+                                    value);
+                              },
+                              useBoxShadow: false,
+                              validator: (value) =>
+                              value == null || value.isEmpty
+                                  ? 'Please select a brand'
+                                  : null,
+                              inputBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.blue, width: 1.0),
+                              ),
+                              // maxWidth: fieldWidth,  // ✅ Same width as _buildTextField
+                              // maxHeight: MediaQuery.of(context).size.height * 0.079,
+                              iconSize: 22.0,
+                              contentPadding: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .height * 0.005,
+                              iconColor: Colors.blue,
+                              textStyle: const TextStyle(fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
                             ),
-                        maxHeight: 50.0,
-                        maxWidth: 385.0,
-                        // maxWidth: 355.0,
-                        iconSize: 23.0,
-                        // contentPadding: 6.0,
-                        contentPadding: 0.0,
-                            iconColor: Colors.blue,
-                          )
-                      ),
-                      Obx(() => _buildTextField(
-                            initialValue: shopVisitViewModel.shop_address.value,
-                            label: "Shop Address",
-                            icon: Icons.location_on,
-                            validator: (value) => value == null || value.isEmpty
-                                ? 'Please enter the shop address'
-                                : null,
-                            onChanged: (value) =>
-                                shopVisitViewModel.shop_address.value = value,
-                          )
-                      ),
-                      Obx(() => _buildTextField(
-                            initialValue: shopVisitViewModel.owner_name.value,
-                            label: "Owner Name",
-                            icon: Icons.location_on,
-                            validator: (value) => value == null || value.isEmpty
-                                ? 'Please enter the shop address'
-                                : null,
-                            onChanged: (value) =>
-                                shopVisitViewModel.owner_name.value = value,
-                          )),
-                      _buildTextField(
-                        label: "Booker Name",
+                        // ),
 
-                        initialValue: shopVisitViewModel.booker_name.value,
-                        icon: Icons.person,
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Please enter the booker name'
-                            : null,
-                        onChanged: (value) =>
-                            shopVisitViewModel.booker_name.value = value,
-                      ),
-                    ],
-                  ),
+                        // Obx(() =>
+                            CustomDropdown(
+                              label: "Shop",
+                              icon: Icons.store,
+                              items: shopVisitViewModel.shops.value
+                                  .where((
+                                  shop) => shop != null)
+                                  .cast<String>()
+                                  .toList(),
+                              selectedValue: shopVisitViewModel.selectedShop
+                                  .value.isNotEmpty
+                                  ?
+                              shopVisitViewModel.selectedShop.value
+                                  : " Select  a Shop",
+                              onChanged: (value) async {
+                                shopVisitViewModel.selectedShop.value = value!;
+                                await shopVisitViewModel.updateShopDetails(
+                                    value);
+                                shopVisitViewModel.selectedShop.value =
+                                    value;
+                                debugPrint(
+                                    shopVisitViewModel.shop_address.value);
+                              },
+                              validator: (value) =>
+                              value == null || value.isEmpty
+                                  ? 'Please select a shop'
+                                  : null,
+                              useBoxShadow: false,
+                              inputBorder: const UnderlineInputBorder(
+                                borderSide:
+                                BorderSide(color: Colors.blue, width: 1.0),
+                              ),
+                              maxHeight: 50.0,
+                              maxWidth: 385.0,
+                              // maxWidth: 355.0,
+                              iconSize: 23.0,
+                              // contentPadding: 6.0,
+                              contentPadding: 0.0,
+                              iconColor: Colors.blue,
+                            ),
+                        // ),
+                        Obx(() =>
+                            _buildTextField(
+                              initialValue: shopVisitViewModel.shop_address
+                                  .value,
+                              label: "Shop Address",
+                              icon: Icons.location_on,
+                              validator: (value) =>
+                              value == null || value.isEmpty
+                                  ? 'Please enter the shop address'
+                                  : null,
+                              onChanged: (value) =>
+                              shopVisitViewModel.shop_address.value = value,
+                            )
+                        ),
+                        Obx(() =>
+                            _buildTextField(
+                              initialValue: shopVisitViewModel.owner_name.value,
+                              label: "Owner Name",
+                              icon: Icons.location_on,
+                              validator: (value) =>
+                              value == null || value.isEmpty
+                                  ? 'Please enter the shop address'
+                                  : null,
+                              onChanged: (value) =>
+                              shopVisitViewModel.owner_name.value = value,
+                            )),
+                        _buildTextField(
+                          label: "Booker Name",
+
+                          initialValue: shopVisitViewModel.booker_name.value,
+                          icon: Icons.person,
+                          validator: (value) =>
+                          value == null || value.isEmpty
+                              ? 'Please enter the booker name'
+                              : null,
+                          onChanged: (value) =>
+                          shopVisitViewModel.booker_name.value = value,
+                        ),
+                      ],
+                    );
+                  }),
                 ),
                 const SizedBox(height: 20),
                 const SectionHeader(title: "Stock Check"),
@@ -169,11 +200,12 @@ class _StateShopVisitScreen extends State<ShopVisitScreen>{
                   onTakePicture: shopVisitViewModel.takePicture,
                 ),
                 const SizedBox(height: 20),
-                Obx(() => FeedbackSection(
+                Obx(() =>
+                    FeedbackSection(
                       feedBackController: TextEditingController(
                           text: shopVisitViewModel.feedBack.value),
                       onChanged: (value) =>
-                          shopVisitViewModel.feedBack.value = value,
+                      shopVisitViewModel.feedBack.value = value,
                     )),
                 const SizedBox(height: 20),
                 Row(children: [
@@ -251,8 +283,8 @@ class _StateShopVisitScreen extends State<ShopVisitScreen>{
           icon: const Icon(Icons.refresh, color: Colors.white),
           onPressed: () {
             shopVisitViewModel.fetchAllShopVisit();
-           //productsViewModel.fetchAndSaveProducts();
-           productsViewModel.fetchAllProductsModel();
+            //productsViewModel.fetchAndSaveProducts();
+            productsViewModel.fetchAllProductsModel();
           },
         ),
       ],
@@ -301,7 +333,8 @@ class SectionHeader extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Text(
         title,
-        style: Theme.of(context)
+        style: Theme
+            .of(context)
             .textTheme
             .titleLarge
             ?.copyWith(fontWeight: FontWeight.bold),

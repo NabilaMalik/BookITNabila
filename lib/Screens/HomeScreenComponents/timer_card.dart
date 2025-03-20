@@ -10,14 +10,13 @@ import '../../Databases/util.dart';
 import '../../ViewModels/attendance_out_view_model.dart';
 import '../../ViewModels/location_services_view_model.dart';
 import '../../main.dart';
-import 'assets.dart ';
+import 'assets.dart';
 import 'menu_item.dart';
 
 class TimerCard extends StatelessWidget {
   final locationViewModel = Get.put(LocationViewModel());
   final attendanceViewModel = Get.put(AttendanceViewModel());
   final attendanceOutViewModel = Get.put(AttendanceOutViewModel());
-  // final locationServicesViewModel = Get.put(LocationServicesViewModel());
   final loc.Location location = loc.Location();
 
   void onThemeToggle(bool value) {
@@ -32,7 +31,7 @@ class TimerCard extends StatelessWidget {
       _themeMenuIcon[0].riveIcon.status =
       controller.findInput<bool>("active") as SMIBool?;
     } else {
-     debugPrint("StateMachineController not found!");
+      debugPrint("StateMachineController not found!");
     }
   }
 
@@ -40,37 +39,15 @@ class TimerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final Stopwatch stopwatch = useMemoized(() => Stopwatch());
-    // final ValueNotifier<Duration> timerValue = useState(Duration.zero);
-
-    // useEffect(() {
-    //   final periodicTimer = Timer.periodic(Duration(seconds: 1), (_) {
-    //     if (stopwatch.isRunning) {
-    //       timerValue.value = stopwatch.elapsed;
-    //     }
-    //   });
-    //   return periodicTimer.cancel;
-    // }, [stopwatch]);
-
-    // String formatDuration(Duration duration) {
-    //   String twoDigits(int n) => n.toString().padLeft(2, "0");
-    //   String hours = twoDigits(duration.inHours);
-    //   String minutes = twoDigits(duration.inMinutes.remainder(60));
-    //   String seconds = twoDigits(duration.inSeconds.remainder(60));
-    //   return "$hours:$minutes:$seconds";
-    // }
-    // Function to format duration in seconds to a string
     String _formatDuration(String secondsString) {
       int seconds = int.parse(secondsString);
       Duration duration = Duration(seconds: seconds);
       String twoDigits(int n) => n.toString().padLeft(2, '0');
       String hours = twoDigits(duration.inHours);
-
       String minutes = twoDigits(duration.inMinutes.remainder(60));
       String secondsFormatted = twoDigits(duration.inSeconds.remainder(60));
       return '$hours:$minutes:$secondsFormatted';
     }
-
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 100.0, vertical: 0.0),
@@ -91,22 +68,34 @@ class TimerCard extends StatelessWidget {
           Obx(() {
             return ElevatedButton(
               onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
+                // Show loading indicator
+                showDialog(
+                  context: context,
+                  barrierDismissible: false, // Prevents closing by tapping outside
+                  builder: (BuildContext context) {
+                    return PopScope(
+                      canPop: false, // Prevents closing by back button
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  },
+                );
+
                 try {
                   await locationViewModel.saveCurrentLocation();
                   final service = FlutterBackgroundService();
                   newIsClockedIn = locationViewModel.isClockedIn.value;
 
                   if (newIsClockedIn) {
+                    // Clock Out Logic
                     locationViewModel.isClockedIn.value = false;
                     newIsClockedIn = locationViewModel.isClockedIn.value;
-                    prefs.setBool('isClockedIn', newIsClockedIn);
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    await prefs.reload();
+                    await prefs.setBool('isClockedIn', newIsClockedIn);
 
-                    // await Future(() => service.invoke("stopService"));
-                    service.invoke("stopService");
-                    // await Future.delayed(const Duration(seconds: 4));
-
-                    // await locationViewModel.saveCurrentLocation();
+                     service.invoke("stopService");
                     await attendanceOutViewModel.saveFormAttendanceOut();
                     var totalTime = await locationViewModel.stopTimer();
 
@@ -114,25 +103,25 @@ class TimerCard extends StatelessWidget {
                     await locationViewModel.clockRefresh();
 
                     await locationViewModel.saveLocation();
-                    // await Future.delayed(const Duration(seconds: 10));
                     await locationViewModel.saveClockStatus(false);
                     debugPrint("Timer stopped and animation set to inactive.");
-                    //locationViewModel.isClockedIn.value = false;
                     _themeMenuIcon[0].riveIcon.status!.value = false;
                     await location.enableBackgroundMode(enable: false);
                   } else {
-                    // await locationServicesViewModel.initializeServiceLocation();
-                    await initializeServiceLocation();
+                    // Clock In Logic
                     await location.enableBackgroundMode(enable: true);
+                    await initializeServiceLocation();
                     await location.changeSettings(
                         interval: 300, accuracy: loc.LocationAccuracy.high);
-                    await service.startService();
+                    service.startService();
                     await locationViewModel.saveCurrentTime();
                     await locationViewModel.saveClockStatus(true);
                     await locationViewModel.clockRefresh();
                     locationViewModel.isClockedIn.value = true;
                     newIsClockedIn = locationViewModel.isClockedIn.value;
-                    prefs.setBool('isClockedIn', newIsClockedIn);
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    await prefs.reload();
+                   await  prefs.setBool('isClockedIn', newIsClockedIn);
                     await attendanceViewModel.saveFormAttendanceIn();
 
                     _themeMenuIcon[0].riveIcon.status!.value = true;
@@ -140,6 +129,11 @@ class TimerCard extends StatelessWidget {
                   }
                 } catch (e) {
                   debugPrint("Error: $e");
+                } finally {
+                  // Wait for 5 seconds
+                  await Future.delayed(Duration(seconds: 10));
+                  // Hide loading indicator after all tasks are completed
+                  Navigator.of(context).pop();
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -149,7 +143,6 @@ class TimerCard extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-
                 padding: EdgeInsets.zero,
               ),
               child: SizedBox(

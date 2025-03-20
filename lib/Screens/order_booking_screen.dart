@@ -43,6 +43,13 @@ void initState() {
           ),
           centerTitle: true,
           backgroundColor: Colors.blue,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+                Get.offNamed("/home");
+
+            },
+          ),
         ),
         body: Container(
           color: Colors.white,

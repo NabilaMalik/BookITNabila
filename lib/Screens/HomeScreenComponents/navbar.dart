@@ -60,12 +60,16 @@ class Navbar extends StatelessWidget {
                 onTap: () async {
                   // Add your onTap logic for the refresh icon here
                   debugPrint('Refresh icon tapped');
-                  await Future.wait<void>([
-                    updateFunctionViewModel.fetchAndSaveUpdatedCities(),
-                    updateFunctionViewModel.fetchAndSaveUpdatedProducts(),
-                    updateFunctionViewModel.fetchAndSaveUpdatedOrderMaster(),
-                    updateFunctionViewModel.checkAndSetInitializationDateTime()
-                  ]);
+                 await updateFunctionViewModel.fetchAndSaveUpdatedCities();
+                 await updateFunctionViewModel.fetchAndSaveUpdatedProducts();
+                  await updateFunctionViewModel.fetchAndSaveUpdatedOrderMaster();
+                   await updateFunctionViewModel.checkAndSetInitializationDateTime();
+                  // await Future.wait<void>([
+                  //   updateFunctionViewModel.fetchAndSaveUpdatedCities(),
+                  //   updateFunctionViewModel.fetchAndSaveUpdatedProducts(),
+                  //   updateFunctionViewModel.fetchAndSaveUpdatedOrderMaster(),
+                  //   updateFunctionViewModel.checkAndSetInitializationDateTime()
+                  // ]);
                 },
                 child: Icon(Icons.refresh_sharp, color: Colors.white, size: 28),
               ),

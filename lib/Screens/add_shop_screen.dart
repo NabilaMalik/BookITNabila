@@ -98,10 +98,9 @@ class AddShopScreen extends StatelessWidget {
                     validator: Validators.validateCNIC,
                     onChanged: (value) {
 
-                      _viewModel.setShopField('cnic', value);
+                      _viewModel.setShopField('owner_cnic', value);
                     },
                   ),
-
 
                   _buildTextField(
                     label: "Phone Number",
@@ -111,7 +110,6 @@ class AddShopScreen extends StatelessWidget {
                     keyboardType: TextInputType.phone,
                     inputFormatters: [PhoneNumberFormatter()],
                   ),
-
 
 
                   _buildTextField(

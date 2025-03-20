@@ -25,7 +25,7 @@ class ActionBox extends StatelessWidget {
             height: 60,
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
                   color: Colors.blue.withOpacity(0.4),
@@ -44,10 +44,10 @@ class ActionBox extends StatelessWidget {
                 : const Icon(Icons.image, color: Colors.black, size: 30),  // Fallback if no image is provided
           ),
         ),
-        const SizedBox(height: 13), // Space between the box and the label
+        const SizedBox(height: 8), // Space between the box and the label
         Text(
           label,
-          style: const TextStyle(color: Colors.black, fontSize: 13),
+          style: const TextStyle(color: Colors.black, fontSize: 10),
           textAlign: TextAlign.center,
         ),
       ],
