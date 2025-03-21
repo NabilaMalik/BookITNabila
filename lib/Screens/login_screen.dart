@@ -378,11 +378,11 @@ class _LoginScreenState extends State<LoginScreen> {
     return const Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        RoundedIcon(imageUrl: "assets/images/Google.jpg"),
-        SizedBox(width: 35),
-        RoundedIcon(imageUrl: "assets/images/fb.jpg"),
-        SizedBox(width: 35),
-        RoundedIcon(imageUrl: "assets/images/2504839.png"),
+        // RoundedIcon(imageUrl: "assets/images/Google.jpg"),
+        // SizedBox(width: 35),
+        // RoundedIcon(imageUrl: "assets/images/fb.jpg"),
+        // SizedBox(width: 35),
+        // RoundedIcon(imageUrl: "assets/images/2504839.png"),
       ],
     );
   }

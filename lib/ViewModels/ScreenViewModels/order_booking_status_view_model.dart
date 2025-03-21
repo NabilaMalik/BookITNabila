@@ -15,7 +15,7 @@ class OrderBookingStatusViewModel extends GetxController {
   var status = ''.obs;
   var filteredRows = <OrderBookingStatusModel>[].obs;
   var filteredRowsMaster = <OrderMasterModel>[].obs;
-
+  RxString selectedStatus = ''.obs;
   // Instance of the repository
   final OrderBookingStatusRepository _orderRepository =
       OrderBookingStatusRepository();

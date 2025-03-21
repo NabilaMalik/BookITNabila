@@ -74,59 +74,17 @@ Widget _buildLabeledTextField({
 Future<void> _selectDate(
     BuildContext context, OrderBookingStatusViewModel viewModel,
     {required bool isStartDate}) async {
-  DateTime now = DateTime.now();
-
-  // Parse start and end dates safely
-  DateTime? parsedStartDate = DateTime.tryParse(viewModel.startDate.value);
-  DateTime? parsedEndDate = DateTime.tryParse(viewModel.endDate.value);
-
-  // Default values
-  DateTime initialDate = now;
-  DateTime firstDate = DateTime(2000);
-  DateTime lastDate = DateTime(2100);
-
-  if (isStartDate) {
-    if (parsedStartDate != null) {
-      initialDate = parsedStartDate;
-    }
-    if (parsedEndDate != null) {
-      lastDate = parsedEndDate; // start date cannot be after end date
-    }
-  } else {
-    if (parsedEndDate != null) {
-      initialDate = parsedEndDate;
-    }
-    if (parsedStartDate != null) {
-      firstDate = parsedStartDate; // end date must be >= start date
-    }
-  }
-
-  // Show date picker
   DateTime? pickedDate = await showDatePicker(
     context: context,
-    initialDate: initialDate,
-    firstDate: firstDate,
-    lastDate: lastDate,
+    initialDate: DateTime.now(),
+    firstDate: DateTime(2000),
+    lastDate: DateTime(2100),
   );
-
   if (pickedDate != null) {
-    String formattedDate = pickedDate.toIso8601String().split('T')[0];
-
+    String formattedDate = "${pickedDate.toLocal()}".split(' ')[0];
     if (isStartDate) {
-      // If new start date is after existing end date, clear end date
-      if (parsedEndDate != null && pickedDate.isAfter(parsedEndDate)) {
-        viewModel.updateDateRange(formattedDate, "");
-      } else {
-        viewModel.updateDateRange(formattedDate, viewModel.endDate.value);
-      }
+      viewModel.updateDateRange(formattedDate, viewModel.endDate.value);
     } else {
-      // Validate end date >= start date
-      if (parsedStartDate != null && pickedDate.isBefore(parsedStartDate)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("End date cannot be before start date")),
-        );
-        return; // Invalid selection, do nothing
-      }
       viewModel.updateDateRange(viewModel.startDate.value, formattedDate);
     }
   }

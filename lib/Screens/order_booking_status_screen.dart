@@ -43,7 +43,6 @@ class OrderBookingStatusScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 buildActionButtonsRow(viewModel),
                 const SizedBox(height: 20),
-
                 OrderBookingStatusHistoryCard(
                   filterData: (filter) => viewModel.filterData(filter),
                   rowsNotifier: ValueNotifier(viewModel.filteredRowsAsMapList),
