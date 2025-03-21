@@ -151,7 +151,8 @@ void initState() {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(left: 16, right: 18),
-                                child: SizedBox(
+                                child:
+                                SizedBox(
                                   width: double.infinity,
                                   child: _buildTextFieldWithCalendar(
                                     label: "Required Delivery",
@@ -197,50 +198,56 @@ void initState() {
     required ValueChanged<DateTime> onDateSelected,
   }) {
     return GestureDetector(
-        onTap: () async {
-          DateTime? selectedDate = await showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(2000),
-            lastDate: DateTime(2100),
-          );
-          if (selectedDate != null) {
-            onDateSelected(selectedDate);
-          }
-        },
+      onTap: () async {
+        DateTime today = DateTime.now();
+        DateTime firstDate = DateTime(today.year, today.month, today.day); // Strip time
 
-        child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8), // Space between icon and text field
-                child: Icon(icon, color: Colors.blue, size: 24), // Adjust size if needed
-              ),
-              Expanded(
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    labelText: label,
-                    border: const UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 1.0),
-                    ),
-                  ),
-                  controller: TextEditingController(text: text),
-                  readOnly: true,
-                  onTap: () async { // Also open calendar when tapping on text field
-                    DateTime? selectedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2100),
-                    );
-                    if (selectedDate != null) {
-                      onDateSelected(selectedDate);
-                    }
-                  },
+        DateTime? selectedDate = await showDatePicker(
+          context: context,
+          initialDate: firstDate,
+          firstDate: firstDate,
+          lastDate: DateTime(2100),
+        );
+        if (selectedDate != null) {
+          onDateSelected(selectedDate);
+        }
+      },
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: Icon(icon, color: Colors.blue, size: 24),
+          ),
+          Expanded(
+            child: TextFormField(
+              decoration: InputDecoration(
+                labelText: label,
+                border: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue, width: 1.0),
                 ),
               ),
-            ],
-        ),
-        );
+              controller: TextEditingController(text: text),
+              readOnly: true,
+              onTap: () async {
+                DateTime today = DateTime.now();
+                DateTime firstDate = DateTime(today.year, today.month, today.day);
+
+                DateTime? selectedDate = await showDatePicker(
+                  context: context,
+                  initialDate: firstDate,
+                  firstDate: firstDate,
+                  lastDate: DateTime(2100),
+                );
+                if (selectedDate != null) {
+                  onDateSelected(selectedDate);
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+
     }
   Widget _buildTextField({
     required String label,
