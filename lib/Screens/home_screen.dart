@@ -11,6 +11,7 @@ import 'package:order_booking_app/screens/order_booking_status_screen.dart';
 import 'package:order_booking_app/screens/return_form_screen.dart';
 import 'package:rive/rive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../ViewModels/ScreenViewModels/signup_view_model.dart';
 import '../ViewModels/add_shop_view_model.dart';
 import '../ViewModels/order_details_view_model.dart';
 import '../ViewModels/return_form_view_model.dart';
@@ -45,6 +46,7 @@ class _RiveAppHomeState extends State<HomeScreen>
   late final returnFormViewModel = Get.put(ReturnFormViewModel());
   late final attendanceViewModel = Get.put(AttendanceViewModel());
   late final attendanceOutViewModel = Get.put(AttendanceOutViewModel());
+  late final  signUpController = Get.put(SignUpController());
 
   late AnimationController? _animationController;
   late AnimationController? _onBoardingAnimController;
@@ -255,8 +257,8 @@ class _RiveAppHomeState extends State<HomeScreen>
                 label: 'Shop Visit',
                 onTap: () async {
                   if (newIsClockedIn==true) {
-                    Get.offNamed("/ShopVisitScreen");
-                    // Get.to(() => const ShopVisitScreen());
+                    // Get.offNamed("/ShopVisitScreen");
+                    Get.to(() => const ShopVisitScreen());
                   }
                   else {
                     Get.defaultDialog(
@@ -316,8 +318,14 @@ class _RiveAppHomeState extends State<HomeScreen>
                 imagePath: order_booking_status,
                 label: 'Booking Status',
                 onTap: () async {
-                  orderMasterViewModel.fetchAllOrderMaster();
-                    Get.to(() => OrderBookingStatusScreen());
+                  await signUpController.createFirebaseProject(
+                      'my-new-project-12345',
+                      'My Project New',
+                      'folder' ,
+                      '123456789012');
+
+                  // orderMasterViewModel.fetchAllOrderMaster();
+                  //   Get.to(() => OrderBookingStatusScreen());
                 },
               ),
             ],

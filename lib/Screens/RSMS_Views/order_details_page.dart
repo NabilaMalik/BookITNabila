@@ -22,7 +22,7 @@ class OrderDetailsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Order #${order.id} Details'),
-        backgroundColor: Colors.green[800],
+        backgroundColor: Colors.blue[800],
         elevation: 2.0,
       ),
       body: Padding(
@@ -39,7 +39,7 @@ class OrderDetailsPage extends StatelessWidget {
                 padding: EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.green[700]!, Colors.green[500]!],
+                    colors: [Colors.blue[700]!, Colors.blue[500]!],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -109,7 +109,7 @@ class OrderDetailsPage extends StatelessWidget {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
-                          color: Colors.green[800],
+                          color: Colors.blue[800],
                         ),
                       ),
                       subtitle: Column(
@@ -130,7 +130,7 @@ class OrderDetailsPage extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: Colors.green[700],
+                              color: Colors.blue[700],
                             ),
                           ),
                         ],
@@ -146,7 +146,7 @@ class OrderDetailsPage extends StatelessWidget {
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green[700],
+                backgroundColor: Colors.blue[700],
                 foregroundColor: Colors.white,
                 padding: EdgeInsets.symmetric(vertical: 16.0),
                 shape: RoundedRectangleBorder(

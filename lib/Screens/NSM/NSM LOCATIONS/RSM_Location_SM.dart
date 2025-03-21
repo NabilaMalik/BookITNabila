@@ -153,7 +153,7 @@ class _RSMLocationnsmState extends State<RSMLocationnsm> {
         onPressed: () {
           mapController.animateCamera(CameraUpdate.newLatLngZoom(_initialCameraPosition, 6));
         },
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.blue,
         child: const Icon(Icons.my_location, color: Colors.white),
       ),
     );

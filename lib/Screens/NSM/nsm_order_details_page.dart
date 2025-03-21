@@ -21,7 +21,7 @@ class NSMOrderDetailsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Order #${order.id} Details'),
-        backgroundColor: Colors.green[800],
+        backgroundColor: Colors.blue[800],
         elevation: 4.0,
       ),
       body: Padding(
@@ -37,7 +37,7 @@ class NSMOrderDetailsPage extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.green[700]!, Colors.green[500]!],
+                    colors: [Colors.blue[700]!, Colors.blue[500]!],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -103,7 +103,7 @@ class NSMOrderDetailsPage extends StatelessWidget {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
-                          color: Colors.green[800],
+                          color: Colors.blue[800],
                         ),
                       ),
                       subtitle: Column(
@@ -117,7 +117,7 @@ class NSMOrderDetailsPage extends StatelessWidget {
                             'Price: ${product.price.toStringAsFixed(2)} PKR',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: Colors.green[700],
+                              color: Colors.blue[700],
                             ),
                           ),
                         ],
@@ -133,7 +133,7 @@ class NSMOrderDetailsPage extends StatelessWidget {
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green[700],
+                backgroundColor: Colors.blue[700],
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 shape: RoundedRectangleBorder(

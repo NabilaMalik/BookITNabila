@@ -118,7 +118,7 @@ class _SMHomepageState extends State<SMHomepage> {
             elevation: 1, // Add a subtle shadow
             actions: [
               IconButton(
-                icon: const Icon(Icons.refresh, color: Colors.green),
+                icon: const Icon(Icons.refresh, color: Colors.blue),
                 onPressed: () {
                   // _handleRefresh();
                   // Add reload functionality here
@@ -153,7 +153,7 @@ class _SMHomepageState extends State<SMHomepage> {
                         context,
                         cardInfo['title'] as String,
                         cardInfo['icon'] as IconData,
-                        Colors.green,
+                        Colors.blue,
                       );
                     },
                   ),

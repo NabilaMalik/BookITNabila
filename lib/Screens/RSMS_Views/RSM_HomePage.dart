@@ -162,7 +162,7 @@ class _RSMHomepageState extends State<RSMHomepage> {
               elevation: 1, // Add a subtle shadow
               actions: [
                 IconButton(
-                  icon: const Icon(Icons.refresh, color: Colors.green),
+                  icon: const Icon(Icons.refresh, color: Colors.blue),
                   onPressed: () {
                     // _handleRefresh();
                   },
@@ -185,10 +185,10 @@ class _RSMHomepageState extends State<RSMHomepage> {
                       itemCount: 4, // Display the first four cards in the grid
                       itemBuilder: (context, index) {
                         final cardInfo = [
-                          {'title': 'SHOP VISIT', 'icon': Icons.store, 'color': Colors.green},
-                          {'title': 'BOOKERS STATUS', 'icon': Icons.person, 'color': Colors.green},
-                          {'title': 'SHOPS DETAILS', 'icon': Icons.info, 'color': Colors.green},
-                          {'title': 'BOOKERS ORDER DETAILS', 'icon': Icons.book, 'color': Colors.green},
+                          {'title': 'SHOP VISIT', 'icon': Icons.store, 'color': Colors.blue},
+                          {'title': 'BOOKERS STATUS', 'icon': Icons.person, 'color': Colors.blue},
+                          {'title': 'SHOPS DETAILS', 'icon': Icons.info, 'color': Colors.blue},
+                          {'title': 'BOOKERS ORDER DETAILS', 'icon': Icons.book, 'color': Colors.blue},
                           {'title': 'Location', 'icon': Icons.location_on},
                         ][index];
                         return _buildCard(
@@ -212,7 +212,7 @@ class _RSMHomepageState extends State<RSMHomepage> {
                             context,
                             'LIVE LOCATION',
                             Icons.location_on,
-                            Colors.green,
+                            Colors.blue,
                             iconSize,
                           ),
                         ),

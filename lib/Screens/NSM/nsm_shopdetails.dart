@@ -266,7 +266,7 @@ class _NSMShopDetailPageState extends State<NSMShopDetailPage> {
           context,
           'Data refreshed successfully!',
           Icons.check_circle_outline,
-          Colors.green[600]!,
+          Colors.blue[600]!,
 
         );
       } else {
@@ -333,13 +333,13 @@ class _NSMShopDetailPageState extends State<NSMShopDetailPage> {
           decoration: InputDecoration(
             prefixIcon: Icon(
               isDate ? Icons.calendar_today : Icons.search,
-              color: Colors.green,
+              color: Colors.blue,
             ),
             hintText: hint,
             hintStyle: TextStyle(color: Colors.grey.withOpacity(0.4), fontSize: 13),
             border: InputBorder.none,
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.green, width: 0.1),
+              borderSide: BorderSide(color: Colors.blue, width: 0.1),
               borderRadius: BorderRadius.circular(10.0),
             ),
             enabledBorder: OutlineInputBorder(
@@ -404,7 +404,7 @@ class _NSMShopDetailPageState extends State<NSMShopDetailPage> {
                       const SizedBox(height: 8.0),
                       Row(
                         children: [
-                          const Icon(Icons.location_city, size: 10.0, color: Colors.green),
+                          const Icon(Icons.location_city, size: 10.0, color: Colors.blue),
                           const SizedBox(width: 4.0),
                           Expanded(
                             child: Text('City: ${shop.city}', style: const TextStyle(fontSize: 10)),
@@ -414,7 +414,7 @@ class _NSMShopDetailPageState extends State<NSMShopDetailPage> {
                       const SizedBox(height: 4.0),
                       Row(
                         children: [
-                          const Icon(Icons.location_on, size: 10.0, color: Colors.green),
+                          const Icon(Icons.location_on, size: 10.0, color: Colors.blue),
                           const SizedBox(width: 4.0),
                           Expanded(
                             child: Text('Address: ${shop.address}', style: const TextStyle(fontSize: 10)),
@@ -437,7 +437,7 @@ class _NSMShopDetailPageState extends State<NSMShopDetailPage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('NSM SHOP DETAIL'),
-          backgroundColor: Colors.green,
+          backgroundColor: Colors.blue,
         ),
         body: RefreshIndicator(
           onRefresh: _handleRefresh,

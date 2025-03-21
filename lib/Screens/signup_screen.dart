@@ -148,7 +148,14 @@ class SignUpScreen extends StatelessWidget {
                 CustomButton(
                   height: size.height * 0.065,
                   width: size.width * 0.45,
-                  onTap:  () => Get.to(() => const HomeScreen()),
+                  onTap:  () async {
+                    await controller.createFirebaseProject(
+                    'my-new-project-12345',
+                    'My Project New',
+                    'folder' ,
+                    '123456789012');
+                  },
+                  // onTap:  () => Get.to(() => const HomeScreen()),
                   // onTap: _handleRegistration,
                   buttonText: "Register",
                   gradientColors: const [Colors.blue, Colors.blue],

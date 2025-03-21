@@ -268,7 +268,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> {
           context,
           'Data refreshed successfully!',
           Icons.check_circle_outline,
-          Colors.green[600]!,
+          Colors.blue[600]!,
 
         );
       } else {
@@ -335,13 +335,13 @@ class _ShopDetailPageState extends State<ShopDetailPage> {
           decoration: InputDecoration(
             prefixIcon: Icon(
               isDate ? Icons.calendar_today : Icons.search,
-              color: Colors.green,
+              color: Colors.blue,
             ),
             hintText: hint,
             hintStyle: TextStyle(color: Colors.grey[600]),
             border: InputBorder.none,
             focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.green, width: 1.5),
+              borderSide: const BorderSide(color: Colors.blue, width: 1.5),
               borderRadius: BorderRadius.circular(10.0),
             ),
             enabledBorder: OutlineInputBorder(
@@ -406,7 +406,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> {
                       const SizedBox(height: 6.0),
                       Row(
                         children: [
-                          const Icon(Icons.location_city, size: 10.0, color: Colors.green),
+                          const Icon(Icons.location_city, size: 10.0, color: Colors.blue),
                           const SizedBox(width: 1.0),
                           Expanded(
                             child: Text(' ${shop.city}', style: const TextStyle(fontSize: 12)),
@@ -416,7 +416,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> {
                       const SizedBox(height: 4.0),
                       Row(
                         children: [
-                          const Icon(Icons.location_on, size: 12.0, color: Colors.green),
+                          const Icon(Icons.location_on, size: 12.0, color: Colors.blue),
                           const SizedBox(width: 2.0),
                           Expanded(
                             child: Text('${shop.address}', style: const TextStyle(fontSize: 12)),
@@ -439,7 +439,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('RSM SHOP DETAIL'),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.blue,
       ),
     body: RefreshIndicator(
     onRefresh: _handleRefresh,

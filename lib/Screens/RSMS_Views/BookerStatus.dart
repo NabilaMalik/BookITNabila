@@ -261,7 +261,7 @@ class _RSMBookerStatusState extends State<RSMBookerStatus> {
           context,
           'Data refreshed successfully!',
           Icons.check_circle_outline,
-          Colors.green[600]!,
+          Colors.blue[600]!,
 
         );
       } else {
@@ -316,7 +316,7 @@ class _RSMBookerStatusState extends State<RSMBookerStatus> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('BOOKER STATUS DETAIL'),
-          backgroundColor: Colors.green,
+          backgroundColor: Colors.blue,
         ),
       body: RefreshIndicator(
         onRefresh: _handleRefresh,
@@ -395,13 +395,13 @@ class _RSMBookerStatusState extends State<RSMBookerStatus> {
           decoration: InputDecoration(
             prefixIcon: Icon(
               isDate ? Icons.calendar_today : Icons.search,
-              color: Colors.green,
+              color: Colors.blue,
             ),
             hintText: hint,
             hintStyle: TextStyle(color: Colors.grey[600], fontSize: 14),
             border: InputBorder.none,
             focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: Colors.green, width: 1.0),
+              borderSide: const BorderSide(color: Colors.blue, width: 1.0),
               borderRadius: BorderRadius.circular(8.0),
             ),
             enabledBorder: OutlineInputBorder(
@@ -427,7 +427,7 @@ class _RSMBookerStatusState extends State<RSMBookerStatus> {
     // Determine the color and text based on the attendance status
     switch (booker.attendanceStatus) {
       case 'clock_in':
-        statusColor = Colors.green;
+        statusColor = Colors.blue;
         statusText = 'Clocked In';
         break;
       case 'clock_out':
@@ -531,7 +531,7 @@ class _RSMBookerStatusState extends State<RSMBookerStatus> {
                       ),
                       Row(
                         children: [
-                          const Icon(Icons.work, size: 11.0, color: Colors.green),
+                          const Icon(Icons.work, size: 11.0, color: Colors.blue),
                           const SizedBox(width: 1.0),
                           Expanded(
                             child: Text(

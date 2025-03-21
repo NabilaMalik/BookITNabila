@@ -131,11 +131,11 @@ class NSMHomepageState extends State<NSMHomepage> {
               ),
             ),
           ),
-          iconTheme: const IconThemeData(color: Colors.green),
+          iconTheme: const IconThemeData(color: Colors.blue),
           automaticallyImplyLeading: false,
           actions: [
             IconButton(
-              icon: const Icon(Icons.refresh, color: Colors.green),
+              icon: const Icon(Icons.refresh, color: Colors.blue),
               onPressed: () {
                 // _handleRefresh();
               },
@@ -169,7 +169,7 @@ class NSMHomepageState extends State<NSMHomepage> {
                     context,
                     cardInfo['title'] as String,
                     cardInfo['icon'] as IconData,
-                    Colors.green,
+                    Colors.blue,
                   );
                 },
               ),

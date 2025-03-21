@@ -47,12 +47,12 @@ class LandingPage extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Icon(icon, size: 50.0, color: Colors.green),
+              Icon(icon, size: 50.0, color: Colors.blue),
               const SizedBox(width: 16.0),
               Container(
                 width: 1,
                 height: 60,
-                color: Colors.green,
+                color: Colors.blue,
               ),
               const SizedBox(width: 16.0),
               Text(

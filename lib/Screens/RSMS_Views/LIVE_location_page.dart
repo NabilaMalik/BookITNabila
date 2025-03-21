@@ -82,12 +82,12 @@ class _LiveLocationPageState extends State<LiveLocationPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Booker's Live Location"),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.blue,
         elevation: 0,
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.green, Colors.greenAccent],
+              colors: [Colors.blue, Colors.blueAccent],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -166,7 +166,7 @@ class _LiveLocationPageState extends State<LiveLocationPage> {
         onPressed: () {
           mapController.animateCamera(CameraUpdate.newLatLngZoom(_initialCameraPosition, 6));
         },
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.blue,
         child: const Icon(Icons.my_location, color: Colors.white),
       ),
     );

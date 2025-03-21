@@ -165,7 +165,7 @@ class ShopVisitPageState extends State<ShopVisitPage> {
               });
             }
           },
-          activeColor: Colors.green,
+          activeColor: Colors.blue,
         ),
         const Text(
           'GPS Enabled',
@@ -215,7 +215,7 @@ class ShopVisitPageState extends State<ShopVisitPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Shop Visit Form'),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.blue,
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -278,7 +278,7 @@ class ShopVisitPageState extends State<ShopVisitPage> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.green.withOpacity(0.2),
+            color: Colors.blue.withOpacity(0.2),
             spreadRadius: 2,
             blurRadius: 8,
           ),
@@ -290,7 +290,7 @@ class ShopVisitPageState extends State<ShopVisitPage> {
           controller: controller,
           readOnly: readOnly,
           decoration: InputDecoration(
-            prefixIcon: Icon(icon, color: Colors.green),
+            prefixIcon: Icon(icon, color: Colors.blue),
             labelText: label,
             border: InputBorder.none,
           ),
@@ -308,7 +308,7 @@ class ShopVisitPageState extends State<ShopVisitPage> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.green.withOpacity(0.2),
+            color: Colors.blue.withOpacity(0.2),
             spreadRadius: 2,
             blurRadius: 8,
           ),
@@ -319,7 +319,7 @@ class ShopVisitPageState extends State<ShopVisitPage> {
         child: TextField(
           controller: TextEditingController(text: currentDate),
           decoration: const InputDecoration(
-            prefixIcon: Icon(Icons.calendar_today, color: Colors.green),
+            prefixIcon: Icon(Icons.calendar_today, color: Colors.blue),
             labelText: 'Date',
             border: InputBorder.none,
           ),
@@ -340,7 +340,7 @@ class ShopVisitPageState extends State<ShopVisitPage> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.green.withOpacity(0.2),
+            color: Colors.blue.withOpacity(0.2),
             spreadRadius: 2,
             blurRadius: 8,
           ),
@@ -353,7 +353,7 @@ class ShopVisitPageState extends State<ShopVisitPage> {
             showSearchBox: true,
             searchFieldProps: TextFieldProps(
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.search, color: Colors.green),
+                prefixIcon: Icon(Icons.search, color: Colors.blue),
                 hintText: 'Search...',
                 border: InputBorder.none,
               ),
@@ -362,7 +362,7 @@ class ShopVisitPageState extends State<ShopVisitPage> {
           items: items,
           dropdownDecoratorProps: DropDownDecoratorProps(
             dropdownSearchDecoration: InputDecoration(
-              prefixIcon: Icon(icon, color: Colors.green),
+              prefixIcon: Icon(icon, color: Colors.blue),
               labelText: label,
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -387,7 +387,7 @@ class ShopVisitPageState extends State<ShopVisitPage> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.green.withOpacity(0.2),
+            color: Colors.blue.withOpacity(0.2),
             spreadRadius: 2,
             blurRadius: 8,
           ),
@@ -401,7 +401,7 @@ class ShopVisitPageState extends State<ShopVisitPage> {
             const Text(
               'Feedback or Note',
               style: TextStyle(
-                color: Colors.green,
+                color: Colors.blue,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -425,7 +425,7 @@ class ShopVisitPageState extends State<ShopVisitPage> {
                 },
                 child: const Text(
                   'Clear',
-                  style: TextStyle(color: Colors.green),
+                  style: TextStyle(color: Colors.blue),
                 ),
               ),
             ),
@@ -445,7 +445,7 @@ class ShopVisitPageState extends State<ShopVisitPage> {
             const SnackBar(
               content: Text('Form Submitted Successfully'),
               behavior: SnackBarBehavior.floating,
-              backgroundColor: Colors.green,
+              backgroundColor: Colors.blue,
             ),
           );
           Navigator.pop(context);
@@ -456,7 +456,7 @@ class ShopVisitPageState extends State<ShopVisitPage> {
         // }
         , // Disable button if not enabled
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.green,
+          backgroundColor: Colors.blue,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
