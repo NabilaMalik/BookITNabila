@@ -318,14 +318,10 @@ class _RiveAppHomeState extends State<HomeScreen>
                 imagePath: order_booking_status,
                 label: 'Booking Status',
                 onTap: () async {
-                  await signUpController.createFirebaseProject(
-                      'my-new-project-12345',
-                      'My Project New',
-                      'folder' ,
-                      '123456789012');
 
-                  // orderMasterViewModel.fetchAllOrderMaster();
-                  //   Get.to(() => OrderBookingStatusScreen());
+
+                  orderMasterViewModel.fetchAllOrderMaster();
+                    Get.to(() => OrderBookingStatusScreen());
                 },
               ),
             ],

@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:order_booking_app/Screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Models/LoginModels/login_models.dart';
 import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Repositories/LoginRepositories/login_repository.dart';
+import '../Screens/NSM/nsm_homepage.dart';
 
 
 class LoginViewModel extends GetxController {
@@ -77,11 +79,11 @@ class LoginViewModel extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
-        duration: Duration(seconds: 5),
+        duration: const Duration(seconds: 5),
       );
 
       // Delay for a few seconds before closing the app to allow user to see the message
-      await Future.delayed(Duration(seconds: 5));
+      await Future.delayed(const Duration(seconds: 5));
       exit(0); // Close the app if no internet connection
     } else {
       await fetchAndSaveLoginData();
@@ -179,11 +181,13 @@ class LoginViewModel extends GetxController {
         break;
       case 'NSM':
         pageName = "/NSMHomepage";
+        Get.to(() => const NSMHomepage());
         Get.offNamed("/NSMHomepage");
         break;
       default:
         pageName = "/home";
-        Get.offNamed("/home");
+        Get.to(() => const HomeScreen());
+        // Get.offNamed("/home");
         break;
     }
 
