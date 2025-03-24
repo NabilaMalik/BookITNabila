@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/Screens/PermissionScreens/camera_screen.dart';
+import 'package:order_booking_app/Screens/code_screen.dart';
 import 'package:order_booking_app/Screens/home_screen.dart';
 import 'package:order_booking_app/Screens/login_screen.dart';
 import 'package:order_booking_app/Screens/order_booking_screen.dart';
@@ -157,6 +158,7 @@ class MyApp extends StatelessWidget {
             page: () => OrderBookingStatusScreen()),
       ],
       // home: SplashScreen()
+      //home: const CodeScreen()
     );
   }
 

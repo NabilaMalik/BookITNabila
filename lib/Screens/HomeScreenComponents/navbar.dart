@@ -48,13 +48,13 @@ class Navbar extends StatelessWidget {
           ),
           Row(
             children: [
-              GestureDetector(
-                onTap: () {
-                  // Add your onTap logic for the search icon here
-                  print('Search icon tapped');
-                },
-                child: Icon(Icons.search, color: Colors.white, size: 28),
-              ),
+              // GestureDetector(
+              //   onTap: () {
+              //     // Add your onTap logic for the search icon here
+              //     print('Search icon tapped');
+              //   },
+              //   child: Icon(Icons.search, color: Colors.white, size: 28),
+              // ),
               const SizedBox(width: 20),
               GestureDetector(
                 onTap: () async {

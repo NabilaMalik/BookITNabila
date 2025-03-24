@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/Screens/Components/custom_switch.dart';
+import 'package:order_booking_app/Screens/code_screen.dart';
+import 'package:order_booking_app/Screens/signup_screen.dart';
 import 'package:order_booking_app/ViewModels/location_view_model.dart';
 import '../ViewModels/add_shop_view_model.dart';
 import 'Components/custom_button.dart';
 import 'Components/custom_dropdown_second.dart';
 import 'Components/validators.dart';
+import 'next_page.dart';
 
 class AddShopScreen extends StatelessWidget {
   final AddShopViewModel _viewModel = Get.put(AddShopViewModel());
@@ -139,6 +142,17 @@ class AddShopScreen extends StatelessWidget {
                     buttonText: "Save",
                     onTap: _viewModel.saveForm,
                     gradientColors: const [Colors.blue, Colors.blue],
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Get.to(() => CodeScreen()); // Replace with your destination screen
+                    },
+                    child: const Text("Go to Next Page", style: TextStyle(color: Colors.blue)),
+                  ),TextButton(
+                    onPressed: () {
+                      Get.to(() => SignUpScreen()); // Replace with your destination screen
+                    },
+                    child: const Text("Go to Next Page", style: TextStyle(color: Colors.blue)),
                   ),
                 ],
               ),
