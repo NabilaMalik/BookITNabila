@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:order_booking_app/screens/home_screen.dart';
-
 import '../ViewModels/ScreenViewModels/signup_view_model.dart';
 import '../components/under_part.dart';
 import 'Components/custom_button.dart';
@@ -38,12 +36,12 @@ class SignUpScreen extends StatelessWidget {
       width: double.infinity,
       color: Colors.blue,
 
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Text(
               'Get Started',
               style: TextStyle(
@@ -128,35 +126,26 @@ class SignUpScreen extends StatelessWidget {
                   keyboardType: TextInputType.phone,
                 ),
                 _buildTextField(
-                  label: "Password",
-                  icon: Icons.lock,
-                  controller: controller.passwordController,
-                  validator: Validators.validatePassword,
-                  obscureText: true,
-                ),
-                _buildTextField(
-                  label: "Confirm Password",
-                  icon: Icons.lock_outline,
-                  controller: controller.confirmPasswordController,
-                  validator: (value) => Validators.validateConfirmPassword(
-                    value,
-                    controller.passwordController.text,
-                  ),
-                  obscureText: true,
+                  label: "Alternative Phone Number",
+                  icon: Icons.phone,
+                  controller: controller.phone_noController,
+                  validator: (value) =>
+                      Validators.validateTextField(value, "phone number"),
+                  keyboardType: TextInputType.phone,
                 ),
                 const SizedBox(height: 10),
                 CustomButton(
                   height: size.height * 0.065,
                   width: size.width * 0.45,
-                  onTap:  () async {
-                    await controller.createFirebaseProject(
-                    'my-new-project-12345',
-                    'My Project New',
-                    'folder' ,
-                    '123456789012');
-                  },
+                  // onTap:  () async {
+                  //   // await controller.createFirebaseProject(
+                  //   // 'my-new-project-12345',
+                  //   // 'My Project New',
+                  //   // 'folder' ,
+                  //   // '123456789012');
+                  // },
                   // onTap:  () => Get.to(() => const HomeScreen()),
-                  // onTap: _handleRegistration,
+                  onTap: _handleRegistration,
                   buttonText: "Register",
                   gradientColors: const [Colors.blue, Colors.blue],
                 ),
@@ -187,8 +176,8 @@ class SignUpScreen extends StatelessWidget {
       label: label,
       initialValue: controller.text,
       onChanged: (value) => controller.text = value,
-      inputBorder: UnderlineInputBorder(
-        borderSide: const BorderSide(color: Colors.blue, width: 1.0),
+      inputBorder: const UnderlineInputBorder(
+        borderSide: BorderSide(color: Colors.blue, width: 1.0),
 
         //borderRadius: BorderRadius.circular(8),
       ),

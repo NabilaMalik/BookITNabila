@@ -84,6 +84,9 @@ class Config {
   static String get getApiUrlRecoveryForm =>
       remoteConfig.getString('RecoveryFormGetUrl');
 
+  static String get getApiUrlCurrentBalance =>
+      remoteConfig.getString('CurrentBalanceGetUrl');
+
   static String get getApiUrlReturnForm =>
       remoteConfig.getString('ReturnFormUrl');
 

@@ -46,12 +46,14 @@ class RecoveryFormViewModel extends GetxController{
     fetchAllRecoveryForm();
   }
   Future<void> fetchAndSaveCurrentBalance(String shop_name) async {
+    await Config.fetchLatestConfig();
     try {
       // Print the API URL for debugging
-      debugPrint('https://cloud.metaxperts.net:8443/erp/test1/currentbalance/get/$shop_name/$user_id');
+      debugPrint('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}currentbalance/get/$shop_name/$user_id');
+
 
       // Fetch data from the API
-      List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/test1/currentbalance/get/$shop_name/$user_id');
+      List<dynamic> data = await ApiService.getData('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlCurrentBalance}$shop_name/$user_id');
 
       // Check if data is not empty and assign the value to current_balance.value
       if (data.isNotEmpty) {
