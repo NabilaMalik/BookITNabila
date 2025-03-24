@@ -52,56 +52,36 @@ Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
   //       ? '${orderBookingStatusViewModel.startDate.value} - ${orderBookingStatusViewModel.endDate.value}'
   //       : 'Date Not Selected';
   //
-  //   // Get and trim selected status before fetch
-  //   String selectedStatus = orderBookingStatusViewModel.selectedStatus.value.trim();
-  //   debugPrint('Selected Status: "$selectedStatus"');
-  //
-  //   // Fetch order data first
   //   await orderMasterViewModel.fetchAllOrderMaster();
   //
-  //   // Log number of orders fetched
-  //   debugPrint('Total Orders Fetched: ${orderMasterViewModel.allOrderMaster.length}');
+  //   // Get selected status
+  //   String selectedStatus = orderBookingStatusViewModel.selectedStatus.value;
   //
-  //   // Log all order statuses
-  //   var allStatuses = orderMasterViewModel.allOrderMaster
-  //       .map((order) => (order.order_status ?? '').trim())
-  //       .toSet();
-  //   debugPrint('Unique Statuses in Orders: $allStatuses');
-  //
-  //   // Filter orders with comparison logs
+  //   // Filter orders by selected status
   //   var filteredOrders = orderMasterViewModel.allOrderMaster.where((order) {
-  //     String orderStatus = (order.order_status ?? '').trim().toLowerCase();
-  //     bool isMatch = orderStatus == selectedStatus.toLowerCase();
-  //     debugPrint(
-  //         'Order ID: ${order.order_master_id}, Status: "$orderStatus" == "$selectedStatus" ? $isMatch');
-  //     return isMatch;
+  //     return (order.order_status ?? '').toLowerCase() == selectedStatus.toLowerCase();
   //   }).toList();
-  //
-  //   debugPrint('Filtered Orders Count: ${filteredOrders.length}');
   //
   //   if (filteredOrders.isEmpty) {
   //     Get.snackbar('No Orders Found', 'No orders with status "$selectedStatus" found.');
   //     return;
   //   }
   //
-  //   // Prepare table data
   //   List<List<String>> rowsData = [];
   //   double totalAmount = 0.0;
   //   int totalOrders = filteredOrders.length;
   //
   //   for (var order in filteredOrders) {
-  //     String amountText =
-  //     (order.total ?? '0').replaceAll(RegExp(r'[^\d.]'), ''); // remove non-numeric
+  //     String amountText = (order.total ?? '0').replaceAll(RegExp(r'[^\d.]'), '');
   //     double amount = double.tryParse(amountText) ?? 0.0;
   //     totalAmount += amount;
   //     rowsData.add([
   //       order.order_master_id ?? '-',
   //       order.shop_name ?? '-',
-  //       'PKR $amountText',
+  //       amountText,
   //     ]);
   //   }
   //
-  //   // Generate PDF
   //   pdf.addPage(
   //     pw.Page(
   //       build: (pw.Context context) {
@@ -115,7 +95,7 @@ Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
   //             pw.Text('Booker Name: ${shopVisitViewModel.booker_name}'),
   //             pw.Text('Print Date: $currentDate'),
   //             pw.Text('Orders Date: $ordersDate'),
-  //             pw.Text('Status: $selectedStatus'),
+  //             pw.Text('Status: $selectedStatus'), // Show selected status
   //             pw.SizedBox(height: 10),
   //             pw.Table.fromTextArray(
   //               headers: ['Order No', 'Shop Name', 'Amount'],
@@ -141,11 +121,9 @@ Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
   //     ),
   //   );
   //
-  //   // Save & Share PDF
   //   try {
   //     final directory = await getTemporaryDirectory();
-  //     final filePath =
-  //         '${directory.path}/Order_Booking_Status_${DateTime.now().millisecondsSinceEpoch}.pdf';
+  //     final filePath = '${directory.path}/Order_Booking_Status_${DateTime.now().millisecondsSinceEpoch}.pdf';
   //     final file = File(filePath);
   //     await file.writeAsBytes(await pdf.save());
   //
@@ -154,234 +132,9 @@ Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
   //     Get.snackbar('Success', 'Order PDF shared successfully!');
   //   } catch (e) {
   //     debugPrint("Error saving or sharing Order PDF: $e");
-  //     Get.snackbar('Error', 'Failed to generate or share Order PDF.');
-  //   }
-  // }  // Future<void> generateOrderPDF() async {
-  //   final pdf = pw.Document();
-  //   String currentDate = _getFormattedDate();
-  //   String ordersDate = (orderBookingStatusViewModel.endDate.value != null)
-  //       ? '${orderBookingStatusViewModel.startDate.value} - ${orderBookingStatusViewModel.endDate.value}'
-  //       : 'Date Not Selected';
-  //
-  //   // Get and trim selected status before fetch
-  //   String selectedStatus = orderBookingStatusViewModel.selectedStatus.value.trim();
-  //   debugPrint('Selected Status: "$selectedStatus"');
-  //
-  //   // Fetch order data first
-  //   await orderMasterViewModel.fetchAllOrderMaster();
-  //
-  //   // Log number of orders fetched
-  //   debugPrint('Total Orders Fetched: ${orderMasterViewModel.allOrderMaster.length}');
-  //
-  //   // Log all order statuses
-  //   var allStatuses = orderMasterViewModel.allOrderMaster
-  //       .map((order) => (order.order_status ?? '').trim())
-  //       .toSet();
-  //   debugPrint('Unique Statuses in Orders: $allStatuses');
-  //
-  //   // Filter orders with comparison logs
-  //   var filteredOrders = orderMasterViewModel.allOrderMaster.where((order) {
-  //     String orderStatus = (order.order_status ?? '').trim().toLowerCase();
-  //     bool isMatch = orderStatus == selectedStatus.toLowerCase();
-  //     debugPrint(
-  //         'Order ID: ${order.order_master_id}, Status: "$orderStatus" == "$selectedStatus" ? $isMatch');
-  //     return isMatch;
-  //   }).toList();
-  //
-  //   debugPrint('Filtered Orders Count: ${filteredOrders.length}');
-  //
-  //   if (filteredOrders.isEmpty) {
-  //     Get.snackbar('No Orders Found', 'No orders with status "$selectedStatus" found.');
-  //     return;
-  //   }
-  //
-  //   // Prepare table data
-  //   List<List<String>> rowsData = [];
-  //   double totalAmount = 0.0;
-  //   int totalOrders = filteredOrders.length;
-  //
-  //   for (var order in filteredOrders) {
-  //     String amountText =
-  //     (order.total ?? '0').replaceAll(RegExp(r'[^\d.]'), ''); // remove non-numeric
-  //     double amount = double.tryParse(amountText) ?? 0.0;
-  //     totalAmount += amount;
-  //     rowsData.add([
-  //       order.order_master_id ?? '-',
-  //       order.shop_name ?? '-',
-  //       'PKR $amountText',
-  //     ]);
-  //   }
-  //
-  //   // Generate PDF
-  //   pdf.addPage(
-  //     pw.Page(
-  //       build: (pw.Context context) {
-  //         return pw.Column(
-  //           crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //           children: [
-  //             pw.Text('Valor Trading Order Booking Status',
-  //                 style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold)),
-  //             pw.SizedBox(height: 10),
-  //             pw.Text('Booker ID: ${orderMasterViewModel.currentuser_id}'),
-  //             pw.Text('Booker Name: ${shopVisitViewModel.booker_name}'),
-  //             pw.Text('Print Date: $currentDate'),
-  //             pw.Text('Orders Date: $ordersDate'),
-  //             pw.Text('Status: $selectedStatus'),
-  //             pw.SizedBox(height: 10),
-  //             pw.Table.fromTextArray(
-  //               headers: ['Order No', 'Shop Name', 'Amount'],
-  //               data: rowsData,
-  //               headerStyle: pw.TextStyle(
-  //                   fontWeight: pw.FontWeight.bold, fontSize: 12, color: PdfColors.white),
-  //               headerDecoration: const pw.BoxDecoration(color: PdfColors.black),
-  //               cellStyle: const pw.TextStyle(fontSize: 10),
-  //               cellAlignment: pw.Alignment.center,
-  //               cellPadding: const pw.EdgeInsets.all(6),
-  //               oddRowDecoration: const pw.BoxDecoration(color: PdfColors.grey200),
-  //               border: null,
-  //             ),
-  //             pw.Divider(),
-  //             pw.Text('Total Orders: $totalOrders',
-  //                 style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-  //             pw.Text('Total Amount: PKR ${totalAmount.toStringAsFixed(2)}',
-  //                 style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-  //             buildFooter(),
-  //           ],
-  //         );
-  //       },
-  //     ),
-  //   );
-  //
-  //   // Save & Share PDF
-  //   try {
-  //     final directory = await getTemporaryDirectory();
-  //     final filePath =
-  //         '${directory.path}/Order_Booking_Status_${DateTime.now().millisecondsSinceEpoch}.pdf';
-  //     final file = File(filePath);
-  //     await file.writeAsBytes(await pdf.save());
-  //
-  //     final xfile = XFile(filePath);
-  //     await Share.shareXFiles([xfile], text: 'Order Booking PDF Document');
-  //     Get.snackbar('Success', 'Order PDF shared successfully!');
-  //   } catch (e) {
-  //     debugPrint("Error saving or sharing Order PDF: $e");
-  //     Get.snackbar('Error', 'Failed to generate or share Order PDF.');
-  //   }
-  // }  // Future<void> generateOrderPDF() async {
-  //   final pdf = pw.Document();
-  //   String currentDate = _getFormattedDate();
-  //   String ordersDate = (orderBookingStatusViewModel.endDate.value != null)
-  //       ? '${orderBookingStatusViewModel.startDate.value} - ${orderBookingStatusViewModel.endDate.value}'
-  //       : 'Date Not Selected';
-  //
-  //   // Get and trim selected status before fetch
-  //   String selectedStatus = orderBookingStatusViewModel.selectedStatus.value.trim();
-  //   debugPrint('Selected Status: "$selectedStatus"');
-  //
-  //   // Fetch order data first
-  //   await orderMasterViewModel.fetchAllOrderMaster();
-  //
-  //   // Log number of orders fetched
-  //   debugPrint('Total Orders Fetched: ${orderMasterViewModel.allOrderMaster.length}');
-  //
-  //   // Log all order statuses
-  //   var allStatuses = orderMasterViewModel.allOrderMaster
-  //       .map((order) => (order.order_status ?? '').trim())
-  //       .toSet();
-  //   debugPrint('Unique Statuses in Orders: $allStatuses');
-  //
-  //   // Filter orders with comparison logs
-  //   var filteredOrders = orderMasterViewModel.allOrderMaster.where((order) {
-  //     String orderStatus = (order.order_status ?? '').trim().toLowerCase();
-  //     bool isMatch = orderStatus == selectedStatus.toLowerCase();
-  //     debugPrint(
-  //         'Order ID: ${order.order_master_id}, Status: "$orderStatus" == "$selectedStatus" ? $isMatch');
-  //     return isMatch;
-  //   }).toList();
-  //
-  //   debugPrint('Filtered Orders Count: ${filteredOrders.length}');
-  //
-  //   if (filteredOrders.isEmpty) {
-  //     Get.snackbar('No Orders Found', 'No orders with status "$selectedStatus" found.');
-  //     return;
-  //   }
-  //
-  //   // Prepare table data
-  //   List<List<String>> rowsData = [];
-  //   double totalAmount = 0.0;
-  //   int totalOrders = filteredOrders.length;
-  //
-  //   for (var order in filteredOrders) {
-  //     String amountText =
-  //     (order.total ?? '0').replaceAll(RegExp(r'[^\d.]'), ''); // remove non-numeric
-  //     double amount = double.tryParse(amountText) ?? 0.0;
-  //     totalAmount += amount;
-  //     rowsData.add([
-  //       order.order_master_id ?? '-',
-  //       order.shop_name ?? '-',
-  //       'PKR $amountText',
-  //     ]);
-  //   }
-  //
-  //   // Generate PDF
-  //   pdf.addPage(
-  //     pw.Page(
-  //       build: (pw.Context context) {
-  //         return pw.Column(
-  //           crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //           children: [
-  //             pw.Text('Valor Trading Order Booking Status',
-  //                 style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold)),
-  //             pw.SizedBox(height: 10),
-  //             pw.Text('Booker ID: ${orderMasterViewModel.currentuser_id}'),
-  //             pw.Text('Booker Name: ${shopVisitViewModel.booker_name}'),
-  //             pw.Text('Print Date: $currentDate'),
-  //             pw.Text('Orders Date: $ordersDate'),
-  //             pw.Text('Status: $selectedStatus'),
-  //             pw.SizedBox(height: 10),
-  //             pw.Table.fromTextArray(
-  //               headers: ['Order No', 'Shop Name', 'Amount'],
-  //               data: rowsData,
-  //               headerStyle: pw.TextStyle(
-  //                   fontWeight: pw.FontWeight.bold, fontSize: 12, color: PdfColors.white),
-  //               headerDecoration: const pw.BoxDecoration(color: PdfColors.black),
-  //               cellStyle: const pw.TextStyle(fontSize: 10),
-  //               cellAlignment: pw.Alignment.center,
-  //               cellPadding: const pw.EdgeInsets.all(6),
-  //               oddRowDecoration: const pw.BoxDecoration(color: PdfColors.grey200),
-  //               border: null,
-  //             ),
-  //             pw.Divider(),
-  //             pw.Text('Total Orders: $totalOrders',
-  //                 style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-  //             pw.Text('Total Amount: PKR ${totalAmount.toStringAsFixed(2)}',
-  //                 style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-  //             buildFooter(),
-  //           ],
-  //         );
-  //       },
-  //     ),
-  //   );
-  //
-  //   // Save & Share PDF
-  //   try {
-  //     final directory = await getTemporaryDirectory();
-  //     final filePath =
-  //         '${directory.path}/Order_Booking_Status_${DateTime.now().millisecondsSinceEpoch}.pdf';
-  //     final file = File(filePath);
-  //     await file.writeAsBytes(await pdf.save());
-  //
-  //     final xfile = XFile(filePath);
-  //     await Share.shareXFiles([xfile], text: 'Order Booking PDF Document');
-  //     Get.snackbar('Success', 'Order PDF shared successfully!');
-  //   } catch (e) {
-  //     debugPri nt("Error saving or sharing Order PDF: $e");
   //     Get.snackbar('Error', 'Failed to generate or share Order PDF.');
   //   }
   // }
-
-
-
 
 
   Future<void> generateOrderPDF() async {
