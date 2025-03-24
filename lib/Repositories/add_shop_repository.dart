@@ -97,7 +97,7 @@ class AddShopRepository extends GetxService {
   }
 
   Future<List<String>> fetchCitiesFromApi() async {
-     String url = Config.getApiUrlCities;
+     String url = "${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlCities}";
     // String url = "https://cloud.metaxperts.net:8443/erp/test1/cities/get/";
     List<dynamic> data = await ApiService.getData(url);
     List<String> fetchedCities = data.map((city) => city.toString()).toList();
@@ -137,7 +137,7 @@ class AddShopRepository extends GetxService {
 
     await Config.fetchLatestConfig();
     List<dynamic> data = await ApiService.getData(
-        '${Config.getApiUrlShopsUserId}$user_id');
+        '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlShopsUserId}$user_id');
     var dbClient = await dbHelper.db;
 
     // Save data to database
@@ -151,9 +151,10 @@ class AddShopRepository extends GetxService {
 
   Future<void> fetchAndSaveShopsForHeads() async {
 await Config.fetchLatestConfig();
-    // List<dynamic> data = await ApiService.getData(Config.getApiUrlShops1);
+     // List<dynamic> data = await ApiService.getData(Config.getApiUrlServerIP}{Config.getApiUrlERPCompanyName}{Config.getApiUrlShops1);
     List<dynamic> data = await ApiService.getData(
-        Config.getApiUrlShops
+    '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlShops}'
+    //     'https://cloud.metaxperts.net:8443/erp/test1/shopget/get/');
     );
     var dbClient = await dbHelper.db;
 
@@ -216,11 +217,11 @@ await Config.fetchLatestConfig();
     try {
       await Config.fetchLatestConfig();
       if (kDebugMode) {
-        print('Updated Shop Post API: ${Config.postApiUrlShops}');
+        print('Updated Shop Post API: ${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlShops}');
       }
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse(Config.postApiUrlShops),
+        Uri.parse("${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlShops}"),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -244,7 +245,7 @@ await Config.fetchLatestConfig();
     await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: '${Config.getApiUrlShopSerial}$user_id',
+      apiUrl: '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlShopSerial}$user_id',
       maxColumnName: 'max(shop_id)',
       serialType: shopHighestSerial, // Unique identifier for shop visit serials
     );

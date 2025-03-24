@@ -46,8 +46,8 @@ class LocationRepository {
 
   Future<void> fetchAndSaveLocation() async {
     await Config.fetchLatestConfig();
-    debugPrint('${Config.getApiUrlLocation}$user_id');
-    List<dynamic> data = await ApiService.getData('${Config.getApiUrlLocation}$user_id');
+    debugPrint('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlLocation}$user_id');
+    List<dynamic> data = await ApiService.getData('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlLocation}$user_id');
     var dbClient = await dbHelper.db;
 
     // Save data to database
@@ -106,14 +106,14 @@ class LocationRepository {
     try {
       await Config.fetchLatestConfig();
 
-        debugPrint('Updated Shop Post API: ${Config.postApiUrlLocation}');
+        debugPrint('Updated Shop Post API: ${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlLocation}');
 
       var shopData = shop.toMap();
 
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse(Config.postApiUrlLocation),
-      );
+        Uri.parse('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlLocation}'
+      ));
 
       request.headers['Content-Type'] = 'multipart/form-data';
       request.headers['Accept'] = 'application/json';
@@ -154,11 +154,11 @@ class LocationRepository {
   //   try {
   //     await Config.fetchLatestConfig();
   //     if (kDebugMode) {
-  //       print('Updated Shop Post API: ${Config.postApiUrlLocation}');
+  //       print('Updated Shop Post API: ${Config.getApiUrlServerIP}{Config.getApiUrlERPCompanyName}{Config.postApiUrlLocation}');
   //     }
   //     var shopData = shop.toMap();
   //     final response = await http.post(
-  //       Uri.parse(Config.postApiUrlLocation),
+  //       Uri.parse(Config.getApiUrlServerIP}{Config.getApiUrlERPCompanyName}{Config.postApiUrlLocation),
   //       headers: {
   //         "Content-Type": "application/json",
   //         "Accept": "application/json",
@@ -196,7 +196,7 @@ class LocationRepository {
     await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: '${Config.getApiUrlLocationSerial}$user_id',
+      apiUrl: '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlLocationSerial}$user_id',
       maxColumnName: 'max(location_id)',
       serialType: locationHighestSerial, // Unique identifier for shop visit serials
     );

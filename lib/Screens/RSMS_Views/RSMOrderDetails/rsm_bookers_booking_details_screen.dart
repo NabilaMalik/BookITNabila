@@ -38,7 +38,7 @@ class _NSMBookerDetailsPageState extends State<RsmBookersBookingDetailsScreen> {
   Future<void> _fetchAttendanceData() async {
     final response = await http.get(
       Uri.parse(
-        "${Config.getApiUrlRsmUserOrderDetails}$user_id/${widget.booker.booker_id}"),
+        "${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlRsmUserOrderDetails}$user_id/${widget.booker.booker_id}"),
           // 'https://cloud.metaxperts.net:8443/erp/test1/rsmuserorderdetails/get/$user_id/${widget.booker.booker_id}'),
       //Uri.parse('http://103.149.32.30:8080/ords/metaxperts/attendancedata/get/${widget.booker.booker_id}'),
     );

@@ -45,8 +45,8 @@ class ShopVisitDetailsRepository extends GetxService{
     return shopvisitdetails;
   }
   Future<void> fetchAndSaveShopVisitDetails() async {
-    debugPrint('${Config.getApiUrlShopVisitDetails}$user_id');
-    List<dynamic> data = await ApiService.getData('${Config.getApiUrlShopVisitDetails}$user_id');
+    debugPrint('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlShopVisitDetails}$user_id');
+    List<dynamic> data = await ApiService.getData('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlShopVisitDetails}$user_id');
     var dbClient = await dbHelper.db;
 
     // Save data to database
@@ -104,11 +104,11 @@ class ShopVisitDetailsRepository extends GetxService{
     try {
       await Config.fetchLatestConfig();
 
-        debugPrint('Updated Shop Post API: ${Config.postApiUrlShopVisitDetails}');
+        debugPrint('Updated Shop Post API: ${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlShopVisitDetails}');
 
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse(Config.postApiUrlShopVisitDetails),
+        Uri.parse("${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlShopVisitDetails}"),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -149,7 +149,7 @@ class ShopVisitDetailsRepository extends GetxService{
     await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: '${Config.getApiUrlShopVisitDetailsSerial}$user_id',
+      apiUrl: '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlShopVisitDetailsSerial}$user_id',
       maxColumnName: 'max(shop_visit_details_id)',
       serialType: shopVisitDetailsHighestSerial, // Unique identifier for shop visit serials
     );

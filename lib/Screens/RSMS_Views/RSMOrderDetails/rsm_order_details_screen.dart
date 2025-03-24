@@ -57,54 +57,6 @@ class _NSMBookingStatusState extends State<RsmOrderDetailsScreen> {
             height: 55,
             child: Row(
               children: [
-                // Expanded(
-                //   child: GestureDetector(
-                //     onTap: () => _onButtonPressed(0),
-                //     child: Container(
-                //       alignment: Alignment.center,
-                //       padding: EdgeInsets.symmetric(vertical: 10),
-                //       decoration: BoxDecoration(
-                //         border: Border(
-                //           bottom: BorderSide(
-                //             color: _selectedIndex == 0 ? Colors.blue : Colors.transparent,
-                //             width: 3.0,
-                //           ),
-                //         ),
-                //       ),
-                //       child: Text(
-                //         'SM',
-                //         style: TextStyle(
-                //           color: _selectedIndex == 0 ? Colors.blue : Colors.black,
-                //           fontSize: 14,
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                // Expanded(
-                //   child: GestureDetector(
-                //     onTap: () => _onButtonPressed(1),
-                //     child: Container(
-                //       alignment: Alignment.center,
-                //       padding: EdgeInsets.symmetric(vertical: 10),
-                //       decoration: BoxDecoration(
-                //         border: Border(
-                //           bottom: BorderSide(
-                //             color: _selectedIndex == 1 ? Colors.blue : Colors.transparent,
-                //             width: 3.0,
-                //           ),
-                //         ),
-                //       ),
-                //       child: Text(
-                //         'RSM',
-                //         style: TextStyle(
-                //           color: _selectedIndex == 1 ? Colors.blue : Colors.black,
-                //           fontSize: 14,
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
                 Expanded(
                   child: GestureDetector(
                     onTap: () => _onButtonPressed(2),

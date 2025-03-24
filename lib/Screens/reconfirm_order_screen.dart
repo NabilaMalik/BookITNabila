@@ -13,7 +13,9 @@ import '../Databases/util.dart';
 import 'Components/custom_button.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:share_plus/share_plus.dart'; //
+import 'package:share_plus/share_plus.dart';
+
+import 'order_booking_status_screen.dart'; //
 
 bool isPressed = false;
 bool isButtonDisabled = false; // Add this flag
@@ -412,7 +414,8 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
             if (isPressed == true) {
               // Handle case when isPressed is true
             } else {
-              Get.offNamed("/OrderBookingScreen");
+              Get.to(() => OrderBookingStatusScreen());
+              //Get.offNamed("/OrderBookingScreen");
             }
           },
         ),
@@ -476,7 +479,9 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
                   setState(() {
                     isButtonDisabled = false; // Re-enable the button if needed
                   });
-                  Get.offNamed("/home");
+                  Get.to(() => const HomeScreen());
+
+                  // Get.offNamed("/home");
                 },
                 gradientColors: [Colors.red.shade700, Colors.red],
               ),

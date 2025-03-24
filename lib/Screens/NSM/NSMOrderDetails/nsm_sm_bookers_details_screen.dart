@@ -40,7 +40,7 @@ class _NSMBookerDetailsPageState extends State<NsmSmBookersDetailsScreen> {
     final response = await http.get(
       Uri.parse(
 
-          '${Config.getApiUrlNsmSmOrderDetails}$user_id/${widget.booker.booker_id}'),
+          '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlNsmSmOrderDetails}$user_id/${widget.booker.booker_id}'),
           // 'https://cloud.metaxperts.net:8443/erp/test1/nsmsmorderdetails/get/$user_id/${widget.booker.booker_id}'),
       //Uri.parse('http://103.149.32.30:8080/ords/metaxperts/attendancedata/get/${widget.booker.booker_id}'),
     );

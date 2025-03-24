@@ -44,8 +44,8 @@ class AttendanceRepository {
     return attendance;
   }
   Future<void> fetchAndSaveAttendance() async {
-    debugPrint('${Config.getApiUrlAttendanceIn}$user_id');
-    List<dynamic> data = await ApiService.getData('${Config.getApiUrlAttendanceIn}$user_id');
+    debugPrint('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlAttendanceIn}$user_id');
+    List<dynamic> data = await ApiService.getData('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlAttendanceIn}$user_id');
     var dbClient = await dbHelper.db;
 
     // Save data to database
@@ -101,11 +101,11 @@ class AttendanceRepository {
     try {
       await Config.fetchLatestConfig();
       if (kDebugMode) {
-        print('Updated Shop Post API: ${Config.postApiUrlAttendanceIn}');
+        print('Updated Shop Post API: ${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlAttendanceIn}');
       }
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse(Config.postApiUrlAttendanceIn),
+        Uri.parse( '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlAttendanceIn}'),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -148,7 +148,7 @@ class AttendanceRepository {
     await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: '${Config.getApiUrlAttendanceInSerial}$user_id',
+      apiUrl: '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlAttendanceInSerial}$user_id',
       maxColumnName: 'max(attendance_in_id)',
       serialType: attendanceInHighestSerial, // Unique identifier for shop visit serials
     );

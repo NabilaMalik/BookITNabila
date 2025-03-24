@@ -46,11 +46,11 @@ class UpdateFunctionsRepository extends GetxService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 await prefs.reload();
     String? formattedDateTime = prefs.getString('lastInitializationDateTime');
-    debugPrint('${Config.getApiUrlOrderMasterWithTime}$user_id/$formattedDateTime');
+    debugPrint('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlOrderMasterWithTime}$user_id/$formattedDateTime');
 
     // Fetch data from the API
     List<dynamic> data = await ApiService.getData(
-        '${Config.getApiUrlOrderMasterWithTime}$user_id/$formattedDateTime');
+        '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlOrderMasterWithTime}$user_id/$formattedDateTime');
     var dbClient = await dbHelper.db;
 
     // Save data to database
@@ -88,11 +88,11 @@ await prefs.reload();
   Future<void> fetchAndSaveUpdatedProducts() async {
     await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    debugPrint('${Config.getApiUrlProductsWithTime}$user_id');
+    debugPrint('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlProductsWithTime}$user_id');
     String? formattedDateTime = prefs.getString('lastInitializationDateTime');
-    // List<dynamic> data = await ApiService.getData('${Config.getApiUrlShop}$user_id');
+    // List<dynamic> data = await ApiService.getData('${Config.getApiUrlServerIP}{Config.getApiUrlERPCompanyName}{Config.getApiUrlShop}$user_id');
     List<dynamic> data = await ApiService.getData(
-        '${Config.getApiUrlProductsWithTime}$formattedDateTime');
+        '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlProductsWithTime}$formattedDateTime');
     var dbClient = await dbHelper.db;
 
     // Save data to database
@@ -127,7 +127,7 @@ await prefs.reload();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.reload();
     String? formattedDateTime = prefs.getString('lastInitializationDateTime');
-    String url = '${Config.getApiUrlCitiesWithTime}$formattedDateTime';
+    String url = '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlCitiesWithTime}$formattedDateTime';
     List<dynamic> data = await ApiService.getData(url);
     List<String> fetchedCities = data.map((city) => city.toString()).toList();
 

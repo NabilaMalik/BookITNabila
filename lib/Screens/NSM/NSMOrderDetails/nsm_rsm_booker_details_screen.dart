@@ -39,7 +39,7 @@ class _NSMBookerDetailsPageState extends State<NsmRsmBookerDetailsScreen> {
     await Config.fetchLatestConfig();
     final response = await http.get(
       Uri.parse(
-          '${Config.getApiUrlNsmRsmOrderDetails}$user_id/${widget.booker.booker_id}'),
+          '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlNsmRsmOrderDetails}$user_id/${widget.booker.booker_id}'),
     );
 
     if (response.statusCode == 200) {

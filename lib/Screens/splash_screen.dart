@@ -15,7 +15,8 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(
       const Duration(seconds: 3),
           () {
-         Get.offNamed("/cameraScreen");
+         // Get.offNamed("/cameraScreen");
+            Get.to(() => const CameraScreen());
       },
     );
   }

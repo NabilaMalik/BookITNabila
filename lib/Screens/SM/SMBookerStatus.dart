@@ -141,7 +141,7 @@ class _SMBookerStatusState extends State<SMBookerStatus> {
   Future<bool> _fetchAndSaveData() async {
     await Config.fetchLatestConfig();
     final url =
-        "${Config.getApiUrlSmBookersStatus}$user_id";
+        "${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlSmBookersStatus}$user_id";
         // 'https://cloud.metaxperts.net:8443/erp/test1/smbookerstatus/get/$user_id';
     final response = await http.get(Uri.parse(url));
 

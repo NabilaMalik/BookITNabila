@@ -68,7 +68,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> {
 
   Future<bool> _fetchAndSaveData() async {
     await Config.fetchLatestConfig();
-    final url = "${Config.getApiUrlRsmShop}$user_id";
+    final url = "${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlRsmShop}$user_id";
         // 'https://cloud.metaxperts.net:8443/erp/test1/rsmshops/get/$user_id';
     final response = await http.get(Uri.parse(url));
 
@@ -128,14 +128,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> {
     }
   }
 
-  Future<bool> _checkInternetConnection() async {
-    try {
-      final response = await http.get(Uri.parse('https://www.google.com'));
-      return response.statusCode == 200;
-    } catch (e) {
-      return false;
-    }
-  }
+
 
   void _addBookersToList(List<ShopStatusModel> bookers) async {
     for (int i = 0; i < bookers.length; i++) {

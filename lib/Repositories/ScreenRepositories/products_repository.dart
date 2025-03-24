@@ -78,9 +78,9 @@ class ProductsRepository extends GetxService{
 
   Future<void> fetchAndSaveProducts() async {
     await Config.fetchLatestConfig();
-       debugPrint(Config.getApiUrlProducts);
+       debugPrint("${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlProducts}");
     try {
-      List<dynamic> data = await ApiService.getData(Config.getApiUrlProducts);
+      List<dynamic> data = await ApiService.getData("${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlProducts}");
       var dbClient = await dbHelperProducts.db;
 
       // Save data to database

@@ -42,9 +42,9 @@ class AttendanceOutRepository extends GetxService {
   }
 
   Future<void> fetchAndSaveAttendanceOut() async {
-    debugPrint('${Config.getApiUrlAttendanceOut}$user_id');
+    debugPrint('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlAttendanceOut}$user_id');
     List<dynamic> data =
-        await ApiService.getData('${Config.getApiUrlAttendanceOut}$user_id');
+        await ApiService.getData('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlAttendanceOut}$user_id');
     var dbClient = await dbHelper.db;
 
     // Save data to database
@@ -98,11 +98,13 @@ class AttendanceOutRepository extends GetxService {
     try {
       await Config.fetchLatestConfig();
 
-      debugPrint('Updated Shop Post API: ${Config.postApiUrlAttendanceOut}');
+      debugPrint('Updated Shop Post API: ${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlAttendanceOut}');
 
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse(Config.postApiUrlAttendanceOut),
+        Uri.parse(
+            "${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlAttendanceOut}"
+        ),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -150,7 +152,7 @@ class AttendanceOutRepository extends GetxService {
     await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: '${Config.getApiUrlAttendanceOutSerial}$user_id',
+      apiUrl: '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlAttendanceOutSerial}$user_id',
       maxColumnName: 'max(attendance_out_id)',
       serialType: attendanceOutHighestSerial, // Unique identifier for shop visit serials
     );

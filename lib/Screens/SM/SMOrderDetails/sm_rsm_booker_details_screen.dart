@@ -40,7 +40,7 @@ class _NSMBookerDetailsPageState extends State<SmRsmBookerDetailsScreen> {
     //   Uri.parse('https://cloud.metaxperts.net:8443/erp/test1/smrsmorderdetails/get/$user_id/${widget.booker.booker_id}'),
     //   //Uri.parse('http://103.149.32.30:8080/ords/metaxperts/attendancedata/get/${widget.booker.booker_id}'),
     // );
-    final response = await http.get(Uri.parse('${Config.getApiUrlSmRsmOrderDetails}/$user_id${widget.booker.booker_id}')
+    final response = await http.get(Uri.parse('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlSmRsmOrderDetails}/$user_id${widget.booker.booker_id}')
     );
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['items'];

@@ -42,8 +42,8 @@ class ReturnFormDetailsRepository {
     return returnformdetails;
   }
   Future<void> fetchAndSaveReturnFormDetails() async {
-    debugPrint('${Config.getApiUrlReturnFormDetails}$user_id');
-    List<dynamic> data = await ApiService.getData('${Config.getApiUrlReturnFormDetails}$user_id');
+    debugPrint('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlReturnFormDetails}$user_id');
+    List<dynamic> data = await ApiService.getData('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlReturnFormDetails}$user_id');
     var dbClient = await dbHelper.db;
 
     // Save data to database
@@ -101,11 +101,12 @@ class ReturnFormDetailsRepository {
     try {
       await Config.fetchLatestConfig();
       if (kDebugMode) {
-        debugPrint('Updated Shop Post API: ${Config.postApiUrlReturnFormDetails}');
+        debugPrint('Updated Shop Post API: ${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlReturnFormDetails}');
       }
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse(Config.postApiUrlReturnFormDetails),
+        Uri.parse("${Config.getApiUrlServerIP}${Config
+            .getApiUrlERPCompanyName}${Config.postApiUrlReturnFormDetails}"),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -145,7 +146,7 @@ class ReturnFormDetailsRepository {
     await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: '${Config.getApiUrlReturnFormDetailsSerial}$user_id',
+      apiUrl: '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlReturnFormDetailsSerial}$user_id',
       maxColumnName: 'max(return_details_id)',
       serialType: returnDetailsHighestSerial, // Unique identifier for shop visit serials
     );

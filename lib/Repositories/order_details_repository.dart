@@ -48,8 +48,8 @@ class OrderDetailsRepository extends GetxService {
   }
   fetchAndSaveOrderDetails() async {
     await Config.fetchLatestConfig();
-    debugPrint('${Config.getApiUrlOrderDetails}$user_id');
-    List<dynamic> data = await ApiService.getData('${Config.getApiUrlOrderDetails}$user_id');
+    debugPrint('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlOrderDetails}$user_id');
+    List<dynamic> data = await ApiService.getData('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlOrderDetails}$user_id');
     //List<dynamic> data = await ApiService.getData('https://cloud.metaxperts.net:8443/erp/test1/orderdetailsget/get/$user_id');
     var dbClient = await dbHelper.db;
 
@@ -117,11 +117,11 @@ class OrderDetailsRepository extends GetxService {
     try {
       await Config.fetchLatestConfig();
 
-        debugPrint('Updated Shop Post API: ${Config.postApiUrlOrderDetails}');
+        debugPrint('Updated Shop Post API: ${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlOrderDetails}');
 
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse(Config.postApiUrlOrderDetails),
+        Uri.parse("${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlOrderDetails}"),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -202,7 +202,7 @@ class OrderDetailsRepository extends GetxService {
     await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: '${Config.getApiUrlOrderDetailsSerial}$user_id',
+      apiUrl: '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlOrderDetailsSerial}$user_id',
       maxColumnName: 'max(order_details_id)',
       serialType: orderDetailsHighestSerial, // Unique identifier for shop visit serials
     );

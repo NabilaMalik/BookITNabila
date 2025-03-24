@@ -151,7 +151,7 @@ class AddShopViewModel extends GetxController {
   }
 
   void saveForm() async {
-    if (validateForm()) {
+    if (validateForm() && shop.isGPSEnabled==false) {
       await _loadCounter();
       final shopSerial = await generateNewOrderId(user_id);
 

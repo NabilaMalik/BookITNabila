@@ -57,9 +57,9 @@ class OrderMasterRepository extends GetxService {
 
   Future<void> fetchAndSaveOrderMaster() async {
     await Config.fetchLatestConfig();
-    debugPrint('${Config.getApiUrlOrderMaster}$user_id');
+    debugPrint('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlOrderMaster}$user_id');
     List<dynamic> data = await ApiService.getData(
-        '${Config.getApiUrlOrderMaster}$user_id'
+        '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlOrderMaster}$user_id'
         // 'https://cloud.metaxperts.net:8443/erp/test1/ordermasterget/get/$user_id'
     );
     var dbClient = await dbHelper.db;
@@ -134,11 +134,11 @@ class OrderMasterRepository extends GetxService {
     try {
       await Config.fetchLatestConfig();
 
-      debugPrint('Updated Shop Post API: ${Config.postApiUrlOrderMaster}');
+      debugPrint('Updated Shop Post API: ${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlOrderMaster}');
 
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse(Config.postApiUrlOrderMaster),
+        Uri.parse("${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlOrderMaster}"),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -223,7 +223,7 @@ class OrderMasterRepository extends GetxService {
     await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: '${Config.getApiUrlOrderMasterSerial}$user_id',
+      apiUrl: '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlOrderMasterSerial}$user_id',
       maxColumnName: 'max(order_master_id)',
       serialType: orderMasterHighestSerial, // Unique identifier for shop visit serials
     );

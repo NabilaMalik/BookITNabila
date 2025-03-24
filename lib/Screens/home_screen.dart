@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
@@ -182,32 +184,83 @@ class _RiveAppHomeState extends State<HomeScreen>
     _onBoardingAnimController?.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              _buildHeader(),
-              const SizedBox(height: 1),
-              TimerCard(), // Add the TimerCard here
-              const SizedBox(height: 3),
-              _buildActionButtons(screenWidth),
-              const SizedBox(height: 20),
-              _buildOverviewSection(),
-              const SizedBox(height: 20),
-            ],
+    return WillPopScope(
+      onWillPop: () async {
+        // Return false to prevent the user from going back
+        return false;
+      },
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                _buildHeader(),
+                const SizedBox(height: 1),
+                TimerCard(), // Add the TimerCard here
+                const SizedBox(height: 3),
+                _buildActionButtons(screenWidth),
+                const SizedBox(height: 20),
+                _buildOverviewSection(),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
-
+  // @override
+  // Widget build(BuildContext context) {
+  //   final double screenWidth = MediaQuery.of(context).size.width;
+  //
+  //   return WillPopScope(
+  //     onWillPop: () async {
+  //       final shouldPop = await showDialog<bool>(
+  //         context: context,
+  //         builder: (context) => AlertDialog(
+  //           title: const Text('Are you sure?'),
+  //           content: const Text('Do you want to Exit this App?'),
+  //           actions: [
+  //             TextButton(
+  //               onPressed: () => Navigator.pop(context, false),
+  //               child: const Text('No'),
+  //             ),
+  //             TextButton(
+  //               onPressed: () =>  exit(0) ,
+  //               child: const Text('Exit'),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //
+  //       return shouldPop ?? false;
+  //     },
+  //     child: SafeArea(
+  //       child: Scaffold(
+  //         backgroundColor: Colors.white,
+  //         body: SingleChildScrollView(
+  //           child: Column(
+  //             children: [
+  //               _buildHeader(),
+  //               const SizedBox(height: 1),
+  //               TimerCard(), // Add the TimerCard here
+  //               const SizedBox(height: 3),
+  //               _buildActionButtons(screenWidth),
+  //               const SizedBox(height: 20),
+  //               _buildOverviewSection(),
+  //               const SizedBox(height: 20),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
   /// Builds the header, including navbar and profile section.
   Widget _buildHeader() {
     return Container(

@@ -35,12 +35,13 @@ class Config {
 
   static String get getApiUrlServer => remoteConfig.getString('ServerGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/loginget/get/');
-  static String get getApiUrlERP => remoteConfig.getString('ERPGetUrl');
+  static String get getApiUrlERPCompanyName =>
+      remoteConfig.getString('ERPCompanyNameGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/
   static String get getApiUrlServerIP =>
       remoteConfig.getString('ServerIPGetUrl');
   // 'https://cloud.metaxperts.net:8443/
-
+  // Config.getApiUrlServerIP}{Config.getApiUrlERPCompanyName}{Config.getApiUrlLogin
 // Static configuration parameters for GET API URLs
   static String get getApiUrlLogin => remoteConfig.getString('LoginGetUrl');
   //https://cloud.metaxperts.net:8443/erp/test1/loginget/get/

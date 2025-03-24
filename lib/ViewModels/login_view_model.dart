@@ -9,6 +9,8 @@ import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Repositories/LoginRepositories/login_repository.dart';
 import '../Screens/NSM/nsm_homepage.dart';
+import '../Screens/RSMS_Views/RSM_HomePage.dart';
+import '../Screens/SM/sm_homepage.dart';
 
 
 class LoginViewModel extends GetxController {
@@ -50,20 +52,6 @@ class LoginViewModel extends GetxController {
       debugPrint('Failed to fetch bookers: $e');
     }
   }
-  // fetchBookerNamesBySMDesignation() async {
-  //   var smnames = await loginRepository.getBookerNamesBySMDesignation();
-  //   bookers.value = smnames;
-  // }
-  // Future<void> fetchBookerIds() async {
-  //   try {
-  //     var savedShops = await loginRepository.getBookerNamesByDesignation('SM_ID', user_id);
-  //     bookers.value = savedShops.map((userIds) => userIds.user_id).toList();
-  //     allLogin.value =
-  //         savedShops; // Update this line to store full shop details
-  //   } catch (e) {
-  //     debugPrint('Failed to fetch shops: $e');
-  //   }
-  // }
 
   // Method to check the internet connection before navigating to the login page
   Future<void> checkInternetBeforeNavigation() async {
@@ -71,16 +59,16 @@ class LoginViewModel extends GetxController {
 
     if (!hasInternet) {
 
-
-      // Show a GetX Snackbar with an internet error message
-      Get.snackbar(
-        'Internet Error',
-        'No internet connection. The app will close shortly.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        duration: const Duration(seconds: 5),
-      );
+      //
+      // // Show a GetX Snackbar with an internet error message
+      // Get.snackbar(
+      //   'Internet Error',
+      //   'No internet connection. The app will close shortly.',
+      //   snackPosition: SnackPosition.BOTTOM,
+      //   backgroundColor: Colors.red,
+      //   colorText: Colors.white,
+      //   duration: const Duration(seconds: 5),
+      // );
 
       // Delay for a few seconds before closing the app to allow user to see the message
       await Future.delayed(const Duration(seconds: 5));
@@ -94,19 +82,7 @@ class LoginViewModel extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     isAuthenticated.value = prefs.getBool('isAuthenticated') ?? false;
   }
-  // Future<bool> login(String userId, String password) async {
-  //   await fetchAllLogin(); // Ensure the latest data is fetched
-  //
-  //   // Check if the user exists and password matches
-  //   for (var loginModel in allLogin) {
-  //     if (loginModel.user_id == userId && loginModel.password == password) {
-  //       isAuthenticated.value = true; // Set login status
-  //       return true; // Login successful
-  //     }
-  //   }
-  //   isAuthenticated.value = false; // Set login status
-  //   return false; // Login failed
-  // }
+
   Future<bool> login(String userId, String password) async {
     try {
       // Step 1: Authenticate user
@@ -173,16 +149,18 @@ class LoginViewModel extends GetxController {
     switch (userDesignation) {
       case 'RSM':
         pageName = "/RSMHomepage";
-        Get.offNamed("/RSMHomepage");
+        Get.to(() => const RSMHomepage());
+        // Get.offNamed("/RSMHomepage");
         break;
       case 'SM':
         pageName = "/SMHomepage";
-        Get.offNamed("/SMHomepage");
+        Get.to(() => const SMHomepage());
+        // Get.offNamed("/SMHomepage");
         break;
       case 'NSM':
         pageName = "/NSMHomepage";
         Get.to(() => const NSMHomepage());
-        Get.offNamed("/NSMHomepage");
+        // Get.offNamed("/NSMHomepage");
         break;
       default:
         pageName = "/home";

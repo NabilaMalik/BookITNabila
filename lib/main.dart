@@ -145,7 +145,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/home', page: () => const HomeScreen()),
         GetPage(name: '/cameraScreen', page: () => const CameraScreen()),
         GetPage(name: '/ShopVisitScreen', page: () => const ShopVisitScreen()),
-        GetPage(name: '/OrderBookingScreen', page: () => OrderBookingScreen()),
+        GetPage(name: '/OrderBookingScreen', page: () => const OrderBookingScreen()),
         GetPage(name: '/RecoveryFormScreen', page: () => RecoveryFormScreen()),
         GetPage(name: '/ReturnFormScreen', page: () => ReturnFormScreen()),
         GetPage(name: '/NSMHomepage', page: () => const NSMHomepage()),

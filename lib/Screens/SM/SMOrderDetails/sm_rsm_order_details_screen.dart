@@ -70,7 +70,7 @@ class _NSM_SM_StatusState extends State<SmRsmOrderDetailsScreen> {
   Future<bool> _fetchAndSaveData() async {
     await Config.fetchLatestConfig();
    // final url = 'https://cloud.metaxperts.net:8443/erp/test1/smrsmorders/get/$user_id';
-    final response = await http.get(Uri.parse('${Config.getApiUrlSmRsmOrder}/$user_id')
+    final response = await http.get(Uri.parse('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlSmRsmOrder}$user_id')
     );
 
     if (response.statusCode == 200) {

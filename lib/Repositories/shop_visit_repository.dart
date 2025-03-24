@@ -51,9 +51,9 @@ class ShopVisitRepository extends GetxService {
   }
 
   Future<void> fetchAndSaveShopVisit() async {
-    debugPrint('${Config.getApiUrlShopVisit}$user_id');
+    debugPrint('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlShopVisit}$user_id');
     List<dynamic> data =
-        await ApiService.getData('${Config.getApiUrlShopVisit}$user_id');
+        await ApiService.getData('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlShopVisit}$user_id');
     var dbClient = await dbHelper.db;
 
     // Save data to database
@@ -107,13 +107,13 @@ class ShopVisitRepository extends GetxService {
     try {
       await Config.fetchLatestConfig();
 
-      debugPrint('Updated Shop Post API: ${Config.postApiUrlShopVisit}');
+      debugPrint('Updated Shop Post API: ${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlShopVisit}');
 
       var shopData = shop.toMap();
 
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse(Config.postApiUrlShopVisit),
+        Uri.parse("${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlShopVisit}"),
       );
 
       request.headers['Content-Type'] = 'multipart/form-data';
@@ -193,7 +193,7 @@ class ShopVisitRepository extends GetxService {
     await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: '${Config.getApiUrlShopVisitSerial}$user_id',
+      apiUrl: '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlShopVisitSerial}$user_id',
       maxColumnName: 'max(shop_visit_master_id)',
       serialType:
           shopVisitHighestSerial, // Unique identifier for shop visit serials
@@ -207,7 +207,7 @@ class ShopVisitRepository extends GetxService {
   Future<void> serialNumberGeneratorApiHeads() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: '${Config.getApiUrlShopVisitSerial}$user_id',
+      apiUrl: '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlShopVisitSerial}$user_id',
       maxColumnName: 'max(shop_visit_master_id)',
       serialType:
           shopVisitHeadsHighestSerial, // Unique identifier for shop visit serials
@@ -269,12 +269,12 @@ class ShopVisitRepository extends GetxService {
     try {
       await Config.fetchLatestConfig();
       if (kDebugMode) {
-        print('Updated Shop Post API: ${Config.postApiUrlShopVisitHeads}');
+        print('Updated Shop Post API: ${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlShopVisitHeads}');
       }
       var shopData = shop.toMap();
       final response = await http.post(
         Uri.parse(
-            Config.postApiUrlShopVisitHeads
+            "${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlShopVisitHeads}"
           ),
         headers: {
           "Content-Type": "application/json",

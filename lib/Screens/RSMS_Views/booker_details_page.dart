@@ -37,7 +37,7 @@ class _RSMBookerDetailsPageState extends State<RSMBookerDetailsPage> {
     await Config.fetchLatestConfig();
     final response = await http.get(
       Uri.parse(
-        "${Config.getApiUrlHeadsAttendanceData}${widget.booker.booker_id}"),
+        "${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlHeadsAttendanceData}${widget.booker.booker_id}"),
           // 'http://103.149.32.30:8080/ords/metaxperts/attendancedata/get/${widget.booker.booker_id}'),
     );
 

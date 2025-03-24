@@ -67,7 +67,7 @@ class _RSMBookerStatusState extends State<RSMBookerStatus> {
 
   Future<bool> _fetchAndSaveData() async {
     await Config.fetchLatestConfig();
-    final url = '${Config.getApiUrlRsmBookersStatus}${user_id}';
+    final url = '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlRsmBookersStatus}${user_id}';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {

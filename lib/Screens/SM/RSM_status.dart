@@ -67,7 +67,7 @@ class _SM_RSMStatusState extends State<SM_RSMStatus> {
   Future<bool> _fetchAndSaveData() async {
     await Config.fetchLatestConfig();
     final url =
-    "${Config.getApiUrlSmRsmStatus}${user_id}";
+    "${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlSmRsmStatus}${user_id}";
         // 'https://cloud.metaxperts.net:8443/erp/test1/smstatus/get/$user_id';
     // final url = 'http://103.149.32.30:8080/ords/valor_trading/smbookerstatus/get/VT0038';
     final response = await http.get(Uri.parse(url));

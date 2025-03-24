@@ -105,15 +105,14 @@ Future<bool> isNetworkAvailable() async {
   } else {
     try {
       await Config.fetchLatestConfig();
+      debugPrint( "${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlServer}");
       // Replace with your server URL
       final url = Uri.parse(
-        Config.getApiUrlServer
-
-      );
+        "${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlServer}");
           // 'https://cloud.metaxperts.net:8443/erp/test1/loginget/get/');
 
       // Make an HTTP GET request to your server
-      final response = await http.get(url).timeout(Duration(seconds: 5));
+      final response = await http.get(url).timeout(Duration(seconds: 10));
 
       // Check if the response status code is 200 (OK)
       if (response.statusCode == 200) {
@@ -139,7 +138,7 @@ Future<bool> isNetworkAvailable() async {
       // await Config.fetchLatestConfig();
       // Replace with your server URL
       final url = Uri.parse(
-        // Config.getApiUrlServer
+        // Config.getApiUrlServerIP}{Config.getApiUrlERPCompanyName}{Config.getApiUrlServer
 "https://google.com"
       );
           // 'https://cloud.metaxperts.net:8443/erp/test1/loginget/get/');

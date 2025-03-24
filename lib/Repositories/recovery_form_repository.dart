@@ -43,8 +43,8 @@ class RecoveryFormRepository {
     return recoveryform;
   }
   Future<void> fetchAndSaveRecovery() async {
-    debugPrint('${Config.getApiUrlRecoveryForm}$user_id');
-    List<dynamic> data = await ApiService.getData('${Config.getApiUrlRecoveryForm}$user_id');
+    debugPrint('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlRecoveryForm}$user_id');
+    List<dynamic> data = await ApiService.getData('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlRecoveryForm}$user_id');
     var dbClient = await dbHelper.db;
 
     // Save data to database
@@ -151,12 +151,12 @@ class RecoveryFormRepository {
     try {
       await Config.fetchLatestConfig();
 
-        debugPrint('Updated Shop Post API: ${Config.postApiUrlRecoveryForm}');
-        // debugPrint('Updated Shop Post API: ${Config.postApiUrlRecoveryForm}');
+        debugPrint('Updated Shop Post API: ${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlRecoveryForm}');
+        // debugPrint('Updated Shop Post API: ${Config.getApiUrlServerIP}{Config.getApiUrlERPCompanyName}{Config.postApiUrlRecoveryForm}');
 
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse(Config.postApiUrlRecoveryForm),
+        Uri.parse("${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlRecoveryForm}"),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -196,7 +196,7 @@ class RecoveryFormRepository {
     await Config.fetchLatestConfig();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final orderDetailsGenerator = SerialNumberGenerator(
-      apiUrl: '${Config.getApiUrlRecoveryFormSerial}$user_id',
+      apiUrl: '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlRecoveryFormSerial}$user_id',
       maxColumnName: 'max(recovery_id)',
       serialType: recoveryHighestSerial, // Unique identifier for shop visit serials
     );
