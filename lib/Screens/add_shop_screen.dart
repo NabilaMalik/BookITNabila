@@ -143,17 +143,17 @@ class AddShopScreen extends StatelessWidget {
                     onTap: _viewModel.saveForm,
                     gradientColors: const [Colors.blue, Colors.blue],
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Get.to(() => CodeScreen()); // Replace with your destination screen
-                    },
-                    child: const Text("Go to Next Page", style: TextStyle(color: Colors.blue)),
-                  ),TextButton(
-                    onPressed: () {
-                      Get.to(() => SignUpScreen()); // Replace with your destination screen
-                    },
-                    child: const Text("Go to Next Page", style: TextStyle(color: Colors.blue)),
-                  ),
+                  // TextButton(
+                  //   onPressed: () {
+                  //     Get.to(() => CodeScreen()); // Replace with your destination screen
+                  //   },
+                  //   child: const Text("Go to Next Page", style: TextStyle(color: Colors.blue)),
+                  // ),TextButton(
+                  //   onPressed: () {
+                  //     Get.to(() => SignUpScreen()); // Replace with your destination screen
+                  //   },
+                  //   child: const Text("Go to Next Page", style: TextStyle(color: Colors.blue)),
+                  // ),
                 ],
               ),
             ),

@@ -16,7 +16,7 @@ class ReturnFormDetailsViewModel extends GetxController{
   String currentuser_id = '';
 
   var items = <Item>[].obs;
-  var reasons = <String>["Expire","Business","Damage","Cancel"].obs;
+  var reasons = <String>["Expire", "Business","Damage","Cancel"].obs;
   //var quantity = ''.obs;
   var formRows = <ReturnForm>[ReturnForm(quantity: '', reason: '', items: '')]
       .obs; // Initialize with one row

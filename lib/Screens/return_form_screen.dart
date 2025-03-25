@@ -126,7 +126,7 @@ class ReturnFormScreen extends StatelessWidget {
                 children: [
                   AddRowButton(),
                   const SizedBox(height: 20),
-                  SubmitButton(),
+                  const SubmitButton(),
                 ],
               ),
             ),

@@ -34,7 +34,8 @@ class FormRow extends StatelessWidget {
           SizedBox(
             width: size.width * 0.84,
             height: 60,
-            child: Obx(() {
+            child: Obx(()
+            {
               return DropdownButtonFormField<Item>(
                 decoration: const InputDecoration(
                   labelText: "Item",
