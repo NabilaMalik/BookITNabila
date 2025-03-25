@@ -154,14 +154,14 @@ class Config {
 
   static String get getApiUrlSmRsmStatus =>
       remoteConfig.getString('SmRsmStatusGetUrl');
-  // 'https://cloud.metaxperts.net:8443/erp/test1/smstatus/get/$user_id';
+  // 'https://cloud.metaxperts.net:8443/erp/test1/smrsmstatus/get/$user_id';
   static String get getApiUrlSmBookersStatus =>
       remoteConfig.getString('SmBookersStatusGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/smbookerstatus/get/$user_id';
 
   static String get getApiUrlRsmBookersStatus =>
       remoteConfig.getString('RsmBookersStatusGetUrl');
-  // 'https://cloud.metaxperts.net:8443/erp/test1/bookerattendancestatus/get/$user_id';
+  // 'https://cloud.metaxperts.net:8443/erp/test1/rsmbookerstatus/get/$user_id';
 
 
   static String get getApiUrlNsmSmOrder =>
