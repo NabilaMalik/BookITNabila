@@ -76,7 +76,7 @@ class _SignupCustomDropdownState extends State<SignupCustomDropdown> {
       padding: const EdgeInsets.only(left: 22, right: 13, bottom: 16),
       child: Container(
         width: widget.width ?? double.infinity,
-        height: widget.height ?? 58.0,
+        height: widget.height ?? 65.0,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(3),
