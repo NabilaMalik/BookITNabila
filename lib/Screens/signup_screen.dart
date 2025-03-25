@@ -183,6 +183,26 @@ class SignUpScreen extends StatelessWidget {
                 Obx(() => SignupCustomDropdown(
                   borderColor: Colors.black,
                   iconColor: Colors.blue,
+                  label: "State/Provices",
+                  useBoxShadow: false,
+                  icon: Icons.location_city,
+                  items: _viewModel.cities.value,
+                  selectedValue: _viewModel.selectedCity.value.isNotEmpty
+                      ? _viewModel.selectedCity.value
+                      : 'Select a Province',
+                  onChanged: (value) => _viewModel.setShopField('city', value),
+                  validator: (value) => value == null || value.isEmpty
+                      ? "Please enter Your Province"
+                      : null,
+                  textStyle: const TextStyle(
+                      fontSize: 19,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                )),
+                const SizedBox(height: 10),
+                Obx(() => SignupCustomDropdown(
+                  borderColor: Colors.black,
+                  iconColor: Colors.blue,
                   label: "City",
                   useBoxShadow: false,
                   icon: Icons.location_city,
@@ -200,6 +220,7 @@ class SignUpScreen extends StatelessWidget {
                       color: Colors.black),
                 )),
                 const SizedBox(height: 10),
+
                 CustomButton(
                   height: size.height * 0.065,
                   width: size.width * 0.45,
