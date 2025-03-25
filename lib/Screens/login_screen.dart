@@ -226,18 +226,19 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildHeader(double height) {
+
     return Container(
       height: height,
       width: double.infinity,
       color: Colors.blue,
-      child: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.0),
+      child:  Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Welcome Back',
+              'Welcome\n$companyName',
               style: TextStyle(
                 fontSize: 32,
                 fontFamily: "Poppins",
@@ -245,8 +246,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 color: Colors.white,
               ),
             ),
-            SizedBox(height: 5),
-            Text(
+            const SizedBox(height: 5),
+            const Text(
               'Sign in to Continue',
               style: TextStyle(
                 fontSize: 20,
@@ -282,7 +283,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: size.height * 0.01),
                   CustomEditableMenuOption(
                     width: size.width * 1.0,
-                    label: 'Email',
+                    label: 'Employee ID',
                     initialValue: _emailController.text,
                     onChanged: (value) {
                       _emailController.text = value;

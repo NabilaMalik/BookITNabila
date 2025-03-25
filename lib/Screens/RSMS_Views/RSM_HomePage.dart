@@ -219,7 +219,7 @@ class _RSMHomepageState extends State<RSMHomepage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 94),
+                  const SizedBox(height: 54),
                   // Adjust the spacing after the "LIVE LOCATION" card
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,

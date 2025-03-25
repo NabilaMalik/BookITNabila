@@ -10,6 +10,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:share_plus/share_plus.dart';
+import '../Databases/util.dart';
 import 'home_screen.dart';
 
 class RecoveryForm_2ndPage extends StatelessWidget {
@@ -185,7 +186,7 @@ class RecoveryForm_2ndPage extends StatelessWidget {
                     ),
                     pw.SizedBox(height: 10),
                     pw.Text(
-                      'Valor Trading',
+                      companyName,
                       style: pw.TextStyle(
                         fontSize: 28,
                         fontWeight: pw.FontWeight.bold,

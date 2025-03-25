@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
     <!-- Location Permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 <!--    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
@@ -37,7 +37,9 @@
         <!-- Google Maps API Key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyA8uucF_ZuwxXOkYhoQgDCD3FEURkTcxSY" />
+            android:value="AIzaSyB75e8drxN6oXb4U2V2c56yccRrEjmDmHo" />
+<!--            android:value="AIzaSyA8uucF_ZuwxXOkYhoQgDCD3FEURkTcxSY" />-->
+
 
         <!-- Google Play Services Version -->
         <meta-data

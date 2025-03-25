@@ -1,10 +1,14 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
+import 'package:order_booking_app/Databases/util.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Config {
   static late FirebaseRemoteConfig remoteConfig;
+  static String? _erpCompanyName; // Cached value
 
   static Future<void> initialize() async {
+
     remoteConfig = FirebaseRemoteConfig.instance;
     await remoteConfig.setConfigSettings(RemoteConfigSettings(
       fetchTimeout: const Duration(seconds: 1),
@@ -12,6 +16,9 @@ class Config {
       minimumFetchInterval: const Duration(seconds: 1),
     ));
     await fetchLatestConfig(); // Fetch and activate immediately
+    // Load from SharedPreferences once during initialization
+    final prefs = await SharedPreferences.getInstance();
+    erpWorkSpace = prefs.getString('workspace_name');
   }
 
   static Future<void> fetchLatestConfig() async {
@@ -35,8 +42,11 @@ class Config {
 
   static String get getApiUrlServer => remoteConfig.getString('ServerGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/loginget/get/');
+  // static String get getApiUrlERPCompanyName =>
+  //     remoteConfig.getString('ERPCompanyNameGetUrl');
   static String get getApiUrlERPCompanyName =>
-      remoteConfig.getString('ERPCompanyNameGetUrl');
+      erpWorkSpace ?? '';
+
   // 'https://cloud.metaxperts.net:8443/erp/test1/
   static String get getApiUrlServerIP =>
       remoteConfig.getString('ServerIPGetUrl');
@@ -120,6 +130,7 @@ class Config {
 ///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
   static String get getApiUrlHeadsAttendanceData =>
       remoteConfig.getString('HeadsAttendanceDataGetUrl');
+  // 'https://cloud.metaxperts.net:8443/erp/test1/attendancedata/get/$user_id/'),
 
   static String get getApiUrlNsmShop =>
       remoteConfig.getString('NsmShopsGetUrl');
@@ -150,11 +161,11 @@ class Config {
 
   static String get getApiUrlRsmBookersStatus =>
       remoteConfig.getString('RsmBookersStatusGetUrl');
-  // 'https://cloud.metaxperts.net:8443/erp/test1/bookerattendanceStatus/get/$user_id';
+  // 'https://cloud.metaxperts.net:8443/erp/test1/bookerattendancestatus/get/$user_id';
 
 
   static String get getApiUrlNsmSmOrder =>
-      remoteConfig.getString('NsmRsmOrderGetUrl');
+      remoteConfig.getString('NsmSmOrderGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/nsmorders/get/11';
   static String get getApiUrlNsmRsmOrder =>
       remoteConfig.getString('NsmRsmOrderGetUrl');
@@ -176,7 +187,7 @@ class Config {
 
   static String get getApiUrlSmRsmOrder =>
       remoteConfig.getString('SmRsmOrderGetUrl');
-  // 'https://cloud.metaxperts.net:8443/erp/test1/nsmrsmorders/get/$user_id';
+  // 'https://cloud.metaxperts.net:8443/erp/test1/smrsmorders/get/$user_id';
   static String get getApiUrlSmUserOrder =>
       remoteConfig.getString('SmUserOrderGetUrl');
   //final url = 'https://cloud.metaxperts.net:8443/erp/test1/smuserorders/get/$user_id';
@@ -186,7 +197,7 @@ class Config {
   //   Uri.parse('https://cloud.metaxperts.net:8443/erp/test1/smrsmorderdetails/get/$user_id/${widget.booker.booker_id}'),
   static String get getApiUrlSmUserOrderDetails =>
       remoteConfig.getString('SmUserOrderDetailsGetUrl');
-  // final url = 'https://cloud.metaxperts.net:8443/erp/test1/smrsmorders/get/$user_id';
+  // final url = 'https://cloud.metaxperts.net:8443/erp/test1/smuserorderdetails/get/$user_id';
 
   static String get getApiUrlRsmUserOrderDetails =>
       remoteConfig.getString('RsmUserOrderDetailsGetUrl');
@@ -194,7 +205,7 @@ class Config {
 
   static String get getApiUrlRsmUserOrder =>
       remoteConfig.getString('RsmUserOrderGetUrl');
-  //final url = 'https://cloud.metaxperts.net:8443/erp/test1/smuserorders/get/$user_id';
+  //final url = 'https://cloud.metaxperts.net:8443/erp/test1/rmuserorders/get/$user_id';
   ///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
   ///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
   ///NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM//////NSM///SM///RSM///
