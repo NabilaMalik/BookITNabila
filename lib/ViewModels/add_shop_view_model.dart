@@ -25,6 +25,8 @@ class AddShopViewModel extends GetxController {
 
   GlobalKey<FormState> get formKey => _formKey;
   var cities = <String>[].obs;
+  var country = <String>[].obs;
+
   int shopSerialCounter = 1;
   String shopCurrentMonth = DateFormat('MMM').format(DateTime.now());
   String currentuser_id = '';
@@ -46,6 +48,7 @@ class AddShopViewModel extends GetxController {
   }
 
   var selectedCity = ''.obs;
+  var selectedCountry = ''.obs;
 
   void setShopField(String field, dynamic value) {
     switch (field) {
