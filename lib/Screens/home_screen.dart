@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
@@ -7,10 +5,8 @@ import 'package:get/get.dart';
 import 'package:order_booking_app/Databases/util.dart';
 import 'package:order_booking_app/Screens/recovery_form_screen.dart';
 import 'package:order_booking_app/Screens/shop_visit_screen.dart';
-import 'package:order_booking_app/Screens/signup_screen.dart';
 import 'package:order_booking_app/ViewModels/shop_visit_view_model.dart';
 import 'package:order_booking_app/screens/add_shop_screen.dart';
-import 'package:order_booking_app/screens/order_booking_status_screen.dart';
 import 'package:order_booking_app/screens/return_form_screen.dart';
 import 'package:rive/rive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,6 +26,9 @@ import 'package:order_booking_app/ViewModels/attendance_view_model.dart';
 import 'package:order_booking_app/ViewModels/order_master_view_model.dart';
 import 'package:order_booking_app/ViewModels/recovery_form_view_model.dart';
 import 'HomeScreenComponents/timer_card.dart';
+import 'package:order_booking_app/Screens/code_screen.dart';
+
+import 'order_booking_status_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -126,6 +125,7 @@ class _RiveAppHomeState extends State<HomeScreen>
       userNameRSM = prefs.getString('userNameRSM') ?? '';
       userNameNSM = prefs.getString('userNameNSM') ?? '';
       userNameSM = prefs.getString('userNameSM') ?? '';
+      companyName = prefs.getString('company_name') ?? '';
     });
     debugPrint(user_id);
   }
@@ -372,10 +372,11 @@ class _RiveAppHomeState extends State<HomeScreen>
                 imagePath: order_booking_status,
                 label: 'Booking Status',
                 onTap: () async {
-                  Get.to(() => SignUpScreen());
+                  // Get.to(() => CodeScreen());
+                  // Get.to(() => SignUpScreen());
                   //
-                  // orderMasterViewModel.fetchAllOrderMaster();
-                  //   Get.to(() => OrderBookingStatusScreen());
+                  orderMasterViewModel.fetchAllOrderMaster();
+                    Get.to(() => OrderBookingStatusScreen());
                 },
               ),
             ],

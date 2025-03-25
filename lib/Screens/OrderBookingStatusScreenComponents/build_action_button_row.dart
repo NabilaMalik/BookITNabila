@@ -10,6 +10,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:get/get.dart';
 import 'package:order_booking_app/ViewModels/ScreenViewModels/order_booking_status_view_model.dart';
+import '../../Databases/util.dart';
 import '../../ViewModels/order_master_view_model.dart';
 import '../../ViewModels/shop_visit_view_model.dart';
 import '../../Databases/dp_helper.dart';
@@ -262,7 +263,7 @@ Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              pw.Text('Valor Trading Order Booking Status',
+              pw.Text('$companyName Order Booking Status',
                   style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold)),
               pw.SizedBox(height: 10),
               pw.Text('Booker ID: ${orderMasterViewModel.currentuser_id ?? '-'}'),
@@ -365,7 +366,7 @@ Widget buildActionButtonsRow(OrderBookingStatusViewModel viewModel) {
               children: [
                 pw.Center(
                   child: pw.Text(
-                    'Valor Trading Products Details - Page ${pageIndex + 1}',
+                    '$companyName Products Details - Page ${pageIndex + 1}',
                     style: pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold),
                   ),
                 ),

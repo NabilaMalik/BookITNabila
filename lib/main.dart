@@ -50,9 +50,10 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart'
 import 'Tracker/location00.dart';
 import 'Tracker/trac.dart';
 import 'package:order_booking_app/ViewModels/login_view_model.dart';
+import 'package:android_intent_plus/android_intent.dart' as android_intent;
 
 
-final LoginViewModel loginViewModel = Get.put(LoginViewModel());
+// final LoginViewModel loginViewModel = Get.put(LoginViewModel());
 Future<void> main() async {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -85,11 +86,7 @@ Future<void> main() async {
     userNameNSM = prefs.getString('userNameNSM') ?? '';
     userNameSM = prefs.getString('userNameSM') ?? '';
 
-    if (isAuthenticated==false) {
-   await loginViewModel.checkInternetBeforeNavigation();
-    }
-     // bool isAuthenticated = true;
-    debugPrint("SharedPreferences initialized. isAuthenticated: $isAuthenticated");
+
 
     debugPrint("Initializing Workmanager...");
     Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
@@ -137,7 +134,7 @@ class MyApp extends StatelessWidget {
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: isAuthenticated ? pageName : '/cameraScreen',
+      initialRoute: isAuthenticated ? pageName : '/CodeScreen',
       // initialRoute: '/',
       getPages: [
         GetPage(name: '/', page: () => const SplashScreen()),
@@ -152,6 +149,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/NSMHomepage', page: () => const NSMHomepage()),
         GetPage(name: '/RSMHomepage', page: () => const RSMHomepage()),
         GetPage(name: '/SMHomepage', page: () => const SMHomepage()),
+        GetPage(name: '/CodeScreen', page: () => const CodeScreen()),
 
         GetPage(
             name: '/OrderBookingStatusScreen',
@@ -165,6 +163,15 @@ class MyApp extends StatelessWidget {
 }
 
 
+void requestIgnoreBatteryOptimizations() {
+  if (Platform.isAndroid) {
+    const android_intent.AndroidIntent intent = android_intent.AndroidIntent(
+      action: 'android.settings.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS',
+      data: 'package:com.metaxperts.order_booking_app',
+    );
+    intent.launch();
+  }
+}
 Future<void> initializeServiceLocation() async {
   final service = FlutterBackgroundService();
 

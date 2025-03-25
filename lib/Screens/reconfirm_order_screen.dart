@@ -88,7 +88,7 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
               ),
               pw.SizedBox(width: 10),
               pw.Text(
-                'Valor Trading',
+                companyName,
                 style: pw.TextStyle(
                   fontSize: 27,
                   fontWeight: pw.FontWeight.bold,

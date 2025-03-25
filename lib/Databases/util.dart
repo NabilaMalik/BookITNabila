@@ -32,6 +32,8 @@ String userNameSM="";
 
 bool newIsClockedIn= false;
 String pageName="";
+String companyName="";
+String? erpWorkSpace;
 
 
 String? recoverySavedMonthCounter;
