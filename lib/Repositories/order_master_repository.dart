@@ -40,6 +40,7 @@ class OrderMasterRepository extends GetxService {
       'rsm',
       'sm',
       'nsm',
+      'city',
       'required_delivery_date',
       'posted'
     ]);

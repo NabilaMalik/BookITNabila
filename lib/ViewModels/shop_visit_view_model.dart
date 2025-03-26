@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:order_booking_app/Screens/home_screen.dart';
+import 'package:order_booking_app/Tracker/trac.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -42,6 +43,7 @@ class ShopVisitViewModel extends GetxController {
   var owner_name = ''.obs;
   var booker_name = userName.obs;
   var phone_number = ''.obs;
+  var city = ''.obs;
   var feedBack = ''.obs;
   var selectedBrand = ''.obs;
   var selectedShop = ''.obs;
@@ -210,6 +212,9 @@ class ShopVisitViewModel extends GetxController {
         body: compressedImageBytes,
         feedback: feedBack.value,
         user_id: user_id.toString(),
+        latitude: locationViewModel.globalLatitude1.value,
+        longitude: locationViewModel.globalLongitude1.value,
+        city: city.value,
         shop_visit_master_id: shop_visit_master_id.toString(),
       ));
 
@@ -256,6 +261,11 @@ class ShopVisitViewModel extends GetxController {
         signage: checklistState[2],
         product_reviewed: checklistState[3],
         feedback: feedBack.value,
+        user_id: user_id.toString(),
+        latitude: locationViewModel.globalLatitude1.value,
+        longitude: locationViewModel.globalLongitude1.value,
+        address: locationViewModel.shopAddress.value,
+        city: city.value,
         shop_visit_master_id: shop_visit_master_id,
       ));
 
@@ -391,6 +401,7 @@ serialCounterGet()async{
 serialCounterGetHeads()async{
    await shopvisitRepository.serialNumberGeneratorApiHeads();
 }
+
   Future<void> loadCounterHeads() async {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
     SharedPreferences prefs = await SharedPreferences.getInstance();

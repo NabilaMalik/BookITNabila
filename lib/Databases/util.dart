@@ -29,7 +29,6 @@ String userNameNSM="";
 String userNameSM="";
 
 
-
 bool newIsClockedIn= false;
 String pageName="";
 String companyName="";

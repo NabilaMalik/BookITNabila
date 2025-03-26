@@ -17,6 +17,7 @@ class OrderMasterModel{
   String? rsm;
   String? sm;
   String? nsm;
+  String? city;
   String? required_delivery_date;
   DateTime? order_master_date;
   DateTime? order_master_time;
@@ -39,6 +40,7 @@ class OrderMasterModel{
     this.rsm,
     this.sm,
     this.nsm,
+    this.city,
     this.required_delivery_date,
     this.order_master_date,
     this.order_master_time,
@@ -62,6 +64,7 @@ class OrderMasterModel{
       rsm:json['rsm'],
       sm:json['sm'],
       nsm:json['nsm'],
+      city:json['city'],
       required_delivery_date:json['required_delivery_date'],
       order_master_date: DateTime.now(),
       // Always set live date
@@ -90,6 +93,7 @@ class OrderMasterModel{
       'rsm':rsm,
       'sm':sm,
       'nsm':nsm,
+      'city':city,
       'order_master_date': DateFormat('dd-MMM-yyyy')
           .format(order_master_date ?? DateTime.now()), // Always set live date
       'order_master_time': DateFormat('HH:mm:ss')

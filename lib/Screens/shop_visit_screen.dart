@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/ViewModels/ProductsViewModel.dart';
+import '../ViewModels/location_view_model.dart';
 import '../ViewModels/shop_visit_details_view_model.dart';
 import '../ViewModels/shop_visit_view_model.dart';
 import 'Components/custom_button.dart';
 import 'Components/custom_dropdown.dart';
 import 'Components/custom_editable_menu_option.dart';
+import 'Components/custom_switch.dart';
 import 'ShopVisitScreenComponents/check_list_section.dart';
 import 'ShopVisitScreenComponents/feedback_section.dart';
 import 'ShopVisitScreenComponents/photo_picker.dart';
@@ -23,6 +25,7 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
   final ShopVisitDetailsViewModel shopVisitDetailsViewModel =
   Get.put(ShopVisitDetailsViewModel());
   final ProductsViewModel productsViewModel = Get.put(ProductsViewModel());
+  final LocationViewModel locationViewModel = Get.put(LocationViewModel());
 
 
   @override
@@ -207,6 +210,19 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
                       onChanged: (value) =>
                       shopVisitViewModel.feedBack.value = value,
                     )),
+                const SizedBox(height: 20),
+                // Use Obx to reactively update CustomSwitch
+                Obx(() => CustomSwitch(
+                  label: "GPS Enabled",
+                  value: locationViewModel.isGPSEnabled.value,
+                  onChanged: (value) async {
+                    locationViewModel.isGPSEnabled.value = value;
+                    if (value) {
+                      await locationViewModel
+                          .saveCurrentLocation(); // Save location when switch is turned on
+                    }
+                  },
+                )),
                 const SizedBox(height: 20),
                 Row(children: [
                   CustomButton(

@@ -26,6 +26,7 @@ class ShopVisitRepository extends GetxService {
       'shop_visit_time',
       'shop_name',
       'shop_address',
+      'address',
       'owner_name',
       'booker_name',
       'walk_through',
@@ -34,6 +35,9 @@ class ShopVisitRepository extends GetxService {
       'product_reviewed',
       'feedback',
       'user_id',
+      'latitude'
+      'longitude',
+      'city',
       'posted',
       'body'
     ]);

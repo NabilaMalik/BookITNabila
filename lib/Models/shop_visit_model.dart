@@ -9,6 +9,7 @@ class ShopVisitModel {
   String? user_id;
   String? shop_name;
   String? shop_address;
+  String? address;
   String? owner_name;
   String? booker_name;
   bool? walk_through;
@@ -19,6 +20,9 @@ class ShopVisitModel {
   String? feedback;
   DateTime? shop_visit_date;
   DateTime? shop_visit_time;
+dynamic latitude;
+  dynamic longitude;
+  String? city;
   int posted;
 
 
@@ -28,6 +32,7 @@ class ShopVisitModel {
     this.user_id,
     this.shop_name,
     this.shop_address,
+    this.address,
     this.owner_name,
     this.booker_name,
     this.walk_through,
@@ -38,6 +43,9 @@ class ShopVisitModel {
     this.feedback,
     this.shop_visit_date,
     this.shop_visit_time,
+    this.latitude,
+    this.longitude,
+    this.city,
     this.posted = 0,
   });
 
@@ -47,6 +55,7 @@ class ShopVisitModel {
       brand: json['brand'].toString(),
       shop_name: json['shop_name'].toString(),
       shop_address: json['shop_address'].toString(),
+      address: json['address'].toString(),
       owner_name: json['owner_name'].toString(),
       booker_name: json['booker_name'].toString(),
       walk_through: json['walk_through'] == 1.toString(),
@@ -61,6 +70,10 @@ class ShopVisitModel {
       shop_visit_date: DateTime.now(),
       // Always set live date
       shop_visit_time: DateTime.now(),
+      // Always set live time
+      latitude: json['latitude'],
+      longitude: json['longitude'],
+      city: json['city'],
       posted: json['posted'] ?? 0,
 
       // Always set live time
@@ -85,7 +98,10 @@ class ShopVisitModel {
       'shop_visit_date': DateFormat('dd-MMM-yyyy')
           .format(shop_visit_date ?? DateTime.now()), // Always set live date
       'shop_visit_time': DateFormat('HH:mm:ss')
-          .format(shop_visit_time ?? DateTime.now()), // Always set live time
+          .format(shop_visit_time ?? DateTime.now()),
+      'latitude': latitude,// Always set live time
+      'longitude': longitude,// Always set live time
+      'city': city,
       'posted': posted,
     };
   }

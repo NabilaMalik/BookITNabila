@@ -23,6 +23,8 @@ class _CodeScreenState extends State<CodeScreen> {
   late final TextEditingController companyCodeController;
   final _formKey = GlobalKey<FormState>();
  final LoginViewModel loginViewModel = Get.put(LoginViewModel());
+ bool isLoading = false;
+  bool isButtonDisabled = false;
 
   @override
   void initState() {
@@ -63,7 +65,10 @@ class _CodeScreenState extends State<CodeScreen> {
   Future<void> _saveCompanyDetails(String companyCode) async {
     // Show initial loading message
     _showCenteredSnackBar('Please wait...');
-
+    setState(() {
+      isLoading = true;
+      isButtonDisabled = true;
+    });
     try {
       // Step 1: Get SharedPreferences
       final prefs = await SharedPreferences.getInstance();
@@ -77,6 +82,10 @@ class _CodeScreenState extends State<CodeScreen> {
 
       if (response.statusCode != 200) {
         _showCenteredSnackBar('Failed to fetch company details', isError: true);
+        setState(() {
+          isLoading = false;
+          isButtonDisabled = false;
+        });
         return;
       }
 
@@ -89,10 +98,18 @@ class _CodeScreenState extends State<CodeScreen> {
 
       if (company == null) {
         _showCenteredSnackBar('Company code not found', isError: true);
+        setState(() {
+          isLoading = false;
+          isButtonDisabled = false;
+        });
         return;
       }
 
       // Step 3: Save company details
+      setState(() {
+        isLoading = true;
+        isButtonDisabled = true;
+      });
       await prefs.setString('company_name', company['company_name']);
       await prefs.setString('workspace_name', company['workspace_name']);
       await prefs.setString('company_code', companyCode);
@@ -110,6 +127,10 @@ class _CodeScreenState extends State<CodeScreen> {
         } catch (e) {
           debugPrint("Authentication error: $e");
           _showCenteredSnackBar('Setup failed: ${e.toString()}', isError: true);
+          setState(() {
+            isLoading = false;
+            isButtonDisabled = false;
+          });
           return;
         }
       }
@@ -119,12 +140,19 @@ class _CodeScreenState extends State<CodeScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Get.offAll(() => const CameraScreen());
       });
-
     } on TimeoutException {
       _showCenteredSnackBar('Request timed out. Please try again', isError: true);
+      setState(() {
+        isLoading = false;
+        isButtonDisabled = false;
+      });
     } catch (e) {
       debugPrint('Error in _saveCompanyDetails: $e');
       _showCenteredSnackBar('Setup failed: ${e.toString()}', isError: true);
+      setState(() {
+        isLoading = false;
+        isButtonDisabled = false;
+      });
     }
   }
   @override
@@ -249,14 +277,14 @@ class _CodeScreenState extends State<CodeScreen> {
                                   SizedBox(
                                     width: double.infinity,
                                     child: ElevatedButton.icon(
-                                      onPressed: () {
+                                      onPressed: isButtonDisabled ? null : () {
                                         if (_formKey.currentState!.validate()) {
                                           _saveCompanyDetails(companyCodeController.text.trim());
                                         }
                                       },
-                                      icon: const Icon(Icons.arrow_forward_ios_rounded),
-                                      label: const Text(
-                                        'Continue',
+                                    //  icon: const Icon(Icons.arrow_forward_ios_rounded),
+                                      label: Text(
+                                        isLoading?'Please wait...':'Continue',
                                         style: TextStyle(fontSize: 16),
                                       ),
                                       style: ElevatedButton.styleFrom(

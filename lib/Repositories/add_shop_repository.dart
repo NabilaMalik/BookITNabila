@@ -36,10 +36,13 @@ class AddShopRepository extends GetxService {
       'user_id',
       'shop_time',
       'shop_address',
+      'address',
       'owner_name',
       'owner_cnic',
       'phone_no',
       'alternative_phone_no',
+      'latitude',
+      'longitude',
       'posted'
     ]);
     List<AddShopModel> addShop = [];
