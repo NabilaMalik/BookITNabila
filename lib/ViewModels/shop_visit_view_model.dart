@@ -106,6 +106,8 @@ class ShopVisitViewModel extends GetxController {
     phone_number.value = shop.phone_no!;
     shopAddressController.text = shop.shop_address!;
     ownerNameController.text = shop.owner_name!;
+    bookerNameController.text = userName;
+    city.value = shop.city!;
   }
 
   Future<void> _loadCounter() async {
@@ -182,7 +184,7 @@ class ShopVisitViewModel extends GetxController {
   }
 
   Future<void> _saveShopVisitData({bool isOrder = true}) async {
-    if (validateForm()) {
+    if (validateForm() && locationViewModel.isGPSEnabled.value==true) {
       debugPrint("Start Savinggggggggggggg");
       Uint8List? compressedImageBytes;
 
@@ -214,6 +216,7 @@ class ShopVisitViewModel extends GetxController {
         user_id: user_id.toString(),
         latitude: locationViewModel.globalLatitude1.value,
         longitude: locationViewModel.globalLongitude1.value,
+        address: locationViewModel.shopAddress.value,
         city: city.value,
         shop_visit_master_id: shop_visit_master_id.toString(),
       ));
@@ -243,7 +246,7 @@ class ShopVisitViewModel extends GetxController {
   }
 
   Future<void> saveHeadsFormNoOrder() async {
-    if (validateForm()) {
+    if (validateForm() && locationViewModel.isGPSEnabled.value==true) {
       debugPrint("Start Savinggggggggggggg");
 
 
@@ -324,6 +327,7 @@ class ShopVisitViewModel extends GetxController {
 
   clearFilters() {
     _shopVisit.value = ShopVisitModel();
+    locationViewModel.isGPSEnabled.value = false;
     selectedBrand.value = '';
     selectedShop.value = '';
     shop_address.value = '';

@@ -86,6 +86,7 @@ dynamic latitude;
       'brand': brand,
       'shop_name': shop_name,
       'shop_address': shop_address,
+      'address': address,
       'owner_name': owner_name,
       'booker_name': booker_name,
       'user_id': user_id,

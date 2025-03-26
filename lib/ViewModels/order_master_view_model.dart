@@ -119,6 +119,7 @@ class OrderMasterViewModel extends GetxController {
         owner_name: shopVisitViewModel.selectedBrand.value,
         phone_no: shopVisitViewModel.phone_number.value,
         brand: shopVisitViewModel.selectedBrand.value,
+        city: shopVisitViewModel.city.value,
         total: orderDetailsViewModel.total.value.toString(),
         credit_limit: credit_limit.value,
         nsm_id: userNSM,

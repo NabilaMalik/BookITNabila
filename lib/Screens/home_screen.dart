@@ -167,9 +167,9 @@ class _RiveAppHomeState extends State<HomeScreen>
     _retrieveSavedValues();
     addShopViewModel.fetchAllAddShop();
     shopVisitViewModel.fetchAllShopVisit();
-    Future.microtask(() {
-      shopVisitViewModel.clearFilters();
-    });
+    // Future.microtask(() {
+    //   shopVisitViewModel.clearFilters();
+    // });
     shopVisitDetailsViewModel.initializeProductData();
     orderMasterViewModel.fetchAllOrderMaster();
     recoveryFormViewModel.fetchAllRecoveryForm();

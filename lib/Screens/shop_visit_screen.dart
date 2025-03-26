@@ -34,7 +34,7 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
     // shopVisitViewModel.clearFilters();
     shopVisitViewModel.fetchBrands();
     shopVisitViewModel.fetchShops();
-    // shopVisitDetailsViewModel.initializeProductData();
+      // shopVisitDetailsViewModel.initializeProductData();
   }
 
   @override
@@ -44,17 +44,17 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
         backgroundColor: Colors.white,
         appBar: _buildAppBar(),
         body: SingleChildScrollView(
-          child: Padding(
+          child: Form(
+              key: shopVisitViewModel.formKey,  // Use the ViewModel's form key
+              child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Form(
-                  key: shopVisitViewModel.formKey,
-                  child: Obx(() {
+                Obx(() {
                     return Column(
                       children: [
-                        // Obx(() =>
+                         Obx(() =>
                             CustomDropdown(
                               label: "Brand",
                               icon: Icons.branding_watermark,
@@ -64,8 +64,8 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
                                   .toList(),
                               selectedValue: shopVisitViewModel.selectedBrand
                                   .value.isNotEmpty
-                                  ? shopVisitViewModel.selectedBrand.value
-                                  : 'Select a Brand',
+                                  ? " Select a Brand"
+                                  : shopVisitViewModel.selectedBrand.value,
                               onChanged: (value) async {
                                 shopVisitDetailsViewModel.filteredRows
                                     .refresh();
@@ -94,9 +94,9 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black),
                             ),
-                        // ),
+                        ),
 
-                        // Obx(() =>
+                         Obx(() =>
                             CustomDropdown(
                               label: "Shop",
                               icon: Icons.store,
@@ -118,6 +118,8 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
                                     value;
                                 debugPrint(
                                     shopVisitViewModel.shop_address.value);
+                                debugPrint(
+                                    shopVisitViewModel.city.value);
                               },
                               validator: (value) =>
                               value == null || value.isEmpty
@@ -136,7 +138,7 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
                               contentPadding: 0.0,
                               iconColor: Colors.blue,
                             ),
-                        // ),
+                         ),
                         Obx(() =>
                             _buildTextField(
                               initialValue: shopVisitViewModel.shop_address
@@ -178,7 +180,7 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
                       ],
                     );
                   }),
-                ),
+
                 const SizedBox(height: 20),
                 const SectionHeader(title: "Stock Check"),
                 const SizedBox(height: 10),
@@ -272,7 +274,7 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
                 ]),
               ],
             ),
-          ),
+          )),
         ),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:order_booking_app/Tracker/trac.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Models/add_shop_model.dart';
 import '../../Repositories/add_shop_repository.dart';
@@ -14,10 +15,11 @@ class AddShopViewModel extends GetxController {
 
   final _formKey = GlobalKey<FormState>();
 
-  void clearFormFields() {
+   clearFormFields() {
     _shop.value = AddShopModel();
     selectedCity.value = '';
     _formKey.currentState?.reset();
+
   }
 
 
@@ -143,8 +145,10 @@ class AddShopViewModel extends GetxController {
   }
 
   // Clear filters
-  void clearFilters() {
+  clearFilters() {
     _shop.value = AddShopModel();
+    locationViewModel.isGPSEnabled.value = false;
+    _shop.value.isGPSEnabled = false;
     selectedCity.value = ''; // Reset selected city
     _formKey.currentState?.reset();
   }
@@ -154,7 +158,7 @@ class AddShopViewModel extends GetxController {
   }
 
   void saveForm() async {
-    if (validateForm() && shop.isGPSEnabled==false) {
+    if (validateForm() && locationViewModel.isGPSEnabled.value==true ) {
       await _loadCounter();
       final shopSerial = await generateNewOrderId(user_id);
 
@@ -168,6 +172,9 @@ class AddShopViewModel extends GetxController {
         alternative_phone_no: _shop.value.alternative_phone_no,
         city: _shop.value.city,
         user_id: user_id.toString(),
+        longitude: locationViewModel.globalLatitude1.value,
+        latitude: locationViewModel.globalLongitude1.value,
+        shop_live_address: locationViewModel.shopAddress.value,
         isGPSEnabled: _shop.value.isGPSEnabled,
       ),
           allAddShop);
@@ -184,7 +191,7 @@ class AddShopViewModel extends GetxController {
       );
 
       // 👉 Clear the form fields after saving
-      clearFormFields();
+     await clearFilters();
     } else {
       // ❌ Show error
       Get.snackbar(

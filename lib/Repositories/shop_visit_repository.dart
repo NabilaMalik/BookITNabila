@@ -35,7 +35,7 @@ class ShopVisitRepository extends GetxService {
       'product_reviewed',
       'feedback',
       'user_id',
-      'latitude'
+      'latitude',
       'longitude',
       'city',
       'posted',
