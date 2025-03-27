@@ -59,7 +59,15 @@ class _CustomDropdownState extends State<CustomDropdown> {
     super.initState();
     _selectedValue = widget.selectedValue;
   }
-
+  @override
+  void didUpdateWidget(CustomDropdown oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedValue != widget.selectedValue) {
+      setState(() {
+        _selectedValue = widget.selectedValue;  // 👈 Sync with updated value
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(

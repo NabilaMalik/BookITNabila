@@ -68,6 +68,7 @@ class ShopVisitRepository extends GetxService {
     }
   }
 
+
   Future<List<ShopVisitModel>> getUnPostedShopVisit() async {
     var dbClient = await dbHelper.db;
     List<Map> maps = await dbClient.query(

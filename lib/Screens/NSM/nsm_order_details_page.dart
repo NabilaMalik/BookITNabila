@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'nsm_shopdetails2..dart';
+import 'nsm_shopdetails2.dart';
 
 
 class NSMOrderDetailsPage extends StatelessWidget {

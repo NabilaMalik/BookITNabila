@@ -35,6 +35,8 @@ class _RSMBookerDetailsPageState extends State<RSMBookerDetailsPage> {
 
   Future<void> _fetchAttendanceData() async {
     await Config.fetchLatestConfig();
+    String url="${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlHeadsAttendanceData}${widget.booker.booker_id}";
+    debugPrint(url);
     final response = await http.get(
       Uri.parse(
         "${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlHeadsAttendanceData}${widget.booker.booker_id}"),
@@ -43,6 +45,7 @@ class _RSMBookerDetailsPageState extends State<RSMBookerDetailsPage> {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['items'];
+      debugPrint(data.toString());
 
       // Parse and sort data
       final List<AttendanceStatusModel> parsedData = data.map((item) => AttendanceStatusModel.fromJson(item)).toList();

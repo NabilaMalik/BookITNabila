@@ -41,6 +41,7 @@ class Config {
   }
 
   static String get getApiUrlServer => remoteConfig.getString('ServerGetUrl');
+  static String get getApiUrlCompaniesCodes => remoteConfig.getString('CompaniesCodesGetUrl');
   // 'https://cloud.metaxperts.net:8443/erp/test1/loginget/get/');
   // static String get getApiUrlERPCompanyName =>
   //     remoteConfig.getString('ERPCompanyNameGetUrl');
@@ -114,6 +115,17 @@ class Config {
 
   static String get getApiUrlOrderBookingStatus =>
       remoteConfig.getString('OrderBookingStatusGetUrl');
+
+
+
+
+
+
+  static String get getApiUrlShopVisitTotal =>
+      remoteConfig.getString('ShopVisitTotalGetUrl');
+
+  static String get getApiUrlOrderMasterDispatchedTotal =>
+      remoteConfig.getString('OrderMasterDispatchedTotalGetUrl');
 
 
 

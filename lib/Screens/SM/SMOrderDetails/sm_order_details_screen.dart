@@ -50,7 +50,7 @@ class _NSMBookingStatusState extends State<SmOrderDetailsScreen> {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 35),
+          const SizedBox(height: 35),
           Container(
             color: Colors.white,
             height: 55,
@@ -82,14 +82,14 @@ class _NSMBookingStatusState extends State<SmOrderDetailsScreen> {
                 // ),
                 Expanded(
                   child: GestureDetector(
-                    onTap: () => _onButtonPressed(1),
+                    onTap: () => _onButtonPressed(0),
                     child: Container(
                       alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: _selectedIndex == 1 ? Colors.green : Colors.transparent,
+                            color: _selectedIndex == 0 ? Colors.green : Colors.transparent,
                             width: 3.0,
                           ),
                         ),
@@ -97,7 +97,7 @@ class _NSMBookingStatusState extends State<SmOrderDetailsScreen> {
                       child: Text(
                         'RSM',
                         style: TextStyle(
-                          color: _selectedIndex == 1 ? Colors.green : Colors.black,
+                          color: _selectedIndex == 0 ? Colors.green : Colors.black,
                           fontSize: 14,
                         ),
                       ),
@@ -106,14 +106,14 @@ class _NSMBookingStatusState extends State<SmOrderDetailsScreen> {
                 ),
                 Expanded(
                   child: GestureDetector(
-                    onTap: () => _onButtonPressed(2),
+                    onTap: () => _onButtonPressed(1),
                     child: Container(
                       alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: _selectedIndex == 2 ? Colors.green : Colors.transparent,
+                            color: _selectedIndex == 1? Colors.green : Colors.transparent,
                             width: 3.0,
                           ),
                         ),
@@ -121,7 +121,7 @@ class _NSMBookingStatusState extends State<SmOrderDetailsScreen> {
                       child: Text(
                         'BOOKER',
                         style: TextStyle(
-                          color: _selectedIndex == 2 ? Colors.green : Colors.black,
+                          color: _selectedIndex == 1 ? Colors.green : Colors.black,
                           fontSize: 14,
                         ),
                       ),
@@ -134,7 +134,7 @@ class _NSMBookingStatusState extends State<SmOrderDetailsScreen> {
           Expanded(
             child: PageView(
               controller: _pageController,
-              children: [
+              children: const [
                 SmRsmOrderDetailsScreen(),
                 SmBookersOrderDetailsScreen(),
               ],

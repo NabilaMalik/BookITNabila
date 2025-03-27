@@ -5,13 +5,13 @@ import 'package:image_picker/image_picker.dart';
 
 class PhotoPicker extends StatelessWidget {
   final Rx<XFile?> selectedImage;
-  final VoidCallback onPickImage;
+  final VoidCallback? onPickImage;
   final VoidCallback onTakePicture;
 
   const PhotoPicker({
     super.key,
     required this.selectedImage,
-    required this.onPickImage,
+     this.onPickImage,
     required this.onTakePicture,
   });
 
@@ -63,14 +63,14 @@ class PhotoPicker extends StatelessWidget {
                 onTakePicture();
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.photo, color: Colors.blue,),
-              title: const Text("Pick from Gallery"),
-              onTap: () {
-                Navigator.of(context).pop();
-                onPickImage();
-              },
-            ),
+            // ListTile(
+            //   leading: const Icon(Icons.photo, color: Colors.blue,),
+            //   title: const Text("Pick from Gallery"),
+            //   onTap: () {
+            //     Navigator.of(context).pop();
+            //     onPickImage!();
+            //   },
+            // ),
           ],
         );
       },

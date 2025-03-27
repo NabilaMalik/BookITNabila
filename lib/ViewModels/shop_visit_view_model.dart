@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:order_booking_app/Screens/home_screen.dart';
-import 'package:order_booking_app/Tracker/trac.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -20,7 +19,10 @@ import '../Repositories/ScreenRepositories/products_repository.dart';
 import '../Repositories/shop_visit_repository.dart';
 import '../Repositories/add_shop_repository.dart';
 import '../Screens/order_booking_screen.dart';
+import '../Services/ApiServices/api_service.dart';
 import '../Services/ApiServices/serial_number_genterator.dart';
+import '../Services/FirebaseServices/firebase_remote_config.dart';
+import 'location_view_model.dart';
 
 class ShopVisitViewModel extends GetxController {
   var allShopVisit = <ShopVisitModel>[].obs;
@@ -31,10 +33,12 @@ class ShopVisitViewModel extends GetxController {
   AddShopRepository addShopRepository = Get.put(AddShopRepository());
   final _shopVisit = ShopVisitModel().obs;
   final ImagePicker picker = ImagePicker();
-  ShopVisitModel get shopVisit => _shopVisit.value;
+  // ShopVisitModel get shopVisit => _shopVisit.value;
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>(); // Directly expose the key
+  final locationViewModel = Get.put(LocationViewModel());
 
-  GlobalKey<FormState> get formKey => _formKey;
-  final _formKey = GlobalKey<FormState>();
+  // GlobalKey<FormState> get formKey => _formKey;
+  // final _formKey = GlobalKey<FormState>();
 // Add TextEditingControllers
   final TextEditingController shopAddressController = TextEditingController();
   final TextEditingController ownerNameController = TextEditingController();
@@ -69,14 +73,38 @@ class ShopVisitViewModel extends GetxController {
   String shopVisitHeadsCurrentMonth = DateFormat('MMM').format(DateTime.now());
   String currentuser_id = '';
 
+
+  var apiShopVisitsCount = 0.obs;
+  var isLoading = false.obs;
+
   @override
-  // Future<void> onInit() async {
-  //   super.onInit();
-  //
-  //   // await addShopRepository.fetchAndSaveShops();
-  //   //  fetchShops(); // Add this line to fetch saved shops
-  //   // fetchBrands(); // Add this line to fetch saved shops
-  // }
+  void onInit() {
+    super.onInit();
+    fetchTotalShopVisit(); // Automatically uses current month-year
+  }
+
+  Future<void> fetchTotalShopVisit() async {
+    try {
+      isLoading(true);
+await Config.fetchLatestConfig();
+      // Get current month-year (e.g., "Mar-2025")
+      final monthYear = DateFormat('MMM-yyyy').format(DateTime.now());
+
+      //final url = 'https://cloud.metaxperts.net:8443/erp/test1/shopvisitsget/get/$user_id/$monthYear';
+      final url = '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlShopVisitTotal}$user_id/$monthYear';
+      debugPrint('API URL: $url');
+
+      List<dynamic> data = await ApiService.getData(url);
+
+      if (data.isNotEmpty) {
+        apiShopVisitsCount.value = data[0]['count(shop_name)'];
+      }
+    } catch (e) {
+    //  Get.snackbar('Error', 'Failed to fetch visits: $e');
+    } finally {
+      isLoading(false);
+    }
+  }
 
   Future<void> fetchBrands() async {
     try {
@@ -184,7 +212,13 @@ class ShopVisitViewModel extends GetxController {
   }
 
   Future<void> _saveShopVisitData({bool isOrder = true}) async {
-    if (validateForm() && locationViewModel.isGPSEnabled.value==true) {
+    final isFormValid = validateForm();
+    final isGpsEnabled = locationViewModel.isGPSEnabled.value == true;
+    final isFeedbackValid = isOrder ? true : feedBack.value.isNotEmpty; // Add feedback validation for no-order case
+
+    debugPrint('Form valid: $isFormValid, GPS enabled: $isGpsEnabled, Feedback valid: $isFeedbackValid');
+
+    if (isFormValid && isGpsEnabled && isFeedbackValid) {
       debugPrint("Start Savinggggggggggggg");
       Uint8List? compressedImageBytes;
 
@@ -234,17 +268,32 @@ class ShopVisitViewModel extends GetxController {
         await clearFilters();
         Get.to(() => const HomeScreen());
       }
+    } else {
+      String errorMessage = "Please fill all required fields";
+      if (!isGpsEnabled) {
+        errorMessage = "Please enable GPS";
+      } else if (!isOrder && feedBack.value.isEmpty) {
+        errorMessage = "Please provide feedback";
+      }
+
+      Get.snackbar("Missing", errorMessage,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white);
     }
   }
 
   Future<void> saveForm() async {
-    await _saveShopVisitData(isOrder: true);
+    if (formKey.currentState?.validate() ?? false) {
+      await _saveShopVisitData(isOrder: true);
+    }
   }
 
   Future<void> saveFormNoOrder() async {
-    await _saveShopVisitData(isOrder: false);
+    if (formKey.currentState?.validate() ?? false) {
+      await _saveShopVisitData(isOrder: false);
+    }
   }
-
   Future<void> saveHeadsFormNoOrder() async {
     if (validateForm() && locationViewModel.isGPSEnabled.value==true) {
       debugPrint("Start Savinggggggggggggg");
@@ -279,9 +328,10 @@ class ShopVisitViewModel extends GetxController {
       Get.snackbar("Success", "Form submitted successfully!",
           snackPosition: SnackPosition.BOTTOM);
       await clearFilters();
-      // Get.to(() => const HomeScreen());
+       Get.to(() => const HomeScreen());
 
-      Get.offNamed("/home");    }
+      //Get.offNamed("/home");
+    }
   }
 
   fetchAllShopVisit() async {
@@ -326,7 +376,9 @@ class ShopVisitViewModel extends GetxController {
   }
 
   clearFilters() {
-    _shopVisit.value = ShopVisitModel();
+    formKey.currentState?.reset();
+
+    // _shopVisit.value = ShopVisitModel();
     locationViewModel.isGPSEnabled.value = false;
     selectedBrand.value = '';
     selectedShop.value = '';
@@ -336,7 +388,10 @@ class ShopVisitViewModel extends GetxController {
     feedBack.value = '';
     selectedImage.value = null;
     checklistState.value = List<bool>.filled(4, false);
-    _formKey.currentState?.reset();
+    // Clear controllers if needed
+    shopAddressController.clear();
+    ownerNameController.clear();
+    bookerNameController.clear();
   }
 // resetForm() {
 //     selectedBrand.value = '';
@@ -375,7 +430,7 @@ class ShopVisitViewModel extends GetxController {
 
 
   bool validateForm() {
-    if (_formKey.currentState?.validate() ?? false) {
+    if (formKey.currentState?.validate() ?? false) {
       if (!checklistState.contains(true)) { // Ensure at least one checklist item is selected
         Get.snackbar("Error", "Please select at least one checklist item!",
             snackPosition: SnackPosition.BOTTOM,
@@ -454,3 +509,4 @@ serialCounterGetHeads()async{
    await shopvisitRepository.postDataFromDatabaseToAPIHeads();
   }
 }
+

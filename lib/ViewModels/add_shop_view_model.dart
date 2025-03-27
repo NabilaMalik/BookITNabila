@@ -2,28 +2,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:order_booking_app/Tracker/trac.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Models/add_shop_model.dart';
 import '../../Repositories/add_shop_repository.dart';
 import '../Databases/util.dart';
+import 'location_view_model.dart';
 
 class AddShopViewModel extends GetxController {
   final AddShopRepository _shopRepository = Get.put(AddShopRepository());
   final _shop = AddShopModel().obs;
   var allAddShop = <AddShopModel>[].obs;
+  final locationViewModel = Get.put(LocationViewModel());
 
   final _formKey = GlobalKey<FormState>();
-
-   clearFormFields() {
-    _shop.value = AddShopModel();
-    selectedCity.value = '';
-    _formKey.currentState?.reset();
-
-  }
-
-
-  AddShopModel get shop => _shop.value;
 
   GlobalKey<FormState> get formKey => _formKey;
   var cities = <String>[].obs;
@@ -147,7 +138,7 @@ class AddShopViewModel extends GetxController {
   // Clear filters
   clearFilters() {
     _shop.value = AddShopModel();
-    locationViewModel.isGPSEnabled.value = false;
+ locationViewModel.isGPSEnabled.value = false;
     _shop.value.isGPSEnabled = false;
     selectedCity.value = ''; // Reset selected city
     _formKey.currentState?.reset();
@@ -158,7 +149,12 @@ class AddShopViewModel extends GetxController {
   }
 
   void saveForm() async {
-    if (validateForm() && locationViewModel.isGPSEnabled.value==true ) {
+    final isFormValid = validateForm();
+    final isGpsEnabled = locationViewModel.isGPSEnabled.value == true;
+    debugPrint('Form valid: $isFormValid, GPS enabled: $isGpsEnabled');
+
+
+    if (isFormValid && isGpsEnabled) {
       await _loadCounter();
       final shopSerial = await generateNewOrderId(user_id);
 

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:auto_route/annotations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
@@ -28,6 +29,7 @@ import '../constants.dart';
 import '../widgets/rounded_button.dart';
 import '../widgets/rounded_icon.dart';
 import 'components/custom_editable_menu_option.dart';
+@RoutePage()
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -121,84 +123,168 @@ class _LoginScreenState extends State<LoginScreen> {
     await prefs.reload();
     user_id = prefs.getString('userId')!;
     debugPrint("User ID: $user_id");
-
     try {
-      // Total number of tasks to track progress
-      final totalTasks = 10; // Adjust this based on the number of tasks
+      // Dynamically calculate total tasks based on user role
+      final bool isManager = ['RSM', 'SM', 'NSM'].contains(userDesignation);
+      final int totalTasks = isManager ? 4 : 17; // 4 tasks for managers, 17 for others
       int completedTasks = 0;
 
-      // Function to update progress
+      // Helper function to update progress
       void updateProgress() {
         completedTasks++;
         _progressNotifier.value = completedTasks / totalTasks;
       }
 
-      // Conditional execution based on user designation
-      if (userDesignation == 'RSM' || userDesignation == 'SM' || userDesignation == 'NSM') {
-        await addShopViewModel.fetchAndSaveHeadsShop();
-        updateProgress();
-        await shopVisitViewModel.serialCounterGetHeads();
-        updateProgress();
-        await attendanceViewModel.serialCounterGet();
-        updateProgress();
-        await attendanceOutViewModel.serialCounterGet();
-        updateProgress();
-        await locationViewModel.serialCounterGet();
-        updateProgress();
-      } else {
-        await addShopViewModel.fetchAndSaveShop();
-        updateProgress();
-        await shopVisitViewModel.serialCounterGet();
-        updateProgress();
-        await Future.wait<void>([
-          addShopViewModel.serialCounterGet(),
-          shopVisitViewModel.serialCounterGet(),
-          shopVisitDetailsViewModel.serialCounterGet(),
-          recoveryFormViewModel.serialCounterGet(),
-          returnFormViewModel.serialCounterGet(),
-          returnFormDetailsViewModel.serialCounterGet(),
-          attendanceViewModel.serialCounterGet(),
-          attendanceOutViewModel.serialCounterGet(),
-          orderMasterViewModel.serialCounterGet(),
-          orderDetailsViewModel.serialCounterGet(),
-          locationViewModel.serialCounterGet(),
-        ]);
-        updateProgress();
-
-        // Execute other fetch and save operations concurrently
-        await Future.wait<void>([
-          productsViewModel.fetchAndSaveProducts(),
-          orderMasterViewModel.fetchAndSaveOrderMaster(),
-          orderDetailsViewModel.fetchAndSaveOrderDetails(),
-          shopVisitDetailsViewModel.initializeProductData(),
-          updateFunctionViewModel.checkAndSetInitializationDateTime(),
-        ]);
+      // Wrapper to track progress for individual futures
+      Future<void> trackedTask(Future<void> task) async {
+        await task;
         updateProgress();
       }
 
+      if (isManager) {
+        // --- Manager Flow (RSM/SM/NSM) ---
+          await trackedTask(addShopViewModel.fetchAndSaveHeadsShop());
+         await trackedTask(shopVisitViewModel.serialCounterGetHeads());
+        await trackedTask(attendanceViewModel.serialCounterGet());
+        await trackedTask(attendanceOutViewModel.serialCounterGet());
+        await trackedTask(locationViewModel.serialCounterGet());
+      } else {
+        // --- Non-Manager Flow ---
+        // Phase 1: Sequential tasks
+        await trackedTask(addShopViewModel.fetchAndSaveShop());
+        await trackedTask(shopVisitViewModel.serialCounterGet());
+
+        // Phase 2: Parallel tasks (11 operations)
+        // await Future.wait([
+         await trackedTask(addShopViewModel.serialCounterGet());
+         await trackedTask(shopVisitDetailsViewModel.serialCounterGet());
+         await trackedTask(recoveryFormViewModel.serialCounterGet());
+         await trackedTask(returnFormViewModel.serialCounterGet());
+         await trackedTask(returnFormDetailsViewModel.serialCounterGet());
+         await trackedTask(attendanceViewModel.serialCounterGet());
+         await trackedTask(attendanceOutViewModel.serialCounterGet());
+         await trackedTask(orderMasterViewModel.serialCounterGet());
+         await trackedTask(orderDetailsViewModel.serialCounterGet());
+         await trackedTask(locationViewModel.serialCounterGet());
+        // ]);
+
+        // Phase 3: Parallel data fetches (5 operations)
+        await Future.wait([
+          trackedTask(productsViewModel.fetchAndSaveProducts()),
+          trackedTask(orderMasterViewModel.fetchAndSaveOrderMaster()),
+          trackedTask(orderDetailsViewModel.fetchAndSaveOrderDetails()),
+          trackedTask(shopVisitDetailsViewModel.initializeProductData()),
+          trackedTask(updateFunctionViewModel.checkAndSetInitializationDateTime()),
+        ]);
+      }
+
+      // Debug logs
       debugPrint(
-          "recoveryHighestSerial: $shopVisitHighestSerial, "
-              "shopVisitDetailsHighestSerial: $shopVisitDetailsHighestSerial, "
-              "orderMasterHighestSerial: $orderMasterHighestSerial, "
-              "orderDetailsHighestSerial: $orderDetailsHighestSerial, "
-              "returnDetailsHighestSerial: $returnDetailsHighestSerial, "
-              "returnMasterHighestSerial: $returnMasterHighestSerial, "
-              "attendanceInHighestSerial: $attendanceInHighestSerial, "
-              "attendanceOutHighestSerial: $attendanceOutHighestSerial, "
-              "locationHighestSerial: $locationHighestSerial, "
-              "shopHighestSerial: $shopHighestSerial"
+          "Serial Numbersssssssssssssssssssss: "
+              "Shop: $shopHighestSerial, "
+              "Visits: $shopVisitHighestSerial, "
+              "VisitDetails: $shopVisitDetailsHighestSerial, "
+              "Orders: $orderMasterHighestSerial, "
+              "OrderDetails: $orderDetailsHighestSerial, "
+              "Returns: $returnMasterHighestSerial, "
+              "ReturnDetails: $returnDetailsHighestSerial, "
+              "AttendanceIn: $attendanceInHighestSerial, "
+              "AttendanceOut: $attendanceOutHighestSerial, "
+              "Location: $locationHighestSerial"
       );
 
+      // Navigate to home
       await loginViewModel.navigateToHomePage();
     } catch (e) {
-      debugPrint('Error fetching data: $e');
-      Get.snackbar('Error', 'Failed to fetch data: $e', snackPosition: SnackPosition.BOTTOM);
+      debugPrint('Data fetch error: $e');
+      Get.snackbar(
+        'Error',
+        'Data sync failed: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+      );
     } finally {
       setState(() {
         isLoading = false;
         isButtonDisabled = false;
       });
     }
+    // try {
+    //   // Total number of tasks to track progress
+    //   final totalTasks = 10; // Adjust this based on the number of tasks
+    //   int completedTasks = 0;
+    //
+    //   // Function to update progress
+    //   void updateProgress() {
+    //     completedTasks++;
+    //     _progressNotifier.value = completedTasks / totalTasks;
+    //   }
+    //
+    //   // Conditional execution based on user designation
+    //   if (userDesignation == 'RSM' || userDesignation == 'SM' || userDesignation == 'NSM') {
+    //     // await addShopViewModel.fetchAndSaveHeadsShop();
+    //     // updateProgress();
+    //     // await shopVisitViewModel.serialCounterGetHeads();
+    //     updateProgress();
+    //     await attendanceViewModel.serialCounterGet();
+    //     updateProgress();
+    //     await attendanceOutViewModel.serialCounterGet();
+    //     updateProgress();
+    //     await locationViewModel.serialCounterGet();
+    //     updateProgress();
+    //   } else {
+    //     await addShopViewModel.fetchAndSaveShop();
+    //     updateProgress();
+    //     await shopVisitViewModel.serialCounterGet();
+    //     updateProgress();
+    //     await Future.wait<void>([
+    //       addShopViewModel.serialCounterGet(),
+    //       shopVisitViewModel.serialCounterGet(),
+    //       shopVisitDetailsViewModel.serialCounterGet(),
+    //       recoveryFormViewModel.serialCounterGet(),
+    //       returnFormViewModel.serialCounterGet(),
+    //       returnFormDetailsViewModel.serialCounterGet(),
+    //       attendanceViewModel.serialCounterGet(),
+    //       attendanceOutViewModel.serialCounterGet(),
+    //       orderMasterViewModel.serialCounterGet(),
+    //       orderDetailsViewModel.serialCounterGet(),
+    //       locationViewModel.serialCounterGet(),
+    //     ]);
+    //     updateProgress();
+    //
+    //     // Execute other fetch and save operations concurrently
+    //     await Future.wait<void>([
+    //       productsViewModel.fetchAndSaveProducts(),
+    //       orderMasterViewModel.fetchAndSaveOrderMaster(),
+    //       orderDetailsViewModel.fetchAndSaveOrderDetails(),
+    //       shopVisitDetailsViewModel.initializeProductData(),
+    //       updateFunctionViewModel.checkAndSetInitializationDateTime(),
+    //     ]);
+    //     updateProgress();
+    //   }
+    //
+    //   debugPrint(
+    //       "recoveryHighestSerial: $shopVisitHighestSerial, "
+    //           "shopVisitDetailsHighestSerial: $shopVisitDetailsHighestSerial, "
+    //           "orderMasterHighestSerial: $orderMasterHighestSerial, "
+    //           "orderDetailsHighestSerial: $orderDetailsHighestSerial, "
+    //           "returnDetailsHighestSerial: $returnDetailsHighestSerial, "
+    //           "returnMasterHighestSerial: $returnMasterHighestSerial, "
+    //           "attendanceInHighestSerial: $attendanceInHighestSerial, "
+    //           "attendanceOutHighestSerial: $attendanceOutHighestSerial, "
+    //           "locationHighestSerial: $locationHighestSerial, "
+    //           "shopHighestSerial: $shopHighestSerial"
+    //   );
+    //
+    //   await loginViewModel.navigateToHomePage();
+    // } catch (e) {
+    //   debugPrint('Error fetching data: $e');
+    //   Get.snackbar('Error', 'Failed to fetch data: $e', snackPosition: SnackPosition.BOTTOM);
+    // } finally {
+    //   setState(() {
+    //     isLoading = false;
+    //     isButtonDisabled = false;
+    //   });
+    // }
   }
 
   @override

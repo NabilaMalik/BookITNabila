@@ -7,10 +7,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: directives_ordering,unnecessary_import,implicit_dynamic_list_literal,deprecated_member_use
 
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart' as _svg;
-import 'package:vector_graphics/vector_graphics.dart' as _vg;
 
 class $AssetsIconsGen {
   const $AssetsIconsGen();
@@ -26,7 +23,7 @@ class $AssetsIconsGen {
       const AssetGenImage('assets/icons/shop-svg-3.png');
 
   /// File path: assets/icons/shop_icon.svg
-  SvgGenImage get shopIcon => const SvgGenImage('assets/icons/shop_icon.svg');
+  String get shopIcon => 'assets/icons/shop_icon.svg';
 
   /// List of all assets
   List<dynamic> get values => [oip, avatar3, shopSvg3, shopIcon];
@@ -76,18 +73,18 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<dynamic> get values => [
-        a2504839,
-        bookITV001Apk,
-        googleJpg,
-        googleWebp,
-        hamid2,
-        blue,
-        cameraRemovebgPreview,
-        download1,
-        download,
-        fb,
-        logo
-      ];
+    a2504839,
+    bookITV001Apk,
+    googleJpg,
+    googleWebp,
+    hamid2,
+    blue,
+    cameraRemovebgPreview,
+    download1,
+    download,
+    fb,
+    logo,
+  ];
 }
 
 class $AssetsSamplesGen {
@@ -165,17 +162,17 @@ class $AssetsSamplesUiRiveAppImagesGen {
 
   /// List of all assets
   List<dynamic> get values => [
-        addShop,
-        iconEmail,
-        iconLock,
-        logoApple,
-        logoEmail,
-        logoGoogle,
-        orderBookingStatus,
-        recovery2,
-        returnForm,
-        shopVisit
-      ];
+    addShop,
+    iconEmail,
+    iconLock,
+    logoApple,
+    logoEmail,
+    logoGoogle,
+    orderBookingStatus,
+    recovery2,
+    returnForm,
+    shopVisit,
+  ];
 }
 
 class $AssetsSamplesUiRiveAppRiveGen {
@@ -200,8 +197,14 @@ class $AssetsSamplesUiRiveAppRiveGen {
   String get shapes => 'assets/samples/ui/rive_app/rive/shapes.riv';
 
   /// List of all assets
-  List<String> get values =>
-      [button, check, confetti, icons, menuButton, shapes];
+  List<String> get values => [
+    button,
+    check,
+    confetti,
+    icons,
+    menuButton,
+    shapes,
+  ];
 }
 
 class $AssetsSamplesUiRiveAppImagesAvatarsGen {
@@ -209,31 +212,43 @@ class $AssetsSamplesUiRiveAppImagesAvatarsGen {
 
   /// File path: assets/samples/ui/rive_app/images/avatars/addshop.png
   AssetGenImage get addshop => const AssetGenImage(
-      'assets/samples/ui/rive_app/images/avatars/addshop.png');
+    'assets/samples/ui/rive_app/images/avatars/addshop.png',
+  );
 
   /// File path: assets/samples/ui/rive_app/images/avatars/avatar_1.png
   AssetGenImage get avatar1 => const AssetGenImage(
-      'assets/samples/ui/rive_app/images/avatars/avatar_1.png');
+    'assets/samples/ui/rive_app/images/avatars/avatar_1.png',
+  );
 
   /// File path: assets/samples/ui/rive_app/images/avatars/avatar_2.png
   AssetGenImage get avatar2 => const AssetGenImage(
-      'assets/samples/ui/rive_app/images/avatars/avatar_2.png');
+    'assets/samples/ui/rive_app/images/avatars/avatar_2.png',
+  );
 
   /// File path: assets/samples/ui/rive_app/images/avatars/avatar_3.png
   AssetGenImage get avatar3 => const AssetGenImage(
-      'assets/samples/ui/rive_app/images/avatars/avatar_3.png');
+    'assets/samples/ui/rive_app/images/avatars/avatar_3.png',
+  );
 
   /// File path: assets/samples/ui/rive_app/images/avatars/avatar_4.png
   AssetGenImage get avatar4 => const AssetGenImage(
-      'assets/samples/ui/rive_app/images/avatars/avatar_4.png');
+    'assets/samples/ui/rive_app/images/avatars/avatar_4.png',
+  );
 
   /// File path: assets/samples/ui/rive_app/images/avatars/avatar_default.jpg
   AssetGenImage get avatarDefault => const AssetGenImage(
-      'assets/samples/ui/rive_app/images/avatars/avatar_default.jpg');
+    'assets/samples/ui/rive_app/images/avatars/avatar_default.jpg',
+  );
 
   /// List of all assets
-  List<AssetGenImage> get values =>
-      [addshop, avatar1, avatar2, avatar3, avatar4, avatarDefault];
+  List<AssetGenImage> get values => [
+    addshop,
+    avatar1,
+    avatar2,
+    avatar3,
+    avatar4,
+    avatarDefault,
+  ];
 }
 
 class $AssetsSamplesUiRiveAppImagesBackgroundsGen {
@@ -241,7 +256,8 @@ class $AssetsSamplesUiRiveAppImagesBackgroundsGen {
 
   /// File path: assets/samples/ui/rive_app/images/backgrounds/doodle.png
   AssetGenImage get doodle => const AssetGenImage(
-      'assets/samples/ui/rive_app/images/backgrounds/doodle.png');
+    'assets/samples/ui/rive_app/images/backgrounds/doodle.png',
+  );
 
   /// List of all assets
   List<AssetGenImage> get values => [doodle];
@@ -256,11 +272,7 @@ class Assets {
 }
 
 class AssetGenImage {
-  const AssetGenImage(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  });
+  const AssetGenImage(this._assetName, {this.size, this.flavors = const {}});
 
   final String _assetName;
 
@@ -320,92 +332,8 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider({
-    AssetBundle? bundle,
-    String? package,
-  }) {
-    return AssetImage(
-      _assetName,
-      bundle: bundle,
-      package: package,
-    );
-  }
-
-  String get path => _assetName;
-
-  String get keyName => _assetName;
-}
-
-class SvgGenImage {
-  const SvgGenImage(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  }) : _isVecFormat = false;
-
-  const SvgGenImage.vec(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  }) : _isVecFormat = true;
-
-  final String _assetName;
-  final Size? size;
-  final Set<String> flavors;
-  final bool _isVecFormat;
-
-  _svg.SvgPicture svg({
-    Key? key,
-    bool matchTextDirection = false,
-    AssetBundle? bundle,
-    String? package,
-    double? width,
-    double? height,
-    BoxFit fit = BoxFit.contain,
-    AlignmentGeometry alignment = Alignment.center,
-    bool allowDrawingOutsideViewBox = false,
-    WidgetBuilder? placeholderBuilder,
-    String? semanticsLabel,
-    bool excludeFromSemantics = false,
-    _svg.SvgTheme? theme,
-    ColorFilter? colorFilter,
-    Clip clipBehavior = Clip.hardEdge,
-    @deprecated Color? color,
-    @deprecated BlendMode colorBlendMode = BlendMode.srcIn,
-    @deprecated bool cacheColorFilter = false,
-  }) {
-    final _svg.BytesLoader loader;
-    if (_isVecFormat) {
-      loader = _vg.AssetBytesLoader(
-        _assetName,
-        assetBundle: bundle,
-        packageName: package,
-      );
-    } else {
-      loader = _svg.SvgAssetLoader(
-        _assetName,
-        assetBundle: bundle,
-        packageName: package,
-        theme: theme,
-      );
-    }
-    return _svg.SvgPicture(
-      loader,
-      key: key,
-      matchTextDirection: matchTextDirection,
-      width: width,
-      height: height,
-      fit: fit,
-      alignment: alignment,
-      allowDrawingOutsideViewBox: allowDrawingOutsideViewBox,
-      placeholderBuilder: placeholderBuilder,
-      semanticsLabel: semanticsLabel,
-      excludeFromSemantics: excludeFromSemantics,
-      colorFilter: colorFilter ??
-          (color == null ? null : ColorFilter.mode(color, colorBlendMode)),
-      clipBehavior: clipBehavior,
-      cacheColorFilter: cacheColorFilter,
-    );
+  ImageProvider provider({AssetBundle? bundle, String? package}) {
+    return AssetImage(_assetName, bundle: bundle, package: package);
   }
 
   String get path => _assetName;

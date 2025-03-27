@@ -1,3 +1,4 @@
+import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
@@ -29,7 +30,7 @@ import 'HomeScreenComponents/timer_card.dart';
 import 'package:order_booking_app/Screens/code_screen.dart';
 
 import 'order_booking_status_screen.dart';
-
+// @RoutePage()
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -167,11 +168,13 @@ class _RiveAppHomeState extends State<HomeScreen>
     _retrieveSavedValues();
     addShopViewModel.fetchAllAddShop();
     shopVisitViewModel.fetchAllShopVisit();
+    shopVisitViewModel.fetchTotalShopVisit();
     // Future.microtask(() {
     //   shopVisitViewModel.clearFilters();
     // });
     shopVisitDetailsViewModel.initializeProductData();
     orderMasterViewModel.fetchAllOrderMaster();
+    orderMasterViewModel.fetchTotalDispatched();
     recoveryFormViewModel.fetchAllRecoveryForm();
     returnFormViewModel.fetchAllReturnForm();
     attendanceViewModel.fetchAllAttendance();
@@ -332,6 +335,7 @@ class _RiveAppHomeState extends State<HomeScreen>
                 label: 'Return Form',
                 onTap: () async {
                   if (newIsClockedIn==true) {
+                    orderDetailsViewModel.fetchAllReConfirmOrder();
                     Get.to(() => ReturnFormScreen());
                   }
                   else {
@@ -411,19 +415,15 @@ class _RiveAppHomeState extends State<HomeScreen>
           Obx(() {
             // Calculate the total number of shops
             final totalShops = addShopViewModel.allAddShop.length;
-            final totalShopsVisits = shopVisitViewModel.allShopVisit.length;
+            //final totalShopsVisits = shopVisitViewModel.allShopVisit.length;
+            final totalShopsVisits = shopVisitViewModel.apiShopVisitsCount.value;
             final totalOrders = orderMasterViewModel.allOrderMaster.length;
             final totalDispatchedOrders =
-                orderMasterViewModel.allOrderMaster.length;
+                orderMasterViewModel.apiDispatchedCount.value;
             final totalRecovery = recoveryFormViewModel.allRecoveryForm.length;
             final totalReturn = returnFormViewModel.allReturnForm.length;
-            final totalDispatchedReturn =
-                returnFormViewModel.allReturnForm.length;
-            final totalAttendance = attendanceViewModel.allAttendance.length;
-            final totalAttendanceOut =
-                attendanceOutViewModel.allAttendanceOut.length;
-            final totalAttendanceIn = attendanceViewModel.allAttendance.length;
 
+            final totalAttendanceIn = attendanceViewModel.allAttendance.length;
             return Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(

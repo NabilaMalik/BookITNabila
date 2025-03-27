@@ -12,7 +12,7 @@ import '../../Databases/util.dart';
 import '../../Models/Bookers_RSM_SM_NSM_Models/ShopStatusModel.dart';
 import '../../Services/FirebaseServices/firebase_remote_config.dart';
 import '../../main.dart';
-import '../SM/shop_details_page..dart';
+import '../SM/shop_details_page.dart';
 class NSMShopDetailPage extends StatefulWidget {
   @override
   _NSMShopDetailPageState createState() => _NSMShopDetailPageState();

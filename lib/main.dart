@@ -71,7 +71,8 @@ Future<void> main() async {
     debugPrint("Initializing SharedPreferences main...");
     final prefs = await SharedPreferences.getInstance();
     await prefs.reload();
-    bool isAuthenticated = prefs.getBool('isAuthenticated') ?? false;
+     bool isAuthenticated = prefs.getBool('isAuthenticated') ?? false;
+    //bool isAuthenticated =  false;
     pageName = prefs.getString('pageName') ?? '/cameraScreen';
     newIsClockedIn = prefs.getBool('isClockedIn') ?? false;
     user_id = prefs.getString('userId') ?? '';

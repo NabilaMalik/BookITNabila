@@ -38,6 +38,8 @@ class _RSMBookerDetailsPageState extends State<SMBookerDetailPage> {
 
   Future<void> _fetchAttendanceData() async {
     await Config.fetchLatestConfig();
+    String url ='${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlHeadsAttendanceData}${widget.booker.booker_id}';
+    debugPrint(url);
     final response = await http.get(
       Uri.parse('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlHeadsAttendanceData}${widget.booker.booker_id}'),
       // Uri.parse('http://103.149.32.30:8080/ords/metaxperts/attendancedata/get/${widget.booker.booker_id}'),

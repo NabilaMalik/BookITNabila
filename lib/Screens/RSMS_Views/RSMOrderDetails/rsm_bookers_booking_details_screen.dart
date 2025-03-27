@@ -36,6 +36,7 @@ class _NSMBookerDetailsPageState extends State<RsmBookersBookingDetailsScreen> {
   }
 
   Future<void> _fetchAttendanceData() async {
+    await Config.fetchLatestConfig();
     final response = await http.get(
       Uri.parse(
         "${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlRsmUserOrderDetails}$user_id/${widget.booker.booker_id}"),

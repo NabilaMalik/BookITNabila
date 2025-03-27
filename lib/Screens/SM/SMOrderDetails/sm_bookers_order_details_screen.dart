@@ -70,8 +70,11 @@ class _NSM_SM_StatusState extends State<SmBookersOrderDetailsScreen> {
     await Config.fetchLatestConfig();
     //final response = await http.get(
        // Uri.parse(
-    //final url = 'https://cloud.metaxperts.net:8443/erp/test1/smuserorders/get/$user_id';
-    final response = await http.get(Uri.parse('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlSmUserOrder}/$user_id/}'
+    final url = '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlSmUserOrder}$user_id';
+    debugPrint(url);
+    // final url = 'https://cloud.metaxperts.net:8443/erp/test1/smuserorders/get/$user_id';
+    final response = await http.get(
+        Uri.parse('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlSmUserOrder}$user_id'
         ));
 
     if (response.statusCode == 200) {

@@ -33,6 +33,9 @@ class _NSMBookerDetailsPageState extends State<NSMBookerDetailPage> {
   }
 
   Future<void> _fetchAttendanceData() async {
+    await Config.fetchLatestConfig();
+    String url="${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlHeadsAttendanceData}${widget.booker.booker_id}";
+    debugPrint(url);
     final response = await http.get(
       Uri.parse(
         "${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlHeadsAttendanceData}${widget.booker.booker_id}"),

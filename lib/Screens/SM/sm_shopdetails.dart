@@ -13,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../Databases/util.dart';
 import '../../Models/Bookers_RSM_SM_NSM_Models/ShopStatusModel.dart';
 import '../../main.dart';
-import 'shop_details_page..dart';
+import 'shop_details_page.dart';
 
 class SMShopDetailPage extends StatefulWidget {
   @override

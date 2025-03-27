@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:order_booking_app/Screens/RSMS_Views/RSMOrderDetails/rsm_bookers_booking_details_screen.dart';
 import 'package:order_booking_app/Screens/SM/SMOrderDetails/sm_bookers_booking_details_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -68,9 +69,10 @@ class _NSM_SM_StatusState extends State<RsmBookersOrderDetailsScreen> {
 
   Future<bool> _fetchAndSaveData() async {
     await Config.fetchLatestConfig();
-    final url =
+     final url =//"https://cloud.metaxperts.net:8443/erp/test1/rsmuserorders/get/VT0032";
         "${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlRsmUserOrder}$user_id";
         // 'https://cloud.metaxperts.net:8443/erp/test1/rsmuserorders/get/$user_id';
+    debugPrint(url);
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -433,7 +435,7 @@ class _NSM_SM_StatusState extends State<RsmBookersOrderDetailsScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => SmBookersBookingDetailsScreen(booker: booker),
+              builder: (context) => RsmBookersBookingDetailsScreen(booker: booker),
             ),
           );
         },

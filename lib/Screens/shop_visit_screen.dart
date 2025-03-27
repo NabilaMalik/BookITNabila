@@ -31,7 +31,8 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
   @override
   void initState() {
     super.initState();
-    // shopVisitViewModel.clearFilters();
+    shopVisitViewModel.selectedShop.value="";
+    shopVisitViewModel.selectedBrand.value="";
     shopVisitViewModel.fetchBrands();
     shopVisitViewModel.fetchShops();
       // shopVisitDetailsViewModel.initializeProductData();
@@ -44,17 +45,17 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
         backgroundColor: Colors.white,
         appBar: _buildAppBar(),
         body: SingleChildScrollView(
-          child: Form(
-              key: shopVisitViewModel.formKey,  // Use the ViewModel's form key
-              child: Padding(
+          child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-            child: Column(
+            child:  Form(
+              key: shopVisitViewModel.formKey,  // Use the ViewModel's form key
+              child:Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Obx(() {
-                    return Column(
+                 // Obx(() {
+                     Column(
                       children: [
-                         Obx(() =>
+                          Obx(() =>
                             CustomDropdown(
                               label: "Brand",
                               icon: Icons.branding_watermark,
@@ -64,8 +65,8 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
                                   .toList(),
                               selectedValue: shopVisitViewModel.selectedBrand
                                   .value.isNotEmpty
-                                  ? " Select a Brand"
-                                  : shopVisitViewModel.selectedBrand.value,
+                                  ? shopVisitViewModel.selectedBrand.value
+                                  : " Select a Brand",
                               onChanged: (value) async {
                                 shopVisitDetailsViewModel.filteredRows
                                     .refresh();
@@ -94,9 +95,9 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black),
                             ),
-                        ),
+                         ),
 
-                         Obx(() =>
+                          Obx(() =>
                             CustomDropdown(
                               label: "Shop",
                               icon: Icons.store,
@@ -110,9 +111,9 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
                                   ?
                               shopVisitViewModel.selectedShop.value
                                   : " Select  a Shop",
-                              onChanged: (value) async {
+                              onChanged: (value)  {
                                 shopVisitViewModel.selectedShop.value = value!;
-                                await shopVisitViewModel.updateShopDetails(
+                                 shopVisitViewModel.updateShopDetails(
                                     value);
                                 shopVisitViewModel.selectedShop.value =
                                     value;
@@ -138,7 +139,7 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
                               contentPadding: 0.0,
                               iconColor: Colors.blue,
                             ),
-                         ),
+                          ),
                         Obx(() =>
                             _buildTextField(
                               initialValue: shopVisitViewModel.shop_address
@@ -178,8 +179,8 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
                           shopVisitViewModel.booker_name.value = value,
                         ),
                       ],
-                    );
-                  }),
+                    ),
+                  // }),
 
                 const SizedBox(height: 20),
                 const SectionHeader(title: "Stock Check"),
@@ -200,7 +201,7 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
                 ),
                 const SizedBox(height: 20),
                 PhotoPicker(
-                  onPickImage: shopVisitViewModel.pickImage,
+                  // onPickImage: shopVisitViewModel.pickImage,
                   selectedImage: shopVisitViewModel.selectedImage,
                   onTakePicture: shopVisitViewModel.takePicture,
                 ),

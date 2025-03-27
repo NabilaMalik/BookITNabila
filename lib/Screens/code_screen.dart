@@ -74,10 +74,12 @@ class _CodeScreenState extends State<CodeScreen> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.reload();
       final isAuthenticated = prefs.getBool('isAuthenticated') ?? false;
-
+await Config.fetchLatestConfig();
       // Step 2: Fetch company data
       final response = await http.get(
-        Uri.parse('https://cloud.metaxperts.net:8443/erp/beauty_pro_solutions/registeredcompanies/get/'),
+
+        Uri.parse(Config.getApiUrlCompaniesCodes),
+        // Uri.parse('https://cloud.metaxperts.net:8443/erp/beauty_pro_solutions/registeredcompanies/get/'),
       ).timeout(const Duration(seconds: 30));
 
       if (response.statusCode != 200) {

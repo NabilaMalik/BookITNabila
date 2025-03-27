@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'shop_details_page..dart';
+import 'shop_details_page.dart';
 
  // Correct the import path if needed
 

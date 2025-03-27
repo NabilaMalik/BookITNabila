@@ -475,10 +475,11 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
                 height: 40,
                 width: 120,
                 buttonText: "Close",
-                onTap: () {
+                onTap: () async {
                   setState(() {
                     isButtonDisabled = false; // Re-enable the button if needed
                   });
+                  await shopVisitViewModel.clearFilters();
                   Get.to(() => const HomeScreen());
 
                   // Get.offNamed("/home");

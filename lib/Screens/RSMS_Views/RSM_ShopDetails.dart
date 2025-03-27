@@ -13,7 +13,7 @@ import '../../Models/Bookers_RSM_SM_NSM_Models/ShopStatusModel.dart';
 
 import '../../Services/FirebaseServices/firebase_remote_config.dart';
 import '../../main.dart';
-import 'shop_details_page..dart';
+import 'shop_details_page.dart';
 
 class ShopDetailPage extends StatefulWidget {
   @override

@@ -12,6 +12,8 @@ import '../Databases/dp_helper.dart';
 import '../Databases/util.dart';
 import '../Models/order_master_model.dart';
 import '../Repositories/order_master_repository.dart';
+import '../Services/ApiServices/api_service.dart';
+import '../Services/FirebaseServices/firebase_remote_config.dart';
 import 'ProductsViewModel.dart';
 
 class OrderMasterViewModel extends GetxController {
@@ -40,6 +42,33 @@ class OrderMasterViewModel extends GetxController {
   Future<void> onInit() async {
   super.onInit();
     await fetchAllOrderMaster();
+  }
+
+  var apiDispatchedCount = 0.obs;
+  var isLoading = false.obs;
+
+  Future<void> fetchTotalDispatched() async {
+    try {
+      isLoading(true);
+      await Config.fetchLatestConfig();
+
+      // Get current month-year (e.g., "Mar-2025")
+      final monthYear = DateFormat('MMM-yyyy').format(DateTime.now());
+
+      //final url = 'https://cloud.metaxperts.net:8443/erp/test1/shopvisitsget/get/$user_id/$monthYear';
+      final url = '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlOrderMasterDispatchedTotal}$user_id/$monthYear';
+      debugPrint('API URL: $url');
+
+      List<dynamic> data = await ApiService.getData(url);
+
+      if (data.isNotEmpty) {
+        apiDispatchedCount.value = data[0]['count(order_master_id)'];
+      }
+    } catch (e) {
+      //  Get.snackbar('Error', 'Failed to fetch visits: $e');
+    } finally {
+      isLoading(false);
+    }
   }
 
   Future<void> _loadCounter() async {
