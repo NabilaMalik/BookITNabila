@@ -111,46 +111,44 @@ class ShopVisitRepository extends GetxService {
   Future<void> postShopToAPI(ShopVisitModel shop, Uint8List imageBytes) async {
     try {
       await Config.fetchLatestConfig();
-
-      debugPrint('Updated Shop Post API: ${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlShopVisit}');
-
-      var shopData = shop.toMap();
+      debugPrint('API URL: ${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlShopVisit}');
 
       var request = http.MultipartRequest(
         'POST',
         Uri.parse("${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlShopVisit}"),
       );
 
-      request.headers['Content-Type'] = 'multipart/form-data';
-      request.headers['Accept'] = 'application/json';
+      // Add all fields except 'body'
+      shop.toMap().forEach((key, value) {
+        if (key != 'body') {
+          request.fields[key] = value.toString();
+        }
+      });
 
-      request.fields.addAll(
-          shopData.map((key, value) => MapEntry(key, value.toString())));
-
+      // Add image file
       if (imageBytes.isNotEmpty) {
         request.files.add(
           http.MultipartFile.fromBytes(
-            'body',
+            'body', // Make sure this matches your API's expected field name
             imageBytes,
-            contentType: MediaType('body',
-                'jpeg'), // Adjust the content type based on your image type
-            // filename: 'upload.jpg',
+            filename: 'shop_visit_${shop.shop_visit_master_id}.jpg',
+            contentType: MediaType('image', 'jpeg'),
           ),
         );
       }
 
+      // Debug print request details
+      debugPrint('Request fields: ${request.fields}');
+      debugPrint('Files count: ${request.files.length}');
+
       final response = await request.send();
+      final responseBody = await response.stream.bytesToString();
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        debugPrint('Shop data posted successfully: ${shop.toMap()}');
-
-        // Delete the shop visit data from the local database after successful post
+        debugPrint('Shop data posted successfully. Response: $responseBody');
         await delete(shop.shop_visit_master_id!);
-
-        debugPrint(
-            'Shop with id ${shop.shop_visit_master_id} deleted from local database.');
       } else {
-        final responseBody = await response.stream.bytesToString();
+        debugPrint('Failed to post shop. Status: ${response.statusCode}, Response: $responseBody');
         throw Exception('Server error: ${response.statusCode}, $responseBody');
       }
     } catch (e) {
@@ -158,7 +156,6 @@ class ShopVisitRepository extends GetxService {
       throw Exception('Failed to post data: $e');
     }
   }
-
   Future<int> add(ShopVisitModel shopvisitModel) async {
     var dbClient = await dbHelper.db;
     return await dbClient.insert(

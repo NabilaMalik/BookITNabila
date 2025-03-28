@@ -112,9 +112,10 @@ LocationViewModel locationViewModel = Get.put(LocationViewModel());
     return orderId;
   }
   saveFormAttendanceIn() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     await   _loadCounter();
     final orderSerial = generateNewOrderId(user_id);
-   // shop_visit_master_id = orderSerial;
+    await  prefs.setString('attendanceId', orderSerial);
    await addAttendance(AttendanceModel(
       attendance_in_id: orderSerial,
       user_id: user_id,

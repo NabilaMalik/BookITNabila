@@ -1,8 +1,8 @@
 class Item {
   String name;
+
   Item(this.name);
 }
-
 class ReturnForm {
   Item? selectedItem;
   String quantity;

@@ -190,8 +190,7 @@ await Config.fetchLatestConfig();
       final filePath = '${directory.path}/captured_image.jpg';
 
       // Compress the image
-      Uint8List? compressedImageBytes =
-          await FlutterImageCompress.compressWithFile(
+      Uint8List? compressedImageBytes = await FlutterImageCompress.compressWithFile(
         selectedImage.value!.path,
         minWidth: 400,
         minHeight: 600,
@@ -220,16 +219,12 @@ await Config.fetchLatestConfig();
 
     if (isFormValid && isGpsEnabled && isFeedbackValid) {
       debugPrint("Start Savinggggggggggggg");
-      Uint8List? compressedImageBytes;
+      String imagePath = selectedImage.value!.path;
+      List<int> imageBytesList = await File(imagePath).readAsBytes();
 
-      if (selectedImage.value != null) {
-        compressedImageBytes = await FlutterImageCompress.compressWithFile(
-          selectedImage.value!.path,
-          minWidth: 400,
-          minHeight: 600,
-          quality: 40,
-        );
-      }
+      Uint8List? compressedImageBytes = Uint8List.fromList(imageBytesList);
+
+
 
       await _loadCounter();
       final orderSerial = generateNewOrderId(user_id);

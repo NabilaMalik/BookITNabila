@@ -89,9 +89,10 @@ class AttendanceOutViewModel extends GetxController{
     await prefs.reload();
     var totalDistance = prefs.getDouble('totalDistance') ?? 0.0;
     var totalTime = prefs.getString('totalTime') ?? 0.0;
-     await  _loadCounter();
-    final orderSerial = generateNewOrderId(user_id);
 
+     // await  _loadCounter();
+    // final orderSerial = generateNewOrderId(user_id);
+    final orderSerial = prefs.getString('attendanceId') ?? '';
     addAttendanceOut (AttendanceOutModel(
       attendance_out_id: orderSerial,
       user_id: user_id,
@@ -124,7 +125,7 @@ class AttendanceOutViewModel extends GetxController{
     attendanceOutRepository.delete(id);
     fetchAllAttendanceOut();
   }
-  serialCounterGet()async{
-    await attendanceOutRepository.serialNumberGeneratorApi();
-  }
+  // serialCounterGet()async{
+  //   await attendanceOutRepository.serialNumberGeneratorApi();
+  // }
 }

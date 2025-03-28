@@ -146,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
           await trackedTask(addShopViewModel.fetchAndSaveHeadsShop());
          await trackedTask(shopVisitViewModel.serialCounterGetHeads());
         await trackedTask(attendanceViewModel.serialCounterGet());
-        await trackedTask(attendanceOutViewModel.serialCounterGet());
+        // await trackedTask(attendanceOutViewModel.serialCounterGet());
         await trackedTask(locationViewModel.serialCounterGet());
       } else {
         // --- Non-Manager Flow ---
@@ -162,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
          await trackedTask(returnFormViewModel.serialCounterGet());
          await trackedTask(returnFormDetailsViewModel.serialCounterGet());
          await trackedTask(attendanceViewModel.serialCounterGet());
-         await trackedTask(attendanceOutViewModel.serialCounterGet());
+         // await trackedTask(attendanceOutViewModel.serialCounterGet());
          await trackedTask(orderMasterViewModel.serialCounterGet());
          await trackedTask(orderDetailsViewModel.serialCounterGet());
          await trackedTask(locationViewModel.serialCounterGet());

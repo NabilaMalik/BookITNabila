@@ -6,6 +6,7 @@ import '../../Models/ScreenModels/return_form_model.dart';
 
 class FormRow extends StatelessWidget {
   final Size size;
+
   // final ReturnFormViewModel viewModel;
   final ReturnFormDetailsViewModel returnFormDetailsViewModel;
   final ReturnForm row;
@@ -34,8 +35,7 @@ class FormRow extends StatelessWidget {
           SizedBox(
             width: size.width * 0.84,
             height: 60,
-            child: Obx(()
-            {
+            child: Obx(() {
               return DropdownButtonFormField<Item>(
                 decoration: const InputDecoration(
                   labelText: "Item",
@@ -72,23 +72,34 @@ class FormRow extends StatelessWidget {
               SizedBox(
                 width: size.width * 0.5,
                 height: 40,
-                child: Obx(() => DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(
-                    hintText: "Reason *",
-                    hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                    border: UnderlineInputBorder(),
-                  ),
-                  value: row.reason.isEmpty ? null : row.reason,
-                  items: returnFormDetailsViewModel.reasons.map((reason) {
-                    return DropdownMenuItem<String>(
-                      value: reason,
-                      child: Text(reason),
+                child: Obx(() {
+                  // Add null/empty check
+                  if (returnFormDetailsViewModel.reasons.isEmpty) {
+                    return const Text("No reasons available");
+                  }
+
+                  return Obx(() {
+                    return DropdownButtonFormField<String>(
+                      decoration: const InputDecoration(
+                        hintText: "Reason *",
+                        hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                        border: UnderlineInputBorder(),
+                      ),
+                      value: row.reason.isEmpty ? null : row.reason,
+                      items: returnFormDetailsViewModel.reasons.map((reason) {
+                        return DropdownMenuItem<String>(
+                          value: reason,
+                          child: Text(reason),
+                        );
+                      }).toList(),
+                      onChanged: (reason) {
+                        if (reason != null) {
+                          row.reason = reason;
+                        }
+                      },
                     );
-                  }).toList(),
-                  onChanged: (reason) {
-                    row.reason = reason!;
-                  },
-                )),
+                  });
+                }),
               ),
             ],
           ),

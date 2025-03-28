@@ -61,7 +61,10 @@ class RecoveryFormViewModel extends GetxController{
         var balance = data[0]['balance'];
         // Handle cases where balance might be an int or double
         if (balance is int) {
-          current_balance.value = balance.toDouble(); // Convert int to double
+          current_balance.value = balance.toDouble();
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setDouble('current_balance', current_balance.value);
+          // current_balance = balance.toDouble();// Convert int to double
         }// Replace 'balance' with the actual key in the API response
 
           debugPrint('Current balance fetched and updated: $balance');

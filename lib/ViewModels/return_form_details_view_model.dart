@@ -16,7 +16,7 @@ class ReturnFormDetailsViewModel extends GetxController{
   String currentuser_id = '';
 
   var items = <Item>[].obs;
-  var reasons = <String>["Expire", "Business","Damage","Cancel"].obs;
+  var reasons = ["Expire", "Business Closed","Damage","Cancel"].obs;
   //var quantity = ''.obs;
   var formRows = <ReturnForm>[ReturnForm(quantity: '', reason: '', items: '')]
       .obs; // Initialize with one row
@@ -36,7 +36,7 @@ class ReturnFormDetailsViewModel extends GetxController{
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-
+    reasons.value = ["Expire", "Business Closed", "Damage", "Cancel"];
     fetchAllReturnFormDetails();
   }
   Future<void>submitForm() async {

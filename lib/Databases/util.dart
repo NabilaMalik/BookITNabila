@@ -129,7 +129,8 @@ Future<bool> isNetworkAvailable() async {
       return false; // Other errors
     }
   }
-}Future<bool> isNetworkAvailableForFirebase() async {
+}
+Future<bool> isNetworkAvailableForFirebase() async {
   var connectivityResult = await (Connectivity().checkConnectivity());
 
   if (connectivityResult == ConnectivityResult.none) {

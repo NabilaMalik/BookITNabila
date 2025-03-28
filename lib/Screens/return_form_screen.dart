@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:order_booking_app/Screens/home_screen.dart';
 import 'package:order_booking_app/ViewModels/order_details_view_model.dart';
 import '../Models/ScreenModels/return_form_model.dart';
 import '../Models/order_master_model.dart';
 import '../ViewModels/order_master_view_model.dart';
+import '../ViewModels/recovery_form_view_model.dart';
 import '../ViewModels/return_form_details_view_model.dart';
 import '../ViewModels/return_form_view_model.dart';
 import 'Components/custom_button.dart';
@@ -11,14 +13,26 @@ import 'Components/custom_editable_menu_option.dart';
 import 'ReturnFormScreenComponents/form_row.dart';
 import 'ReturnFormScreenComponents/return_appbar.dart';
 
-class ReturnFormScreen extends StatelessWidget {
+class ReturnFormScreen extends StatefulWidget {
  ReturnFormScreen({super.key});
+ @override
+ _StateReturnFormScreen createState() => _StateReturnFormScreen();
+}
+
+class _StateReturnFormScreen extends State<ReturnFormScreen> {
   final ReturnFormViewModel viewModel = Get.put(ReturnFormViewModel());
+  RecoveryFormViewModel recoveryFormViewModel = Get.put(RecoveryFormViewModel());
   OrderDetailsViewModel orderDetailsViewModel = Get.put(OrderDetailsViewModel());
  final OrderMasterViewModel orderMasterViewModel = Get.put(OrderMasterViewModel());
 
  final ReturnFormDetailsViewModel returnFormDetailsViewModel =
  Get.put(ReturnFormDetailsViewModel());
+
+ @override
+ void initState() {
+   super.initState();
+   returnFormDetailsViewModel.serialCounterGet();
+ }
   @override
   Widget build(BuildContext context) {
     viewModel.initializeData();
@@ -39,48 +53,57 @@ class ReturnFormScreen extends StatelessWidget {
                       // Dropdown for Shop Selection
                       Obx(() {
                         debugPrint("Shops in ViewModel: ${viewModel.shops}");
-                        return DropdownButtonFormField<String>(
-                          decoration: const InputDecoration(
-                            labelText: "Shop Name",
-                            labelStyle: TextStyle(fontSize: 15),
-                            border: UnderlineInputBorder(),
-                          ),
-                          value: viewModel.selectedShop.value.isEmpty ? null : viewModel.selectedShop.value,
-                          items: viewModel.shops.map((shop) {
-                            debugPrint("Adding Shop to Dropdown: ${shop.name}");
-                            return DropdownMenuItem(
-                              value: shop.name,
-                              child: Text(shop.name),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            viewModel.selectedShop.value = value!;
-                            OrderMasterModel? selectedOrder;
-                            try {
-                              selectedOrder =
-                                  orderMasterViewModel.allOrderMaster.firstWhere(
-                                        (order) => order.shop_name == value,
-                                  );
-                            } catch (e) {
-                              debugPrint("No order found for shop: $value");
-                              selectedOrder = null;
-                            }
-
-                            if (selectedOrder != null) {
-                              var filteredItems =
-                              orderDetailsViewModel.allReConfirmOrder
-                                  .where((detail) =>
-                              detail.order_master_id ==
-                                  selectedOrder!.order_master_id)
-                                  .map((detail) => Item(detail.product!))
-                                  .toList();
-
-                              returnFormDetailsViewModel.items.value =
-                                  filteredItems;
-                            } else {
-                              returnFormDetailsViewModel.items.value = [];
-                            }
+                        return GestureDetector(
+                          onTap: () {
+                            debugPrint("Dropdown tappedddddddddddddddddd");
+                            viewModel.selectedShop.value = "";
+                            returnFormDetailsViewModel.items.clear();
+                            // returnFormDetailsViewModel.reasons.clear();
+                            returnFormDetailsViewModel.formRows.clear();
+                            // Add your custom tap logic here
                           },
+                          child: DropdownButtonFormField<String>(
+                            decoration: const InputDecoration(
+                              labelText: "Shop Name",
+                              labelStyle: TextStyle(fontSize: 15),
+                              border: UnderlineInputBorder(),
+                            ),
+                            value: viewModel.selectedShop.value.isEmpty ? null : viewModel.selectedShop.value,
+                            items: viewModel.shops.map((shop) {
+                              debugPrint("Adding Shop to Dropdown: ${shop.name}");
+                              return DropdownMenuItem<String>(
+                                value: shop.name,
+                                child: Text(shop.name),
+                              );
+                            }).toList(),
+                            onChanged: (String? value) {
+                              if (value == null) return;
+
+                              viewModel.selectedShop.value = value;
+                              recoveryFormViewModel.fetchAndSaveCurrentBalance(value);
+
+                              OrderMasterModel? selectedOrder;
+                              try {
+                                selectedOrder = orderMasterViewModel.allOrderMaster.firstWhere(
+                                      (order) => order.shop_name == value,
+                                );
+                              } catch (e) {
+                                debugPrint("No order found for shop: $value");
+                                selectedOrder = null;
+                              }
+
+                              if (selectedOrder != null) {
+                                var filteredItems = orderDetailsViewModel.allReConfirmOrder
+                                    .where((detail) => detail.order_master_id == selectedOrder!.order_master_id)
+                                    .map((detail) => Item(detail.product!))
+                                    .toList();
+
+                                returnFormDetailsViewModel.items.value = filteredItems;
+                              } else {
+                                returnFormDetailsViewModel.items.value = [];
+                              }
+                            },
+                          ),
                         );
                       }),
                       const SizedBox(height: 30),
@@ -136,6 +159,7 @@ class ReturnFormScreen extends StatelessWidget {
     );
   }
 
+
 }
 
 
@@ -150,7 +174,10 @@ class AddRowButton extends StatelessWidget {
     return CustomButton(
       buttonText: "Add Row",
       textStyle: TextStyle(color: Colors.blue.shade900, fontSize: 16,fontWeight: FontWeight.bold),
-      onTap: returnFormDetailsViewModel.addRow,
+      onTap:() async{
+        await returnFormDetailsViewModel.reasons.value;
+        returnFormDetailsViewModel.addRow();
+        },
       gradientColors: [Colors.yellow, Colors.yellow.shade200],
       padding:const EdgeInsets.symmetric(horizontal: 45, vertical: 15) ,
       width: 200,
@@ -207,8 +234,9 @@ class SubmitButton extends StatelessWidget {
         // ✅ Step 4: Clear fields after submission
         viewModel.selectedShop.value = "";
         returnFormDetailsViewModel.items.clear();
-        returnFormDetailsViewModel.reasons.clear();
+        // returnFormDetailsViewModel.reasons.clear();
         returnFormDetailsViewModel.formRows.clear();
+        Get.to(const HomeScreen());
         Get.snackbar(
           "Success",
           "Form submitted successfully! Fields cleared.",

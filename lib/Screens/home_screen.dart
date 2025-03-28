@@ -335,7 +335,8 @@ class _RiveAppHomeState extends State<HomeScreen>
                 label: 'Return Form',
                 onTap: () async {
                   if (newIsClockedIn==true) {
-                    orderDetailsViewModel.fetchAllReConfirmOrder();
+                    await orderMasterViewModel.fetchAllOrderMaster();
+                   await orderDetailsViewModel.fetchAllReConfirmOrder();
                     Get.to(() => ReturnFormScreen());
                   }
                   else {
@@ -357,6 +358,8 @@ class _RiveAppHomeState extends State<HomeScreen>
                 label: 'Recovery',
                 onTap: () async {
                   if (newIsClockedIn==true) {
+                    await orderMasterViewModel.fetchAllOrderMaster();
+                    await recoveryFormViewModel.initializeData();
                     Get.to(() => RecoveryFormScreen());
                   }
                   else {
