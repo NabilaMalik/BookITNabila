@@ -2,15 +2,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:order_booking_app/Screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Databases/util.dart';
 import '../Models/ScreenModels/return_form_model.dart';
 import '../Models/returnform_details_model.dart';
 import '../Repositories/return_form_details_repository.dart';
+import '../Repositories/return_form_repository.dart';
 class ReturnFormDetailsViewModel extends GetxController{
 
   var allReturnFormDetails = <ReturnFormDetailsModel>[].obs;
   ReturnFormDetailsRepository returnformdetailsRepository = ReturnFormDetailsRepository();
+  ReturnFormRepository returnFormRepository = ReturnFormRepository();
   int returnFormDetailsSerialCounter = 1;
   String returnFormDetailsCurrentMonth = DateFormat('MMM').format(DateTime.now());
   String currentuser_id = '';
@@ -39,40 +42,65 @@ class ReturnFormDetailsViewModel extends GetxController{
     reasons.value = ["Expire", "Business Closed", "Damage", "Cancel"];
     fetchAllReturnFormDetails();
   }
+  // In ReturnFormDetailsViewModel.dart
+  double getTotalAmount() {
+    double total = 0.0;
+    for (var row in formRows) {
+      if (row.quantity.isNotEmpty && row.rate != null) {
+        double quantity = double.tryParse(row.quantity) ?? 0;
+        total += quantity * row.rate!;
+      }
+    }
+    return total;
+  }
   Future<void>submitForm() async {
     bool isValid = true;
+    String? errorMessage;
+
     for (var row in formRows) {
       if (row.selectedItem == null || row.quantity.isEmpty || row.reason.isEmpty) {
         isValid = false;
+        errorMessage = "Please fill all fields before submitting.";
+        break;
+      }
+
+      double enteredQty = double.tryParse(row.quantity) ?? 0;
+      if (row.maxQuantity != null && enteredQty > row.maxQuantity!) {
+        isValid = false;
+        errorMessage = "Quantity for ${row.selectedItem?.name} cannot exceed ${row.maxQuantity}";
         break;
       }
     }
-    if (isValid) {
+
+    if (isValid && formRows.isNotEmpty) {
       for (var row in formRows) {
         await _loadCounter();
         final returnFormSerial = generateNewOrderId(user_id);
-        await addReturnFormDetails(ReturnFormDetailsModel(
-            return_details_id: returnFormSerial,
-            item: row.selectedItem?.name,   // Use the selectedItem of the row
-            reason: row.reason,   // Use the reason of the row
-            quantity: row.quantity,
-            user_id: user_id.toString(),
-// Use the quantity of the row
-            return_master_id: returnMasterId
-        ));
-        await returnformdetailsRepository.postDataFromDatabaseToAPI();
-      }
+        double amount = (double.tryParse(row.quantity) ?? 0) * (row.rate ?? 0);
+        debugPrint("Amount: $amount");
 
-      Get.snackbar("Success", "Form Submitted!",
-          snackPosition: SnackPosition.BOTTOM);
+        await addReturnFormDetails(ReturnFormDetailsModel(
+          return_details_id: returnFormSerial,
+          item: row.selectedItem?.name,
+          reason: row.reason,
+          quantity: row.quantity,
+          user_id: user_id.toString(),
+          return_master_id: returnMasterId,
+
+        ));
+      }
+      await returnformdetailsRepository.postDataFromDatabaseToAPI();
+      await returnFormRepository.postDataFromDatabaseToAPI();
+
+      Get.snackbar("Success", "Form Submitted!", snackPosition: SnackPosition.BOTTOM);
+      Get.to(const HomeScreen());
     } else {
-      Get.snackbar("Error", "Please fill all fields before submitting.",
+      Get.snackbar("Error", errorMessage ?? "Please check your inputs",
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white);
     }
   }
-
 
   Future<void> _loadCounter() async {
     String currentMonth = DateFormat('MMM').format(DateTime.now());

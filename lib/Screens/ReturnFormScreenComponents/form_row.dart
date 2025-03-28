@@ -36,37 +36,79 @@ class FormRow extends StatelessWidget {
             width: size.width * 0.84,
             height: 60,
             child: Obx(() {
-              return DropdownButtonFormField<Item>(
-                decoration: const InputDecoration(
-                  labelText: "Item",
-                  labelStyle: TextStyle(fontSize: 15),
-                  border: UnderlineInputBorder(),
-                ),
-                value: row.selectedItem,
-                items: returnFormDetailsViewModel.items.map((item) {
-                  return DropdownMenuItem(
-                    value: item,
-                    child: Text(item.name),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  row.selectedItem = value;
-                },
-              );
+              return // In FormRow.dart - modified item dropdown
+                DropdownButtonFormField<Item>(
+                  decoration: const InputDecoration(
+                    labelText: "Item",
+                    labelStyle: TextStyle(fontSize: 15),
+                    border: UnderlineInputBorder(),
+                  ),
+                  value: row.selectedItem,
+                  items: returnFormDetailsViewModel.items.map((item) {
+                    return DropdownMenuItem(
+                      value: item,
+                      child: Text(item.name),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    row.selectedItem = value;
+                    if (value != null) {
+                      row.rate = value.rate;
+                      row.maxQuantity = value.maxQuantity;
+                    }
+                  },
+                );
             }),
           ),
 
           // Qty and Reason Row
           Row(
             children: [
+              // Modified Qty TextField
+              // _buildTextField(
+              //   label: "Qty *",
+              //   keyboardType: TextInputType.number,
+              //   initialValue: row.quantity,
+              //   onChanged: (value) {
+              //     if (value.isNotEmpty) {
+              //       // Validate against max quantity
+              //       double enteredQty = double.tryParse(value) ?? 0;
+              //       if (row.maxQuantity != null &&
+              //           enteredQty > row.maxQuantity!) {
+              //         Get.snackbar(
+              //           "Quantity cannot exceed ${row.maxQuantity}",
+              //           "Please Enter a valid quantity.",
+              //           snackPosition: SnackPosition.BOTTOM,
+              //           backgroundColor: Colors.red,
+              //           colorText: Colors.white,
+              //         );
+              //         return;
+              //       }
+              //       row.quantity = value;
+              //
+              //       // Calculate amount if rate is available
+              //       if (row.rate != null) {
+              //         double amount = enteredQty * row.rate!;
+              //         debugPrint("Calculated Amount: $amount");
+              //       }
+              //     } else {
+              //       row.quantity = value;
+              //     }
+              //   },
+              //   width: size.width * 0.3,
+              //   height: 40,
+              //   fontSize: 18.0,
+              // ),
               _buildTextField(
                 label: "Qty *",
-                keyboardType: TextInputType.number,
                 initialValue: row.quantity,
                 onChanged: (value) => row.quantity = value,
                 width: size.width * 0.3,
                 height: 40,
                 fontSize: 18.0,
+                keyboardType: TextInputType.number,
+                maxQuantity: row.maxQuantity,
+                rate: row.rate,
               ),
               const SizedBox(width: 15),
               SizedBox(
@@ -125,23 +167,59 @@ class FormRow extends StatelessWidget {
     required double height,
     double fontSize = 16.0,
     TextInputType keyboardType = TextInputType.text,
+    double? maxQuantity, // Add maxQuantity parameter
+    double? rate, // Add rate parameter for amount calculation
   }) {
+    final controller = TextEditingController(text: initialValue);
+
     return SizedBox(
       width: width,
       height: height,
       child: TextFormField(
-        initialValue: initialValue,
+        controller: controller,
+        // Use controller instead of initialValue
         style: TextStyle(fontSize: fontSize),
         keyboardType: keyboardType,
         inputFormatters: keyboardType == TextInputType.number
-            ? [FilteringTextInputFormatter.digitsOnly]
+            ? [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}'))]
             : null,
         decoration: InputDecoration(
           hintText: label,
           hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
           border: const UnderlineInputBorder(),
         ),
-        onChanged: onChanged,
+        onChanged: (value) {
+          if (value.isNotEmpty) {
+            // Validate against max quantity if provided
+            if (maxQuantity != null) {
+              double enteredQty = double.tryParse(value) ?? 0;
+              if (enteredQty > maxQuantity) {
+                // Show error message
+                Get.snackbar(
+                  "Quantity cannot exceed ${row.maxQuantity}",
+                  "Please Enter a valid quantity.",
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.red,
+                  colorText: Colors.white,
+                );
+
+                // Clear the field
+                controller.clear();
+                onChanged(''); // Notify parent of cleared value
+                return;
+              }
+            }
+
+            // Calculate amount if rate is available
+            if (rate != null && keyboardType == TextInputType.number) {
+              double enteredQty = double.tryParse(value) ?? 0;
+              double amount = enteredQty * rate;
+              debugPrint("Calculated Amount: $amount");
+            }
+          }
+
+          onChanged(value); // Always notify parent of change
+        },
       ),
     );
   }

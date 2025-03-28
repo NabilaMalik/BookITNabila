@@ -55,7 +55,7 @@ class _StateReturnFormScreen extends State<ReturnFormScreen> {
                         debugPrint("Shops in ViewModel: ${viewModel.shops}");
                         return GestureDetector(
                           onTap: () {
-                            debugPrint("Dropdown tappedddddddddddddddddd");
+                            debugPrint("Dropdown tapped");
                             viewModel.selectedShop.value = "";
                             returnFormDetailsViewModel.items.clear();
                             // returnFormDetailsViewModel.reasons.clear();
@@ -76,7 +76,8 @@ class _StateReturnFormScreen extends State<ReturnFormScreen> {
                                 child: Text(shop.name),
                               );
                             }).toList(),
-                            onChanged: (String? value) {
+// In ReturnFormScreen.dart - modified onChanged callback
+                            onChanged: (value) {
                               if (value == null) return;
 
                               viewModel.selectedShop.value = value;
@@ -95,17 +96,23 @@ class _StateReturnFormScreen extends State<ReturnFormScreen> {
                               if (selectedOrder != null) {
                                 var filteredItems = orderDetailsViewModel.allReConfirmOrder
                                     .where((detail) => detail.order_master_id == selectedOrder!.order_master_id)
-                                    .map((detail) => Item(detail.product!))
-                                    .toList();
+                                    .map((detail) {
+                                  // Create Item with additional data
+                                  return Item(
+                                    detail.product!,
+                                    rate: double.tryParse(detail.rate ?? '0') ?? 0.0,
+                                    maxQuantity: double.tryParse(detail.quantity ?? '0') ?? 0.0,
+                                  );
+                                }).toList();
 
                                 returnFormDetailsViewModel.items.value = filteredItems;
                               } else {
                                 returnFormDetailsViewModel.items.value = [];
                               }
-                            },
-                          ),
+                            },                          ),
                         );
-                      }),
+                      }
+                      ),
                       const SizedBox(height: 30),
 
                       // List of Form Rows
@@ -174,7 +181,7 @@ class AddRowButton extends StatelessWidget {
     return CustomButton(
       buttonText: "Add Row",
       textStyle: TextStyle(color: Colors.blue.shade900, fontSize: 16,fontWeight: FontWeight.bold),
-      onTap:() async{
+      onTap:() async {
         await returnFormDetailsViewModel.reasons.value;
         returnFormDetailsViewModel.addRow();
         },
@@ -214,8 +221,9 @@ class SubmitButton extends StatelessWidget {
         }
 
         // ✅ Step 2: Validate if all required fields are filled
-        if (returnFormDetailsViewModel.items.isEmpty ||
-            returnFormDetailsViewModel.reasons.isEmpty ||
+        if (
+            returnFormDetailsViewModel.items.isEmpty &&
+            returnFormDetailsViewModel.reasons.isEmpty &&
             returnFormDetailsViewModel.formRows.isEmpty) {
           Get.snackbar(
             "Error",
@@ -236,15 +244,15 @@ class SubmitButton extends StatelessWidget {
         returnFormDetailsViewModel.items.clear();
         // returnFormDetailsViewModel.reasons.clear();
         returnFormDetailsViewModel.formRows.clear();
-        Get.to(const HomeScreen());
-        Get.snackbar(
-          "Success",
-          "Form submitted successfully! Fields cleared.",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 3),
-        );
+
+        // Get.snackbar(
+        //   "Success",
+        //   "Form submitted successfully! Fields cleared.",
+        //   snackPosition: SnackPosition.BOTTOM,
+        //   backgroundColor: Colors.green,
+        //   colorText: Colors.white,
+        //   duration: const Duration(seconds: 3),
+        // );
       },
       gradientColors: const [Colors.blue, Colors.blue],
     );

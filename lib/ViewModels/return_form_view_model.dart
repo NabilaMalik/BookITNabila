@@ -58,37 +58,57 @@ class ReturnFormViewModel extends GetxController {
 
     shops.refresh();
   }
-
   Future<void> submitForm() async {
-    bool isValid = true;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final totalAmount = returnFormDetailsViewModel.getTotalAmount();
 
-    if (selectedShop.value.isEmpty) {
-      isValid = false;
-    }
+      // Validate form inputs (both shop and amount must be valid)
+      if (selectedShop.value.isEmpty || totalAmount <= 0.0) {
+        throw Exception("Please select a shop and ensure the return Return Items.");
+      }
 
-    if (isValid) {
+      // Get current balance
+      final currentBalance = prefs.getDouble('current_balance') ?? 0.0;
+
+      debugPrint("Total Amount: $totalAmount");
+      debugPrint("Current Balance: $currentBalance");
+
+      // Validate balance
+      if (currentBalance < totalAmount) {
+        throw Exception("Insufficient balance to complete this return.");
+      }
+
+      // Process the return
       await _loadCounter();
       final returnFormSerial = generateNewOrderId(user_id);
       returnMasterId = returnFormSerial;
+
+      // Save return form
       await addReturnForm(ReturnFormModel(
         return_master_id: returnMasterId,
         select_shop: selectedShop.value,
         user_id: user_id,
-        // return_amount:
+        return_amount: totalAmount.toString(),
       ));
+
+      // Submit and sync data
       await returnFormDetailsViewModel.submitForm();
       await returnFormDetailsViewModel.fetchAllReturnFormDetails();
-      await returnFormRepository.postDataFromDatabaseToAPI();
-      Get.snackbar("Success", "Form Submitted!",
-          snackPosition: SnackPosition.BOTTOM);
-    } else {
-      Get.snackbar("Error", "Please fill all fields before submitting.",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white);
+
+    } catch (e) {
+      // Show error message
+      Get.snackbar(
+        "Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+
+      debugPrint("Error submitting form: ${e.toString()}");
     }
   }
-
   Future<void> _loadCounter() async {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
     SharedPreferences prefs = await SharedPreferences.getInstance();
