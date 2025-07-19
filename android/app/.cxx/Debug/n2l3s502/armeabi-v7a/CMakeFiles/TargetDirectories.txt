@@ -1,0 +1,2 @@
+C:/Users/Malik/Desktop/BooKITT/android/app/.cxx/Debug/n2l3s502/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/Malik/Desktop/BooKITT/android/app/.cxx/Debug/n2l3s502/armeabi-v7a/CMakeFiles/rebuild_cache.dir

@@ -294,10 +294,10 @@ class OrderBookingStatusHistoryCard extends StatelessWidget {
 
                 );
               },
-              child: Text(
+              child: const Text(
                 'Order Details',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   color: Colors.blue,
                   decoration: TextDecoration.underline,

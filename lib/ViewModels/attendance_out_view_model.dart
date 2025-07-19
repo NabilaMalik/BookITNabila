@@ -125,7 +125,7 @@ class AttendanceOutViewModel extends GetxController{
     attendanceOutRepository.delete(id);
     fetchAllAttendanceOut();
   }
-  // serialCounterGet()async{
-  //   await attendanceOutRepository.serialNumberGeneratorApi();
-  // }
+  serialCounterGet()async{
+    await attendanceOutRepository.serialNumberGeneratorApi();
+  }
 }

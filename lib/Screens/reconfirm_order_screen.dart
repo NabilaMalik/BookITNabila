@@ -160,7 +160,7 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
                             style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           ),
                           pw.TextSpan(
-                            text: '${shopVisitViewModel.selectedBrand}',
+                            text: '${shopVisitViewModel.selectedShop}',
                           ),
                         ],
                       ),
@@ -203,11 +203,11 @@ class _ReconfirmOrderScreenState extends State<ReconfirmOrderScreen> {
                       text: pw.TextSpan(
                         children: [
                           pw.TextSpan(
-                            text: 'Date: ',
+                            text: 'Print Date: ',
                             style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           ),
                           pw.TextSpan(
-                            text: DateFormat('dd-MMM-yyyy : HH-mm-ss')
+                            text: DateFormat('dd-MMM-yyyy : HH-mm')
                                 .format(DateTime.now()),
                           ),
                         ],

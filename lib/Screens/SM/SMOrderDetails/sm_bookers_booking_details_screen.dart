@@ -13,7 +13,7 @@ import '../../../Models/Bookers_RSM_SM_NSM_Models/nsm_sm_order_details_model.dar
 
 class SmBookersBookingDetailsScreen extends StatefulWidget {
   final NsmBookersOrderModel booker;
-  SmBookersBookingDetailsScreen({required this.booker});
+  const SmBookersBookingDetailsScreen({required this.booker});
 
   @override
   _NSMBookerDetailsPageState createState() => _NSMBookerDetailsPageState();
@@ -82,7 +82,7 @@ class _NSMBookerDetailsPageState extends State<SmBookersBookingDetailsScreen> {
         } else {
           _endDate = picked;
         }
-        //  _filterData();
+          _filterData();
       });
     }
   }
@@ -240,7 +240,7 @@ class _NSMBookerDetailsPageState extends State<SmBookersBookingDetailsScreen> {
                         onChanged: (value) {
                           setState(() {
                             _selectedStatus = value;
-                            //  _filterData();
+                              _filterData();
                           });
                         },
                       ),

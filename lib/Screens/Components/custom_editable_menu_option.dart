@@ -29,6 +29,7 @@ class CustomEditableMenuOption extends StatefulWidget {
   final bool enableListener; // New optional parameter
   final dynamic viewModel; // Add viewModel as a parameter
   final dynamic dynamicParameter;
+  final  dynamic textDirection;
 
   const CustomEditableMenuOption({
     super.key,
@@ -49,6 +50,7 @@ class CustomEditableMenuOption extends StatefulWidget {
     this.spacing = 5.0,
     this.iconPosition = IconPosition.left,
     this.textAlign = TextAlign.center,
+    this.textDirection,
     this.obscureText = false,
     this.inputBorder,
     this.boxShadow,

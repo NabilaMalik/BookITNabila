@@ -60,8 +60,8 @@ class OrderMasterRepository extends GetxService {
     await Config.fetchLatestConfig();
     debugPrint('${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlOrderMaster}$user_id');
     List<dynamic> data = await ApiService.getData(
-        '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlOrderMaster}$user_id'
-        // 'https://cloud.metaxperts.net:8443/erp/test1/ordermasterget/get/$user_id'
+         '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlOrderMaster}$user_id'
+       // 'https://cloud.metaxperts.net:8443/erp/test1/ordermasterget/get/$user_id'
     );
     var dbClient = await dbHelper.db;
 

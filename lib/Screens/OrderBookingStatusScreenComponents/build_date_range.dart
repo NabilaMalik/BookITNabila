@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:order_booking_app/ViewModels/ScreenViewModels/order_booking_status_view_model.dart';
 
 Widget buildDateRangeRow(
@@ -71,17 +72,21 @@ Widget _buildLabeledTextField({
 }
 
 // Function to select a date
+
 Future<void> _selectDate(
     BuildContext context, OrderBookingStatusViewModel viewModel,
     {required bool isStartDate}) async {
-  DateTime? pickedDate = await showDatePicker(
+  final DateTime? pickedDate = await showDatePicker(
     context: context,
     initialDate: DateTime.now(),
     firstDate: DateTime(2000),
     lastDate: DateTime(2100),
   );
+
   if (pickedDate != null) {
-    String formattedDate = "${pickedDate.toLocal()}".split(' ')[0];
+    // Format the date consistently (yyyy-MM-dd)
+    final formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+
     if (isStartDate) {
       viewModel.updateDateRange(formattedDate, viewModel.endDate.value);
     } else {
@@ -89,3 +94,22 @@ Future<void> _selectDate(
     }
   }
 }
+
+// Future<void> _selectDate(
+//     BuildContext context, OrderBookingStatusViewModel viewModel,
+//     {required bool isStartDate}) async {
+//   DateTime? pickedDate = await showDatePicker(
+//     context: context,
+//     initialDate: DateTime.now(),
+//     firstDate: DateTime(2000),
+//     lastDate: DateTime(2100),
+//   );
+//   if (pickedDate != null) {
+//     String formattedDate = "${pickedDate.toLocal()}".split(' ')[0];
+//     if (isStartDate) {
+//       viewModel.updateDateRange(formattedDate, viewModel.endDate.value);
+//     } else {
+//       viewModel.updateDateRange(viewModel.startDate.value, formattedDate);
+//     }
+//   }
+// }

@@ -18,13 +18,19 @@ class DBHelper extends GetxService {
     _db = await initDatabase();
     return _db!;
   }
-
   initDatabase() async {
     io.Directory documentDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentDirectory.path, 'bookIt.db');
-    var db = openDatabase(path, version: 1, onCreate: _onCreate);
+    var db = openDatabase(path, version: 2, onCreate: _onCreate);
     return db;
   }
+
+  // initDatabase() async {
+  //   io.Directory documentDirectory = await getApplicationDocumentsDirectory();
+  //   String path = join(documentDirectory.path, 'bookIt.db');
+  //   var db = openDatabase(path, version: 1, onCreate: _onCreate);
+  //   return db;
+  // }
 
   _onCreate(Database db, int version) async {
     // Database Table

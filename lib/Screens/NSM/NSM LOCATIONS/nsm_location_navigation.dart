@@ -66,7 +66,7 @@ class _NsmLocationNavigationState extends State<NsmLocationNavigation> {
                     onTap: () => _onButtonPressed(0),
                     child: Container(
                       alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
@@ -114,7 +114,7 @@ class _NsmLocationNavigationState extends State<NsmLocationNavigation> {
                     onTap: () => _onButtonPressed(2),
                     child: Container(
                       alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(

@@ -321,6 +321,7 @@ class _RSMHomepageState extends State<RSMHomepage> {
   }
 
 
+
   void _navigateToPage(BuildContext context, String title) {
     // Navigation logic based on the title
     switch (title) {
@@ -332,7 +333,8 @@ class _RSMHomepageState extends State<RSMHomepage> {
               builder: (context) => const ShopVisitPage(),
             ),
           );
-         } else {
+         }
+         else {
           showDialog(
             context: context,
             builder: (context) => AlertDialog(

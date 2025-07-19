@@ -143,8 +143,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (isManager) {
         // --- Manager Flow (RSM/SM/NSM) ---
-          await trackedTask(addShopViewModel.fetchAndSaveHeadsShop());
-         await trackedTask(shopVisitViewModel.serialCounterGetHeads());
+        await trackedTask(addShopViewModel.fetchAndSaveHeadsShop());
+        await trackedTask(shopVisitViewModel.serialCounterGetHeads());
         await trackedTask(attendanceViewModel.serialCounterGet());
         // await trackedTask(attendanceOutViewModel.serialCounterGet());
         await trackedTask(locationViewModel.serialCounterGet());
@@ -375,7 +375,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       _emailController.text = value;
                     },
                     useBoxShadow: false,
-                    icon: Icons.email,
+                    icon: Icons.supervised_user_circle_sharp,
                     iconColor: Colors.blue,
                     textAlign: TextAlign.left,
                     inputBorder: const UnderlineInputBorder(),

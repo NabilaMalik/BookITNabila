@@ -402,7 +402,7 @@ class _NSMBookerStatusState extends State<NSMBookerStatus> {
               borderRadius: BorderRadius.circular(8.0),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.blue, width: 0.1),
+              borderSide: const BorderSide(color: Colors.blue, width: 0.1),
               borderRadius: BorderRadius.circular(8.0),
             ),
             contentPadding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 2.0),

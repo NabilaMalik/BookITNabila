@@ -17,6 +17,7 @@ import '../Services/FirebaseServices/firebase_remote_config.dart';
 import 'ProductsViewModel.dart';
 
 class OrderMasterViewModel extends GetxController {
+  RxList<OrderMasterModel> orders = <OrderMasterModel>[].obs;
   DBHelper dbHelper = Get.put(DBHelper());
   final ImagePicker picker = ImagePicker();
   ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());

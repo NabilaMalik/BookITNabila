@@ -79,7 +79,7 @@ class Config {
   static String get getApiUrlProducts =>
       remoteConfig.getString('ProductsGetUrl');
   //https://cloud.metaxperts.net:8443/erp/test1/products/get/
-  static String get getApiUrlBrands => remoteConfig.getString('BrandsGetUrl');
+  static String get getApiUrls => remoteConfig.getString('BrandsGetUrl');
 //
   static String get getApiUrlCities => remoteConfig.getString('CitiesGetUrl');
   //https://cloud.metaxperts.net:8443/erp/test1/cities/get/
@@ -115,9 +115,6 @@ class Config {
 
   static String get getApiUrlOrderBookingStatus =>
       remoteConfig.getString('OrderBookingStatusGetUrl');
-
-
-
 
 
 

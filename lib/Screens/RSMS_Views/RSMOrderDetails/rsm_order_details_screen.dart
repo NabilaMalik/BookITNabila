@@ -51,7 +51,7 @@ class _NSMBookingStatusState extends State<RsmOrderDetailsScreen> {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 35),
+          const SizedBox(height: 35),
           Container(
             color: Colors.white,
             height: 55,
@@ -87,7 +87,7 @@ class _NSMBookingStatusState extends State<RsmOrderDetailsScreen> {
           Expanded(
             child: PageView(
               controller: _pageController,
-              children: [
+              children: const [
 
                 RsmBookersOrderDetailsScreen(),
               ],

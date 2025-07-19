@@ -7,7 +7,8 @@ import 'nsm_shopdetails2.dart';
 class NSMOrderDetailsPage extends StatelessWidget {
   final Order order;
 
-  NSMOrderDetailsPage({super.key, required this.order});
+  const NSMOrderDetailsPage({super.key, required this.order});
+
 
   @override
   Widget build(BuildContext context) {

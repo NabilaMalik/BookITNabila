@@ -23,9 +23,10 @@ class OrderBookingStatusRepository {
     List<OrderBookingStatusModel> mappedOrders = allOrders.map((order) {
       return OrderBookingStatusModel(
         orderNo: order.order_master_id!, // Assuming 'orderNo' exists in OrderMasterModel
-        date: order.order_master_date != null
-            ? DateFormat('yyyy-MM-dd').format(order.order_master_date!) // Convert DateTime to String
-            : '',
+        date: order.required_delivery_date !,
+        // date: order.order_master_date != null
+        //     ? DateFormat('yyyy-MM-dd').format(order.order_master_date!) // Convert DateTime to String
+        //     : '',
         shop: order.shop_name!,   // Assuming 'shopName' exists in OrderMasterModel
         amount: order.total!, // Parse String to int, default to 0 if parsing fails
         status: order.order_status!,   // Assuming 'status' exists in OrderMasterModel

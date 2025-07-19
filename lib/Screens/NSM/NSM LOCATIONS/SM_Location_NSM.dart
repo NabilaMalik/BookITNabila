@@ -85,19 +85,29 @@ class _SMLocationnsmState extends State<SMLocationnsm> {
     return Scaffold(
       body: Stack(
         children: [
-          GoogleMap(
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(
-              target: _initialCameraPosition,
-              zoom: 4.0,
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.57,
+            width: double.infinity,
+            child: GoogleMap(
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                target: _initialCameraPosition,
+                zoom: 4.0,
+              ),
+              zoomGesturesEnabled: true,
+              scrollGesturesEnabled: true,
+              tiltGesturesEnabled: true,
+              rotateGesturesEnabled: true,
+              zoomControlsEnabled: true,
+              markers: _markers.entries.map((entry) {
+                return Marker(
+                  markerId: MarkerId(entry.key),
+                  position: entry.value,
+                  infoWindow: InfoWindow(title: entry.key),
+                );
+              }).toSet(),
             ),
-            markers: _markers.entries.map((entry) {
-              return Marker(
-                markerId: MarkerId(entry.key),
-                position: entry.value,
-                infoWindow: InfoWindow(title: entry.key),
-              );
-            }).toSet(),
+
           ),
           Positioned(
             top: 20,
@@ -151,6 +161,7 @@ class _SMLocationnsmState extends State<SMLocationnsm> {
           ),
         ],
       ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           mapController.animateCamera(CameraUpdate.newLatLngZoom(_initialCameraPosition, 6));

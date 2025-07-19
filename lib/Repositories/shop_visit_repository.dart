@@ -39,7 +39,7 @@ class ShopVisitRepository extends GetxService {
       'longitude',
       'city',
       'posted',
-      'body'
+      'body',
     ]);
     List<ShopVisitModel> shopvisit = [];
     for (int i = 0; i < maps.length; i++) {

@@ -48,7 +48,7 @@ class _NSMBookingStatusState extends State<NSMBookingStatus> {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 35),
+          const SizedBox(height: 35),
           Container(
             color: Colors.white,
             height: 55,
@@ -59,7 +59,7 @@ class _NSMBookingStatusState extends State<NSMBookingStatus> {
                     onTap: () => _onButtonPressed(0),
                     child: Container(
                       alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
@@ -83,7 +83,7 @@ class _NSMBookingStatusState extends State<NSMBookingStatus> {
                     onTap: () => _onButtonPressed(1),
                     child: Container(
                       alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.symmetric(vertical: 100),
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(

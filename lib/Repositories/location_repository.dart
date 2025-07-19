@@ -83,7 +83,9 @@ class LocationRepository {
 
               debugPrint('Shop with id ${shop.location_id} posted and updated in local database.');
 
-          } catch (e) {
+          }
+          catch (e)
+          {
 
               debugPrint('Failed to post shop with id ${shop.location_id}: $e');
 

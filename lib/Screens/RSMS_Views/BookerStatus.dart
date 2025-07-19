@@ -350,7 +350,7 @@ class _RSMBookerStatusState extends State<RSMBookerStatus> {
                               'Last Sync: ',
                               style: TextStyle(fontSize: 10.0),
                             ),
-                            SizedBox(height: 4.0), // Add gap between Last Sync and the date
+                            const SizedBox(height: 4.0), // Add gap between Last Sync and the date
                             Text(
                               formattedTime,
                               style: const TextStyle( fontSize: 10.0),

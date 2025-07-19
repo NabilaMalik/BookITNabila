@@ -82,7 +82,7 @@ class _NSMBookerDetailsPageState extends State<NsmRsmBookerDetailsScreen> {
         } else {
           _endDate = picked;
         }
-        //  _filterData();
+          _filterData();
       });
     }
   }
@@ -240,7 +240,7 @@ class _NSMBookerDetailsPageState extends State<NsmRsmBookerDetailsScreen> {
                         onChanged: (value) {
                           setState(() {
                             _selectedStatus = value;
-                            //  _filterData();
+                              _filterData();
                           });
                         },
                       ),

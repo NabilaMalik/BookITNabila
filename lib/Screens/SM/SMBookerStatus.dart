@@ -42,7 +42,9 @@ class _SMBookerStatusState extends State<SMBookerStatus> {
         await _loadBookersData();
         _filteredBookers = _allBookers;
         _addBookersToList(_filteredBookers);
-      } else {
+      }
+      else
+      {
         await _loadBookersData();
         _filteredBookers = _allBookers;
         _addBookersToList(_filteredBookers);
@@ -421,7 +423,7 @@ class _SMBookerStatusState extends State<SMBookerStatus> {
                                 'Last Sync: ',
                                 style: TextStyle(fontSize: 10.0),
                               ),
-                            SizedBox(height: 4.0), // Add gap between Last Sync and the date
+                            const SizedBox(height: 4.0), // Add gap between Last Sync and the date
                               Text(
                                 formattedTime,
                                 style: const TextStyle( fontSize: 10.0),

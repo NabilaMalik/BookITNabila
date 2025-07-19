@@ -101,20 +101,28 @@ class _BookerLocationnsmState extends State<BookerLocationnsm> {
     return Scaffold(
       body: Stack(
         children: [
-          GoogleMap(
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(
-              target: _initialCameraPosition,
-              zoom: 4.0,
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.4, // ⬅️ Set map height here (40% of screen)
+            width: double.infinity,
+            child: GoogleMap(
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                target: _initialCameraPosition,
+                zoom: 4.0,
+              ),
+              zoomGesturesEnabled: true,
+              scrollGesturesEnabled: true,
+              zoomControlsEnabled: true,
+              markers: _markers.entries.map((entry) {
+                return Marker(
+                  markerId: MarkerId(entry.key),
+                  position: entry.value,
+                  infoWindow: InfoWindow(title: entry.key),
+                );
+              }).toSet(),
             ),
-            markers: _markers.entries.map((entry) {
-              return Marker(
-                markerId: MarkerId(entry.key),
-                position: entry.value,
-                infoWindow: InfoWindow(title: entry.key),
-              );
-            }).toSet(),
           ),
+
           Positioned(
             top: 20,
             left: 20,

@@ -29,7 +29,7 @@ class FeedbackSection extends StatelessWidget {
             controller: feedBackController,
             onChanged: onChanged,
             maxLines: null,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.all(10),
             ),

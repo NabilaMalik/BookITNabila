@@ -161,7 +161,8 @@ class NSMShopVisitPageState extends State<NSMShopVisitPage> {
             if (value) {
               await saveCurrentLocation(context);
             } else {
-              setState(() {
+              setState(()
+              {
                 isGpsEnabled = false;
               });
             }

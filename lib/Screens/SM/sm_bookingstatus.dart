@@ -47,7 +47,7 @@ class _BookingStatusState extends State<BookingStatus> {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 35),
+          const SizedBox(height: 35),
           Container(
             color: Colors.white,
             height: 55,
@@ -58,7 +58,7 @@ class _BookingStatusState extends State<BookingStatus> {
                     onTap: () => _onButtonPressed(0),
                     child: Container(
                       alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(vertical: 12), // Adjusted padding
+                      padding: const EdgeInsets.symmetric(vertical: 12), // Adjusted padding
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
@@ -82,7 +82,7 @@ class _BookingStatusState extends State<BookingStatus> {
                     onTap: () => _onButtonPressed(1),
                     child: Container(
                       alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(vertical: 12), // Adjusted padding
+                      padding: const EdgeInsets.symmetric(vertical: 12), // Adjusted padding
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(

@@ -26,17 +26,18 @@ class Navbar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
+          const Row(
             children: [
-              InkWell(
-                onTap: () => Get.to(
-                      () => const SideMenu(),
-                  transition: Transition.fade, // Add fade transition
-                ),
-                child: const Icon(Icons.menu, color: Colors.white, size: 30),
-              ),
-              const SizedBox(width: 20),
-              const Text(
+              // InkWell(
+              //   onTap: () => Get.to(
+              //         () => const SideMenu(),
+              //     transition: Transition.fade, // Add fade transition
+              //   ),
+              //   child: const Icon(Icons.menu, color: Colors.white, size: 30),
+              // ),
+             // const SizedBox(width: 20),
+              SizedBox(width: 150),
+              Text(
                 "BookIT",
                 style: TextStyle(
                   color: Colors.white,
@@ -55,24 +56,38 @@ class Navbar extends StatelessWidget {
               //   },
               //   child: Icon(Icons.search, color: Colors.white, size: 28),
               // ),
+
               const SizedBox(width: 20),
               GestureDetector(
                 onTap: () async {
-                  // Add your onTap logic for the refresh icon here
+                  // Show "refreshing" Snackbar
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Refreshing data...'),
+                      duration: Duration(seconds: 2),
+                      backgroundColor: Colors.blueAccent,
+                    ),
+                  );
+
                   debugPrint('Refresh icon tapped');
-                 await updateFunctionViewModel.fetchAndSaveUpdatedCities();
-                 await updateFunctionViewModel.fetchAndSaveUpdatedProducts();
+
+                  await updateFunctionViewModel.fetchAndSaveUpdatedCities();
+                  await updateFunctionViewModel.fetchAndSaveUpdatedProducts();
                   await updateFunctionViewModel.fetchAndSaveUpdatedOrderMaster();
-                   await updateFunctionViewModel.checkAndSetInitializationDateTime();
-                  // await Future.wait<void>([
-                  //   updateFunctionViewModel.fetchAndSaveUpdatedCities(),
-                  //   updateFunctionViewModel.fetchAndSaveUpdatedProducts(),
-                  //   updateFunctionViewModel.fetchAndSaveUpdatedOrderMaster(),
-                  //   updateFunctionViewModel.checkAndSetInitializationDateTime()
-                  // ]);
+                  await updateFunctionViewModel.checkAndSetInitializationDateTime();
+
+                  // Show "done" Snackbar
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Data refreshed successfully!'),
+                      duration: Duration(seconds: 2),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
                 },
-                child: Icon(Icons.refresh_sharp, color: Colors.white, size: 28),
+                child: const Icon(Icons.refresh_sharp, color: Colors.white, size: 28),
               ),
+
             ],
           ),
         ],

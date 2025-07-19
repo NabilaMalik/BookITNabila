@@ -341,7 +341,7 @@ class _NSM_SM_StatusState extends State<SmBookersOrderDetailsScreen> {
                               'Last Sync: ',
                               style: TextStyle(fontSize: 10.0),
                             ),
-                            SizedBox(height: 4.0), // Add gap between Last Sync and the date
+                            const SizedBox(height: 4.0), // Add gap between Last Sync and the date
                             Text(
                               formattedTime,
                               style: const TextStyle( fontSize: 10.0),
@@ -396,7 +396,7 @@ class _NSM_SM_StatusState extends State<SmBookersOrderDetailsScreen> {
               borderRadius: BorderRadius.circular(8.0),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.green, width: 0.1),
+              borderSide: const BorderSide(color: Colors.green, width: 0.1),
               borderRadius: BorderRadius.circular(1.0),
             ),
             contentPadding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
