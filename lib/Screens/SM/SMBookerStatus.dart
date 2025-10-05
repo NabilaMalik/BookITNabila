@@ -204,9 +204,6 @@ class _SMBookerStatusState extends State<SMBookerStatus> {
   }
 
 
-
-
-
   void _addBookersToList(List<BookerStatusModel> bookers) async {
     for (int i = 0; i < bookers.length; i++) {
       if (!_displayedBookers.contains(bookers[i])) {

@@ -72,7 +72,7 @@
 
         <!-- WorkManager Configuration -->
         <service
-            android:name="com.metaxperts.order_booking_app.workmanager.TaskExecutor"
+            android:name="com.metaxperts.order_booking_app.workmanager"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

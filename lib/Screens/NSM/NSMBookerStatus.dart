@@ -489,6 +489,7 @@ class _NSMBookerStatusState extends State<NSMBookerStatus> {
                               booker.city,
                               style: const TextStyle(fontSize: 12,fontWeight: FontWeight.bold),
                             ),
+
                           ],
                         ],
                       ),

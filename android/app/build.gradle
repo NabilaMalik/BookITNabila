@@ -23,7 +23,7 @@ android {
 //    compileSdk = flutter.compileSdkVersion
 //    ndkVersion = flutter.ndkVersion
     ndkVersion = "25.1.8937393"
-    compileSdkVersion 35 // Update this line to set the desired SDK version
+    compileSdkVersion 36 // Update this line to set the desired SDK version
 
 
     compileOptions {
@@ -44,7 +44,8 @@ android {
     }
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.metaxperts.order_booking_app"
+//        applicationId = "com.metaxperts.order_booking_app"
+          applicationId = "com.metaxperts.order_booking_app"
         minSdkVersion 23
         targetSdkVersion 35
 

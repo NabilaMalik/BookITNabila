@@ -3,20 +3,15 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:in_app_update/in_app_update.dart';
-
 import 'package:order_booking_app/Databases/util.dart';
 import 'package:order_booking_app/Screens/SM/SMOrderDetails/sm_order_details_screen.dart';
 import 'package:order_booking_app/Screens/SM/sm_shopdetails.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:location/location.dart' as loc;
-
 import '../../Databases/dp_helper.dart';
-
 import '../../ViewModels/add_shop_view_model.dart';
 import '../../ViewModels/attendance_out_view_model.dart';
 import '../../ViewModels/attendance_view_model.dart';

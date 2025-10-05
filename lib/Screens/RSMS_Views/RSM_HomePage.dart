@@ -16,16 +16,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'dart:io' show File, InternetAddress, SocketException;
-
-
 import '../../Databases/util.dart';
 import '../../Tracker/trac.dart';
-
 import '../../ViewModels/add_shop_view_model.dart';
 import '../../ViewModels/attendance_out_view_model.dart';
 import '../../ViewModels/attendance_view_model.dart';
 import '../../main.dart';
-
 import '../HomeScreenComponents/timer_card.dart';
 import 'LIVE_location_page.dart';
 import 'BookerStatus.dart';
