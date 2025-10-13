@@ -11,7 +11,7 @@ class AttendanceOutModel {
   DateTime? attendance_out_date;
   DateTime? attendance_out_time;
   int posted;
-  
+
   AttendanceOutModel({
     this.attendance_out_id,
     this.user_id,
@@ -48,6 +48,7 @@ class AttendanceOutModel {
       'total_time':total_time,
       'lat_out': lat_out,
       'lng_out':lng_out,
+
       'total_distance': total_distance,
       'attendance_out_date': DateFormat('dd-MMM-yyyy').format(attendance_out_date ?? DateTime.now()), // Always set live date
       'attendance_out_time': DateFormat('HH:mm:ss').format(attendance_out_time ?? DateTime.now()), // Always set live time
@@ -56,3 +57,4 @@ class AttendanceOutModel {
     };
   }
 }
+

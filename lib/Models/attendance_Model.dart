@@ -2,8 +2,6 @@ import 'package:intl/intl.dart';
 
 class AttendanceModel {
   dynamic attendance_in_id;
-
-
   String? user_id;
   dynamic lat_in;
   dynamic lng_in;
@@ -17,7 +15,6 @@ class AttendanceModel {
 
   AttendanceModel(
       {this.attendance_in_id,
-
 
       this.user_id,
       this.lat_in,

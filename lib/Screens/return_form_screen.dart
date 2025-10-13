@@ -9,7 +9,7 @@ import '../ViewModels/recovery_form_view_model.dart';
 import '../ViewModels/return_form_details_view_model.dart';
 import '../ViewModels/return_form_view_model.dart';
 import 'Components/custom_button.dart';
-import 'Components/custom_editable_menu_option.dart';
+import 'Components/custom_editable_menu_option.dart' hide IconPosition;
 import 'ReturnFormScreenComponents/form_row.dart';
 import 'ReturnFormScreenComponents/return_appbar.dart';
 

@@ -1,3 +1,4 @@
+
 // lib/screens/add_shop_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -52,28 +53,48 @@ class AddShopScreen extends StatelessWidget {
                         ? "Please enter shop name"
                         : null,
                   ),
+                  // Obx(() => CustomDropdownSecond(
+                  //       borderColor: Colors.black,
+                  //       iconColor: Colors.blue,
+                  //
+                  //       label: "City",
+                  //       useBoxShadow: false,
+                  //       icon: Icons.location_city,
+                  //       items: _viewModel.cities.value,
+                  //       selectedValue: _viewModel.selectedCity.value.isNotEmpty
+                  //           ? _viewModel.selectedCity.value
+                  //           : 'Select a City',
+                  //       onChanged: (value) =>
+                  //           _viewModel.setShopField('city', value),
+                  //       validator: (value) => value == null || value.isEmpty
+                  //           ? "Please enter City name"
+                  //           : null,
+                  //       textStyle: const TextStyle(
+                  //           fontSize: 19,
+                  //           fontWeight: FontWeight.bold,
+                  //           color: Colors.black),
+                  //     )
+                  // ),
                   Obx(() => CustomDropdownSecond(
-                        borderColor: Colors.black,
-                        iconColor: Colors.blue,
+                    borderColor: Colors.black,
+                    iconColor: Colors.blue,
+                    label: "City",
+                    useBoxShadow: false,
+                    icon: Icons.location_city,
+                    items: _viewModel.cities.value,
+                    selectedValue: _viewModel.selectedCity.value.isNotEmpty
+                        ? _viewModel.selectedCity.value
+                        : 'Select a City',
+                    onChanged: (value) {
+                      String selectedCity = value?.toString() ?? '';
+                      _viewModel.setShopField('city', selectedCity);
+                    },
+                    validator: (value) =>
+                    value == null || value.isEmpty ? "Please select a City" : null,
+                    textStyle: const TextStyle(
+                        fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),
+                  )),
 
-                        label: "City",
-                        useBoxShadow: false,
-                        icon: Icons.location_city,
-                        items: _viewModel.cities.value,
-                        selectedValue: _viewModel.selectedCity.value.isNotEmpty
-                            ? _viewModel.selectedCity.value
-                            : 'Select a City',
-                        onChanged: (value) =>
-                            _viewModel.setShopField('city', value),
-                        validator: (value) => value == null || value.isEmpty
-                            ? "Please enter City name"
-                            : null,
-                        textStyle: const TextStyle(
-                            fontSize: 19,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
-                      )
-                  ),
                   _buildTextField(
                     label: "Shop Address",
                     icon: Icons.place,

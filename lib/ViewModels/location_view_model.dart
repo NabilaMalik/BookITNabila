@@ -45,6 +45,7 @@ class LocationViewModel extends GetxController {
     _timer?.cancel(); // Cancel the timer to avoid memory leaks
     super.dispose();
   }
+
   Future<void> _loadCounter() async {
     String currentMonth = DateFormat('MMM').format(DateTime.now());
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -58,7 +59,7 @@ class LocationViewModel extends GetxController {
       locationCurrentMonth = currentMonth;
     }
 
-      debugPrint('SR: $locationSerialCounter');
+    debugPrint('SR: $locationSerialCounter');
 
   }
 
@@ -124,8 +125,8 @@ class LocationViewModel extends GetxController {
     await prefs.reload();
     isClockedIn.value = prefs.getBool('isClockedIn') ?? false;
     if (isClockedIn.value == true) {
-      startTimerFromSavedTime();
-      // locationServicesRepository.startTimerFromSavedTime();
+      // startTimerFromSavedTime(); // Commented out as function is missing
+      // locationServicesRepository.startTimerFromSavedTime(); // Commented out as function is missing
       // Uncomment these lines if needed
       // final service = FlutterBackgroundService();
       // service.startService();
@@ -145,35 +146,21 @@ class LocationViewModel extends GetxController {
     prefs.reload();
     prefs.setString('savedTime', formattedTime);
 
-      debugPrint("Save Current Time");
+    debugPrint("Save Current Time");
 
   }
   // Function to refresh the clock timer
- clockRefresh() async {
-      newsecondpassed.value = 0;
+  clockRefresh() async {
+    newsecondpassed.value = 0;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       // debugPrint("Initializing SharedPreferences clockRefresh...");
       SharedPreferences prefs = await SharedPreferences.getInstance();
-         prefs.reload();
-        newsecondpassed.value = prefs.getInt('secondsPassed')!;
-      });
+      prefs.reload();
+      newsecondpassed.value = prefs.getInt('secondsPassed')!;
+    });
 
   }
-  // clockRefresh() async {
-  //   newsecondpassed.value = 0;
-  //   _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
-  //     // debugPrint("Initializing SharedPreferences clockRefresh...");
-  //     SharedPreferences prefs = await SharedPreferences.getInstance();
-  //     await prefs.reload();
-  //     int? secondsPassed = prefs.getInt('secondsPassed');
-  //     if (secondsPassed != null) {
-  //       newsecondpassed.value = secondsPassed;
-  //     } else {
-  //       // Handle the case where 'secondsPassed' is null, e.g., set a default value
-  //       newsecondpassed.value = 0;
-  //     }
-  //   });
-  // }
+
   String _formatDuration(String secondsString) {
     int seconds = int.parse(secondsString);
     Duration duration = Duration(seconds: seconds);
@@ -193,7 +180,7 @@ class LocationViewModel extends GetxController {
     debugPrint("Initializing SharedPreferences stopTimer...");
     await prefs.setInt('secondsPassed', 0);
 
-      secondsPassed.value = 0;
+    secondsPassed.value = 0;
 
     await prefs.setString('totalTime', totalTime);
     return totalTime;
@@ -207,8 +194,8 @@ class LocationViewModel extends GetxController {
   saveClockStatus(bool clockedIn) async {
     debugPrint("Initializing SharedPreferences saveClockStatus...");
     SharedPreferences prefs = await SharedPreferences.getInstance();
-   await prefs.reload();
-   await prefs.setBool('isClockedIn', clockedIn);
+    await prefs.reload();
+    await prefs.setBool('isClockedIn', clockedIn);
     isClockedIn.value = clockedIn;
   }
 
@@ -231,7 +218,7 @@ class LocationViewModel extends GetxController {
       gpx = GpxReader().fromString(gpxContent);
     } catch (e) {
 
-        debugPrint("Error parsing GPX content: $e");
+      debugPrint("Error parsing GPX content: $e");
 
       return 0.0;
     }
@@ -253,7 +240,7 @@ class LocationViewModel extends GetxController {
     }
 
 
-      debugPrint("CUT: $totalDistance");
+    debugPrint("CUT: $totalDistance");
 
 
     return totalDistance;
@@ -262,74 +249,78 @@ class LocationViewModel extends GetxController {
     double distanceInMeters = Geolocator.distanceBetween(lat1, lon1, lat2, lon2);
     return (distanceInMeters / 1000); // Multiply the result by 2
   }
-saveLocation() async {
+  saveLocation() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-  final date = DateFormat('dd-MM-yyyy').format(DateTime.now());
-  final downloadDirectory = await getDownloadsDirectory();
-  final gpxFilePath = '${downloadDirectory!.path}/track$date.gpx';
-  final maingpxFile = File(gpxFilePath);
-  double totalDistance = await calculateTotalDistance("${downloadDirectory?.path}/track$date.gpx");
-  await prefs.reload();
-  await prefs.setDouble('totalDistance', totalDistance);
-  if (!maingpxFile.existsSync()) {
+    final date = DateFormat('dd-MM-yyyy').format(DateTime.now());
+    final downloadDirectory = await getDownloadsDirectory();
+    final gpxFilePath = '${downloadDirectory!.path}/track$date.gpx';
+    final maingpxFile = File(gpxFilePath);
+    // Calculate the distance
+    double totalDistance = await calculateTotalDistance("${downloadDirectory?.path}/track$date.gpx");
+
+    // 🔑 Save the calculated distance to SharedPreferences for AttendanceOut
+    await prefs.reload();
+    await prefs.setDouble('totalDistance', totalDistance);
+
+    if (!maingpxFile.existsSync()) {
 
       debugPrint('GPX file does not exist');
 
-    return;
-  }
-  // Read the GPX file
-  List<int> gpxBytesList = await maingpxFile.readAsBytes();
-  Uint8List gpxBytes = Uint8List.fromList(gpxBytesList);
-  await _loadCounter();
-  final orderSerial = generateNewOrderId(user_id);
- await addLocation(LocationModel(
-    location_id:  orderSerial.toString(),
-   user_id: user_id.toString(),
-     total_distance: totalDistance.toString(),
-     file_name: "$date.gpx",
-    booker_name: userName,
-     body: gpxBytes,
+      return;
+    }
+    // Read the GPX file
+    List<int> gpxBytesList = await maingpxFile.readAsBytes();
+    Uint8List gpxBytes = Uint8List.fromList(gpxBytesList);
+    await _loadCounter();
+    final orderSerial = generateNewOrderId(user_id);
+    await addLocation(LocationModel(
+      location_id:  orderSerial.toString(),
+      user_id: user_id.toString(),
+      total_distance: totalDistance.toString(),
+      file_name: "$date.gpx",
+      booker_name: userName,
+      body: gpxBytes,
 
-  ));
- await locationRepository.postDataFromDatabaseToAPI();
-}
+    ));
+    await locationRepository.postDataFromDatabaseToAPI();
+  }
   Future<void> requestPermissions() async {
 
 
-      debugPrint('Requesting notification permission...');
+    debugPrint('Requesting notification permission...');
 
     if (await Permission.notification.request().isDenied) {
       // Notification permission not granted
 
-        debugPrint('Notification permission denied');
+      debugPrint('Notification permission denied');
 
       SystemChannels.platform.invokeMethod('SystemNavigator.pop');
       return;
     }
 
 
-      debugPrint('Requesting location permission...');
+    debugPrint('Requesting location permission...');
 
     if (await Permission.location.request().isDenied) {
       // Location permission not granted
 
-        debugPrint('Location permission denied');
+      debugPrint('Location permission denied');
 
       SystemChannels.platform.invokeMethod('SystemNavigator.pop');
     } else if (await Permission.location.request().isGranted) {
 
-        debugPrint('Location permission granted');
+      debugPrint('Location permission granted');
 
       // Check and request background location permission if necessary
       if (await Permission.locationAlways.request().isDenied) {
         // Background location permission not granted
 
-          debugPrint('Background location permission denied');
+        debugPrint('Background location permission denied');
 
         SystemChannels.platform.invokeMethod('SystemNavigator.pop');
       } else {
 
-          debugPrint('All permissions granted');
+        debugPrint('All permissions granted');
 
         // Navigator.of(context).push(
         //   MaterialPageRoute(
@@ -345,7 +336,7 @@ saveLocation() async {
     allLocation.value = location;
   }
 
-   addLocation(LocationModel locationModel) {
+  addLocation(LocationModel locationModel) {
     locationRepository.add(locationModel);
     fetchAllLocation();
   }
