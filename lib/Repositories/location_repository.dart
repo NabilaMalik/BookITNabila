@@ -128,8 +128,8 @@ class LocationRepository {
           http.MultipartFile.fromBytes(
             'body',
             imageBytes,
-            contentType: MediaType('body', 'jpeg'), // Adjust the content type based on your image type
-            // filename: 'upload.jpg',
+            // Change 'body/jpeg' to 'application/gpx+xml'
+            contentType: MediaType('application', 'gpx+xml'),
           ),
         );
       }
