@@ -120,8 +120,18 @@ class AttendanceOutViewModel extends GetxController {
     // Removed: await prefs.reload(); // THIS WAS CAUSING THE LOADING DELAY
 
     // Retrieve the calculated shift duration and distance from SharedPreferences
-    var totalDistance = prefs.getDouble('totalDistance') ?? 0.0; //
-    var totalTime = prefs.getString('totalTime') ?? "0"; // This holds the H:mm:ss duration string
+    // ...
+    await prefs.reload();
+
+    // Retrieve the calculated shift duration and distance.
+
+    String? clockInTimeString = prefs.getString('clockInTime');
+    DateTime shiftStartTime = clockInTimeString != null
+        ? DateTime.parse(clockInTimeString)
+        : DateTime.now();
+    double totalDistance = await locationViewModel.calculateShiftDistance(shiftStartTime);
+    var totalTime = prefs.getString('totalTime') ?? ""; // This holds the H:mm:ss duration string
+
 
     // Reuse same ID from clock-in
     final attendanceId = prefs.getString('attendanceId') ?? ''; //
