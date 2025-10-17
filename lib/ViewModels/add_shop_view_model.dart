@@ -271,6 +271,17 @@ class AddShopViewModel extends GetxController {
     fetchCities();
   }
 
+  // ///addlines
+  // Future<void> syncLocalShopsToServer() async {
+  //   try {
+  //
+  //     await _shopRepository.syncLocalShops(allAddShop);
+  //     debugPrint('✅ All local shops pushed to server successfully');
+  //   } catch (e) {
+  //     debugPrint('❌ Error syncing shops: $e');
+  //   }
+  // }
+
   // Helper function to clean the city string format
   String _cleanCityString(String cityString) {
     // Expected format: "{city: City Name}"
@@ -438,8 +449,9 @@ class AddShopViewModel extends GetxController {
       // NOTE: 'user_id' is missing from the view model,
       // it should ideally be loaded from Shared Preferences.
       // Assuming 'user_id' is a global or static variable for now.
-      const String user_id = 'DEFAULT_USER'; // TEMPORARY FIX
-      final shopSerial = generateNewOrderId(user_id);
+      // const String user_id = 'DEFAULT_USER'; // TEMPORARY FIX
+      await _loadCounter();
+      final shopSerial = await generateNewOrderId(user_id);
 
       await _shopRepository.addAddShop(AddShopModel(
         shop_id: shopSerial,

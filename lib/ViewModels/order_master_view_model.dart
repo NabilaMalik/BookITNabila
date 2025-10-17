@@ -39,6 +39,20 @@ class OrderMasterViewModel extends GetxController {
   var required_delivery_date = ''.obs;
   final List<String> credits = ['7 days', '15 days', 'On Cash'];
 
+  // ///added code
+  // Future<void> syncLocalOrders(List<OrderMasterModel> ordersList) async {
+  //   RxList<OrderMasterModel> rxOrders = ordersList.obs;
+  //   for (var order in rxOrders) {
+  //     await orderMasterRepository.add(order); // Save locally if not saved
+  //     await orderMasterRepository.postDataFromDatabaseToAPI(); // Push to API
+  //   }
+  // }
+
+  // /// Shortcut to sync all orders in memory
+  // Future<void> syncLocalOrdersToServer() async {
+  //   await syncLocalOrders(allOrderMaster);
+  // }
+
   @override
   Future<void> onInit() async {
   super.onInit();

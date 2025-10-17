@@ -1,3 +1,404 @@
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:order_booking_app/ViewModels/ProductsViewModel.dart';
+// import '../ViewModels/location_view_model.dart';
+// import '../ViewModels/shop_visit_details_view_model.dart';
+// import '../ViewModels/shop_visit_view_model.dart';
+// import 'Components/custom_button.dart';
+// import 'Components/custom_dropdown.dart';
+// import 'Components/custom_editable_menu_option.dart' hide IconPosition;
+// import 'Components/custom_switch.dart';
+// import 'ShopVisitScreenComponents/check_list_section.dart';
+// import 'ShopVisitScreenComponents/feedback_section.dart';
+// import 'ShopVisitScreenComponents/photo_picker.dart';
+// import 'ShopVisitScreenComponents/product_search_card.dart';
+//
+// class ShopVisitScreen extends StatefulWidget {
+//   const ShopVisitScreen({super.key});
+//
+//   @override
+//   _StateShopVisitScreen createState() => _StateShopVisitScreen();
+// }
+//
+// class _StateShopVisitScreen extends State<ShopVisitScreen> {
+//   final ShopVisitViewModel shopVisitViewModel = Get.put(ShopVisitViewModel());
+//   final ShopVisitDetailsViewModel shopVisitDetailsViewModel =
+//   Get.put(ShopVisitDetailsViewModel());
+//   final ProductsViewModel productsViewModel = Get.put(ProductsViewModel());
+//   final LocationViewModel locationViewModel = Get.put(LocationViewModel());
+//   final feedBackController = TextEditingController();
+//
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//
+//     feedBackController.text = shopVisitViewModel.feedBack.value;
+//     shopVisitViewModel.selectedShop.value = "";
+//     shopVisitViewModel.selectedBrand.value = "";
+//     // These methods are now restored in the ViewModel
+//     shopVisitViewModel.fetchBrands();
+//     shopVisitViewModel.fetchShops();
+//     // Trigger initial validation
+//     shopVisitViewModel.updateButtonReadiness();
+//
+//     // Listen to changes in feedback
+//     ever(shopVisitViewModel.feedBack, (value) {
+//       feedBackController.text = value;
+//       feedBackController.selection = TextSelection.fromPosition(
+//         TextPosition(offset: feedBackController.text.length),
+//       );
+//     });
+//   }
+//
+//   String? requiredDropdownValidator(String? value, String placeholder) {
+//     if (value == null || value.isEmpty || value == placeholder) {
+//       return null;
+//     }
+//     return null;
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final size = MediaQuery.of(context).size;
+//     final width = size.width;
+//     final isTablet = width > 600;
+//
+//     final double fontSize = isTablet ? 18 : 14;
+//     final double buttonWidth = isTablet ? width * 0.3 : width * 0.4;
+//     final double buttonHeight = isTablet ? 55 : 45;
+//     return SafeArea(
+//       child: Scaffold(
+//         backgroundColor: Colors.white,
+//         appBar: _buildAppBar(),
+//         body: SingleChildScrollView(
+//           physics: const BouncingScrollPhysics(),
+//           child: Padding(
+//             padding: EdgeInsets.only(
+//               left: 20,
+//               right: 20,
+//               top: 30,
+//               bottom: MediaQuery.of(context).padding.bottom + 40,
+//             ),
+//             child: Form(
+//               key: shopVisitViewModel.formKey,
+//               child: Column(
+//                 mainAxisSize: MainAxisSize.min,
+//                 crossAxisAlignment: CrossAxisAlignment.center,
+//                 children: [
+//                   Column(
+//                     children: [
+//                       Obx(
+//                             () => CustomDropdown(
+//                           label: "Brand",
+//                           icon: Icons.branding_watermark,
+//                           items: shopVisitViewModel.brands
+//                               .where((brand) => brand != null)
+//                               .cast<String>()
+//                               .toList(),
+//                           selectedValue: shopVisitViewModel
+//                               .selectedBrand.value.isNotEmpty
+//                               ? shopVisitViewModel.selectedBrand.value
+//                               : " Select a Brand",
+//                           onChanged: (value) async {
+//                             shopVisitDetailsViewModel.filteredRows.refresh();
+//                             shopVisitViewModel.setBrand(value!);
+//                             shopVisitDetailsViewModel
+//                                 .filterProductsByBrand(value);
+//                           },
+//                           useBoxShadow: false,
+//                           validator: (value) => requiredDropdownValidator(value, " Select a Brand"),
+//                           inputBorder: const UnderlineInputBorder(
+//                             borderSide:
+//                             BorderSide(color: Colors.blue, width: 1.0),
+//                           ),
+//                           iconSize: 22.0,
+//                           contentPadding:
+//                           MediaQuery.of(context).size.height * 0.005,
+//                           iconColor: Colors.blue,
+//                           textStyle: const TextStyle(
+//                               fontSize: 13,
+//                               fontWeight: FontWeight.bold,
+//                               color: Colors.black),
+//                         ),
+//                       ),
+//                       Obx(
+//                             () => CustomDropdown(
+//                           label: "Shop",
+//                           icon: Icons.store,
+//                           items: shopVisitViewModel.shops.value
+//                               .where((shop) => shop != null)
+//                               .cast<String>()
+//                               .toList(),
+//                           selectedValue: shopVisitViewModel
+//                               .selectedShop.value.isNotEmpty
+//                               ? shopVisitViewModel.selectedShop.value
+//                               : " Select a Shop",
+//                           onChanged: (value) {
+//                             shopVisitViewModel.setSelectedShop(value!);
+//                             debugPrint(shopVisitViewModel.shop_address.value);
+//                             debugPrint(shopVisitViewModel.city.value);
+//                           },
+//                           validator: (value) => requiredDropdownValidator(value, " Select a Shop"),
+//                           useBoxShadow: false,
+//                           inputBorder: const UnderlineInputBorder(
+//                             borderSide:
+//                             BorderSide(color: Colors.blue, width: 1.0),
+//                           ),
+//                           maxHeight: 50.0,
+//                           maxWidth: 385.0,
+//                           iconSize: 23.0,
+//                           contentPadding: 0.0,
+//                           iconColor: Colors.blue,
+//                         ),
+//                       ),
+//                       Obx(() => _buildTextField(
+//                         initialValue:
+//                         shopVisitViewModel.shop_address.value,
+//                         label: "Shop Address",
+//                         icon: Icons.location_on,
+//                         validator: (value) =>
+//                         value == null || value.isEmpty
+//                             ? 'Please enter the shop address'
+//                             : null,
+//                         onChanged: (value) =>
+//                             shopVisitViewModel.setShopAddress(value),
+//                       )),
+//                       Obx(() => _buildTextField(
+//                         initialValue: shopVisitViewModel.owner_name.value,
+//                         label: "Owner Name",
+//                         icon: Icons.person,
+//                         validator: (value) =>
+//                         value == null || value.isEmpty
+//                             ? 'Please enter owner name'
+//                             : null,
+//                         onChanged: (value) =>
+//                             shopVisitViewModel.setOwnerName(value),
+//                       )),
+//                       _buildTextField(
+//                         label: "Booker Name",
+//                         initialValue: shopVisitViewModel.booker_name.value,
+//                         icon: Icons.person,
+//                         validator: (value) =>
+//                         value == null || value.isEmpty
+//                             ? 'Please enter the booker name'
+//                             : null,
+//                         onChanged: (value) =>
+//                         shopVisitViewModel.booker_name.value = value,
+//                       ),
+//                     ],
+//                   ),
+//                   const SizedBox(height: 20),
+//                   const SectionHeader(title: "Stock Check"),
+//                   const SizedBox(height: 10),
+//                   ProductSearchCard(
+//                     filterData: shopVisitDetailsViewModel.filterData,
+//                     rowsNotifier: shopVisitDetailsViewModel.rowsNotifier,
+//                     filteredRows: shopVisitDetailsViewModel.filteredRows,
+//                     shopVisitDetailsViewModel: shopVisitDetailsViewModel,
+//                   ),
+//                   const SizedBox(height: 20),
+//                   ChecklistSection(
+//                     labels: shopVisitViewModel.checklistLabels,
+//                     checklistState: shopVisitViewModel.checklistState,
+//                     onStateChanged: (index, value) {
+//                       shopVisitViewModel.updateChecklistState(index, value);
+//                     },
+//                   ),
+//                   const SizedBox(height: 20),
+//                   PhotoPicker(
+//                     selectedImage: shopVisitViewModel.selectedImage,
+//                     onTakePicture: shopVisitViewModel.takePicture,
+//                   ),
+//                   const SizedBox(height: 20),
+//                   FeedbackSection(
+//                     feedBackController: feedBackController,
+//                     onChanged: (value) =>
+//                         shopVisitViewModel.setFeedBack(value),
+//                   ),
+//                   const SizedBox(height: 20),
+//                   Obx(() => CustomSwitch(
+//                     label: "GPS Enabled",
+//                     value: locationViewModel.isGPSEnabled.value,
+//                     onChanged: (value) async {
+//                       locationViewModel.isGPSEnabled.value = value;
+//                       if (value) {
+//                         await locationViewModel.saveCurrentLocation();
+//                       }
+//                       shopVisitViewModel.updateButtonReadiness();
+//                     },
+//                   )),
+//                   SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+//                   Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                     children: [
+//                       // ===== Only Visit Button - MODIFIED for Validation =====
+//                       Obx(() {
+//                         bool isButtonDisabled = !shopVisitViewModel.isOnlyVisitButtonEnabled.value;
+//                         bool isLoading = shopVisitViewModel.isOnlyVisitLoading.value;
+//
+//                         return CustomButton(
+//                           textSize: fontSize,
+//                           iconSize: isTablet ? 22 : 18,
+//                           height: buttonHeight,
+//                           width: buttonWidth,
+//                           icon: Icons.arrow_back_ios_new_rounded,
+//                           iconColor: Colors.white,
+//                           iconPosition: IconPosition.left,
+//                           spacing: 4,
+//                           buttonText: isLoading
+//                               ? "Processing..."
+//                               : "Only Visit",
+//                           // Use disabled state for color
+//                           gradientColors: isButtonDisabled || isLoading
+//                               ? [Colors.grey, Colors.grey]
+//                               : [Colors.red, Colors.red],
+//                           // Logic to disable or show snackbar
+//                           onTap: isButtonDisabled
+//                               ? () {
+//                             // Show snackbar with detailed error message for Only Visit
+//                             String? errorMessage = shopVisitViewModel.getOnlyVisitErrorMessage();
+//                             if (errorMessage != null) {
+//                               Get.snackbar("Action Required", errorMessage,
+//                                   snackPosition: SnackPosition.BOTTOM,
+//                                   backgroundColor: Colors.red.shade700,
+//                                   colorText: Colors.white);
+//                             }
+//                           }
+//                               : () {
+//                             if (!isLoading) {
+//                               debugPrint("Only Visit tapped ✅ (Proceeding)");
+//                               shopVisitViewModel.saveFormNoOrder(); // Proceed to save and navigate
+//                             }
+//                           },
+//                         );
+//                       }),
+//
+//                       // ===== Order Form Button =====
+//                       Obx(() {
+//                         bool isButtonDisabled = !shopVisitViewModel.isOrderButtonEnabled.value;
+//                         bool isLoading = shopVisitViewModel.isOrderFormLoading.value;
+//
+//                         return CustomButton(
+//                           textSize: fontSize,
+//                           iconSize: isTablet ? 22 : 18,
+//                           height: buttonHeight,
+//                           width: buttonWidth,
+//                           buttonText: isLoading
+//                               ? "Processing..."
+//                               : "Order Form",
+//                           icon: Icons.arrow_forward_ios_outlined,
+//                           iconColor: Colors.white,
+//                           iconPosition: IconPosition.right,
+//                           gradientColors: isButtonDisabled || isLoading
+//                               ? [Colors.grey, Colors.grey]
+//                               : [Colors.blue.shade900, Colors.blue],
+//                           onTap: isButtonDisabled
+//                               ? () {
+//                             String? errorMessage = shopVisitViewModel.getOrderFormErrorMessage();
+//                             if (errorMessage != null) {
+//                               Get.snackbar("Action Required", errorMessage,
+//                                   snackPosition: SnackPosition.BOTTOM,
+//                                   backgroundColor: Colors.red.shade400,
+//                                   colorText: Colors.white);
+//                             }
+//                           }
+//                               : () {
+//                             if (!isLoading) {
+//                               debugPrint("Order Form tapped ✅ (Proceeding)");
+//                               shopVisitViewModel.saveForm();
+//                             }
+//                           },
+//                         );
+//                       }),
+//                     ],
+//                   )
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   AppBar _buildAppBar() {
+//     return AppBar(
+//       title: const Text(
+//         'Shop Visit',
+//         style: TextStyle(color: Colors.white, fontSize: 24),
+//       ),
+//       centerTitle: true,
+//       leading: IconButton(
+//         icon: const Icon(Icons.arrow_back, color: Colors.white),
+//         onPressed: () {
+//           Get.offAllNamed("/home");
+//         },
+//       ),
+//       actions: [
+//         IconButton(
+//           icon: const Icon(Icons.refresh, color: Colors.white),
+//           onPressed: () {
+//             // These methods are now restored in the ViewModel
+//             shopVisitViewModel.fetchAllShopVisit();
+//             productsViewModel.fetchAllProductsModel();
+//           },
+//         ),
+//       ],
+//       backgroundColor: Colors.blue,
+//     );
+//   }
+//
+//   Widget _buildTextField({
+//     required String label,
+//     required IconData icon,
+//     required String initialValue,
+//     required String? Function(String?) validator,
+//     required Function(String) onChanged,
+//     TextInputType keyboardType = TextInputType.text,
+//     bool obscureText = false,
+//   }) {
+//     return CustomEditableMenuOption(
+//       readOnly: true,
+//       label: label,
+//       initialValue: initialValue,
+//       onChanged: onChanged,
+//       inputBorder: const UnderlineInputBorder(
+//         borderSide: BorderSide(color: Colors.blue, width: 1.0),
+//       ),
+//       iconColor: Colors.blue,
+//       useBoxShadow: false,
+//       icon: icon,
+//       validator: validator,
+//       keyboardType: keyboardType,
+//       obscureText: obscureText,
+//     );
+//   }
+// }
+//
+// class SectionHeader extends StatelessWidget {
+//   final String title;
+//
+//   const SectionHeader({required this.title, Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Align(
+//       alignment: Alignment.centerLeft,
+//       child: Text(
+//         title,
+//         style: Theme.of(context)
+//             .textTheme
+//             .titleLarge
+//             ?.copyWith(fontWeight: FontWeight.bold),
+//       ),
+//     );
+//   }
+// }
+
+
+
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/ViewModels/ProductsViewModel.dart';
@@ -81,15 +482,114 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
               bottom: MediaQuery.of(context).padding.bottom + 40,
             ),
             child: Form(
-              key: shopVisitViewModel.formKey,
+              key: shopVisitViewModel.formKey, // Using the key from the ViewModel
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Column(
+                    // children: [
+                    //   Obx(
+                    //         () => CustomDropdown(
+                    //       label: "Brand",
+                    //       icon: Icons.branding_watermark,
+                    //       items: shopVisitViewModel.brands
+                    //           .where((brand) => brand != null)
+                    //           .cast<String>()
+                    //           .toList(),
+                    //       selectedValue: shopVisitViewModel
+                    //           .selectedBrand.value.isNotEmpty
+                    //           ? shopVisitViewModel.selectedBrand.value
+                    //           : " Select a Brand",
+                    //       onChanged: (value) async {
+                    //         shopVisitDetailsViewModel.filteredRows.refresh();
+                    //         shopVisitViewModel.setBrand(value!);
+                    //         shopVisitDetailsViewModel
+                    //             .filterProductsByBrand(value);
+                    //       },
+                    //       useBoxShadow: false,
+                    //       validator: (value) => requiredDropdownValidator(value, " Select a Brand"),
+                    //       inputBorder: const UnderlineInputBorder(
+                    //         borderSide:
+                    //         BorderSide(color: Colors.blue, width: 1.0),
+                    //       ),
+                    //       iconSize: 22.0,
+                    //       contentPadding:
+                    //       MediaQuery.of(context).size.height * 0.005,
+                    //       iconColor: Colors.blue,
+                    //       textStyle: const TextStyle(
+                    //           fontSize: 13,
+                    //           fontWeight: FontWeight.bold,
+                    //           color: Colors.black),
+                    //     ),
+                    //   ),
+                    //   Obx(
+                    //         () => CustomDropdown(
+                    //       label: "Shop",
+                    //       icon: Icons.store,
+                    //       items: shopVisitViewModel.shops.value
+                    //           .where((shop) => shop != null)
+                    //           .cast<String>()
+                    //           .toList(),
+                    //       selectedValue: shopVisitViewModel
+                    //           .selectedShop.value.isNotEmpty
+                    //           ? shopVisitViewModel.selectedShop.value
+                    //           : " Select a Shop",
+                    //       onChanged: (value) {
+                    //         shopVisitViewModel.setSelectedShop(value!);
+                    //         debugPrint(shopVisitViewModel.shop_address.value);
+                    //         debugPrint(shopVisitViewModel.city.value);
+                    //       },
+                    //       validator: (value) => requiredDropdownValidator(value, " Select a Shop"),
+                    //       useBoxShadow: false,
+                    //       inputBorder: const UnderlineInputBorder(
+                    //         borderSide:
+                    //         BorderSide(color: Colors.blue, width: 1.0),
+                    //       ),
+                    //       maxHeight: 50.0,
+                    //       maxWidth: 385.0,
+                    //       iconSize: 23.0,
+                    //       contentPadding: 0.0,
+                    //       iconColor: Colors.blue,
+                    //     ),
+                    //   ),
+                    //   Obx(() => _buildTextField(
+                    //     initialValue:
+                    //     shopVisitViewModel.shop_address.value,
+                    //     label: "Shop Address",
+                    //     icon: Icons.location_on,
+                    //     validator: (value) =>
+                    //     value == null || value.isEmpty
+                    //         ? 'Please enter the shop address'
+                    //         : null,
+                    //     onChanged: (value) =>
+                    //         shopVisitViewModel.setShopAddress(value),
+                    //   )),
+                    //   Obx(() => _buildTextField(
+                    //     initialValue: shopVisitViewModel.owner_name.value,
+                    //     label: "Owner Name",
+                    //     icon: Icons.person,
+                    //     validator: (value) =>
+                    //     value == null || value.isEmpty
+                    //         ? 'Please enter owner name'
+                    //         : null,
+                    //     onChanged: (value) =>
+                    //         shopVisitViewModel.setOwnerName(value),
+                    //   )),
+                    //   _buildTextField(
+                    //     label: "Booker Name",
+                    //     initialValue: shopVisitViewModel.booker_name.value,
+                    //     icon: Icons.person,
+                    //     validator: (value) =>
+                    //     value == null || value.isEmpty
+                    //         ? 'Please enter the booker name'
+                    //         : null,
+                    //     onChanged: (value) =>
+                    //     shopVisitViewModel.booker_name.value = value,
+                    //   ),
+                    // ],
                     children: [
-                      Obx(
-                            () => CustomDropdown(
+                      CustomDropdown(
                           label: "Brand",
                           icon: Icons.branding_watermark,
                           items: shopVisitViewModel.brands
@@ -121,7 +621,6 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
                               fontWeight: FontWeight.bold,
                               color: Colors.black),
                         ),
-                      ),
                       Obx(
                             () => CustomDropdown(
                           label: "Shop",
@@ -395,8 +894,6 @@ class SectionHeader extends StatelessWidget {
     );
   }
 }
-
-
 
 
 

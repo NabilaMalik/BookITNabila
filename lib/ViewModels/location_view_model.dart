@@ -1893,7 +1893,10 @@ class LocationViewModel extends GetxController {
     fetchAllLocation();
     loadClockStatus();
     clockRefresh();
+
+
   }
+
 
   @override
   void dispose() {

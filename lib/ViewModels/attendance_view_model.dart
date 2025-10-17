@@ -373,6 +373,7 @@ class AttendanceViewModel extends GetxController {
     }
   }
 
+
   // LOCATION REQUIRED DIALOG
   void _showLocationRequiredDialog() {
     Get.dialog(
