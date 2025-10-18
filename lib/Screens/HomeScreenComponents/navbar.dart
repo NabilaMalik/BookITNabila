@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:order_booking_app/screens/HomeScreenComponents/side_menu.dart';
-
 import '../../ViewModels/update_function_view_model.dart';
 
 class Navbar extends StatelessWidget {
@@ -28,14 +27,6 @@ class Navbar extends StatelessWidget {
         children: [
           const Row(
             children: [
-              // InkWell(
-              //   onTap: () => Get.to(
-              //         () => const SideMenu(),
-              //     transition: Transition.fade, // Add fade transition
-              //   ),
-              //   child: const Icon(Icons.menu, color: Colors.white, size: 30),
-              // ),
-             // const SizedBox(width: 20),
               SizedBox(width: 150),
               Text(
                 "BookIT",
@@ -49,14 +40,6 @@ class Navbar extends StatelessWidget {
           ),
           Row(
             children: [
-              // GestureDetector(
-              //   onTap: () {
-              //     // Add your onTap logic for the search icon here
-              //     print('Search icon tapped');
-              //   },
-              //   child: Icon(Icons.search, color: Colors.white, size: 28),
-              // ),
-
               const SizedBox(width: 20),
               GestureDetector(
                 onTap: () async {
@@ -71,15 +54,20 @@ class Navbar extends StatelessWidget {
 
                   debugPrint('Refresh icon tapped');
 
+                  // Fetch latest data from server
                   await updateFunctionViewModel.fetchAndSaveUpdatedCities();
                   await updateFunctionViewModel.fetchAndSaveUpdatedProducts();
                   await updateFunctionViewModel.fetchAndSaveUpdatedOrderMaster();
+
+                  // ✅ NOW THIS WILL WORK - Sync all local data to server
+                  await updateFunctionViewModel.syncAllLocalDataToServer();
+
                   await updateFunctionViewModel.checkAndSetInitializationDateTime();
 
                   // Show "done" Snackbar
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Data refreshed successfully!'),
+                      content: Text('Data refreshed and synced successfully!'),
                       duration: Duration(seconds: 2),
                       backgroundColor: Colors.green,
                     ),
@@ -87,7 +75,6 @@ class Navbar extends StatelessWidget {
                 },
                 child: const Icon(Icons.refresh_sharp, color: Colors.white, size: 28),
               ),
-
             ],
           ),
         ],

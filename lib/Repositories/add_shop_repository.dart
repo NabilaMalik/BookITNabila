@@ -13,14 +13,19 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 class AddShopRepository extends GetxService {
   DBHelper dbHelper = Get.put(DBHelper());
+  final RxBool isSyncing = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    Connectivity()
-        .onConnectivityChanged
-        .listen((List<ConnectivityResult> results) {
-      if (results.isNotEmpty && results.contains(ConnectivityResult.none)) {
+    _setupConnectivityListener();
+  }
+
+  void _setupConnectivityListener() {
+    Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
+      if (results.isNotEmpty && !results.contains(ConnectivityResult.none)) {
+        // Network is available, sync all pending data
+        debugPrint('Network available, syncing pending shops...');
         postDataFromDatabaseToAPI();
       }
     });
@@ -53,7 +58,7 @@ class AddShopRepository extends GetxService {
       print('Shop Raw data from database:');
     }
     for (var map in maps) {
-      // debugPrint("$map");
+      debugPrint("$map");
     }
     return addShop;
   }
@@ -75,41 +80,39 @@ class AddShopRepository extends GetxService {
         .delete(addShopTableName, where: 'shop_id = ?', whereArgs: [id]);
   }
 
-  // Future<void> fetchAllAddShop(RxList<AddShopModel> allAddShop) async {
-  //   var addShop = await getAddShop();
-  //   allAddShop.value = addShop;
-  // }
-
   Future<void> addAddShop(
       AddShopModel addShopModel, RxList<AddShopModel> allAddShop) async {
     await add(addShopModel);
-    // await fetchAllAddShop(allAddShop);
-    await postDataFromDatabaseToAPI();
+    // Auto-sync if network is available
+    if (await isNetworkAvailable()) {
+      await postDataFromDatabaseToAPI();
+    }
   }
 
   Future<void> updateAddShop(
       AddShopModel addShopModel, RxList<AddShopModel> allAddShop) async {
     await update(addShopModel);
-    // await fetchAllAddShop(allAddShop);
+    // Auto-sync if network is available
+    if (await isNetworkAvailable()) {
+      await postDataFromDatabaseToAPI();
+    }
   }
 
   Future<void> deleteAddShop(
       String? id, RxList<AddShopModel> allAddShop) async {
     await delete(id);
-    // await fetchAllAddShop(allAddShop);
   }
 
   Future<List<String>> fetchCitiesFromApi() async {
-     String url = "${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlCities}";
-    // String url = "https://cloud.metaxperts.net:8443/erp/test1/cities/get/";
+    String url = "${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlCities}";
     List<dynamic> data = await ApiService.getData(url);
     List<String> fetchedCities = data.map((city) => city.toString()).toList();
 
     List<String> storedCities = await getCitiesFromSharedPreferences();
     List<String> newCities =
-        fetchedCities.where((city) => !storedCities.contains(city)).toList();
+    fetchedCities.where((city) => !storedCities.contains(city)).toList();
     List<String> removedCities =
-        storedCities.where((city) => !fetchedCities.contains(city)).toList();
+    storedCities.where((city) => !fetchedCities.contains(city)).toList();
 
     storedCities.addAll(newCities);
     removedCities.forEach((city) => storedCities.remove(city));
@@ -137,7 +140,6 @@ class AddShopRepository extends GetxService {
   }
 
   Future<void> fetchAndSaveShops() async {
-
     await Config.fetchLatestConfig();
     List<dynamic> data = await ApiService.getData(
         '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlShopsUserId}$user_id');
@@ -149,15 +151,12 @@ class AddShopRepository extends GetxService {
       AddShopModel model = AddShopModel.fromMap(item);
       await dbClient.insert(addShopTableName, model.toMap());
     }
-    // await getAddShop();
   }
 
   Future<void> fetchAndSaveShopsForHeads() async {
-await Config.fetchLatestConfig();
-     // List<dynamic> data = await ApiService.getData(Config.getApiUrlServerIP}{Config.getApiUrlERPCompanyName}{Config.getApiUrlShops1);
+    await Config.fetchLatestConfig();
     List<dynamic> data = await ApiService.getData(
-    '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlShops}'
-    //     'https://cloud.metaxperts.net:8443/erp/test1/shopget/get/');
+        '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.getApiUrlShops}'
     );
     var dbClient = await dbHelper.db;
 
@@ -167,7 +166,6 @@ await Config.fetchLatestConfig();
       AddShopModel model = AddShopModel.fromMap(item);
       await dbClient.insert(addShopTableName, model.toMap());
     }
-    // await getAddShop();
   }
 
   // Fetch all unposted shops (posted = 0)
@@ -180,30 +178,42 @@ await Config.fetchLatestConfig();
     );
 
     List<AddShopModel> unpostedShops =
-        maps.map((map) => AddShopModel.fromMap(map)).toList();
+    maps.map((map) => AddShopModel.fromMap(map)).toList();
     return unpostedShops;
   }
 
   Future<void> postDataFromDatabaseToAPI() async {
+    if (isSyncing.value) return; // Prevent multiple simultaneous syncs
+
     try {
+      isSyncing(true);
       var unPostedShops = await getUnPostedShops();
 
+      if (unPostedShops.isEmpty) {
+        debugPrint('No unposted shops to sync');
+        return;
+      }
+
       if (await isNetworkAvailable()) {
+        debugPrint('Syncing ${unPostedShops.length} unposted shops to server...');
+
         for (var shop in unPostedShops) {
           try {
             await postShopToAPI(shop);
             shop.posted = 1;
             await update(shop);
             if (kDebugMode) {
-              print(
-                  'Shop with id ${shop.shop_id} posted and updated in local database.');
+              print('Shop with id ${shop.shop_id} posted and updated in local database.');
             }
           } catch (e) {
             if (kDebugMode) {
               print('Failed to post shop with id ${shop.shop_id}: $e');
             }
+            // Continue with next shop even if one fails
           }
         }
+
+        debugPrint('Shop sync completed successfully');
       } else {
         if (kDebugMode) {
           print('Network not available. Unposted shops will remain local.');
@@ -213,6 +223,8 @@ await Config.fetchLatestConfig();
       if (kDebugMode) {
         print('Error fetching unposted shops: $e');
       }
+    } finally {
+      isSyncing(false);
     }
   }
 
@@ -255,5 +267,10 @@ await Config.fetchLatestConfig();
     await orderDetailsGenerator.getAndIncrementSerialNumber();
     shopHighestSerial = orderDetailsGenerator.serialType;
     await prefs.setInt("shopHighestSerial", shopHighestSerial!);
+  }
+
+  // New method to force sync all pending data
+  Future<void> syncAllPendingData() async {
+    await postDataFromDatabaseToAPI();
   }
 }

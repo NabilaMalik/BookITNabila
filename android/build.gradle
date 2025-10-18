@@ -1,20 +1,19 @@
 buildscript {
-//    ext.kotlin_version = '2.1.0'
-    ext.kotlin_version = '2.1.0'
+    ext.kotlin_version = '1.9.25'
     repositories {
         maven {
             url = uri("https://plugins.gradle.org/m2/")
         }
         mavenCentral()
         google()
-        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.3.15' // Google Services plugin
+        classpath 'com.google.gms:google-services:4.3.15'
     }
 }
+
 
 allprojects {
     repositories {

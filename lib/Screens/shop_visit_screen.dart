@@ -589,7 +589,8 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
                     //   ),
                     // ],
                     children: [
-                      CustomDropdown(
+                      Obx(
+                            () => CustomDropdown(
                           label: "Brand",
                           icon: Icons.branding_watermark,
                           items: shopVisitViewModel.brands
@@ -620,7 +621,7 @@ class _StateShopVisitScreen extends State<ShopVisitScreen> {
                               fontSize: 13,
                               fontWeight: FontWeight.bold,
                               color: Colors.black),
-                        ),
+                        ),),
                       Obx(
                             () => CustomDropdown(
                           label: "Shop",

@@ -310,10 +310,10 @@ class LocationViewModel extends GetxController {
     List<int> gpxBytesList = await maingpxFile.readAsBytes();
     Uint8List gpxBytes = Uint8List.fromList(gpxBytesList);
     await _loadCounter();
-    final orderSerial = generateNewOrderId(currentuser_id);
+    final orderSerial = generateNewOrderId(user_id);
     await addLocation(LocationModel(
       location_id: orderSerial.toString(),
-      user_id: currentuser_id,
+      user_id: user_id.toString(),
       total_distance: totalDistance.toString(),
       file_name: "$date.gpx",
       booker_name: userName,
