@@ -46,53 +46,89 @@ class AttendanceViewModel extends GetxController {
   }
 
   // LOCATION CHECK METHOD
+
   Future<bool> isLocationAvailable() async {
-    try {
-      // bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      // if (!serviceEnabled) {
-      //   debugPrint("❌ Location services disabled");
-      //   _showLocationRequiredDialog();
-      //   return false;
-      // }
-
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        debugPrint("❌ Location permission denied");
-        permission = await Geolocator.requestPermission();
-        if (permission != LocationPermission.whileInUse &&
-            permission != LocationPermission.always) {
-          _showLocationRequiredDialog();
-          return false;
-        }
-      } else if (permission == LocationPermission.deniedForever) {
-        debugPrint("❌ Location permission permanently denied");
-        _showLocationRequiredDialog();
-        return false;
-      }
-
-      try {
-        Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
-        ).timeout(Duration(seconds: 5));
-
-        if (position.latitude == 0.0 && position.longitude == 0.0) {
-          debugPrint("❌ Invalid location coordinates");
-          return false;
-        }
-
-        debugPrint("✅ Location available: ${position.latitude}, ${position.longitude}");
-        return true;
-      } catch (e) {
-        debugPrint("❌ Cannot get current position: $e");
-        _showLocationRequiredDialog();
-        return false;
-      }
-    } catch (e) {
-      debugPrint("❌ Location check failed: $e");
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
       _showLocationRequiredDialog();
-      return false;
+      return false; // Block clock-in
     }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+      _showLocationRequiredDialog();
+      return false; // Block clock-in
+    }
+
+    try {
+      await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      ).timeout(Duration(seconds: 5));
+    } catch (e) {
+      Get.snackbar(
+        "Location Error",
+        "Cannot determine your location. Please try again.",
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return false; // Block clock-in if position can't be obtained
+    }
+
+    return true; // ✅ Location available
   }
+
+  // Future<bool> isLocationAvailable() async {
+  //   try {
+  //     // bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //     // if (!serviceEnabled) {
+  //     //   debugPrint("❌ Location services disabled");
+  //     //   _showLocationRequiredDialog();
+  //     //   return false;
+  //     // }
+  //
+  //     LocationPermission permission = await Geolocator.checkPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       debugPrint("❌ Location permission denied");
+  //       permission = await Geolocator.requestPermission();
+  //       if (permission != LocationPermission.whileInUse &&
+  //           permission != LocationPermission.always) {
+  //         _showLocationRequiredDialog();
+  //         return false;
+  //       }
+  //     } else if (permission == LocationPermission.deniedForever) {
+  //       debugPrint("❌ Location permission permanently denied");
+  //       _showLocationRequiredDialog();
+  //       return false;
+  //     }
+  //
+  //     try {
+  //       Position position = await Geolocator.getCurrentPosition(
+  //         desiredAccuracy: LocationAccuracy.high,
+  //       ).timeout(Duration(seconds: 5));
+  //
+  //       if (position.latitude == 0.0 && position.longitude == 0.0) {
+  //         debugPrint("❌ Invalid location coordinates");
+  //         return false;
+  //       }
+  //
+  //       debugPrint("✅ Location available: ${position.latitude}, ${position.longitude}");
+  //       return true;
+  //     } catch (e) {
+  //       debugPrint("❌ Cannot get current position: $e");
+  //       _showLocationRequiredDialog();
+  //       return false;
+  //     }
+  //   } catch (e) {
+  //     debugPrint("❌ Location check failed: $e");
+  //     _showLocationRequiredDialog();
+  //     return false;
+  //   }
+  // }
 
 
   // LOCATION REQUIRED DIALOG
@@ -299,64 +335,59 @@ class AttendanceViewModel extends GetxController {
     }
   }
 
+
   Future<void> saveFormAttendanceIn() async {
+    if (isClockedIn.value) {
+      Get.snackbar(
+        'Already Clocked In',
+        'You are already clocked in. Current duration: ${elapsedTime.value}',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    // ✅ Check location before anything else
+    bool locationAvailable = await isLocationAvailable();
+    if (!locationAvailable) {
+      debugPrint("❌ Clock-in blocked: Location not available");
+      return; // Stop here, don't start timer
+    }
+
+    // --- IMMEDIATELY SET CLOCK-IN STATE ---
+    _clockInTime = DateTime.now();
+    isClockedIn.value = true;
+    elapsedTime.value = '00:00:00';
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('clockInTime', _clockInTime!.toIso8601String());
+    _startTimer();
+
+    Get.snackbar(
+      'Clock-In Started',
+      'Clock-in in progress...',
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+    );
+
+    // --- Continue with background tasks ---
     isLoading.value = true;
-
     try {
-      // 1. Location Check
-      bool locationAvailable = await isLocationAvailable();
-      if (!locationAvailable) {
-        debugPrint("❌ Clock-in blocked: Location not available");
-        return;
-      }
-      debugPrint("✅ Location available, proceeding with clock-in");
-
-      // 2. Prevent double clock-in
-      if (isClockedIn.value) {
-        Get.snackbar('Already Clocked In', 'You are already clocked in. Current duration: ${elapsedTime.value}',
-            snackPosition: SnackPosition.TOP, backgroundColor: Colors.orange, colorText: Colors.white);
-        return;
-      }
-
-      // 3. Internet Check
       final internetStatus = await _checkInternetSpeed();
-
-      if (internetStatus == 'none') {
-        Get.snackbar(
-          'Offline Mode',
-          'No internet connection detected. Clocking in offline.',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.blue.shade500,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 8),
-        );
-      }
-
-      // 4. Generate ID and Save State
-      SharedPreferences prefs = await SharedPreferences.getInstance();
       await _loadCounter();
-
-      // **FIX: Explicitly clear distance here to ensure the new shift starts at 0**
+      final attendanceId = generateNewAttendanceId(user_id);
+      await prefs.setString('attendanceId', attendanceId);
       await prefs.remove('totalDistance');
       await prefs.setInt('secondsPassed', 0);
 
-      final attendanceId = generateNewAttendanceId(user_id);
-      await prefs.setString('attendanceId', attendanceId);
-
-      // Set clock-in state and start timer
-      _clockInTime = DateTime.now(); //
-      isClockedIn.value = true; //
-      await prefs.setString('clockInTime', _clockInTime!.toIso8601String()); //
-      _startTimer(); //
-
-      // 5. Save to Local Database
       addAttendance(
         AttendanceModel(
           attendance_in_id: attendanceId,
           user_id: user_id,
           city: userCity,
           booker_name: userName,
-          // Assuming globalLatitude1 and globalLongitude1 are updated by LocationViewModel after a successful check
           lat_in: locationViewModel.globalLatitude1.value,
           lng_in: locationViewModel.globalLongitude1.value,
           designation: userDesignation,
@@ -364,14 +395,10 @@ class AttendanceViewModel extends GetxController {
         ),
       );
 
-      // 6. Post to API if internet is fast
       if (internetStatus == 'fast') {
         await attendanceRepository.postDataFromDatabaseToAPI();
-      } else {
-        debugPrint('Skipping API post. Internet status: $internetStatus');
       }
 
-      // 7. Success Notification
       Get.snackbar(
         'Clock-In Successful',
         'You are now clocked in.',
@@ -383,6 +410,91 @@ class AttendanceViewModel extends GetxController {
       isLoading.value = false;
     }
   }
+
+  // Future<void> saveFormAttendanceIn() async {
+  //   isLoading.value = true;
+  //
+  //   try {
+  //     // 1. Location Check
+  //     bool locationAvailable = await isLocationAvailable();
+  //     if (!locationAvailable) {
+  //       debugPrint("❌ Clock-in blocked: Location not available");
+  //       return;
+  //     }
+  //     debugPrint("✅ Location available, proceeding with clock-in");
+  //
+  //     // 2. Prevent double clock-in
+  //     if (isClockedIn.value) {
+  //       Get.snackbar('Already Clocked In', 'You are already clocked in. Current duration: ${elapsedTime.value}',
+  //           snackPosition: SnackPosition.TOP, backgroundColor: Colors.orange, colorText: Colors.white);
+  //       return;
+  //     }
+  //
+  //     // 3. Internet Check
+  //     final internetStatus = await _checkInternetSpeed();
+  //
+  //     if (internetStatus == 'none') {
+  //       Get.snackbar(
+  //         'Offline Mode',
+  //         'No internet connection detected. Clocking in offline.',
+  //         snackPosition: SnackPosition.TOP,
+  //         backgroundColor: Colors.blue.shade500,
+  //         colorText: Colors.white,
+  //         duration: const Duration(seconds: 8),
+  //       );
+  //     }
+  //
+  //     // 4. Generate ID and Save State
+  //     SharedPreferences prefs = await SharedPreferences.getInstance();
+  //     await _loadCounter();
+  //
+  //     // **FIX: Explicitly clear distance here to ensure the new shift starts at 0**
+  //     await prefs.remove('totalDistance');
+  //     await prefs.setInt('secondsPassed', 0);
+  //
+  //     final attendanceId = generateNewAttendanceId(user_id);
+  //     await prefs.setString('attendanceId', attendanceId);
+  //
+  //     // Set clock-in state and start timer
+  //     _clockInTime = DateTime.now(); //
+  //     isClockedIn.value = true; //
+  //     await prefs.setString('clockInTime', _clockInTime!.toIso8601String()); //
+  //     _startTimer(); //
+  //
+  //     // 5. Save to Local Database
+  //     addAttendance(
+  //       AttendanceModel(
+  //         attendance_in_id: attendanceId,
+  //         user_id: user_id,
+  //         city: userCity,
+  //         booker_name: userName,
+  //         // Assuming globalLatitude1 and globalLongitude1 are updated by LocationViewModel after a successful check
+  //         lat_in: locationViewModel.globalLatitude1.value,
+  //         lng_in: locationViewModel.globalLongitude1.value,
+  //         designation: userDesignation,
+  //         address: locationViewModel.shopAddress.value,
+  //       ),
+  //     );
+  //
+  //     // 6. Post to API if internet is fast
+  //     if (internetStatus == 'fast') {
+  //       await attendanceRepository.postDataFromDatabaseToAPI();
+  //     } else {
+  //       debugPrint('Skipping API post. Internet status: $internetStatus');
+  //     }
+  //
+  //     // 7. Success Notification
+  //     Get.snackbar(
+  //       'Clock-In Successful',
+  //       'You are now clocked in.',
+  //       snackPosition: SnackPosition.TOP,
+  //       backgroundColor: Colors.green,
+  //       colorText: Colors.white,
+  //     );
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 
   Future<void> fetchAllAttendance() async {
     var attendance = await attendanceRepository.getAttendance();
