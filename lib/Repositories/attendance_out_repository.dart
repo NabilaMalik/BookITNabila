@@ -93,18 +93,52 @@ class AttendanceOutRepository extends GetxService {
       debugPrint('Error fetching unposted shops: $e');
     }
   }
+///old code
+  // Future<void> postShopToAPI(AttendanceOutModel shop) async {
+  //   try {
+  //     await Config.fetchLatestConfig();
+  //
+  //     debugPrint('Updated Shop Post API: ${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlAttendanceOut}');
+  //
+  //     var shopData = shop.toMap();
+  //     final response = await http.post(
+  //       Uri.parse(
+  //           "${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlAttendanceOut}"
+  //       ),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Accept": "application/json",
+  //       },
+  //       body: jsonEncode(shopData),
+  //     );
+  //
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       debugPrint('attendance_out_id data posted successfully: $shopData');
+  //       // Delete the shop visit data from the local database after successful post
+  //       await delete(shop.attendance_out_id!);
+  //
+  //       debugPrint(
+  //           'attendance_out_id with id ${shop.attendance_out_id} deleted from local database.');
+  //     } else {
+  //       throw Exception(
+  //           'Server error: ${response.statusCode}, ${response.body}');
+  //     }
+  //   } catch (e) {
+  //     debugPrint('Error posting shop data: $e');
+  //     throw Exception('Failed to post data: $e');
+  //   }
+  // }
 
+  ///added code
   Future<void> postShopToAPI(AttendanceOutModel shop) async {
     try {
       await Config.fetchLatestConfig();
-
-      debugPrint('Updated Shop Post API: ${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlAttendanceOut}');
+      String apiUrl = '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlAttendanceOut}';
+      debugPrint('🔄 [REPO-OUT] Posting to: $apiUrl');
 
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse(
-            "${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlAttendanceOut}"
-        ),
+        Uri.parse(apiUrl),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -112,21 +146,31 @@ class AttendanceOutRepository extends GetxService {
         body: jsonEncode(shopData),
       );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        debugPrint('attendance_out_id data posted successfully: $shopData');
-        // Delete the shop visit data from the local database after successful post
-        await delete(shop.attendance_out_id!);
+      debugPrint('📡 [REPO-OUT] Response status: ${response.statusCode}');
 
-        debugPrint(
-            'attendance_out_id with id ${shop.attendance_out_id} deleted from local database.');
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        debugPrint('✅ [REPO-OUT] Data posted successfully: ${shop.attendance_out_id}');
+
+        // ✅ CORRECT: Just update posted status, DON'T DELETE!
+        shop.posted = 1;
+        await update(shop);
+        debugPrint('✅ [REPO-OUT] Marked as posted: ${shop.attendance_out_id}');
+
       } else {
-        throw Exception(
-            'Server error: ${response.statusCode}, ${response.body}');
+        debugPrint('❌ [REPO-OUT] Server error: ${response.statusCode}, ${response.body}');
+        // Don't throw - let it retry later
       }
     } catch (e) {
-      debugPrint('Error posting shop data: $e');
-      throw Exception('Failed to post data: $e');
+      debugPrint('❌ [REPO-OUT] Error posting data: $e');
+      // Don't throw - let it retry later
     }
+  }
+  Future<void> saveFormAttendanceOut() async {
+    debugPrint(
+        "🎯 [ATTENDANCE-OUT] saveFormAttendanceOut() CALLED!"); // ADD THIS LINE
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // ... rest of your code
   }
 
   Future<int> add(AttendanceOutModel attendanceoutModel) async {

@@ -27,7 +27,9 @@ class AttendanceOutViewModel extends GetxController {
     attendanceOutRepository.postDataFromDatabaseToAPI();
   }
 
+  ///old code
   Future<void> saveFormAttendanceOut() async {
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // Removed: await prefs.reload(); // THIS WAS CAUSING THE LOADING DELAY
 
@@ -48,10 +50,13 @@ class AttendanceOutViewModel extends GetxController {
     // Reuse same ID from clock-in
     final attendanceId = prefs.getString('attendanceId') ?? ''; //
 
+
     if (attendanceId.isEmpty) {
       debugPrint("⚠️ No matching attendanceId found for Clock Out!"); //
       // Optional: Show a snackbar error here
       return;
+
+
     }
 
     // 1. Local Save (Instant Clock-Out)
@@ -73,6 +78,85 @@ class AttendanceOutViewModel extends GetxController {
 
     // 3. Clear the Clock-In state and timer after successful clock-out
     await attendanceViewModel.clearClockInState();
+  }
+
+  ///added code 18-10-25
+
+  // Future<void> saveFormAttendanceOut() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //
+  //   // 🚀 GET BASIC DATA INSTANTLY
+  //   final attendanceId = prefs.getString('attendanceId') ?? '';
+  //   var totalTime = prefs.getString('totalTime') ?? "00:00:00";
+  //
+  //   if (attendanceId.isEmpty) {
+  //     debugPrint("⚠ No matching attendanceId found for Clock Out!");
+  //     return;
+  //   }
+  //
+  //   // 🚀 INSTANT CLOCK-OUT - Save to local database immediately
+  //   addAttendanceOut(
+  //     AttendanceOutModel(
+  //       attendance_out_id: attendanceId,
+  //       user_id: user_id,
+  //       total_distance: 0.0, // 🚀 Use 0.0 initially to avoid delay
+  //       total_time: totalTime,
+  //       lat_out: locationViewModel.globalLatitude1.value,
+  //       lng_out: locationViewModel.globalLongitude1.value,
+  //       address: locationViewModel.shopAddress.value,
+  //     ),
+  //   );
+  //
+  //   // 🚀 CLEAR CLOCK-IN STATE IMMEDIATELY
+  //   await attendanceViewModel.clearClockInState();
+  //
+  //   // 🛰 BACKGROUND TASKS - FIRE AND FORGET
+  //   _handleBackgroundTasks(attendanceId);
+  // }
+
+// 🛰 BACKGROUND TASKS - NON-BLOCKING
+  void _handleBackgroundTasks(String attendanceId) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      // 1. Calculate distance in background
+      String? clockInTimeString = prefs.getString('clockInTime');
+      DateTime shiftStartTime = clockInTimeString != null
+          ? DateTime.parse(clockInTimeString)
+          : DateTime.now();
+
+      double totalDistance = await locationViewModel.calculateShiftDistance(shiftStartTime);
+      debugPrint("📍 Background: Calculated distance: $totalDistance");
+
+      // 2. Update local record with actual distance
+      await _updateDistanceInDatabase(attendanceId, totalDistance);
+
+      // 3. Sync to server
+      await attendanceOutRepository.postDataFromDatabaseToAPI();
+      debugPrint("✅ Background: Attendance-out synced to server");
+
+    } catch (e) {
+      debugPrint("⚠ Background tasks error: $e");
+      // Still try to sync even if distance calculation fails
+      attendanceOutRepository.postDataFromDatabaseToAPI()
+          .catchError((e) => debugPrint("⚠ Final sync failed: $e"));
+    }
+  }
+
+// 📊 UPDATE DISTANCE IN DATABASE
+  Future<void> _updateDistanceInDatabase(String attendanceId, double distance) async {
+    try {
+      var dbClient = await attendanceOutRepository.dbHelper.db;
+      await dbClient.update(
+        'attendance_out_table',
+        {'total_distance': distance},
+        where: 'attendance_out_id = ?',
+        whereArgs: [attendanceId],
+      );
+      debugPrint("✅ Updated distance in database: $distance");
+    } catch (e) {
+      debugPrint("⚠ Error updating distance: $e");
+    }
   }
 
   Future<void> fetchAllAttendanceOut() async {

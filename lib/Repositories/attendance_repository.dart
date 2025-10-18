@@ -96,16 +96,49 @@ class AttendanceRepository {
       }
     }
   }
+///oldcode
+//   Future<void> postShopToAPI(AttendanceModel shop) async {
+//     try {
+//       await Config.fetchLatestConfig();
+//       if (kDebugMode) {
+//         print('Updated Shop Post API: ${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlAttendanceIn}');
+//       }
+//       var shopData = shop.toMap();
+//       final response = await http.post(
+//         Uri.parse( '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlAttendanceIn}'),
+//         headers: {
+//           "Content-Type": "application/json",
+//           "Accept": "application/json",
+//         },
+//         body: jsonEncode(shopData),
+//       );
+//
+//       if (response.statusCode == 200 || response.statusCode == 201) {
+//         debugPrint('attendance_in_id data posted successfully: $shopData');
+//         // Delete the shop visit data from the local database after successful post
+//         await delete(shop.attendance_in_id!);
+//         if (kDebugMode) {
+//           debugPrint('attendance_in_id with id ${shop.attendance_in_id} deleted from local database.');
+//         }
+//       } else {
+//         throw Exception('Server error: ${response.statusCode}, ${response.body}');
+//       }
+//     } catch (e) {
+//       print('Error posting shop data: $e');
+//       throw Exception('Failed to post data: $e');
+//     }
+//   }
 
+  ///added code
   Future<void> postShopToAPI(AttendanceModel shop) async {
     try {
       await Config.fetchLatestConfig();
-      if (kDebugMode) {
-        print('Updated Shop Post API: ${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlAttendanceIn}');
-      }
+      String apiUrl = '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlAttendanceIn}';
+      debugPrint('🔄 [REPO-IN] Posting to: $apiUrl');
+
       var shopData = shop.toMap();
       final response = await http.post(
-        Uri.parse( '${Config.getApiUrlServerIP}${Config.getApiUrlERPCompanyName}${Config.postApiUrlAttendanceIn}'),
+        Uri.parse(apiUrl),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
@@ -113,21 +146,28 @@ class AttendanceRepository {
         body: jsonEncode(shopData),
       );
 
+      debugPrint('📡 [REPO-IN] Response status: ${response.statusCode}');
+
       if (response.statusCode == 200 || response.statusCode == 201) {
-        debugPrint('attendance_in_id data posted successfully: $shopData');
-        // Delete the shop visit data from the local database after successful post
-        await delete(shop.attendance_in_id!);
-        if (kDebugMode) {
-          debugPrint('attendance_in_id with id ${shop.attendance_in_id} deleted from local database.');
-        }
+        debugPrint('✅ [REPO-IN] Data posted successfully: ${shop.attendance_in_id}');
+
+        // ✅ CORRECT: Just update posted status, DON'T DELETE!
+        shop.posted = 1;
+        await update(shop);
+        debugPrint('✅ [REPO-IN] Marked as posted: ${shop.attendance_in_id}');
+
       } else {
-        throw Exception('Server error: ${response.statusCode}, ${response.body}');
+        debugPrint('❌ [REPO-IN] Server error: ${response.statusCode}, ${response.body}');
+        // Don't throw - let it retry later
       }
     } catch (e) {
-      print('Error posting shop data: $e');
-      throw Exception('Failed to post data: $e');
+      debugPrint('❌ [REPO-IN] Error posting data: $e');
+      // Don't throw - let it retry later
     }
   }
+
+
+
   Future<int> add(AttendanceModel attendanceModel) async {
     var dbClient = await dbHelper.db;
     return await dbClient.insert(attendanceTableName, attendanceModel.toMap());

@@ -104,6 +104,7 @@ dependencies:
   flutter_native_splash: ^2.4.4
   auto_route: ^10.0.1
   nanoid: ^1.0.0
+  flutter_foreground_task: ^9.1.0
 
 #  flutter_asset_manager: ^0.0.2
   #flutter_automation: ^2.0.0
