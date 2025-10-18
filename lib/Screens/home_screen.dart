@@ -15,6 +15,7 @@ import 'package:rive/rive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../ViewModels/ScreenViewModels/signup_view_model.dart';
 import '../ViewModels/add_shop_view_model.dart';
+import '../ViewModels/location_view_model.dart';
 import '../ViewModels/order_details_view_model.dart';
 import '../ViewModels/return_form_view_model.dart';
 import '../ViewModels/shop_visit_details_view_model.dart';
@@ -295,10 +296,10 @@ class _RiveAppHomeState extends State<HomeScreen>
                 imagePath: add_shop,
                 label: 'Add Shop',
                 onTap: () async {
-                  if (newIsClockedIn==true) {
+                  final locationVM = Get.find<LocationViewModel>();
+                  if (locationVM.isClockedIn.value) {
                     Get.to(() => AddShopScreen());
-                  }
-                  else {
+                  } else {
                     Get.defaultDialog(
                       title: "Clock In Required",
                       middleText: "Please start the timer first.",
@@ -315,11 +316,10 @@ class _RiveAppHomeState extends State<HomeScreen>
                 imagePath: shop_visit,
                 label: 'Shop Visit',
                 onTap: () async {
-                  if (newIsClockedIn==true) {
-                    // Get.offNamed("/ShopVisitScreen");
+                  final locationVM = Get.find<LocationViewModel>();
+                  if (locationVM.isClockedIn.value) {
                     Get.to(() => const ShopVisitScreen());
-                  }
-                  else {
+                  } else {
                     Get.defaultDialog(
                       title: "Clock In Required",
                       middleText: "Please start the timer first.",
@@ -336,12 +336,12 @@ class _RiveAppHomeState extends State<HomeScreen>
                 imagePath: return_form,
                 label: 'Return Form',
                 onTap: () async {
-                  if (newIsClockedIn==true) {
+                  final locationVM = Get.find<LocationViewModel>();
+                  if (locationVM.isClockedIn.value) {
                     await orderMasterViewModel.fetchAllOrderMaster();
-                   await orderDetailsViewModel.fetchAllReConfirmOrder();
+                    await orderDetailsViewModel.fetchAllReConfirmOrder();
                     Get.to(() => ReturnFormScreen());
-                  }
-                  else {
+                  } else {
                     Get.defaultDialog(
                       title: "Clock In Required",
                       middleText: "Please start the timer first.",
@@ -354,17 +354,16 @@ class _RiveAppHomeState extends State<HomeScreen>
                   }
                 },
               ),
-
               ActionBox(
                 imagePath: recovery2,
                 label: 'Recovery',
                 onTap: () async {
-                  if (newIsClockedIn==true) {
+                  final locationVM = Get.find<LocationViewModel>();
+                  if (locationVM.isClockedIn.value) {
                     await orderMasterViewModel.fetchAllOrderMaster();
                     await recoveryFormViewModel.initializeData();
                     Get.to(() => RecoveryFormScreen());
-                  }
-                  else {
+                  } else {
                     Get.defaultDialog(
                       title: "Clock In Required",
                       middleText: "Please start the timer first.",
@@ -381,25 +380,18 @@ class _RiveAppHomeState extends State<HomeScreen>
                 imagePath: order_booking_status,
                 label: 'Booking Status',
                 onTap: () async {
-                  // Get.to(() => CodeScreen());
-                  // Get.to(() => SignUpScreen());
-                  //
-                  orderMasterViewModel.fetchAllOrderMaster();
-                    Get.to(() => OrderBookingStatusScreen());
+                  await orderMasterViewModel.fetchAllOrderMaster();
+                  Get.to(() => OrderBookingStatusScreen());
                 },
               ),
             ],
           ),
-          // SizedBox(height: 20),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //   children: [
-          //
-          //
-          //   ],
-          // ),
+
         ],
+
+
       ),
+
     );
   }
 

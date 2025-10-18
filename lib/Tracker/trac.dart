@@ -60,6 +60,8 @@ void startTimerFromSavedTime() {
     }
   });
 }
+
+
 //
 // Function to post a GPX file
 // Future<void> postFile() async {
