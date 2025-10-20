@@ -2943,6 +2943,8 @@ class _TimerCardState extends State<TimerCard> with WidgetsBindingObserver {
       return;
     }
 
+
+
     try {
       var results = await _connectivity.checkConnectivity();
       bool wasOnline = _isOnline;
