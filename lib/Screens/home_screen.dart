@@ -689,10 +689,25 @@ class _RiveAppHomeState extends State<HomeScreen>
                 _buildActionButtons(screenWidth),
                 const SizedBox(height: 20),
                 _buildOverviewSection(),
-                const SizedBox(height: 20),
+                const SizedBox(height: 30),
+
+                // ✅ Professional footer version text
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 15),
+                  child: Text(
+                    'Version v0.1.1',
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontSize: 14,
+                      fontStyle: FontStyle.italic,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
+
         ),
       ),
     );

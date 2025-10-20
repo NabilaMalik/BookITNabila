@@ -1954,6 +1954,880 @@
 //   }
 // }
 
+// import 'dart:async';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_background_service/flutter_background_service.dart';
+// import 'package:get/get.dart';
+// import 'package:order_booking_app/ViewModels/attendance_view_model.dart';
+// import 'package:order_booking_app/ViewModels/location_view_model.dart';
+// import 'package:order_booking_app/ViewModels/attendance_out_view_model.dart';
+// import 'package:rive/rive.dart';
+// import 'package:location/location.dart' as loc;
+// import 'package:shared_preferences/shared_preferences.dart';
+// import '../../Tracker/trac.dart';
+// import '../../main.dart';
+// import 'assets.dart';
+// import 'menu_item.dart';
+//
+// class TimerCard extends StatelessWidget {
+//   final locationViewModel = Get.put(LocationViewModel());
+//   final attendanceViewModel = Get.put(AttendanceViewModel());
+//   final attendanceOutViewModel = Get.put(AttendanceOutViewModel());
+//   final loc.Location location = loc.Location();
+//
+//   final List<MenuItemModel> _themeMenuIcon = MenuItemModel.menuItems3;
+//   Timer? _locationMonitorTimer;
+//   bool _wasLocationAvailable = true;
+//   bool _autoClockOutInProgress = false;
+//
+//   TimerCard({super.key});
+//
+//   void onThemeRiveIconInit(Artboard artboard) {
+//     final controller =
+//     StateMachineController.fromArtboard(artboard, _themeMenuIcon[0].riveIcon.stateMachine);
+//     if (controller != null) {
+//       artboard.addController(controller);
+//       _themeMenuIcon[0].riveIcon.status =
+//       controller.findInput<bool>("active") as SMIBool?;
+//     } else {
+//       debugPrint("StateMachineController not found!");
+//     }
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 100.0),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//           Obx(() => Text(
+//             attendanceViewModel.elapsedTime.value,
+//             style: const TextStyle(
+//               fontSize: 20,
+//               fontWeight: FontWeight.bold,
+//               color: Colors.black87,
+//             ),
+//           )),
+//           Obx(() {
+//             return ElevatedButton(
+//               onPressed: () async {
+//                 debugPrint("🎯 [BUTTON] Button pressed");
+//                 debugPrint("   - attendanceViewModel.isClockedIn: ${attendanceViewModel.isClockedIn.value}");
+//
+//                 if (attendanceViewModel.isClockedIn.value) {
+//                   debugPrint("🔄 [BUTTON] Calling clock-out");
+//                   await _handleClockOut(context);
+//                 } else {
+//                   debugPrint("🔄 [BUTTON] Calling clock-in");
+//                   await _handleClockIn(context);
+//                 }
+//               },
+//               style: ElevatedButton.styleFrom(
+//                 backgroundColor: attendanceViewModel.isClockedIn.value
+//                     ? Colors.redAccent
+//                     : Colors.green,
+//                 minimumSize: const Size(30, 30),
+//                 shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(12),
+//                 ),
+//                 padding: EdgeInsets.zero,
+//               ),
+//               child: SizedBox(
+//                 width: 35,
+//                 height: 35,
+//                 child: RiveAnimation.asset(
+//                   iconsRiv,
+//                   stateMachines: [_themeMenuIcon[0].riveIcon.stateMachine],
+//                   artboard: _themeMenuIcon[0].riveIcon.artboard,
+//                   onInit: onThemeRiveIconInit,
+//                   fit: BoxFit.cover,
+//                 ),
+//               ),
+//             );
+//           }),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   // 🎯 CLOCK-IN WITH SYNC
+//   Future<void> _handleClockIn(BuildContext context) async {
+//     debugPrint("🎯 [TIMERCARD] ===== CLOCK-IN STARTED =====");
+//
+//     showDialog(
+//       context: context,
+//       barrierDismissible: false,
+//       builder: (_) => const Center(child: CircularProgressIndicator()),
+//     );
+//
+//     try {
+//       debugPrint("1️⃣ [CLOCK-IN] Calling attendanceViewModel.saveFormAttendanceIn()");
+//       await attendanceViewModel.saveFormAttendanceIn();
+//
+//       debugPrint("2️⃣ [CLOCK-IN] Starting background services...");
+//       _startBackgroundServices();
+//
+//       debugPrint("3️⃣ [CLOCK-IN] Updating UI state...");
+//       locationViewModel.isClockedIn.value = true;
+//       attendanceViewModel.isClockedIn.value = true;
+//       _themeMenuIcon[0].riveIcon.status!.value = true;
+//       _startLocationMonitoring();
+//
+//       // 🆕 SYNC: Trigger immediate sync after successful clock-in
+//       debugPrint("🔄 [CLOCK-IN] Triggering immediate sync...");
+//       _triggerImmediateSync();
+//
+//       debugPrint("✅ [CLOCK-IN] ===== COMPLETED SUCCESSFULLY =====");
+//
+//     } catch (e) {
+//       debugPrint("❌ [CLOCK-IN] Error: $e");
+//       Get.snackbar('Error', 'Failed to clock in: $e',
+//           snackPosition: SnackPosition.TOP, backgroundColor: Colors.red, colorText: Colors.white);
+//     } finally {
+//       debugPrint("🏁 [CLOCK-IN] Finally block reached");
+//       if (Navigator.of(context).canPop()) Navigator.of(context).pop();
+//     }
+//   }
+//
+//   // 🛰 START BACKGROUND SERVICES - NON-BLOCKING
+//   void _startBackgroundServices() async {
+//     try {
+//       debugPrint("🛰 [BACKGROUND] Starting services...");
+//
+//       final service = FlutterBackgroundService();
+//       await location.enableBackgroundMode(enable: true);
+//
+//       initializeServiceLocation().catchError((e) => debugPrint("Service init error: $e"));
+//       service.startService().catchError((e) => debugPrint("Service start error: $e"));
+//       location.changeSettings(interval: 300, accuracy: loc.LocationAccuracy.high)
+//           .catchError((e) => debugPrint("Location settings error: $e"));
+//
+//       debugPrint("✅ [BACKGROUND] Services started");
+//     } catch (e) {
+//       debugPrint("⚠ [BACKGROUND] Services error: $e");
+//     }
+//   }
+//
+//   // 🎯 CLOCK-OUT WITH SYNC
+//   Future<void> _handleClockOut(BuildContext context) async {
+//     debugPrint("🎯 [TIMERCARD] ===== CLOCK-OUT STARTED =====");
+//
+//     showDialog(
+//       context: context,
+//       barrierDismissible: false,
+//       builder: (_) => const Center(child: CircularProgressIndicator()),
+//     );
+//
+//     try {
+//       debugPrint("1️⃣ [CLOCK-OUT] Stopping location monitoring...");
+//       _stopLocationMonitoring();
+//
+//       debugPrint("2️⃣ [CLOCK-OUT] Saving current location...");
+//       locationViewModel.saveCurrentLocation().catchError((e) => debugPrint("Location save error: $e"));
+//
+//       final service = FlutterBackgroundService();
+//
+//       debugPrint("3️⃣ [CLOCK-OUT] Setting clock-in state to false...");
+//       locationViewModel.isClockedIn.value = false;
+//       attendanceViewModel.isClockedIn.value = false;
+//
+//       SharedPreferences prefs = await SharedPreferences.getInstance();
+//       await prefs.setBool('isClockedIn', false);
+//
+//       debugPrint("4️⃣ [CLOCK-OUT] Stopping background service...");
+//       service.invoke("stopService");
+//
+//       debugPrint("5️⃣ [CLOCK-OUT] Getting total time from attendance timer...");
+//       var totalTime = attendanceViewModel.elapsedTime.value;
+//       debugPrint("   - Total time: $totalTime");
+//
+//       debugPrint("6️⃣ [CLOCK-OUT] Calling saveFormAttendanceOut...");
+//       await attendanceOutViewModel.saveFormAttendanceOut();
+//
+//       debugPrint("7️⃣ [CLOCK-OUT] Saving final location...");
+//       locationViewModel.saveLocation().catchError((e) => debugPrint("Final location save error: $e"));
+//       locationViewModel.saveClockStatus(false).catchError((e) => debugPrint("Clock status error: $e"));
+//
+//       debugPrint("8️⃣ [CLOCK-OUT] Updating UI...");
+//       _themeMenuIcon[0].riveIcon.status!.value = false;
+//       await location.enableBackgroundMode(enable: false);
+//
+//       // 🆕 SYNC: Trigger immediate sync after successful clock-out
+//       debugPrint("🔄 [CLOCK-OUT] Triggering immediate sync...");
+//       _triggerImmediateSync();
+//
+//       debugPrint("✅ [CLOCK-OUT] ===== COMPLETED SUCCESSFULLY =====");
+//
+//     } catch (e) {
+//       debugPrint("❌ [CLOCK-OUT] Error: $e");
+//       Get.snackbar('Error', 'Failed to clock out: $e',
+//           snackPosition: SnackPosition.TOP, backgroundColor: Colors.red, colorText: Colors.white);
+//     } finally {
+//       debugPrint("🏁 [CLOCK-OUT] Finally block reached");
+//       if (Navigator.of(context).canPop()) Navigator.of(context).pop();
+//     }
+//   }
+//
+//   // 🆕 SYNC FUNCTIONALITY
+//   void _triggerImmediateSync() async {
+//     try {
+//       debugPrint("🔄 [SYNC] Starting immediate data synchronization...");
+//
+//       // Show sync in progress notification
+//       Get.snackbar(
+//         'Syncing Data',
+//         'Synchronizing your attendance data...',
+//         snackPosition: SnackPosition.TOP,
+//         backgroundColor: Colors.blue,
+//         colorText: Colors.white,
+//         duration: const Duration(seconds: 3),
+//       );
+//
+//       // Sync attendance-in data
+//       debugPrint("🔄 [SYNC] Syncing attendance-in data...");
+//       await attendanceViewModel.attendanceRepository.postDataFromDatabaseToAPI();
+//
+//       // Sync attendance-out data
+//       debugPrint("🔄 [SYNC] Syncing attendance-out data...");
+//       await attendanceOutViewModel.attendanceOutRepository.postDataFromDatabaseToAPI();
+//
+//       debugPrint("✅ [SYNC] Data synchronization completed successfully");
+//
+//       // Show success notification
+//       Get.snackbar(
+//         'Sync Complete',
+//         'All data has been synchronized successfully!',
+//         snackPosition: SnackPosition.TOP,
+//         backgroundColor: Colors.green,
+//         colorText: Colors.white,
+//         duration: const Duration(seconds: 2),
+//       );
+//
+//     } catch (e) {
+//       debugPrint("❌ [SYNC] Synchronization error: $e");
+//
+//       // Show error notification but don't block the user
+//       Get.snackbar(
+//         'Sync Warning',
+//         'Data saved locally. Will sync when connection improves.',
+//         snackPosition: SnackPosition.TOP,
+//         backgroundColor: Colors.orange,
+//         colorText: Colors.white,
+//         duration: const Duration(seconds: 3),
+//       );
+//     }
+//   }
+//
+//   // 🎯 AUTO CLOCK-OUT WITH SYNC
+//   Future<void> _handleAutoClockOut() async {
+//     if (_autoClockOutInProgress) return;
+//     _autoClockOutInProgress = true;
+//     debugPrint("🔄 [AUTO] Auto Clock-Out triggered due to location OFF");
+//
+//     try {
+//       _stopLocationMonitoring();
+//
+//       locationViewModel.saveCurrentLocation().catchError((e) => debugPrint("Auto clock-out location error: $e"));
+//
+//       final service = FlutterBackgroundService();
+//       locationViewModel.isClockedIn.value = false;
+//       attendanceViewModel.isClockedIn.value = false;
+//
+//       SharedPreferences prefs = await SharedPreferences.getInstance();
+//       await prefs.setBool('isClockedIn', false);
+//
+//       service.invoke("stopService");
+//       await attendanceOutViewModel.saveFormAttendanceOut();
+//
+//       locationViewModel.saveLocation().catchError((e) => debugPrint("Auto save location error: $e"));
+//       locationViewModel.saveClockStatus(false).catchError((e) => debugPrint("Auto clock status error: $e"));
+//
+//       _themeMenuIcon[0].riveIcon.status!.value = false;
+//       await location.enableBackgroundMode(enable: false);
+//
+//       // 🆕 SYNC: Trigger sync after auto clock-out
+//       debugPrint("🔄 [AUTO] Triggering sync after auto clock-out...");
+//       _triggerImmediateSync();
+//
+//       debugPrint("✅ [AUTO] Auto Clock-Out completed");
+//     } catch (e) {
+//       debugPrint("❌ [AUTO] Auto clock-out error: $e");
+//     } finally {
+//       _autoClockOutInProgress = false;
+//     }
+//   }
+//
+//   // 🎯 LOCATION MONITORING
+//   void _startLocationMonitoring() {
+//     _wasLocationAvailable = true;
+//     _autoClockOutInProgress = false;
+//
+//     _locationMonitorTimer = Timer.periodic(const Duration(seconds: 3), (timer) async {
+//       if (!attendanceViewModel.isClockedIn.value) {
+//         _stopLocationMonitoring();
+//         return;
+//       }
+//
+//       bool currentLocationAvailable = await attendanceViewModel.isLocationAvailable();
+//
+//       if (_wasLocationAvailable && !currentLocationAvailable) {
+//         debugPrint("📍 [LOCATION] Location OFF - triggering auto clock-out");
+//         await _handleAutoClockOut();
+//       }
+//
+//       _wasLocationAvailable = currentLocationAvailable;
+//     });
+//   }
+//
+//   void _stopLocationMonitoring() {
+//     _locationMonitorTimer?.cancel();
+//     _locationMonitorTimer = null;
+//     _autoClockOutInProgress = false;
+//   }
+// }
+// ///added code new
+// import 'dart:async';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_background_service/flutter_background_service.dart';
+// import 'package:get/get.dart';
+// import 'package:order_booking_app/ViewModels/attendance_view_model.dart';
+// import 'package:order_booking_app/ViewModels/location_view_model.dart';
+// import 'package:order_booking_app/ViewModels/attendance_out_view_model.dart';
+// import 'package:order_booking_app/ViewModels/update_function_view_model.dart';
+// import 'package:rive/rive.dart';
+// import 'package:location/location.dart' as loc;
+// import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:connectivity_plus/connectivity_plus.dart';
+// import '../../Tracker/trac.dart';
+// import '../../main.dart';
+// import 'assets.dart';
+// import 'menu_item.dart';
+//
+// class TimerCard extends StatefulWidget {
+//   const TimerCard({super.key});
+//
+//   @override
+//   State<TimerCard> createState() => _TimerCardState();
+// }
+//
+// class _TimerCardState extends State<TimerCard> with WidgetsBindingObserver {
+//   final locationViewModel = Get.find<LocationViewModel>();
+//   final attendanceViewModel = Get.find<AttendanceViewModel>();
+//   final attendanceOutViewModel = Get.find<AttendanceOutViewModel>();
+//   final updateFunctionViewModel = Get.find<UpdateFunctionViewModel>();
+//   final loc.Location location = loc.Location();
+//   final Connectivity _connectivity = Connectivity();
+//
+//   final List<MenuItemModel> _themeMenuIcon = MenuItemModel.menuItems3;
+//   Timer? _locationMonitorTimer;
+//   bool _wasLocationAvailable = true;
+//   bool _autoClockOutInProgress = false;
+//
+//   bool _isRiveAnimationActive = false;
+//   Timer? _localBackupTimer;
+//   DateTime? _localClockInTime;
+//   String _localElapsedTime = '00:00:00';
+//
+//   // ✅ AUTO-SYNC VARIABLES
+//   Timer? _autoSyncTimer;
+//   bool _isOnline = false;
+//   bool _isSyncing = false; // ✅ ADD SYNC LOCK
+//   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     WidgetsBinding.instance.addObserver(this);
+//     _initializeFromPersistentState();
+//     _startAutoSyncMonitoring();
+//   }
+//
+//   @override
+//   void didChangeDependencies() {
+//     super.didChangeDependencies();
+//     _restoreEverything();
+//   }
+//
+//   @override
+//   void dispose() {
+//     WidgetsBinding.instance.removeObserver(this);
+//     _stopLocationMonitoring();
+//     _localBackupTimer?.cancel();
+//     _autoSyncTimer?.cancel();
+//     _connectivitySubscription?.cancel();
+//     super.dispose();
+//   }
+//
+//   @override
+//   void didChangeAppLifecycleState(AppLifecycleState state) {
+//     debugPrint("🔄 [LIFECYCLE] App state changed: $state");
+//
+//     if (state == AppLifecycleState.resumed) {
+//       _restoreEverything();
+//       _checkConnectivityAndSync();
+//     }
+//   }
+//
+//   // ✅ AUTO-SYNC MONITORING SYSTEM WITH SYNC LOCK
+//   void _startAutoSyncMonitoring() async {
+//     // Listen to connectivity changes
+//     _connectivitySubscription = _connectivity.onConnectivityChanged.listen((List<ConnectivityResult> results) {
+//       bool wasOnline = _isOnline;
+//       _isOnline = results.isNotEmpty && results.any((result) => result != ConnectivityResult.none);
+//
+//       debugPrint("🌐 [CONNECTIVITY] Status: ${_isOnline ? 'ONLINE' : 'OFFLINE'} | Was: ${wasOnline ? 'ONLINE' : 'OFFLINE'} | Syncing: $_isSyncing");
+//
+//       // ✅ FIX: Only trigger if we JUST came online AND not already syncing
+//       if (_isOnline && !wasOnline && !_isSyncing) {
+//         debugPrint("🔄 [AUTO-SYNC] Internet connected - triggering auto-sync");
+//         _triggerAutoSync();
+//       }
+//     });
+//
+//     // ✅ FIX: Reduce frequency and add protection
+//     _autoSyncTimer = Timer.periodic(const Duration(minutes: 2), (timer) {
+//       if (!_isSyncing) {
+//         _checkConnectivityAndSync();
+//       }
+//     });
+//
+//     _checkConnectivityAndSync();
+//   }
+//
+//   // ✅ CHECK CONNECTIVITY AND SYNC WITH PROTECTION
+//   void _checkConnectivityAndSync() async {
+//     if (_isSyncing) {
+//       debugPrint('⏸️ Sync already in progress - skipping');
+//       return;
+//     }
+//
+//     try {
+//       var results = await _connectivity.checkConnectivity();
+//       bool wasOnline = _isOnline;
+//       _isOnline = results.isNotEmpty && results.any((result) => result != ConnectivityResult.none);
+//
+//       if (_isOnline && !wasOnline && !_isSyncing) {
+//         debugPrint("🔄 [AUTO-SYNC] Internet detected - triggering sync");
+//         _triggerAutoSync();
+//       }
+//     } catch (e) {
+//       debugPrint("❌ [CONNECTIVITY] Error checking connectivity: $e");
+//     }
+//   }
+//
+//   // ✅ TRIGGER AUTO-SYNC WITH SYNC LOCKING
+//   void _triggerAutoSync() async {
+//     // Prevent multiple simultaneous syncs
+//     if (_isSyncing) {
+//       debugPrint('⏸️ Auto-sync already in progress - skipping');
+//       return;
+//     }
+//
+//     _isSyncing = true; // Lock sync
+//     debugPrint('🔒 [AUTO-SYNC LOCKED] Starting automatic data sync...');
+//
+//     try {
+//       // Show subtle notification
+//       Get.snackbar(
+//         'Syncing Data',
+//         'Auto-syncing offline data...',
+//         snackPosition: SnackPosition.TOP,
+//         backgroundColor: Colors.blue.shade700,
+//         colorText: Colors.white,
+//         duration: const Duration(seconds: 3),
+//       );
+//
+//       // Sync all local data to server
+//       await updateFunctionViewModel.syncAllLocalDataToServer();
+//
+//       debugPrint('✅ [AUTO-SYNC COMPLETED] Automatic sync completed');
+//
+//     } catch (e) {
+//       debugPrint('❌ [AUTO-SYNC FAILED] Error during auto-sync: $e');
+//     } finally {
+//       _isSyncing = false; // Release lock
+//       debugPrint('🔓 [AUTO-SYNC UNLOCKED] Sync completed or failed');
+//     }
+//   }
+//
+//   void _restoreEverything() async {
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+//     bool isClockedIn = prefs.getBool('isClockedIn') ?? false;
+//
+//     if (isClockedIn) {
+//       debugPrint("🎯 [BULLETPROOF] Restoring EVERYTHING...");
+//
+//       locationViewModel.isClockedIn.value = true;
+//       attendanceViewModel.isClockedIn.value = true;
+//
+//       _isRiveAnimationActive = true;
+//       if (_themeMenuIcon[0].riveIcon.status != null) {
+//         _themeMenuIcon[0].riveIcon.status!.value = true;
+//       }
+//
+//       _startLocalBackupTimer();
+//
+//       if (mounted) {
+//         setState(() {});
+//       }
+//
+//       debugPrint("✅ [BULLETPROOF] Everything restored successfully");
+//     }
+//   }
+//
+//   void _startLocalBackupTimer() async {
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+//     String? clockInTimeString = prefs.getString('clockInTime');
+//
+//     if (clockInTimeString == null) return;
+//
+//     _localClockInTime = DateTime.parse(clockInTimeString);
+//     _localBackupTimer?.cancel();
+//
+//     _localBackupTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+//       if (_localClockInTime == null) return;
+//
+//       final now = DateTime.now();
+//       final duration = now.difference(_localClockInTime!);
+//
+//       String twoDigits(int n) => n.toString().padLeft(2, '0');
+//       String hours = twoDigits(duration.inHours);
+//       String minutes = twoDigits(duration.inMinutes.remainder(60));
+//       String seconds = twoDigits(duration.inSeconds.remainder(60));
+//
+//       _localElapsedTime = '$hours:$minutes:$seconds';
+//       attendanceViewModel.elapsedTime.value = _localElapsedTime;
+//
+//       if (mounted) {
+//         setState(() {});
+//       }
+//     });
+//
+//     debugPrint("✅ [BACKUP TIMER] Local backup timer started");
+//   }
+//
+//   Future<void> _initializeFromPersistentState() async {
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+//     bool isClockedIn = prefs.getBool('isClockedIn') ?? false;
+//
+//     debugPrint("🔄 [INIT] Restoring state: isClockedIn = $isClockedIn");
+//
+//     locationViewModel.isClockedIn.value = isClockedIn;
+//     attendanceViewModel.isClockedIn.value = isClockedIn;
+//     _isRiveAnimationActive = isClockedIn;
+//
+//     if (isClockedIn) {
+//       debugPrint("✅ [INIT] User was clocked in - starting everything...");
+//
+//       _startBackgroundServices();
+//       _startLocationMonitoring();
+//       _startLocalBackupTimer();
+//
+//       debugPrint("✅ [INIT] Full clocked-in state restored");
+//     }
+//
+//     if (mounted) {
+//       setState(() {});
+//     }
+//   }
+//
+//   void onThemeRiveIconInit(Artboard artboard) {
+//     final controller = StateMachineController.fromArtboard(
+//         artboard, _themeMenuIcon[0].riveIcon.stateMachine);
+//     if (controller != null) {
+//       artboard.addController(controller);
+//       _themeMenuIcon[0].riveIcon.status =
+//       controller.findInput<bool>("active") as SMIBool?;
+//
+//       if (_themeMenuIcon[0].riveIcon.status != null) {
+//         _themeMenuIcon[0].riveIcon.status!.value = _isRiveAnimationActive;
+//         debugPrint("🎯 [RIVE] Animation initialized with state: $_isRiveAnimationActive");
+//       }
+//     } else {
+//       debugPrint("StateMachineController not found!");
+//     }
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 100.0),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//           Obx(() {
+//             String displayTime = _localElapsedTime;
+//             if (displayTime == '00:00:00' && attendanceViewModel.isClockedIn.value) {
+//               displayTime = attendanceViewModel.elapsedTime.value;
+//             }
+//
+//             return Text(
+//               displayTime,
+//               style: const TextStyle(
+//                 fontSize: 20,
+//                 fontWeight: FontWeight.bold,
+//                 color: Colors.black87,
+//               ),
+//             );
+//           }),
+//           Obx(() {
+//             return ElevatedButton(
+//               onPressed: () async {
+//                 debugPrint("🎯 [BUTTON] Button pressed");
+//                 debugPrint("   - Clocked In: ${attendanceViewModel.isClockedIn.value}");
+//
+//                 if (attendanceViewModel.isClockedIn.value) {
+//                   await _handleClockOut(context);
+//                 } else {
+//                   await _handleClockIn(context);
+//                 }
+//               },
+//               style: ElevatedButton.styleFrom(
+//                 backgroundColor: attendanceViewModel.isClockedIn.value
+//                     ? Colors.redAccent
+//                     : Colors.green,
+//                 minimumSize: const Size(30, 30),
+//                 shape: RoundedRectangleBorder(
+//                   borderRadius: BorderRadius.circular(12),
+//                 ),
+//                 padding: EdgeInsets.zero,
+//               ),
+//               child: SizedBox(
+//                 width: 35,
+//                 height: 35,
+//                 child: RiveAnimation.asset(
+//                   iconsRiv,
+//                   stateMachines: [_themeMenuIcon[0].riveIcon.stateMachine],
+//                   artboard: _themeMenuIcon[0].riveIcon.artboard,
+//                   onInit: onThemeRiveIconInit,
+//                   fit: BoxFit.cover,
+//                 ),
+//               ),
+//             );
+//           }),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   Future<void> _handleClockIn(BuildContext context) async {
+//     debugPrint("🎯 [TIMERCARD] ===== CLOCK-IN STARTED =====");
+//
+//     // ✅ FIX: Check location BEFORE showing loading dialog
+//     bool locationAvailable = await attendanceViewModel.isLocationAvailable();
+//     if (!locationAvailable) {
+//       debugPrint("❌ Location not available - aborting clock-in");
+//
+//       // Show clean, user-friendly message
+//       Get.snackbar(
+//         'Location Required',
+//         'Please enable Location Services to clock in',
+//         snackPosition: SnackPosition.TOP,
+//         backgroundColor: Colors.red.shade700,
+//         colorText: Colors.white,
+//         duration: const Duration(seconds: 5),
+//         icon: const Icon(Icons.location_off, color: Colors.white),
+//       );
+//
+//       return; // Don't proceed with clock-in
+//     }
+//
+//     showDialog(
+//       context: context,
+//       barrierDismissible: false,
+//       builder: (_) => const Center(child: CircularProgressIndicator()),
+//     );
+//
+//     try {
+//       await attendanceViewModel.saveFormAttendanceIn();
+//       _startBackgroundServices();
+//
+//       locationViewModel.isClockedIn.value = true;
+//       attendanceViewModel.isClockedIn.value = true;
+//
+//       SharedPreferences prefs = await SharedPreferences.getInstance();
+//       await prefs.setBool('isClockedIn', true);
+//
+//       _isRiveAnimationActive = true;
+//       if (_themeMenuIcon[0].riveIcon.status != null) {
+//         _themeMenuIcon[0].riveIcon.status!.value = true;
+//       }
+//
+//       _startLocalBackupTimer();
+//       _startLocationMonitoring();
+//
+//       // ✅ SYNC after clock-in with sync lock
+//       if (!_isSyncing) {
+//         await updateFunctionViewModel.syncAllLocalDataToServer();
+//         debugPrint("🔄 [SYNC] Data synced after clock-in");
+//       }
+//
+//       debugPrint("✅ [CLOCK-IN] ===== COMPLETED SUCCESSFULLY =====");
+//
+//     } catch (e) {
+//       debugPrint("❌ [CLOCK-IN] Error: $e");
+//       Get.snackbar('Error', 'Failed to clock in: $e',
+//           snackPosition: SnackPosition.TOP,
+//           backgroundColor: Colors.red,
+//           colorText: Colors.white);
+//     } finally {
+//       if (Navigator.of(context).canPop()) Navigator.of(context).pop();
+//     }
+//   }
+//
+//   void _startBackgroundServices() async {
+//     try {
+//       debugPrint("🛰 [BACKGROUND] Starting services...");
+//
+//       final service = FlutterBackgroundService();
+//       await location.enableBackgroundMode(enable: true);
+//
+//       initializeServiceLocation().catchError((e) => debugPrint("Service init error: $e"));
+//       service.startService().catchError((e) => debugPrint("Service start error: $e"));
+//       location.changeSettings(interval: 300, accuracy: loc.LocationAccuracy.high)
+//           .catchError((e) => debugPrint("Location settings error: $e"));
+//
+//       debugPrint("✅ [BACKGROUND] Services started");
+//     } catch (e) {
+//       debugPrint("⚠ [BACKGROUND] Services error: $e");
+//     }
+//   }
+//
+//   Future<void> _handleClockOut(BuildContext context) async {
+//     debugPrint("🎯 [TIMERCARD] ===== CLOCK-OUT STARTED =====");
+//
+//     showDialog(
+//       context: context,
+//       barrierDismissible: false,
+//       builder: (_) => const Center(child: CircularProgressIndicator()),
+//     );
+//
+//     try {
+//       _stopLocationMonitoring();
+//       _localBackupTimer?.cancel();
+//
+//       locationViewModel.saveCurrentLocation().catchError((e) => debugPrint("Location save error: $e"));
+//
+//       final service = FlutterBackgroundService();
+//
+//       locationViewModel.isClockedIn.value = false;
+//       attendanceViewModel.isClockedIn.value = false;
+//
+//       SharedPreferences prefs = await SharedPreferences.getInstance();
+//       await prefs.setBool('isClockedIn', false);
+//
+//       _isRiveAnimationActive = false;
+//       if (_themeMenuIcon[0].riveIcon.status != null) {
+//         _themeMenuIcon[0].riveIcon.status!.value = false;
+//       }
+//
+//       _localElapsedTime = '00:00:00';
+//       _localClockInTime = null;
+//
+//       service.invoke("stopService");
+//       await attendanceOutViewModel.saveFormAttendanceOut();
+//
+//       locationViewModel.saveLocation().catchError((e) => debugPrint("Final location save error: $e"));
+//       locationViewModel.saveClockStatus(false).catchError((e) => debugPrint("Clock status error: $e"));
+//
+//       await location.enableBackgroundMode(enable: false);
+//
+//       // ✅ SYNC after clock-out with sync lock
+//       if (!_isSyncing) {
+//         await updateFunctionViewModel.syncAllLocalDataToServer();
+//         debugPrint("🔄 [SYNC] Data synced after clock-out");
+//       }
+//
+//       debugPrint("✅ [CLOCK-OUT] ===== COMPLETED SUCCESSFULLY =====");
+//
+//     } catch (e) {
+//       debugPrint("❌ [CLOCK-OUT] Error: $e");
+//       Get.snackbar('Error', 'Failed to clock out: $e',
+//           snackPosition: SnackPosition.TOP,
+//           backgroundColor: Colors.red,
+//           colorText: Colors.white);
+//     } finally {
+//       if (Navigator.of(context).canPop()) Navigator.of(context).pop();
+//     }
+//   }
+//
+//   Future<void> _handleAutoClockOut() async {
+//     if (_autoClockOutInProgress) return;
+//     _autoClockOutInProgress = true;
+//     debugPrint("🔄 [AUTO] Auto Clock-Out triggered due to location OFF");
+//
+//     try {
+//       _stopLocationMonitoring();
+//       _localBackupTimer?.cancel();
+//
+//       locationViewModel.saveCurrentLocation().catchError((e) => debugPrint("Auto clock-out location error: $e"));
+//
+//       final service = FlutterBackgroundService();
+//
+//       locationViewModel.isClockedIn.value = false;
+//       attendanceViewModel.isClockedIn.value = false;
+//
+//       SharedPreferences prefs = await SharedPreferences.getInstance();
+//       await prefs.setBool('isClockedIn', false);
+//
+//       _isRiveAnimationActive = false;
+//       if (_themeMenuIcon[0].riveIcon.status != null) {
+//         _themeMenuIcon[0].riveIcon.status!.value = false;
+//       }
+//
+//       _localElapsedTime = '00:00:00';
+//       _localClockInTime = null;
+//
+//       service.invoke("stopService");
+//       await attendanceOutViewModel.saveFormAttendanceOut();
+//
+//       locationViewModel.saveLocation().catchError((e) => debugPrint("Auto save location error: $e"));
+//       locationViewModel.saveClockStatus(false).catchError((e) => debugPrint("Auto clock status error: $e"));
+//
+//       await location.enableBackgroundMode(enable: false);
+//
+//       // ✅ SYNC after auto clock-out with sync lock
+//       if (!_isSyncing) {
+//         await updateFunctionViewModel.syncAllLocalDataToServer();
+//         debugPrint("🔄 [SYNC] Data synced after auto clock-out");
+//       }
+//
+//       debugPrint("✅ [AUTO] Auto Clock-Out completed");
+//     } catch (e) {
+//       debugPrint("❌ [AUTO] Auto clock-out error: $e");
+//     } finally {
+//       _autoClockOutInProgress = false;
+//     }
+//   }
+//
+//   void _startLocationMonitoring() {
+//     _wasLocationAvailable = true;
+//     _autoClockOutInProgress = false;
+//
+//     _locationMonitorTimer = Timer.periodic(const Duration(seconds: 3), (timer) async {
+//       if (!attendanceViewModel.isClockedIn.value) {
+//         _stopLocationMonitoring();
+//         return;
+//       }
+//
+//       bool currentLocationAvailable = await attendanceViewModel.isLocationAvailable();
+//
+//       if (_wasLocationAvailable && !currentLocationAvailable) {
+//         debugPrint("📍 [LOCATION] Location OFF - triggering auto clock-out");
+//         await _handleAutoClockOut();
+//       }
+//
+//       _wasLocationAvailable = currentLocationAvailable;
+//     });
+//   }
+//
+//   void _stopLocationMonitoring() {
+//     _locationMonitorTimer?.cancel();
+//     _locationMonitorTimer = null;
+//     _autoClockOutInProgress = false;
+//   }
+// }
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -1961,34 +2835,256 @@ import 'package:get/get.dart';
 import 'package:order_booking_app/ViewModels/attendance_view_model.dart';
 import 'package:order_booking_app/ViewModels/location_view_model.dart';
 import 'package:order_booking_app/ViewModels/attendance_out_view_model.dart';
+import 'package:order_booking_app/ViewModels/update_function_view_model.dart';
 import 'package:rive/rive.dart';
 import 'package:location/location.dart' as loc;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../Tracker/trac.dart';
 import '../../main.dart';
 import 'assets.dart';
 import 'menu_item.dart';
 
-class TimerCard extends StatelessWidget {
-  final locationViewModel = Get.put(LocationViewModel());
-  final attendanceViewModel = Get.put(AttendanceViewModel());
-  final attendanceOutViewModel = Get.put(AttendanceOutViewModel());
+class TimerCard extends StatefulWidget {
+  const TimerCard({super.key});
+
+  @override
+  State<TimerCard> createState() => _TimerCardState();
+}
+
+class _TimerCardState extends State<TimerCard> with WidgetsBindingObserver {
+  final locationViewModel = Get.find<LocationViewModel>();
+  final attendanceViewModel = Get.find<AttendanceViewModel>();
+  final attendanceOutViewModel = Get.find<AttendanceOutViewModel>();
+  final updateFunctionViewModel = Get.find<UpdateFunctionViewModel>();
   final loc.Location location = loc.Location();
+  final Connectivity _connectivity = Connectivity();
 
   final List<MenuItemModel> _themeMenuIcon = MenuItemModel.menuItems3;
   Timer? _locationMonitorTimer;
   bool _wasLocationAvailable = true;
   bool _autoClockOutInProgress = false;
 
-  TimerCard({super.key});
+  bool _isRiveAnimationActive = false;
+  Timer? _localBackupTimer;
+  DateTime? _localClockInTime;
+  String _localElapsedTime = '00:00:00';
+
+  // ✅ AUTO-SYNC VARIABLES
+  Timer? _autoSyncTimer;
+  bool _isOnline = false;
+  bool _isSyncing = false; // ✅ ADD SYNC LOCK
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _initializeFromPersistentState();
+    _startAutoSyncMonitoring();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _restoreEverything();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _stopLocationMonitoring();
+    _localBackupTimer?.cancel();
+    _autoSyncTimer?.cancel();
+    _connectivitySubscription?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    debugPrint("🔄 [LIFECYCLE] App state changed: $state");
+
+    if (state == AppLifecycleState.resumed) {
+      _restoreEverything();
+      _checkConnectivityAndSync();
+    }
+  }
+
+  // ✅ AUTO-SYNC MONITORING SYSTEM WITH SYNC LOCK
+  void _startAutoSyncMonitoring() async {
+    // Listen to connectivity changes
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen((List<ConnectivityResult> results) {
+      bool wasOnline = _isOnline;
+      _isOnline = results.isNotEmpty && results.any((result) => result != ConnectivityResult.none);
+
+      debugPrint("🌐 [CONNECTIVITY] Status: ${_isOnline ? 'ONLINE' : 'OFFLINE'} | Was: ${wasOnline ? 'ONLINE' : 'OFFLINE'} | Syncing: $_isSyncing");
+
+      // ✅ FIX: Only trigger if we JUST came online AND not already syncing
+      if (_isOnline && !wasOnline && !_isSyncing) {
+        debugPrint("🔄 [AUTO-SYNC] Internet connected - triggering auto-sync");
+        _triggerAutoSync();
+      }
+    });
+
+    // ✅ FIX: Reduce frequency and add protection
+    _autoSyncTimer = Timer.periodic(const Duration(minutes: 2), (timer) {
+      if (!_isSyncing) {
+        _checkConnectivityAndSync();
+      }
+    });
+
+    _checkConnectivityAndSync();
+  }
+
+  // ✅ CHECK CONNECTIVITY AND SYNC WITH PROTECTION
+  void _checkConnectivityAndSync() async {
+    if (_isSyncing) {
+      debugPrint('⏸️ Sync already in progress - skipping');
+      return;
+    }
+
+    try {
+      var results = await _connectivity.checkConnectivity();
+      bool wasOnline = _isOnline;
+      _isOnline = results.isNotEmpty && results.any((result) => result != ConnectivityResult.none);
+
+      if (_isOnline && !wasOnline && !_isSyncing) {
+        debugPrint("🔄 [AUTO-SYNC] Internet detected - triggering sync");
+        _triggerAutoSync();
+      }
+    } catch (e) {
+      debugPrint("❌ [CONNECTIVITY] Error checking connectivity: $e");
+    }
+  }
+
+  // ✅ TRIGGER AUTO-SYNC WITH SYNC LOCKING
+  void _triggerAutoSync() async {
+    // Prevent multiple simultaneous syncs
+    if (_isSyncing) {
+      debugPrint('⏸️ Auto-sync already in progress - skipping');
+      return;
+    }
+
+    _isSyncing = true; // Lock sync
+    debugPrint('🔒 [AUTO-SYNC LOCKED] Starting automatic data sync...');
+
+    try {
+      // Show subtle notification
+      Get.snackbar(
+        'Syncing Data',
+        'Auto-syncing offline data...',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.blue.shade700,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+      );
+
+      // Sync all local data to server
+      await updateFunctionViewModel.syncAllLocalDataToServer();
+
+      debugPrint('✅ [AUTO-SYNC COMPLETED] Automatic sync completed');
+
+    } catch (e) {
+      debugPrint('❌ [AUTO-SYNC FAILED] Error during auto-sync: $e');
+    } finally {
+      _isSyncing = false; // Release lock
+      debugPrint('🔓 [AUTO-SYNC UNLOCKED] Sync completed or failed');
+    }
+  }
+
+  void _restoreEverything() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isClockedIn = prefs.getBool('isClockedIn') ?? false;
+
+    if (isClockedIn) {
+      debugPrint("🎯 [BULLETPROOF] Restoring EVERYTHING...");
+
+      locationViewModel.isClockedIn.value = true;
+      attendanceViewModel.isClockedIn.value = true;
+
+      _isRiveAnimationActive = true;
+      if (_themeMenuIcon[0].riveIcon.status != null) {
+        _themeMenuIcon[0].riveIcon.status!.value = true;
+      }
+
+      _startLocalBackupTimer();
+
+      if (mounted) {
+        setState(() {});
+      }
+
+      debugPrint("✅ [BULLETPROOF] Everything restored successfully");
+    }
+  }
+
+  void _startLocalBackupTimer() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? clockInTimeString = prefs.getString('clockInTime');
+
+    if (clockInTimeString == null) return;
+
+    _localClockInTime = DateTime.parse(clockInTimeString);
+    _localBackupTimer?.cancel();
+
+    _localBackupTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_localClockInTime == null) return;
+
+      final now = DateTime.now();
+      final duration = now.difference(_localClockInTime!);
+
+      String twoDigits(int n) => n.toString().padLeft(2, '0');
+      String hours = twoDigits(duration.inHours);
+      String minutes = twoDigits(duration.inMinutes.remainder(60));
+      String seconds = twoDigits(duration.inSeconds.remainder(60));
+
+      _localElapsedTime = '$hours:$minutes:$seconds';
+      attendanceViewModel.elapsedTime.value = _localElapsedTime;
+
+      if (mounted) {
+        setState(() {});
+      }
+    });
+
+    debugPrint("✅ [BACKUP TIMER] Local backup timer started");
+  }
+
+  Future<void> _initializeFromPersistentState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isClockedIn = prefs.getBool('isClockedIn') ?? false;
+
+    debugPrint("🔄 [INIT] Restoring state: isClockedIn = $isClockedIn");
+
+    locationViewModel.isClockedIn.value = isClockedIn;
+    attendanceViewModel.isClockedIn.value = isClockedIn;
+    _isRiveAnimationActive = isClockedIn;
+
+    if (isClockedIn) {
+      debugPrint("✅ [INIT] User was clocked in - starting everything...");
+
+      _startBackgroundServices();
+      _startLocationMonitoring();
+      _startLocalBackupTimer();
+
+      debugPrint("✅ [INIT] Full clocked-in state restored");
+    }
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   void onThemeRiveIconInit(Artboard artboard) {
-    final controller =
-    StateMachineController.fromArtboard(artboard, _themeMenuIcon[0].riveIcon.stateMachine);
+    final controller = StateMachineController.fromArtboard(
+        artboard, _themeMenuIcon[0].riveIcon.stateMachine);
     if (controller != null) {
       artboard.addController(controller);
       _themeMenuIcon[0].riveIcon.status =
       controller.findInput<bool>("active") as SMIBool?;
+
+      if (_themeMenuIcon[0].riveIcon.status != null) {
+        _themeMenuIcon[0].riveIcon.status!.value = _isRiveAnimationActive;
+        debugPrint("🎯 [RIVE] Animation initialized with state: $_isRiveAnimationActive");
+      }
     } else {
       debugPrint("StateMachineController not found!");
     }
@@ -2001,26 +3097,30 @@ class TimerCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Obx(() => Text(
-            attendanceViewModel.elapsedTime.value, // ✅ USE ATTENDANCE TIMER
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-          )),
+          Obx(() {
+            String displayTime = _localElapsedTime;
+            if (displayTime == '00:00:00' && attendanceViewModel.isClockedIn.value) {
+              displayTime = attendanceViewModel.elapsedTime.value;
+            }
+
+            return Text(
+              displayTime,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            );
+          }),
           Obx(() {
             return ElevatedButton(
               onPressed: () async {
                 debugPrint("🎯 [BUTTON] Button pressed");
-                debugPrint("   - locationViewModel.isClockedIn: ${locationViewModel.isClockedIn.value}");
-                debugPrint("   - attendanceViewModel.isClockedIn: ${attendanceViewModel.isClockedIn.value}");
+                debugPrint("   - Clocked In: ${attendanceViewModel.isClockedIn.value}");
 
                 if (attendanceViewModel.isClockedIn.value) {
-                  debugPrint("🔄 [BUTTON] Calling clock-out");
                   await _handleClockOut(context);
                 } else {
-                  debugPrint("🔄 [BUTTON] Calling clock-in");
                   await _handleClockIn(context);
                 }
               },
@@ -2052,9 +3152,27 @@ class TimerCard extends StatelessWidget {
     );
   }
 
-  // 🎯 CLOCK-IN
   Future<void> _handleClockIn(BuildContext context) async {
     debugPrint("🎯 [TIMERCARD] ===== CLOCK-IN STARTED =====");
+
+    // ✅ FIX: Check location BEFORE showing loading dialog
+    bool locationAvailable = await attendanceViewModel.isLocationAvailable();
+    if (!locationAvailable) {
+      debugPrint("❌ Location not available - aborting clock-in");
+
+      // Show clean, user-friendly message
+      Get.snackbar(
+        'Location Required',
+        'Please enable Location Services to clock in',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red.shade700,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 5),
+        icon: const Icon(Icons.location_off, color: Colors.white),
+      );
+
+      return; // Don't proceed with clock-in
+    }
 
     showDialog(
       context: context,
@@ -2063,31 +3181,42 @@ class TimerCard extends StatelessWidget {
     );
 
     try {
-      debugPrint("1️⃣ [CLOCK-IN] Calling attendanceViewModel.saveFormAttendanceIn()");
       await attendanceViewModel.saveFormAttendanceIn();
-
-      debugPrint("2️⃣ [CLOCK-IN] Starting background services...");
       _startBackgroundServices();
 
-      debugPrint("3️⃣ [CLOCK-IN] Updating UI state...");
       locationViewModel.isClockedIn.value = true;
       attendanceViewModel.isClockedIn.value = true;
-      _themeMenuIcon[0].riveIcon.status!.value = true;
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isClockedIn', true);
+
+      _isRiveAnimationActive = true;
+      if (_themeMenuIcon[0].riveIcon.status != null) {
+        _themeMenuIcon[0].riveIcon.status!.value = true;
+      }
+
+      _startLocalBackupTimer();
       _startLocationMonitoring();
+
+      // ✅ SYNC after clock-in with sync lock
+      if (!_isSyncing) {
+        await updateFunctionViewModel.syncAllLocalDataToServer();
+        debugPrint("🔄 [SYNC] Data synced after clock-in");
+      }
 
       debugPrint("✅ [CLOCK-IN] ===== COMPLETED SUCCESSFULLY =====");
 
     } catch (e) {
       debugPrint("❌ [CLOCK-IN] Error: $e");
       Get.snackbar('Error', 'Failed to clock in: $e',
-          snackPosition: SnackPosition.TOP, backgroundColor: Colors.red, colorText: Colors.white);
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white);
     } finally {
-      debugPrint("🏁 [CLOCK-IN] Finally block reached");
       if (Navigator.of(context).canPop()) Navigator.of(context).pop();
     }
   }
 
-  // 🛰 START BACKGROUND SERVICES - NON-BLOCKING
   void _startBackgroundServices() async {
     try {
       debugPrint("🛰 [BACKGROUND] Starting services...");
@@ -2106,7 +3235,6 @@ class TimerCard extends StatelessWidget {
     }
   }
 
-  // 🎯 CLOCK-OUT
   Future<void> _handleClockOut(BuildContext context) async {
     debugPrint("🎯 [TIMERCARD] ===== CLOCK-OUT STARTED =====");
 
@@ -2117,52 +3245,54 @@ class TimerCard extends StatelessWidget {
     );
 
     try {
-      debugPrint("1️⃣ [CLOCK-OUT] Stopping location monitoring...");
       _stopLocationMonitoring();
+      _localBackupTimer?.cancel();
 
-      debugPrint("2️⃣ [CLOCK-OUT] Saving current location...");
       locationViewModel.saveCurrentLocation().catchError((e) => debugPrint("Location save error: $e"));
 
       final service = FlutterBackgroundService();
 
-      debugPrint("3️⃣ [CLOCK-OUT] Setting clock-in state to false...");
       locationViewModel.isClockedIn.value = false;
       attendanceViewModel.isClockedIn.value = false;
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isClockedIn', false);
 
-      debugPrint("4️⃣ [CLOCK-OUT] Stopping background service...");
+      _isRiveAnimationActive = false;
+      if (_themeMenuIcon[0].riveIcon.status != null) {
+        _themeMenuIcon[0].riveIcon.status!.value = false;
+      }
+
+      _localElapsedTime = '00:00:00';
+      _localClockInTime = null;
+
       service.invoke("stopService");
-
-      debugPrint("5️⃣ [CLOCK-OUT] Getting total time from attendance timer...");
-      var totalTime = attendanceViewModel.elapsedTime.value; // ✅ USE ATTENDANCE TIMER
-      debugPrint("   - Total time: $totalTime");
-
-      debugPrint("6️⃣ [CLOCK-OUT] Calling saveFormAttendanceOut...");
       await attendanceOutViewModel.saveFormAttendanceOut();
 
-      debugPrint("7️⃣ [CLOCK-OUT] Saving final location...");
       locationViewModel.saveLocation().catchError((e) => debugPrint("Final location save error: $e"));
       locationViewModel.saveClockStatus(false).catchError((e) => debugPrint("Clock status error: $e"));
 
-      debugPrint("8️⃣ [CLOCK-OUT] Updating UI...");
-      _themeMenuIcon[0].riveIcon.status!.value = false;
       await location.enableBackgroundMode(enable: false);
+
+      // ✅ SYNC after clock-out with sync lock
+      if (!_isSyncing) {
+        await updateFunctionViewModel.syncAllLocalDataToServer();
+        debugPrint("🔄 [SYNC] Data synced after clock-out");
+      }
 
       debugPrint("✅ [CLOCK-OUT] ===== COMPLETED SUCCESSFULLY =====");
 
     } catch (e) {
       debugPrint("❌ [CLOCK-OUT] Error: $e");
       Get.snackbar('Error', 'Failed to clock out: $e',
-          snackPosition: SnackPosition.TOP, backgroundColor: Colors.red, colorText: Colors.white);
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white);
     } finally {
-      debugPrint("🏁 [CLOCK-OUT] Finally block reached");
       if (Navigator.of(context).canPop()) Navigator.of(context).pop();
     }
   }
 
-  // 🎯 AUTO CLOCK-OUT
   Future<void> _handleAutoClockOut() async {
     if (_autoClockOutInProgress) return;
     _autoClockOutInProgress = true;
@@ -2170,15 +3300,25 @@ class TimerCard extends StatelessWidget {
 
     try {
       _stopLocationMonitoring();
+      _localBackupTimer?.cancel();
 
       locationViewModel.saveCurrentLocation().catchError((e) => debugPrint("Auto clock-out location error: $e"));
 
       final service = FlutterBackgroundService();
+
       locationViewModel.isClockedIn.value = false;
       attendanceViewModel.isClockedIn.value = false;
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isClockedIn', false);
+
+      _isRiveAnimationActive = false;
+      if (_themeMenuIcon[0].riveIcon.status != null) {
+        _themeMenuIcon[0].riveIcon.status!.value = false;
+      }
+
+      _localElapsedTime = '00:00:00';
+      _localClockInTime = null;
 
       service.invoke("stopService");
       await attendanceOutViewModel.saveFormAttendanceOut();
@@ -2186,8 +3326,14 @@ class TimerCard extends StatelessWidget {
       locationViewModel.saveLocation().catchError((e) => debugPrint("Auto save location error: $e"));
       locationViewModel.saveClockStatus(false).catchError((e) => debugPrint("Auto clock status error: $e"));
 
-      _themeMenuIcon[0].riveIcon.status!.value = false;
       await location.enableBackgroundMode(enable: false);
+
+      // ✅ SYNC after auto clock-out with sync lock
+      if (!_isSyncing) {
+        await updateFunctionViewModel.syncAllLocalDataToServer();
+        debugPrint("🔄 [SYNC] Data synced after auto clock-out");
+      }
+
       debugPrint("✅ [AUTO] Auto Clock-Out completed");
     } catch (e) {
       debugPrint("❌ [AUTO] Auto clock-out error: $e");
@@ -2196,13 +3342,12 @@ class TimerCard extends StatelessWidget {
     }
   }
 
-  // 🎯 LOCATION MONITORING
   void _startLocationMonitoring() {
     _wasLocationAvailable = true;
     _autoClockOutInProgress = false;
 
     _locationMonitorTimer = Timer.periodic(const Duration(seconds: 3), (timer) async {
-      if (!attendanceViewModel.isClockedIn.value) { // ✅ USE ATTENDANCE VIEW MODEL
+      if (!attendanceViewModel.isClockedIn.value) {
         _stopLocationMonitoring();
         return;
       }

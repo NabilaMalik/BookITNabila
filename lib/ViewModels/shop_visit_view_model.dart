@@ -39,6 +39,7 @@ class ShopVisitViewModel extends GetxController {
   final TextEditingController shopAddressController = TextEditingController();
   final TextEditingController ownerNameController = TextEditingController();
   final TextEditingController bookerNameController = TextEditingController();
+  final feedBackController = TextEditingController();
   var shop_address = ''.obs;
   var owner_name = ''.obs;
   var booker_name = userName.obs;
@@ -84,6 +85,12 @@ class ShopVisitViewModel extends GetxController {
     super.onInit();
     fetchTotalShopVisit();
     updateButtonReadiness();
+  }
+  ///====19-10-2025////
+  @override
+  void onClose() {
+    feedBackController.dispose();
+    super.onClose();
   }
 
   // ====================================================================
@@ -253,9 +260,7 @@ class ShopVisitViewModel extends GetxController {
     }
 
     // Feedback Check (Required for Only Visit)
-    if (feedBack.value.isEmpty) {
-      return "Please provide feedback for the Only Visit submission.";
-    }
+
 
     return null; // All checks passed for Only Visit
   }
