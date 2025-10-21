@@ -2952,6 +2952,7 @@ class _TimerCardState extends State<TimerCard> with WidgetsBindingObserver {
       bool wasOnline = _isOnline;
       _isOnline = results.isNotEmpty && results.any((result) => result != ConnectivityResult.none);
 
+
       if (_isOnline && !wasOnline && !_isSyncing) {
         debugPrint("🔄 [AUTO-SYNC] Internet detected - triggering sync");
         _triggerAutoSync();
