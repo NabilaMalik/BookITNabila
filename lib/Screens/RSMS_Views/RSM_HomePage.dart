@@ -40,6 +40,7 @@ class RSMHomepage extends StatefulWidget {
   _RSMHomepageState createState() => _RSMHomepageState();
 }
 
+
 class _RSMHomepageState extends State<RSMHomepage> {
   late final addShopViewModel = Get.put(AddShopViewModel());
   late final attendanceViewModel = Get.put(AttendanceViewModel());
