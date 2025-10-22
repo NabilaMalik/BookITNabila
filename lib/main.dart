@@ -488,8 +488,6 @@ Future<void> main() async {
     userNameNSM = prefs.getString('userNameNSM') ?? '';
     userNameSM = prefs.getString('userNameSM') ?? '';
 
-
-
     debugPrint("Initializing Workmanager...");
     Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
     debugPrint("Workmanager initialized.");

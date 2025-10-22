@@ -174,13 +174,13 @@ class NSMHomepageState extends State<NSMHomepage> {
               ),
             ),
             const SizedBox(height: 20),
-            Row(
+          Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
 
               children: [
 
-
+                TimerCard(),
                 // const SizedBox(width: 50),
                 TimerCard(), // Add the TimerCard here
 

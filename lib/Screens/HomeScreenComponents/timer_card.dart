@@ -2828,6 +2828,8 @@
 //     _autoClockOutInProgress = false;
 //   }
 // }
+
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -2942,6 +2944,9 @@ class _TimerCardState extends State<TimerCard> with WidgetsBindingObserver {
       debugPrint('⏸️ Sync already in progress - skipping');
       return;
     }
+
+
+
 
 
 

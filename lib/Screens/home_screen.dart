@@ -685,6 +685,7 @@ class _RiveAppHomeState extends State<HomeScreen>
                 _buildHeader(),
                 const SizedBox(height: 1),
                 TimerCard(),
+
                 const SizedBox(height: 3),
                 _buildActionButtons(screenWidth),
                 const SizedBox(height: 20),
