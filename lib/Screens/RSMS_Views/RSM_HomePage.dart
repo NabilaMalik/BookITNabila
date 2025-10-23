@@ -21,6 +21,8 @@ import '../../Tracker/trac.dart';
 import '../../ViewModels/add_shop_view_model.dart';
 import '../../ViewModels/attendance_out_view_model.dart';
 import '../../ViewModels/attendance_view_model.dart';
+import '../../ViewModels/location_view_model.dart';
+import '../../ViewModels/update_function_view_model.dart';
 import '../../main.dart';
 import '../HomeScreenComponents/timer_card.dart';
 import 'LIVE_location_page.dart';
@@ -53,6 +55,11 @@ class _RSMHomepageState extends State<RSMHomepage> {
   @override
   void initState() {
     super.initState();
+
+    Get.put(UpdateFunctionViewModel());
+    Get.put(LocationViewModel());
+    Get.put(AttendanceViewModel());
+    Get.put(AttendanceOutViewModel());
     addShopViewModel.fetchAllAddShop();
     attendanceViewModel.fetchAllAttendance();
     attendanceOutViewModel.fetchAllAttendanceOut();
@@ -323,7 +330,10 @@ class _RSMHomepageState extends State<RSMHomepage> {
     // Navigation logic based on the title
     switch (title) {
       case 'SHOP VISIT':
-         if (newIsClockedIn==true) {
+        final locationVM = Get.find<LocationViewModel>();
+        if (locationVM.isClockedIn.value)
+         // if (newIsClockedIn==true)
+         {
           Navigator.push(
             context,
             MaterialPageRoute(

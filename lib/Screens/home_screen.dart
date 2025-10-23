@@ -696,7 +696,7 @@ class _RiveAppHomeState extends State<HomeScreen>
                 Padding(
                   padding: const EdgeInsets.only(bottom: 15),
                   child: Text(
-                    'Version v0.1.1',
+                    ' v0.1.1',
                     style: TextStyle(
                       color: Colors.grey.shade600,
                       fontSize: 14,

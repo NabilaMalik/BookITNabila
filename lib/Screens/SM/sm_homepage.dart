@@ -15,6 +15,8 @@ import '../../Databases/dp_helper.dart';
 import '../../ViewModels/add_shop_view_model.dart';
 import '../../ViewModels/attendance_out_view_model.dart';
 import '../../ViewModels/attendance_view_model.dart';
+import '../../ViewModels/location_view_model.dart';
+import '../../ViewModels/update_function_view_model.dart';
 import '../HomeScreenComponents/timer_card.dart';
 import 'SM_bookerbookingdetails.dart';
 import 'sm_bookingstatus.dart';
@@ -40,6 +42,12 @@ class _SMHomepageState extends State<SMHomepage> {
   @override
   void initState() {
     super.initState();
+
+    // ✅ Register all required ViewModels before TimerCard is used
+    Get.put(UpdateFunctionViewModel());
+    Get.put(LocationViewModel());
+    Get.put(AttendanceViewModel());
+    Get.put(AttendanceOutViewModel());
     addShopViewModel.fetchAllAddShop();
     attendanceViewModel.fetchAllAttendance();
     attendanceOutViewModel.fetchAllAttendanceOut();
@@ -260,7 +268,10 @@ class _SMHomepageState extends State<SMHomepage> {
     // Navigation logic based on the title
     switch (title) {
       case 'Shop Visit':
-        if (newIsClockedIn==true) {
+        final locationVM = Get.find<LocationViewModel>();
+        if (locationVM.isClockedIn.value)
+        // if (newIsClockedIn==true)
+        {
           Navigator.push(
             context,
             MaterialPageRoute(

@@ -95,7 +95,7 @@ const headsShopVisitsTableName = 'HeadsShopVisits';
 //   }
 //   return false;
 // }
-String  version="0.0.1";
+String  version="v0.1.1";
 dynamic shopAddress = "";
 
 Future<bool> isNetworkAvailable() async {
