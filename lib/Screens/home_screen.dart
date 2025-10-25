@@ -882,9 +882,9 @@ class _RiveAppHomeState extends State<HomeScreen>
                     ],
                     labels: const [
                       "Total Shops",
-                      "Visits",
-                      "Orders",
-                      "Returns"
+                      "total Shops Visits",
+                      "total Orders",
+                      "total\nReturn"
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -896,10 +896,10 @@ class _RiveAppHomeState extends State<HomeScreen>
                       totalRecovery.toString(),
                     ],
                     labels: const [
-                      "Monthly Attendance",
-                      "Daily Bookings",
-                      "Dispatched",
-                      "Recovery"
+                      "total Attendance",
+                      "total Bookings",
+                      "total Dispatched Orders",
+                      "total Recovery"
                     ],
                   ),
                 ],
