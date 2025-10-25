@@ -398,7 +398,7 @@ class _SMHomepageState extends State<SMHomepage> {
     setState(() {
       user_id = prefs.getString('userId') ?? '';
       userName = prefs.getString('userName') ?? '';
-      userCity = prefs.getString('userCity') ?? '';
+      userCity= prefs.getString('userCity') ?? '';
       userDesignation = prefs.getString('userDesignation') ?? '';
       userBrand = prefs.getString('userBrand') ?? '';
       userSM = prefs.getString('userSM') ?? '';
@@ -649,7 +649,10 @@ class _SMHomepageState extends State<SMHomepage> {
                 fontSize: 13,
                 color: Colors.black87,
               ),
+
             ),
+
+
           ],
         ),
       ),
@@ -683,8 +686,12 @@ class _SMHomepageState extends State<SMHomepage> {
             ),
           );
         }
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const ShopVisitPage()),
+        // );
         break;
-      case 'BOOKERS STATUS':
+      case 'Booker Status':
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => BookingStatus()),

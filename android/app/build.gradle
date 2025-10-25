@@ -19,7 +19,7 @@ if (keystorePropertiesFile.exists()) {
 //    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 //}
 android {
-    namespace = "com.metaxperts.order_booking_app"
+    namespace = "com.metaxperts.BookIT"
 //    compileSdk = flutter.compileSdkVersion
 //    ndkVersion = flutter.ndkVersion
     ndkVersion = "25.1.8937393"
@@ -44,8 +44,8 @@ android {
     }
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-//        applicationId = "com.metaxperts.order_booking_app"
-        applicationId = "com.metaxperts.order_booking_app"
+//        applicationId = "com.metaxperts.BookIT"
+        applicationId = "com.metaxperts.BookIT"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion 35
 
@@ -60,7 +60,7 @@ android {
             if (keystorePropertiesFile.exists()) {
                 keyAlias keystoreProperties['keyAlias']
                 keyPassword keystoreProperties['keyPassword']
-                storeFile file(keystoreProperties['storeFile'])
+                storeFile file('/Users/macbook/Documents/BookIT_Meta/android/app/upload-keystore.jks')
                 storePassword keystoreProperties['storePassword']
             }
         }

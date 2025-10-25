@@ -654,8 +654,6 @@ void onStart1(ServiceInstance service1) async {
     );
   });
 }
-
-///background foreground services for location
 @pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
   DartPluginRegistrant.ensureInitialized();
@@ -666,6 +664,7 @@ void onStart(ServiceInstance service) async {
   FlutterLocalNotificationsPlugin();
 
   LocationService locationService = LocationService();
+
   if (service is AndroidServiceInstance) {
     service.on('setAsForeground').listen((event) {
       service.setAsForegroundService();
@@ -673,8 +672,6 @@ void onStart(ServiceInstance service) async {
 
     service.on('setAsBackground').listen((event) {
       service.setAsBackgroundService();
-      // backgroundTask();
-      //ls.listenLocation();
     });
   }
 
@@ -683,86 +680,37 @@ void onStart(ServiceInstance service) async {
     locationService.deleteDocument();
     Workmanager().cancelAll();
     service.stopSelf();
-    //stopListeningLocation();
     FlutterLocalNotificationsPlugin().cancelAll();
   });
-  // monitorInternetConnection(); // Add this line to monitor connectivity changes
 
-  Timer.periodic(const Duration(minutes: 10), (timer) async {
-    if (service is AndroidServiceInstance) {
-      if (await service.isForegroundService()) {
-        // backgroundTask();
-      }
-    }
-    final deviceInfo = DeviceInfoPlugin();
-    String? device1;
-
-    if (Platform.isAndroid) {
-      final androidInfo = await deviceInfo.androidInfo;
-      device1 = androidInfo.model;
-    }
-
-    if (Platform.isIOS) {
-      final iosInfo = await deviceInfo.iosInfo;
-      device1 = iosInfo.model;
-    }
-
-    service.invoke(
-      'update',
-      {
-        "current_date": DateTime.now().toIso8601String(),
-        "device": device1,
-      },
-    );
-  });
-
-  Workmanager().registerPeriodicTask("1", "simpleTask",
-      frequency: const Duration(minutes: 15));
-
+  // Start location if clocked in
   if (locationViewModel.isClockedIn.value == false) {
     startTimer();
     locationService.listenLocation();
   }
 
-  ///background timer
+  /// ✅ Immediate + accurate background timer
+  int secondsPassed = 0;
+
+  // 🔹 Immediately show the first notification
+  if (service is AndroidServiceInstance &&
+      await service.isForegroundService()) {
+    service.setForegroundNotificationInfo(
+      title: "ClockIn",
+      content: "Timer ${_formatDuration(secondsPassed.toString())}",
+    );
+  }
+
+  // 🔹 Then update every second
   Timer.periodic(const Duration(seconds: 1), (timer) async {
-    if (service is AndroidServiceInstance) {
-      if (await service.isForegroundService()) {
-        // flutterLocalNotificationsPlugin.show(
-        //   888,
-        //   'COOL SERVICE',
-        //   'Awesome',
-        //   const NotificationDetails(
-        //     android: AndroidNotificationDetails(
-        //       'my_foreground',
-        //       'MY FOREGROUND SERVICE',
-        //       icon: 'ic_bg_service_small',
-        //       ongoing: true,
-        //       priority: Priority.high,
-        //     ),
-        //   ),
-        // );
+    secondsPassed++;
 
-        // flutterLocalNotificationsPlugin.show(
-        //   889,
-        //   'Location',
-        //   'Longitude ${locationService.longi} , Latitute ${locationService.lat}',
-        //   const NotificationDetails(
-        //     android: AndroidNotificationDetails(
-        //       'my_foreground',
-        //       'MY FOREGROUND SERVICE',
-        //       icon: 'ic_bg_service_small',
-        //       ongoing: true,
-        //     ),
-        //   ),
-        // );
-
-        service.setForegroundNotificationInfo(
-          title: "ClockIn",
-          content:
-          "Timer ${_formatDuration(locationViewModel.secondsPassed.toString())}",
-        );
-      }
+    if (service is AndroidServiceInstance &&
+        await service.isForegroundService()) {
+      service.setForegroundNotificationInfo(
+        title: "ClockIn",
+        content: "Timer ${_formatDuration(secondsPassed.toString())}",
+      );
     }
 
     final deviceInfo = DeviceInfoPlugin();
@@ -771,9 +719,7 @@ void onStart(ServiceInstance service) async {
     if (Platform.isAndroid) {
       final androidInfo = await deviceInfo.androidInfo;
       device = androidInfo.model;
-    }
-
-    if (Platform.isIOS) {
+    } else if (Platform.isIOS) {
       final iosInfo = await deviceInfo.iosInfo;
       device = iosInfo.model;
     }
@@ -781,12 +727,13 @@ void onStart(ServiceInstance service) async {
     service.invoke(
       'update',
       {
-        "current_date": DateTime.now().toIso8601String(),
+        "current_date": DateTime.now().toLocal().toIso8601String(),
         "device": device,
       },
     );
   });
 }
+
 
 String _formatDuration(String secondsString) {
   int seconds = int.parse(secondsString);

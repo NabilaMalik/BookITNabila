@@ -603,13 +603,15 @@ class _RSMHomepageState extends State<RSMHomepage> {
                         "BOOKERS ORDER DETAILS",
                         Icons.receipt_long_rounded,
                         Colors.deepPurple,
+
                       ),
-                      _buildModernCard(
-                        context,
-                        "LIVE LOCATION",
-                        Icons.location_on_rounded,
-                        Colors.orange,
-                      ),
+                      ///comment code with location button
+                      // _buildModernCard(
+                      //   context,
+                      //   "LIVE LOCATION",
+                      //   Icons.location_on_rounded,
+                      //   Colors.orange,
+                      // ),
                     ],
                   ),
                 ),
