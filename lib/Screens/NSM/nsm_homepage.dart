@@ -339,15 +339,368 @@
 //   }
 // }
 
+
+
+
+
 ///added code 23-10-25
+
+// import 'package:flutter/material.dart';
+// import 'package:geocoding/geocoding.dart';
+// import 'package:get/get.dart';
+// import 'package:order_booking_app/Screens/NSM/nsm_order_details_page.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+// import '../../Databases/dp_helper.dart';
+// import '../../Databases/util.dart';
+// import '../../Tracker/location00.dart';
+// import '../../ViewModels/add_shop_view_model.dart';
+// import '../../ViewModels/attendance_out_view_model.dart';
+// import '../../ViewModels/attendance_view_model.dart';
+// import '../../ViewModels/location_view_model.dart';
+// import '../../ViewModels/update_function_view_model.dart';
+// import '../HomeScreenComponents/timer_card.dart';
+// import '../HomeScreenComponents/profile_section.dart';
+// import 'NSMOrderDetails/nsm_order_details_screen.dart';
+// import 'NSM_ShopVisit.dart';
+// import 'NSM_bookerbookingdetails.dart';
+// import 'nsm_bookingStatus.dart';
+// import 'NSM LOCATIONS/nsm_location_navigation.dart';
+// import 'nsm_shopdetails.dart';
+// import 'package:flutter/foundation.dart';
+// import 'package:flutter/services.dart';
+// import 'package:flutter_background_service/flutter_background_service.dart';
+// // import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:geolocator/geolocator.dart';
+// import 'package:in_app_update/in_app_update.dart';
+// import 'package:intl/intl.dart';
+// import 'package:location/location.dart' as loc;
+// import 'package:path_provider/path_provider.dart';
+// import 'dart:async';
+// import 'dart:io' show File, InternetAddress, SocketException;
+//
+// import '../../Tracker/trac.dart';
+//
+// import '../../main.dart';
+//
+// import 'package:permission_handler/permission_handler.dart' show Permission, PermissionActions, PermissionStatus, PermissionStatusGetters, openAppSettings;
+//
+// class NSMHomepage extends StatefulWidget {
+//   const NSMHomepage({super.key});
+//
+//   @override
+//   NSMHomepageState createState() => NSMHomepageState();
+// }
+//
+// class NSMHomepageState extends State<NSMHomepage> {
+//   int? attendanceId;
+//   int? attendanceId1;
+//   double? globalLatitude1;
+//   double? globalLongitude1;
+//   DBHelper dbHelper = DBHelper();
+//   bool isLoadingReturn = false;
+//   final loc.Location location = loc.Location();
+//   bool isLoading = false; // Define isLoading variable
+//   Timer? _timer;
+//   bool pressClockIn = false;
+//   late StreamSubscription<ServiceStatus> locationServiceStatusStream;
+//   late final addShopViewModel = Get.put(AddShopViewModel());
+//   late final attendanceViewModel = Get.put(AttendanceViewModel());
+//   late final attendanceOutViewModel = Get.put(AttendanceOutViewModel());
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//
+//     Get.put(UpdateFunctionViewModel());
+//     Get.put(LocationViewModel());
+//     Get.put(AttendanceViewModel());
+//     Get.put(AttendanceOutViewModel());
+//
+//     addShopViewModel.fetchAllAddShop();
+//     attendanceViewModel.fetchAllAttendance();
+//     attendanceOutViewModel.fetchAllAttendanceOut();
+//     _retrieveSavedValues();
+//     checkForUpdate(); // Check for updates when the screen opens
+//   }
+//
+//   @override
+//   void dispose() {
+//     locationServiceStatusStream.cancel();
+//     super.dispose();
+//   }
+//
+//   _retrieveSavedValues() async {
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+//     setState(() {
+//       user_id = prefs.getString('userId') ?? '';
+//       userName = prefs.getString('userName') ?? '';
+//       userCity = prefs.getString('userCity') ?? '';
+//       userDesignation = prefs.getString('userDesignation') ?? '';
+//       userBrand = prefs.getString('userBrand') ?? '';
+//       userSM = prefs.getString('userSM') ?? '';
+//       userNSM = prefs.getString('userNSM') ?? '';
+//       userRSM = prefs.getString('userRSM') ?? '';
+//       shopVisitHeadsHighestSerial = prefs.getInt('shopVisitHeadsHighestSerial') ?? 1;
+//     });
+//   }
+//
+//   void showLoadingIndicator(BuildContext context) {
+//     showDialog(
+//       context: context,
+//       barrierDismissible: false,
+//       builder: (BuildContext context) {
+//         return WillPopScope(
+//           onWillPop: () async => false,
+//           child: const AlertDialog(
+//             content: Row(
+//               children: [
+//                 CircularProgressIndicator(),
+//                 SizedBox(width: 20),
+//                 Text("Please Wait..."),
+//               ],
+//             ),
+//           ),
+//         );
+//       },
+//     );
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return WillPopScope(
+//       onWillPop: () async {
+//         return false;
+//       },
+//       child: Scaffold(
+//         backgroundColor: Colors.blue.shade50,
+//         body: SafeArea(
+//           child: Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 15.0),
+//             child: Column(
+//               children: [
+//                 // Header Section with ID and Name
+//                 Container(
+//                   width: double.infinity,
+//                   padding: const EdgeInsets.all(0),
+//                   decoration: BoxDecoration(
+//                     color: Colors.white,
+//                     borderRadius: BorderRadius.circular(16),
+//                     boxShadow: [
+//                       BoxShadow(
+//                         color: Colors.blue.withOpacity(0.1),
+//                         blurRadius: 10,
+//                         offset: const Offset(0, 3),
+//                       ),
+//                     ],
+//                   ),
+//                   child: const Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       ProfileSection(),
+//                     ],
+//                   ),
+//                 ),
+//                 // const SizedBox(height: 15),
+//                 // TimerCard(),
+//                 // Timer Card
+//                 const SizedBox(height: 15),
+//                 Container(
+//                   width: double.infinity,
+//                   constraints: const BoxConstraints(minHeight: 0),
+//                   decoration: BoxDecoration(
+//                     color: Colors.transparent,
+//                     borderRadius: BorderRadius.circular(16),
+//                     boxShadow: [
+//                       BoxShadow(
+//                         color: Colors.blue.withOpacity(0.1),
+//                         blurRadius: 10,
+//                         offset: const Offset(0, 3),
+//                       ),
+//                     ],
+//                   ),
+//                   child: const Padding(
+//                     padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
+//                     child: FittedBox(
+//                       fit: BoxFit.scaleDown,
+//                       child: TimerCard(),
+//                     ),
+//                   ),
+//                 ),
+//
+//                 const SizedBox(height: 10),
+//
+//                 // Grid Menu
+//                 Expanded(
+//                   child: GridView.count(
+//                     crossAxisCount: 2,
+//                     crossAxisSpacing: 14,
+//                     mainAxisSpacing: 15,
+//                     children: [
+//                       _buildModernCard(
+//                         context,
+//                         "SHOP VISIT",
+//                         Icons.store_mall_directory_rounded,
+//                         Colors.purple,
+//                       ),
+//                       _buildModernCard(
+//                         context,
+//                         "BOOKERS STATUS",
+//                         Icons.people_alt_rounded,
+//                         Colors.teal.shade700,
+//                       ),
+//                       _buildModernCard(
+//                         context,
+//                         "SHOPS DETAILS",
+//                         Icons.info_outline_rounded,
+//                         Colors.teal.shade700,
+//                       ),
+//                       _buildModernCard(
+//                         context,
+//                         "BOOKERS ORDER DETAILS",
+//                         Icons.receipt_long_rounded,
+//                         Colors.purple,
+//                       ),
+//                       _buildModernCard(
+//                         context,
+//                         "LOCATION",
+//                         Icons.location_on_rounded,
+//                         Colors.orange,
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//
+//                 const SizedBox(height: 5),
+//                 Text(
+//                   "$version",
+//                   style: const TextStyle(
+//                     fontSize: 14,
+//                     color: Colors.black54,
+//                     fontWeight: FontWeight.w500,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   Widget _buildModernCard(
+//       BuildContext context,
+//       String title,
+//       IconData icon,
+//       Color color,
+//       ) {
+//     return InkWell(
+//       borderRadius: BorderRadius.circular(20),
+//       onTap: () => _navigateToPage(context, title),
+//       child: Container(
+//         decoration: BoxDecoration(
+//           color: Colors.white,
+//           borderRadius: BorderRadius.circular(20),
+//           boxShadow: [
+//             BoxShadow(
+//               color: color.withOpacity(0.2),
+//               blurRadius: 10,
+//               offset: const Offset(0, 4),
+//             ),
+//           ],
+//         ),
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             Container(
+//               padding: const EdgeInsets.all(12),
+//               decoration: BoxDecoration(
+//                 color: color.withOpacity(0.15),
+//                 shape: BoxShape.circle,
+//               ),
+//               child: Icon(
+//                 icon,
+//                 size: 36,
+//                 color: color,
+//               ),
+//             ),
+//             const SizedBox(height: 25),
+//             Text(
+//               title,
+//               textAlign: TextAlign.center,
+//               style: const TextStyle(
+//                 fontWeight: FontWeight.bold,
+//                 fontSize: 14,
+//                 color: Colors.black87,
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//
+//   void _navigateToPage(BuildContext context, String title) {
+//     switch (title) {
+//       case 'SHOP VISIT':
+//         final locationVM = Get.find<LocationViewModel>();
+//         if (locationVM.isClockedIn.value) {
+//           Navigator.push(
+//             context,
+//             MaterialPageRoute(
+//               builder: (context) => const NSMShopVisitPage(),
+//             ),
+//           );
+//         } else {
+//           showDialog(
+//             context: context,
+//             builder: (context) => AlertDialog(
+//               title: const Text('Clock In Required'),
+//               content: const Text('Please clock in before visiting a shop.'),
+//               actions: [
+//                 TextButton(
+//                   onPressed: () => Navigator.pop(context),
+//                   child: const Text('OK'),
+//                 ),
+//               ],
+//             ),
+//           );
+//         }
+//         break;
+//       case 'BOOKERS STATUS':
+//         Navigator.push(
+//           context,
+//           MaterialPageRoute(builder: (context) => NSMBookingStatus()),
+//         );
+//         break;
+//       case 'SHOPS DETAILS':
+//         Navigator.push(
+//           context,
+//           MaterialPageRoute(builder: (context) => NSMShopDetailPage()),
+//         );
+//         break;
+//       case 'BOOKERS ORDER DETAILS':
+//         Navigator.push(
+//           context,
+//           MaterialPageRoute(builder: (context) => NsmOrderDetailsScreen()),
+//         );
+//         break;
+//       case 'LOCATION':
+//         Navigator.push(
+//           context,
+//           MaterialPageRoute(builder: (context) => const NsmLocationNavigation()),
+//         );
+//         break;
+//     }
+//   }
+// }
+
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
-import 'package:order_booking_app/Screens/NSM/nsm_order_details_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../Databases/dp_helper.dart';
 import '../../Databases/util.dart';
-import '../../Tracker/location00.dart';
 import '../../ViewModels/add_shop_view_model.dart';
 import '../../ViewModels/attendance_out_view_model.dart';
 import '../../ViewModels/attendance_view_model.dart';
@@ -361,23 +714,9 @@ import 'NSM_bookerbookingdetails.dart';
 import 'nsm_bookingStatus.dart';
 import 'NSM LOCATIONS/nsm_location_navigation.dart';
 import 'nsm_shopdetails.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:in_app_update/in_app_update.dart';
-import 'package:intl/intl.dart';
-import 'package:location/location.dart' as loc;
-import 'package:path_provider/path_provider.dart';
-import 'dart:async';
-import 'dart:io' show File, InternetAddress, SocketException;
-
-import '../../Tracker/trac.dart';
-
 import '../../main.dart';
-
-import 'package:permission_handler/permission_handler.dart' show Permission, PermissionActions, PermissionStatus, PermissionStatusGetters, openAppSettings;
+import 'package:permission_handler/permission_handler.dart'
+    show Permission, openAppSettings, ServiceStatus;
 
 class NSMHomepage extends StatefulWidget {
   const NSMHomepage({super.key});
@@ -387,35 +726,22 @@ class NSMHomepage extends StatefulWidget {
 }
 
 class NSMHomepageState extends State<NSMHomepage> {
-  int? attendanceId;
-  int? attendanceId1;
-  double? globalLatitude1;
-  double? globalLongitude1;
-  DBHelper dbHelper = DBHelper();
-  bool isLoadingReturn = false;
-  final loc.Location location = loc.Location();
-  bool isLoading = false; // Define isLoading variable
-  Timer? _timer;
-  bool pressClockIn = false;
-  late StreamSubscription<ServiceStatus> locationServiceStatusStream;
+  final DBHelper dbHelper = DBHelper();
   late final addShopViewModel = Get.put(AddShopViewModel());
   late final attendanceViewModel = Get.put(AttendanceViewModel());
   late final attendanceOutViewModel = Get.put(AttendanceOutViewModel());
+  late StreamSubscription<ServiceStatus> locationServiceStatusStream;
 
   @override
   void initState() {
     super.initState();
-
     Get.put(UpdateFunctionViewModel());
     Get.put(LocationViewModel());
-    Get.put(AttendanceViewModel());
-    Get.put(AttendanceOutViewModel());
-
     addShopViewModel.fetchAllAddShop();
     attendanceViewModel.fetchAllAttendance();
     attendanceOutViewModel.fetchAllAttendanceOut();
     _retrieveSavedValues();
-    checkForUpdate(); // Check for updates when the screen opens
+    checkForUpdate();
   }
 
   @override
@@ -424,7 +750,7 @@ class NSMHomepageState extends State<NSMHomepage> {
     super.dispose();
   }
 
-  _retrieveSavedValues() async {
+  Future<void> _retrieveSavedValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       user_id = prefs.getString('userId') ?? '';
@@ -439,41 +765,31 @@ class NSMHomepageState extends State<NSMHomepage> {
     });
   }
 
-  void showLoadingIndicator(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async => false,
-          child: const AlertDialog(
-            content: Row(
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(width: 20),
-                Text("Please Wait..."),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    // 📱 Get screen sizes
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isTablet = screenWidth > 600;
+    final isDesktop = screenWidth > 1000;
+
+    // Dynamic UI scaling
+    final gridCrossAxisCount = isDesktop ? 4 : (isTablet ? 3 : 2);
+    final iconSize = isTablet ? 45.0 : 36.0;
+    final textSize = isTablet ? 16.0 : 13.0;
+    final paddingValue = isTablet ? 24.0 : 16.0;
+    final verticalSpacing = isTablet ? 20.0 : 10.0;
+
     return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
+      onWillPop: () async => false,
       child: Scaffold(
         backgroundColor: Colors.blue.shade50,
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding: EdgeInsets.symmetric(horizontal: paddingValue, vertical: 15),
             child: Column(
               children: [
-                // Header Section with ID and Name
+                // 🧩 Profile Header
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(0),
@@ -490,19 +806,18 @@ class NSMHomepageState extends State<NSMHomepage> {
                   ),
                   child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ProfileSection(),
-                    ],
+                    children: [ProfileSection()],
                   ),
                 ),
-                const SizedBox(height: 5),
 
-                // Timer Card
+                SizedBox(height: verticalSpacing),
+
+                // 🕒 Timer Card
                 Container(
                   width: double.infinity,
-                  constraints: const BoxConstraints(minHeight: 80),
+                  constraints: const BoxConstraints(minHeight: 60),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.transparent,
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
@@ -513,7 +828,7 @@ class NSMHomepageState extends State<NSMHomepage> {
                     ],
                   ),
                   child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
+                    padding: EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: TimerCard(),
@@ -521,54 +836,35 @@ class NSMHomepageState extends State<NSMHomepage> {
                   ),
                 ),
 
-                const SizedBox(height: 5),
+                SizedBox(height: verticalSpacing),
 
-                // Grid Menu
+                // 🔳 Responsive Grid Menu
                 Expanded(
                   child: GridView.count(
-                    crossAxisCount: 2,
+                    crossAxisCount: gridCrossAxisCount,
                     crossAxisSpacing: 14,
-                    mainAxisSpacing: 5,
+                    mainAxisSpacing: 15,
                     children: [
                       _buildModernCard(
-                        context,
-                        "SHOP VISIT",
-                        Icons.store_mall_directory_rounded,
-                        Colors.blueAccent,
-                      ),
+                          context, "SHOP VISIT", Icons.store_mall_directory_rounded, Colors.purple, iconSize, textSize),
                       _buildModernCard(
-                        context,
-                        "BOOKERS STATUS",
-                        Icons.people_alt_rounded,
-                        Colors.indigo,
-                      ),
+                          context, "BOOKERS STATUS", Icons.people_alt_rounded, Colors.teal.shade700, iconSize, textSize),
                       _buildModernCard(
-                        context,
-                        "SHOPS DETAILS",
-                        Icons.info_outline_rounded,
-                        Colors.teal,
-                      ),
+                          context, "SHOPS DETAILS", Icons.info_outline_rounded, Colors.teal.shade700, iconSize, textSize),
                       _buildModernCard(
-                        context,
-                        "BOOKERS ORDER DETAILS",
-                        Icons.receipt_long_rounded,
-                        Colors.deepPurple,
-                      ),
+                          context, "BOOKERS ORDER DETAILS", Icons.receipt_long_rounded, Colors.purple, iconSize, textSize),
                       _buildModernCard(
-                        context,
-                        "LOCATION",
-                        Icons.location_on_rounded,
-                        Colors.orange,
-                      ),
+                          context, "LOCATION", Icons.location_on_rounded, Colors.orange, iconSize, textSize),
                     ],
                   ),
                 ),
 
-                const SizedBox(height: 5),
+                // 🔖 Version text
+                SizedBox(height: verticalSpacing / 2),
                 Text(
                   "$version",
-                  style: const TextStyle(
-                    fontSize: 13,
+                  style: TextStyle(
+                    fontSize: isTablet ? 16 : 14,
                     color: Colors.black54,
                     fontWeight: FontWeight.w500,
                   ),
@@ -586,6 +882,8 @@ class NSMHomepageState extends State<NSMHomepage> {
       String title,
       IconData icon,
       Color color,
+      double iconSize,
+      double textSize,
       ) {
     return InkWell(
       borderRadius: BorderRadius.circular(20),
@@ -611,19 +909,15 @@ class NSMHomepageState extends State<NSMHomepage> {
                 color: color.withOpacity(0.15),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                icon,
-                size: 36,
-                color: color,
-              ),
+              child: Icon(icon, size: iconSize, color: color),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 20),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 13,
+                fontSize: textSize,
                 color: Colors.black87,
               ),
             ),
@@ -638,52 +932,40 @@ class NSMHomepageState extends State<NSMHomepage> {
       case 'SHOP VISIT':
         final locationVM = Get.find<LocationViewModel>();
         if (locationVM.isClockedIn.value) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const NSMShopVisitPage(),
-            ),
-          );
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const NSMShopVisitPage()));
         } else {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: const Text('Clock In Required'),
-              content: const Text('Please clock in before visiting a shop.'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('OK'),
-                ),
-              ],
-            ),
-          );
+          _showClockInDialog(context);
         }
         break;
+
       case 'BOOKERS STATUS':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => NSMBookingStatus()),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (context) => NSMBookingStatus()));
         break;
+
       case 'SHOPS DETAILS':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => NSMShopDetailPage()),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (context) => NSMShopDetailPage()));
         break;
+
       case 'BOOKERS ORDER DETAILS':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => NsmOrderDetailsScreen()),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (context) => NsmOrderDetailsScreen()));
         break;
+
       case 'LOCATION':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const NsmLocationNavigation()),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const NsmLocationNavigation()));
         break;
     }
+  }
+
+  void _showClockInDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Clock In Required'),
+        content: const Text('Please clock in before visiting a shop.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK')),
+        ],
+      ),
+    );
   }
 }

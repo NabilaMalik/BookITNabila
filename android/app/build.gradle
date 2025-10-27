@@ -46,7 +46,7 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
 //        applicationId = "com.metaxperts.BookIT"
         applicationId = "com.metaxperts.BookIT"
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 23
         targetSdkVersion 35
 
         // You can update the following values to match your application needs.
@@ -60,8 +60,9 @@ android {
             if (keystorePropertiesFile.exists()) {
                 keyAlias keystoreProperties['keyAlias']
                 keyPassword keystoreProperties['keyPassword']
-                storeFile file('/Users/macbook/Documents/BookIT_Meta/android/app/upload-keystore.jks')
-                storePassword keystoreProperties['storePassword']
+//                storeFile file(keystoreProperties['storeFile'])
+                storeFile file(keystoreProperties['storeFile'])
+                 storePassword keystoreProperties['storePassword']
             }
         }
     }
